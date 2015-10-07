@@ -44,9 +44,8 @@ filter_.tbl_svy <- function(.data, ..., .dots) {
   # Create a variable with the row numbers, run dplyr on the variables data.frame
   # and then pass the row_numbers that are kept into survey::svydesign2 `[`
   row_numbers <- .data$variables
-  row_numbers <- dplyr::mutate(row_numbers, `___row_nums` = dplyr::row_number(1))
+  row_numbers <- dplyr::mutate_(row_numbers, "`___row_nums` = dplyr::row_number(1)")
   row_numbers <- dplyr::filter_(row_numbers, .dots = dots)
-  row_numbers <- dplyr::select(row_numbers, `___row_nums`)
   row_numbers <- row_numbers$`___row_nums`
 
   .data[row_numbers, ]

@@ -77,7 +77,7 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'             api_diff = survey_mean(api00 - api99))
 #'
 #' @name summarise
-#' @aliases survey_mean
+#' @aliases survey_mean survey_total
 #' @export
 #' @importFrom dplyr summarise
 NULL

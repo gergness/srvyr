@@ -6,6 +6,7 @@
 \alias{summarize}
 \alias{summarize_}
 \alias{survey_mean}
+\alias{survey_total}
 \title{Summarise multiple values to a single value.}
 \usage{
 summarise(.data, ...)

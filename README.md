@@ -2,6 +2,8 @@
 srvyr
 =====
 
+[![Travis-CI Build Status](https://travis-ci.org/gergness/srvyr.svg?branch=master)](https://travis-ci.org/gergness/srvyr)
+
 srvyr is a [dplyr-like](https://github.com/hadley/dplyr/) wrapper around the [survey](https://cran.r-project.org/web/packages/survey/index.html) package.
 
 It attempts to bring the convenience of pipe-able functions to analysis of surveys, though currently it is very limited and slow.
@@ -45,3 +47,5 @@ Now many of the dplyr-verbs are available.
       group_by(stype) %>%
       summarise(api_diff = survey_mean(api_diff, vartype = "ci")))
     ```
+
+If you'd like to contribute, please let me know! I started this mostly as a way to learn about R package development, so I'm not sure how far I'll take it, but I think it could turn into something useful!

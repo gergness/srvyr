@@ -14,6 +14,8 @@ design_survey_(.data, ids = NULL, probs = NULL, strata = NULL,
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}
 
+\item{...}{arguments described below, others are ignored}
+
 \item{ids}{Variables specifying cluster ids from largest level to smallest level
 (or NULL / nothing if no clusters).}
 

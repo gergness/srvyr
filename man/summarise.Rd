@@ -12,7 +12,7 @@
 summarise(.data, ...)
 }
 \arguments{
-\item{.svy}{A \code{tbl_svy} object}
+\item{.data}{A \code{tbl_svy} object}
 
 \item{...}{Name-value paris of summary functions}
 }

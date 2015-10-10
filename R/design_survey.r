@@ -7,6 +7,7 @@
 #'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
+#' @param ... arguments described below, others are ignored
 #' @param ids Variables specifying cluster ids from largest level to smallest level
 #' (or NULL / nothing if no clusters).
 #' @param probs Variables specifying cluster sampling probabilities.

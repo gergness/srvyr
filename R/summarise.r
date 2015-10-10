@@ -53,7 +53,7 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #' @usage summarise_(.data, ..., .dots)
 #' @usage summarize_(.data, ..., .dots)
 #'
-#' @param .svy A \code{tbl_svy} object
+#' @param .data A \code{tbl_svy} object
 #' @param ... Name-value paris of summary functions
 #'
 #' @examples

@@ -35,11 +35,8 @@
 #'
 #' summarise(svy, col.grad = survey_mean(col.grad),
 #'           api00 = survey_mean(api00, vartype = "ci"))
-#'
 #' @name tbl_svy
-tbl_svy <- function(svy) {
-  stop("Use design_survey() to create a tbl_svy")
-}
+NULL
 
 # Mostly mimics survey:::print.survey.design2
 #' @export

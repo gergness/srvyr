@@ -3,9 +3,6 @@
 \name{tbl_svy}
 \alias{tbl_svy}
 \title{svy_tbl object.}
-\usage{
-tbl_svy(svy)
-}
 \description{
 A \code{svy_tbl} wraps a locally stored svydesign and adds methods for
 dplyr single-table verbs like \code{mutate}, \code{group_by} and

@@ -3,7 +3,7 @@
 \name{design_survey}
 \alias{design_survey}
 \alias{design_survey_}
-\title{Create a tbl_svy survey object}
+\title{Create a tbl_svy survey object using sampling design}
 \usage{
 design_survey(.data, ...)
 

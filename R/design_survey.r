@@ -1,4 +1,4 @@
-#' Create a tbl_svy survey object
+#' Create a tbl_svy survey object using sampling design
 #'
 #' A wrapper around \code{\link[survey]{svydesign}}. All survey variables must be included
 #' in the data.frame itself. Select variables by using bare column names, or convenience

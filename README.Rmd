@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 # srvyr
 
 [![Travis-CI Build Status](https://travis-ci.org/gergness/srvyr.svg?branch=master)](https://travis-ci.org/gergness/srvyr)
+[![Coverage Status](https://img.shields.io/codecov/c/github/gergness/srvyr/master.svg)](https://codecov.io/github/gergness/srvyr?branch=master)
 
 srvyr is a [dplyr-like](https://github.com/hadley/dplyr/) wrapper around the
 [survey](https://cran.r-project.org/web/packages/survey/index.html) package.

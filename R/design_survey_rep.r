@@ -45,27 +45,29 @@ design_survey_rep <- function(.data, ...) {
   # follow promises to functions defined in other packages.
   arg_names <- c("variables", "repweights", "weights", "type",
                  "combined_weights","rho", "bootstrap_average", "scale",
-                 "rscales", "fpc", "fpctype")
+                 "rscales", "fpc", "fpctype", "mse")
   dots <- match_dot_args(lazyeval::lazy_dots(...), arg_names)
 
   # Turn other variable specifications into character strings of variable names
   var_args <- lapply(list(variables = "variables", repweights = "repweights",
-                          weights = "weights", rscales = "rscales", fpc = "fpc"),
+                          weights = "weights",  fpc = "fpc"),
                      function(var) {
                        nullable(function(x) unname(dplyr::select_vars_(names(.data), x)), dots[[var]])
                      })
 
   type <- nullable(function(x) match.arg(lazyeval::lazy_eval(x), c("BRR", "Fay", "JK1", "JKn", "bootstrap", "other")), dots[["type"]])
   combined_weights <- if(!is.null(dots[["combined_weights"]])) lazyeval::lazy_eval(dots[["combined_weights"]]) else TRUE
-  rho <- dots[["rho"]]
-  bootstrap_average <- dots[["bootstrap_average"]]
-  scale <- dots[["scale"]]
+  rho <- nullable(lazyeval::lazy_eval, dots[["rho"]])
+  bootstrap_average <- nullable(lazyeval::lazy_eval, dots[["bootstrap_average"]])
+  scale <- nullable(lazyeval::lazy_eval, dots[["scale"]])
+  rscales <- nullable(lazyeval::lazy_eval, dots[["rscales"]])
   fpctype <- nullable(function(x) match.arg(x, c("fraction", "correction")), dots[["fpctype"]])
   mse <- if(!is.null(dots[["mse"]])) lazyeval::lazy_eval(dots[["mse"]]) else getOption("survey.replicates.mse")
 
+
   design_survey_rep_(.data, var_args[["variables"]], var_args[["repweights"]],
                      var_args[["weights"]], type, combined_weights,
-                     rho, bootstrap_average, scale, var_args[["rscales"]],
+                     rho, bootstrap_average, scale, rscales,
                      var_args[["fpc"]], fpctype, mse)
 }
 
@@ -85,17 +87,16 @@ design_survey_rep_ <- function(.data, variables = NULL, repweights = NULL, weigh
   survey_selector <- function(x) {
     if (!is.null(x)) data.frame(dplyr::select_(.data, .dots = x)) else NULL
   }
-
   out <- survey::svrepdesign(data = .data,
                            variables = survey_selector(variables),
                            repweights = survey_selector(repweights),
-                           weights = survey_selector(weights),
+                           weights = nullable(as.matrix, survey_selector(weights)[[1]]),
                            type = match.arg(type),
                            combined.weights = combined_weights,
                            rho = rho,
                            bootstrap.average = bootstrap_average,
                            scale = scale,
-                           rscales = survey_selector(rscales),
+                           rscales = rscales,
                            fpc = survey_selector(fpc),
                            fpctype = fpctype,
                            mse = mse)

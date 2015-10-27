@@ -41,27 +41,8 @@ NULL
 # Mostly mimics survey:::print.survey.design2
 #' @export
 print.tbl_svy <- function (x, varnames = TRUE, design.summaries = FALSE, ...) {
-  n <- NROW(x$cluster)
-  if (x$has.strata)
-    cat("Stratified ")
-  un <- length(unique(x$cluster[, 1]))
-  if (n == un) {
-    cat("Independent Sampling design")
-    is.independent <- TRUE
-    if (is.null(x$fpc$popsize))
-      cat(" (with replacement)\n")
-    else cat("\n")
-  }
-  else {
-    cat(NCOL(x$cluster), "- level Cluster Sampling design")
-    if (is.null(x$fpc$popsize))
-      cat(" (with replacement)\n")
-    else cat("\n")
-    nn <- lapply(x$cluster, function(i) length(unique(i)))
-    cat(paste("With (", paste(unlist(nn), collapse = ", "),
-              ") clusters.\n", sep = ""))
-    is.independent <- FALSE
-  }
+  NextMethod()
+
   print(survey_vars(x))
   if(!is.null(groups(x))) {
     cat("Grouping variables: ")

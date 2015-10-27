@@ -29,8 +29,6 @@
 #' data(api)
 #'
 #' # stratified sample
-#' library(survey)
-#' data(api)
 #' dstrata <- apistrat %>%
 #'   design_survey(strata = stype, weights = pw)
 #'
@@ -129,5 +127,7 @@ design_survey_ <- function(.data, ids = NULL, probs = NULL, strata = NULL, varia
   # Make a list of names that have the survey vars.
   survey_vars(out) <- list(ids = ids, probs = probs, strata = strata, fpc = fpc, weights = weights)
 
+  # To make printing better, change call
+  out$call <- "called via srvyr"
   out
 }

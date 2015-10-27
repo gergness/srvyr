@@ -7,7 +7,7 @@ Authors@R: person("Greg", "Freedman", email = "greg.freedman@gmail.com", role = 
 Description: Use piping, verbs like 'group_by' and 'summarize', and other 'dplyr' inspired
              syntactic style when calculating summary statistics on survey data using functions
              from the 'survey' package.
-Imports: 
+Imports:
     survey,
     dplyr,
     magrittr,
@@ -17,4 +17,4 @@ LazyData: TRUE
 Suggests: testthat,
     knitr,
     rmarkdown
-VignetteBuilder: knitr
+VignetteBuilder: knitr, pander

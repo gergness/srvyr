@@ -105,7 +105,7 @@ design_survey_rep_ <- function(.data, variables = NULL, repweights = NULL, weigh
   out$variables <- dplyr::tbl_df(out$variables)
 
   # Make a list of names that have the survey vars.
-  #survey_vars(out) <- list(ids = ids, probs = probs, strata = strata, fpc = fpc, weights = weights)
+  survey_vars(out) <- list(repweights = repweights,  weights = weights, fpc = fpc)
 
   # To make printing better, change call
   out$call <- "called via srvyr"

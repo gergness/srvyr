@@ -54,8 +54,6 @@ library(survey)
 data(api)
 
 # stratified sample
-library(survey)
-data(api)
 dstrata <- apistrat \%>\%
   design_survey(strata = stype, weights = pw)
 

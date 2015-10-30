@@ -6,6 +6,7 @@
 \alias{summarize}
 \alias{summarize_}
 \alias{survey_mean}
+\alias{survey_ratio}
 \alias{survey_total}
 \title{Summarise multiple values to a single value.}
 \usage{
@@ -21,9 +22,13 @@ Summarise multiple values to a single value.
 }
 \details{
 \describe{
-Summarise for \code{tbl_svy} objects accepts only 1 function:
-\item{\code{survey_mean(..., vartype = c("se", "ci", "var")}}{
+Summarise for \code{tbl_svy} objects accepts several specialized functions:
+\item{\code{survey_mean(..., na.rm = FALSE, vartype = c("se", "ci", "var")}}{
    Calculate the survey mean of the entire population or by \code{groups}.}
+\item{\code{survey_total(..., na.rm = FALSE, vartype = c("se", "ci", "var")}}{
+   Calculate the survey total of the entire population or by \code{groups}.}
+ \item{\code{survey_mean(..., na.rm = FALSE, vartype = c("se", "ci", "var")}}{
+   Calculate the ratio of 2 variables in the entire population or by \code{groups}.}
 }
 }
 \examples{

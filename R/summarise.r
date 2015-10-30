@@ -3,7 +3,8 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
   .dots <- lazyeval::all_dots(.dots, ...)
 
   survey_funs <- list(survey_mean = function(...) survey_mean(.data, ...),
-                      survey_total = function(...) survey_total(.data, ...))
+                      survey_total = function(...) survey_total(.data, ...),
+                      survey_ratio = function(...) survey_ratio(.data, ...))
 
   out <- lazyeval::lazy_eval(.dots, c(survey_funs, .data$variables))
   # use the argument names to name the output
@@ -19,7 +20,8 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
   .dots <- lazyeval::all_dots(.dots, ...)
 
   survey_funs <- list(survey_mean = function(...) survey_mean(.data, ...),
-       survey_total = function(...) survey_total(.data, ...))
+                      survey_total = function(...) survey_total(.data, ...),
+                      survey_ratio = function(...) survey_ratio(.data, ...))
   groups <- as.character(groups(.data))
 
   out <- lazyeval::lazy_eval(.dots, c(survey_funs, .data$variables))
@@ -43,9 +45,13 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #' Summarise multiple values to a single value.
 #'
 #' \describe{
-#' Summarise for \code{tbl_svy} objects accepts only 1 function:
-#' \item{\code{survey_mean(..., vartype = c("se", "ci", "var")}}{
+#' Summarise for \code{tbl_svy} objects accepts several specialized functions:
+#' \item{\code{survey_mean(..., na.rm = FALSE, vartype = c("se", "ci", "var")}}{
 #'    Calculate the survey mean of the entire population or by \code{groups}.}
+#' \item{\code{survey_total(..., na.rm = FALSE, vartype = c("se", "ci", "var")}}{
+#'    Calculate the survey total of the entire population or by \code{groups}.}
+#'  \item{\code{survey_mean(..., na.rm = FALSE, vartype = c("se", "ci", "var")}}{
+#'    Calculate the ratio of 2 variables in the entire population or by \code{groups}.}
 #' }
 #'
 #' @usage summarise(.data, ...)
@@ -77,7 +83,7 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'             api_diff = survey_mean(api00 - api99))
 #'
 #' @name summarise
-#' @aliases survey_mean survey_total
+#' @aliases survey_mean survey_total survey_ratio
 #' @export
 #' @importFrom dplyr summarise
 NULL

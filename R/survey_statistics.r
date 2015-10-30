@@ -21,7 +21,7 @@ survey_mean.grouped_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se", 
 
 
 #' @export
-survey_total<- function(.svy, ..., na.rm, vartype = c("se", "ci", "var")) {
+survey_total <- function(.svy, ..., na.rm, vartype = c("se", "ci", "var")) {
   UseMethod("survey_total")
 }
 
@@ -40,6 +40,70 @@ survey_total.grouped_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se",
 
   survey_stat_grouped(.svy, survey::svytotal, arg, na.rm, vartype)
 }
+
+
+#' @export
+survey_ratio <- function(.svy, ..., na.rm, vartype = c("se", "ci", "var")) {
+  UseMethod("survey_ratio")
+}
+
+survey_ratio.tbl_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se", "ci", "var")) {
+  if(missing(vartype)) vartype <- "se"
+  vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
+  arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
+
+  stat <- survey::svyratio(arg[[1]], arg[[2]], .svy, na.rm = na.rm)
+
+  out <- lapply(vartype, function(vvv) {
+    if (vvv == "coef") {
+      coef <- data.frame(stat$ratio)
+      names(coef) <- ""
+      coef
+    } else if (vvv == "se") {
+      se <- data.frame(sqrt(stat$var))
+      names(se) <- "_se"
+      se
+    } else if (vvv == "ci") {
+      ci <- data.frame(confint(stat))
+      names(ci) <- c("_low", "_upp")
+      ci
+    } else if (vvv == "var") {
+      var <- data.frame(stat$var)
+      names(var) <- "_var"
+      var
+    }
+  })
+
+  dplyr::bind_cols(out)
+}
+
+survey_ratio.grouped_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se", "ci", "var")) {
+  if(missing(vartype)) vartype <- "se"
+  vartype <- c(match.arg(vartype, several.ok = TRUE))
+  arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
+
+  grps <- survey::make.formula(groups(.svy))
+
+  # svyby breaks when you feed it raw vector to be measured... Add it to
+  # the data.frame with mutate and then pass in the name
+  .svy$variables[["___numerator"]] <- arg[[1]]
+  .svy$variables[["___denominator"]] <- arg[[2]]
+
+  out <- survey::svyby(~`___numerator`, grps, .svy, survey::svyratio,
+                       denominator = ~`___denominator`,
+                       na.rm = na.rm, vartype = vartype)
+
+  # Format it nicely
+  out <- dplyr::tbl_df(as.data.frame(out))
+  names(out)[names(out) == "___numerator/___denominator"] <- ""
+  names(out)[names(out) == "se.___numerator/___denominator"] <- "_se"
+  names(out)[names(out) == "ci_l"] <- "_low"
+  names(out)[names(out) == "ci_u"] <- "_upp"
+  names(out)[names(out) == "var.___numerator/___denominator"] <- "_var"
+
+  out
+}
+
 
 
 survey_stat_ungrouped <- function(.svy, func, arg, na.rm, vartype) {

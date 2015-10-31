@@ -9,38 +9,81 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The `srvyr` package aims to add `dplyr` like syntax to Professor Thomas Lumley's `survey` package. In this vignette we will recreate several examples from Lumley's textbook *Complex Surveys: A Guide to Analysis Using R* using `srvyr`. 
+The `srvyr` package aims to add `dplyr` like syntax to Professor Thomas 
+Lumley's `survey` package. In this vignette we will recreate several 
+examples from Lumley's textbook [*Complex Surveys: A Guide to Analysis 
+Using R*](http://r-survey.r-forge.r-project.org/svybook/) using `srvyr`. 
 
 # design_survey
 
-The meat of the `sryvr` package is the `design_survey` function. This is similar to the `svydesign` function from the `survey` package, but with some `dplyr` like functionality. `design_survey` is different from `svydesign` because it supports `magrittr` pipes, it uses bare column names rather than using a "~" before the name of the variable like in the `survey` package, and you can use other `dplyr` verbs like `summarise`, `mutate`, and `group_by`. Here are some basic examples using `design_survey` and the functions `survey_total` and `survey_mean` which are the `srvyr` equivalents of `svytotal` and `svymean` respectively:
+The meat of the `sryvr` package is the `design_survey` function. This is 
+similar to the `svydesign` function from the `survey` package, but with 
+some `dplyr` like functionality. `design_survey` is different from 
+`svydesign` because it supports `magrittr` pipes, it uses bare column 
+names rather than using a "~" before the name of the variable like in 
+the `survey` package, and you can use other `dplyr` verbs like `summarise`, 
+`mutate`, and `group_by`. Here are some basic examples using `design_survey` 
+and the functions `survey_total` and `survey_mean` which are the `srvyr` 
+equivalents of `svytotal` and `svymean` respectively:
 
 ```{r message=FALSE}
 library(srvyr)
 library(survey)
 library(pander)
 data(api)
+
 # simple random sample
-srs_design<-apisrs %>% design_survey(ids=1,fpc=fpc)
+srs_design <- apisrs %>% design_survey(ids = 1, fpc = fpc)
 srs_design
-pander(srs_design %>% summarise(Total=survey_total(enroll)))
-pander(srs_design %>% summarise(Mean=survey_mean(enroll)))
+
+srs_design %>% 
+  summarise(Total = survey_total(enroll)) %>% 
+  pander()
+
+srs_design %>% 
+  summarise(Mean = survey_mean(enroll)) %>%
+  pander()
+
 # weighted sample
-nofpc<-apisrs %>% design_survey(weights=pw)
+nofpc <- apisrs %>% design_survey(weights = pw)
 nofpc
-pander(nofpc %>% summarise(Total=survey_total(enroll)))
-pander(nofpc %>% summarise(Mean=survey_mean(enroll)))
+
+nofpc %>% 
+  summarise(Total = survey_total(enroll)) %>% 
+  pander()
+
+nofpc %>% 
+  summarise(Mean = survey_mean(enroll)) %>% 
+  pander()
+
 # stratified sample
-strat_design<- apistrat %>% design_survey(strata=stype,fpc=fpc)
+strat_design <- apistrat %>% design_survey(strata = stype, fpc = fpc)
 strat_design
-pander(strat_design %>% summarise(Total=survey_total(enroll)))
-pander(strat_design %>% summarise(Mean=survey_mean(enroll)))
+
+strat_design %>% 
+  summarise(Total = survey_total(enroll)) %>% 
+  pander()
+
+strat_design %>% 
+  summarise(Mean=survey_mean(enroll)) %>% 
+  pander()
 
 # try with mutate
-pander(srs_design %>% mutate(apidiff=api00-api99) %>% summarise(Mean=survey_mean(apidiff)))
-pander(srs_design %>% mutate(apidiffpercent=(api00-api99)/api99) %>% summarise(Mean=survey_mean(apidiffpercent)))
+srs_design %>% 
+  mutate(apidiff = api00 - api99) %>% 
+  summarise(Mean = survey_mean(apidiff)) %>%
+  pander()
+
+srs_design %>% 
+  mutate(apidiffpercent = (api00 - api99) / api99) %>% 
+  summarise(Mean = survey_mean(apidiffpercent)) %>% 
+  pander()
+
 # try with group_by
-pander(strat_design %>% group_by(cname) %>% summarise(Totals=survey_total(enroll)))
+strat_design %>% 
+  group_by(stype) %>% 
+  summarise(Totals = survey_total(enroll)) %>% 
+  pander()
 
 ```
 

@@ -104,6 +104,74 @@ survey_ratio.grouped_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se",
   out
 }
 
+#' @export
+survey_quantile <- function(.svy, ..., quantiles, na.rm = FALSE, vartype = c("none", "se", "ci")) {
+  UseMethod("survey_quantile")
+}
+
+survey_quantile.tbl_svy <- function(.svy, ..., quantiles, na.rm = FALSE, vartype = c("none", "se", "ci")) {
+  if(missing(vartype)) vartype <- "none"
+  vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
+  arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
+
+  vartype <- setdiff(vartype, "none")
+  se <- "se" %in% vartype
+  ci <- "ci" %in% vartype
+
+  stat <- svyquantile(data.frame(arg[[1]]), .svy,
+                      quantiles = quantiles, na.rm = na.rm,
+                      se = se, ci = ci)
+
+  q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2, flag = "0")))
+
+  out <- lapply(vartype, function(vvv) {
+    if (vvv == "coef") {
+      # Accessors to svquantile change if there's CI or not
+      if (class(stat) == "matrix") coef <- data.frame(stat)
+      else coef <- data.frame(stat[["quantiles"]])
+      names(coef) <- q_text
+      coef
+    } else if (vvv == "se") {
+      se <- data.frame(t(attr(stat, "SE")))
+      names(se) <- paste0(q_text, "_se")
+      se
+    } else if (vvv == "ci") {
+      ci <- data.frame(t(stat[["CIs"]][seq_len(2 * length(q_text))]))
+      names(ci) <- paste0(rep(q_text, each = 2),
+                          rep(c("_low", "_upp"), length = 2 * length(q_text)))
+      ci
+    }
+  })
+  dplyr::bind_cols(out)
+}
+
+survey_quantile.grouped_svy <- function(.svy, ..., quantiles, na.rm = FALSE, vartype = c("none", "se", "ci")) {
+  if(missing(vartype)) vartype <- "none"
+  vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
+  arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
+
+  vartype <- setdiff(vartype, "none")
+  grps <- survey::make.formula(groups(.svy))
+
+  .svy$variables[["___arg"]] <- arg[[1]]
+
+  out <- svyby(~`___arg`, grps, .svy, svyquantile,
+                      quantiles = quantiles, na.rm = na.rm,
+                      ci = TRUE, vartype = vartype)
+
+  q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2, flag = "0")))
+  # Format it nicely
+  out <- dplyr::tbl_df(as.data.frame(out))
+  names(out)[1 + seq_along(q_text)] <- q_text
+  if ("se" %in% vartype) names(out)[grep("^se", names(out))] <- paste0(q_text, "_se")
+  if ("ci" %in% vartype) {
+    names(out)[grep("^ci_l", names(out))] <- paste0(q_text, "_low")
+    names(out)[grep("^ci_u", names(out))] <- paste0(q_text, "_upp")
+  }
+
+  out
+}
+
 
 
 survey_stat_ungrouped <- function(.svy, func, arg, na.rm, vartype) {

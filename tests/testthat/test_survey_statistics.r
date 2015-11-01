@@ -60,3 +60,14 @@ suppressWarnings(out_srvyr <- dstrata %>%
 test_that("survey_quantile works for grouped surveys - with se",
           expect_equal(c(out_survey$`0.5`[[1]], out_survey$`se.0.5`[[1]]),
                        c(out_srvyr[[1, "api00_q50"]], out_srvyr[[1, "api00_q50_se"]])))
+
+# survey_quantile
+out_survey <- svyquantile(~api00, dstrata, c(0.5))
+
+
+out_srvyr <- dstrata %>%
+  summarise(api00 = survey_median(api00))
+
+test_that("survey_quantile works for ungrouped surveys - no ci",
+          expect_equal(c(out_survey[[1]]),
+                       c(out_srvyr[[1, 1]])))

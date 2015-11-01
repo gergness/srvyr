@@ -173,6 +173,18 @@ survey_quantile.grouped_svy <- function(.svy, ..., quantiles, na.rm = FALSE, var
 }
 
 
+#' @export
+survey_median <- function(.svy, ..., na.rm = FALSE, vartype = c("none", "se", "ci")) {
+  UseMethod("survey_median")
+}
+
+survey_median.default <- function(.svy, ..., na.rm = FALSE, vartype = c("none", "se", "ci")) {
+  if(missing(vartype)) vartype <- "se"
+  vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
+
+  survey_quantile(.svy, ..., quantiles = 0.5, na.rm = na.rm, vartype = vartype)
+}
+
 
 survey_stat_ungrouped <- function(.svy, func, arg, na.rm, vartype) {
   stat <- func(data.frame(arg[[1]]), .svy, na.rm = na.rm)

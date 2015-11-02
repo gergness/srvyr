@@ -6,7 +6,8 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
                       survey_total = function(...) survey_total(.data, ...),
                       survey_ratio = function(...) survey_ratio(.data, ...),
                       survey_quantile = function(...) survey_quantile(.data, ...),
-                      survey_median = function(...) survey_median(.data, ...))
+                      survey_median = function(...) survey_median(.data, ...),
+                      unweighted = function(...) unweighted(.data, ...))
 
   out <- lazyeval::lazy_eval(.dots, c(survey_funs, .data$variables))
   # use the argument names to name the output
@@ -25,7 +26,8 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
                       survey_total = function(...) survey_total(.data, ...),
                       survey_ratio = function(...) survey_ratio(.data, ...),
                       survey_quantile = function(...) survey_quantile(.data, ...),
-                      survey_median = function(...) survey_median(.data, ...))
+                      survey_median = function(...) survey_median(.data, ...),
+                      unweighted = function(...) unweighted(.data, ...))
 
   groups <- as.character(groups(.data))
 
@@ -51,16 +53,18 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'
 #' \describe{
 #' Summarise for \code{tbl_svy} objects accepts several specialized functions:
-#' \item{\code{survey_mean(..., na.rm = FALSE, vartype = c("se", "ci", "var")}}{
+#' \item{\code{survey_mean(..., na.rm = FALSE, vartype = c("se", "ci", "var"))}}{
 #'    Calculate the survey mean of the entire population or by \code{groups}.}
-#' \item{\code{survey_total(..., na.rm = FALSE, vartype = c("se", "ci", "var")}}{
+#' \item{\code{survey_total(..., na.rm = FALSE, vartype = c("se", "ci", "var"))}}{
 #'    Calculate the survey total of the entire population or by \code{groups}.}
-#'  \item{\code{survey_ratio(..., na.rm = FALSE, vartype = c("se", "ci", "var")}}{
+#'  \item{\code{survey_ratio(..., na.rm = FALSE, vartype = c("se", "ci", "var"))}}{
 #'    Calculate the ratio of 2 variables in the entire population or by \code{groups}.}
-#' \item{\code{survey_quantile(..., quantiles, na.rm = FALSE, vartype = c("se", "ci")}}{
+#' \item{\code{survey_quantile(..., quantiles, na.rm = FALSE, vartype = c("se", "ci"))}}{
 #'    Calculate quantiles in the entire population or by \code{groups}.}
-#'  \item{\code{survey_median(..., na.rm = FALSE, vartype = c("se", "ci")}}{
+#'  \item{\code{survey_median(..., na.rm = FALSE, vartype = c("se", "ci"))}}{
 #'    Calculate the median in the entire population or by \code{groups}.}
+#'  \item{\code{unweighted(...)}}{
+#'    Calculate an unweighted estimate.}
 #' }
 #'
 #' @usage summarise(.data, ...)
@@ -92,7 +96,7 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'             api_diff = survey_mean(api00 - api99))
 #'
 #' @name summarise
-#' @aliases survey_mean survey_total survey_ratio survey_quantile survey_median
+#' @aliases survey_mean survey_total survey_ratio survey_quantile survey_median unweighted
 #' @export
 #' @importFrom dplyr summarise
 NULL

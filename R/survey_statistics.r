@@ -190,6 +190,20 @@ survey_median.default <- function(.svy, ..., na.rm = FALSE, vartype = c("none", 
 }
 
 
+#' @export
+unweighted <- function(.svy, ..., na.rm, vartype = c("se", "ci", "var")) {
+  UseMethod("unweighted")
+}
+
+unweighted.default <-  function(.svy, ...) {
+  dots <-lazyeval::lazy_dots(...)
+
+  out <- summarize_(.svy[["variables"]], .dots = dots)
+  names(out)[length(names(out))] <- ""
+  out
+}
+
+
 survey_stat_ungrouped <- function(.svy, func, arg, na.rm, vartype) {
   if (class(arg[[1]]) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
   stat <- func(data.frame(arg[[1]]), .svy, na.rm = na.rm)
@@ -237,7 +251,6 @@ survey_stat_grouped <- function(.svy, func, arg, na.rm, vartype ) {
 
   out
 }
-
 
 survey_stat_factor <- function(.svy, func, arg, na.rm, vartype) {
   grps <- as.character(groups(.svy))

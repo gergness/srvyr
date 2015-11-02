@@ -235,14 +235,48 @@ survey_stat_grouped <- function(.svy, func, arg, na.rm, vartype ) {
 
 
 survey_stat_factor <- function(.svy, func, arg, na.rm, vartype) {
-  grps <- groups(.svy)
-  peel <- as.character(grps[length(grps)])
-  grps <- grps[seq_len(length(grps) - 1)]
+  grps <- as.character(groups(.svy))
+  peel <- grps[length(grps)]
+  grps <- setdiff(grps, peel)
+
+  vartype <- c("coef", vartype)
 
   if (length(grps) > 0) {
-    stop("Need to implement multiple group proportions")
+    stat <- survey::svyby(survey::make.formula(peel),
+                          survey::make.formula(grps),
+                          .svy, func, na.rm = na.rm, vartype = vartype)
+
+    stat <- data.frame(stat)
+    vlist <- list(paste0(peel, unique(.svy[["variables"]][[peel]])))
+    vnames <- "coef"
+    if ("se" %in% vartype) {
+      vlist[[length(vlist) + 1]] <- paste0("se.", vlist[[1]])
+      vnames <- c(vnames, "se")
+    }
+    if ("var" %in% vartype) {
+      vlist[[length(vlist) + 1]] <- paste0("var.", vlist[[1]])
+      vnames <- c(vnames, "var")
+    }
+    if ("ci" %in% vartype) {
+      vlist[[length(vlist) + 1]] <- paste0("ci_l.", vlist[[1]])
+      vlist[[length(vlist) + 1]] <- paste0("ci_u.", vlist[[1]])
+      vnames <- c(vnames, "low", "upp")
+    }
+
+    out <- reshape(stat, varying = vlist,
+            idvar = grps, times = unique(.svy[["variables"]][[peel]]), timevar = peel,
+            v.names = vnames, direction = "long")
+
+    out <- data.frame(out)
+    names(out)[names(out) == "coef"] <- ""
+    names(out)[names(out) == "se"] <- "_se"
+    names(out)[names(out) == "var"] <- "_var"
+    names(out)[names(out) == "low"] <- "_low"
+    names(out)[names(out) == "upp"] <- "_upp"
+
+    out
   } else {
-    vartype <- c("lvls", "coef", vartype) # Needed because grouped don't usually have "coef"
+    vartype <- c("lvls", vartype) # Needed because grouped don't usually have "coef"
     stat <- func(survey::make.formula(peel), .svy, na.rm = na.rm)
 
     out <- lapply(vartype, function(vvv) {

@@ -7,6 +7,7 @@ data(api)
 dstrata <- apistrat %>%
   design_survey(strata = stype, weights = pw)
 
+# One group
 out_survey <- svymean(~awards, dstrata)
 
 out_srvyr <- dstrata %>%
@@ -28,3 +29,16 @@ out_srvyr <- dstrata %>%
 
 test_that("survey_mean preserves factor levels",
           expect_equal("character", class(out_srvyr$awards)))
+
+# 2+ groups
+out_srvyr <- dstrata %>%
+  group_by(stype, awards) %>%
+  summarize(pct = survey_mean())
+
+out_survey <- svyby(~awards, ~stype, dstrata, svymean)
+
+test_that("survey_mean gets correct values when doing proportions with multiple groups",
+          expect_equal(out_survey$awardsNo, out_srvyr %>% filter(awards == "No") %>% .$pct))
+
+test_that("survey_mean gets correct values when doing proportions with multiple groups (se)",
+          expect_equal(out_survey$`se.awardsNo`, out_srvyr %>% filter(awards == "No") %>% .$pct_se))

@@ -16,7 +16,9 @@ survey_mean.grouped_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se", 
   vartype <- c(match.arg(vartype, several.ok = TRUE))
   arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
 
-  survey_stat_grouped(.svy, survey::svymean, arg, na.rm, vartype)
+  if (length(arg) == 1) survey_stat_grouped(.svy, survey::svymean, arg, na.rm, vartype)
+  else if (length(arg) == 0) survey_stat_factor(.svy, survey::svymean, arg, na.rm, vartype)
+  else stop("Unexpected arguments")
 }
 
 
@@ -229,4 +231,49 @@ survey_stat_grouped <- function(.svy, func, arg, na.rm, vartype ) {
   names(out)[names(out) == "var"] <- "_var"
 
   out
+}
+
+
+survey_stat_factor <- function(.svy, func, arg, na.rm, vartype) {
+  grps <- groups(.svy)
+  peel <- as.character(grps[length(grps)])
+  grps <- grps[seq_len(length(grps) - 1)]
+
+  if (length(grps) > 0) {
+    stop("Need to implement multiple group proportions")
+  } else {
+    vartype <- c("lvls", "coef", vartype) # Needed because grouped don't usually have "coef"
+    stat <- func(survey::make.formula(peel), .svy, na.rm = na.rm)
+
+    out <- lapply(vartype, function(vvv) {
+      if (vvv == "lvls") {
+        # Add on level variable -- survey leaves it in an ugly state, with the
+        # varname pasted in, so we have to remove it. Also, check if it was
+        # originally a character and convert if it was.
+        lvls <- data.frame(names(coef(stat)))
+        levels(lvls[[1]]) <- gsub(paste0("^", peel), "", levels(lvls[[1]]))
+        if (class(.svy[["variables"]][[peel]]) == "character") lvls[[1]] <- as.character(lvls[[1]])
+        names(lvls) <- peel
+        lvls
+      } else if (vvv == "coef") {
+        coef <- data.frame(coef(stat))
+        names(coef) <- ""
+        coef
+      } else if (vvv == "se") {
+        se <- data.frame(sqrt(diag(attr(stat, "var"))))
+        names(se) <- "_se"
+        se
+      } else if (vvv == "ci") {
+        ci <- data.frame(confint(stat))
+        names(ci) <- c("_low", "_upp")
+        ci
+      } else if (vvv == "var") {
+        var <- data.frame(diag(attr(stat, "var")))
+        names(var) <- "_var"
+        var
+      }
+    })
+
+    dplyr::bind_cols(out)
+  }
 }

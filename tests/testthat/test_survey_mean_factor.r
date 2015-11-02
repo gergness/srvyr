@@ -33,12 +33,12 @@ test_that("survey_mean preserves factor levels",
 # 2+ groups
 out_srvyr <- dstrata %>%
   group_by(stype, awards) %>%
-  summarize(pct = survey_mean())
+  summarize(tot = survey_total())
 
-out_survey <- svyby(~awards, ~stype, dstrata, svymean)
+out_survey <- svyby(~awards, ~stype, dstrata, svytotal)
 
-test_that("survey_mean gets correct values when doing proportions with multiple groups",
-          expect_equal(out_survey$awardsNo, out_srvyr %>% filter(awards == "No") %>% .$pct))
+test_that("survey_total gets correct values when doing proportions with multiple groups",
+          expect_equal(out_survey$awardsNo, out_srvyr %>% filter(awards == "No") %>% .$tot))
 
-test_that("survey_mean gets correct values when doing proportions with multiple groups (se)",
-          expect_equal(out_survey$`se.awardsNo`, out_srvyr %>% filter(awards == "No") %>% .$pct_se))
+test_that("survey_total gets correct values when doing proportions with multiple groups (se)",
+          expect_equal(out_survey$`se.awardsNo`, out_srvyr %>% filter(awards == "No") %>% .$tot_se))

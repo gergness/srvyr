@@ -40,7 +40,9 @@ survey_total.grouped_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se",
   vartype <- c(match.arg(vartype, several.ok = TRUE))
   arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
 
-  survey_stat_grouped(.svy, survey::svytotal, arg, na.rm, vartype)
+  if (length(arg) == 1) survey_stat_grouped(.svy, survey::svytotal, arg, na.rm, vartype)
+  else if (length(arg) == 0) survey_stat_factor(.svy, survey::svytotal, arg, na.rm, vartype)
+  else stop("Unexpected arguments")
 }
 
 

@@ -1,4 +1,4 @@
-context("Quick tests for added summary statistics (survey_ratio)")
+context("Quick tests for added summary statistics (survey_ratio / survey_quantile)")
 
 library(srvyr)
 library(survey)

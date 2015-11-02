@@ -191,6 +191,7 @@ survey_median.default <- function(.svy, ..., na.rm = FALSE, vartype = c("none", 
 
 
 survey_stat_ungrouped <- function(.svy, func, arg, na.rm, vartype) {
+  if (class(arg[[1]]) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
   stat <- func(data.frame(arg[[1]]), .svy, na.rm = na.rm)
 
   out <- lapply(vartype, function(vvv) {
@@ -218,6 +219,8 @@ survey_stat_ungrouped <- function(.svy, func, arg, na.rm, vartype) {
 
 survey_stat_grouped <- function(.svy, func, arg, na.rm, vartype ) {
   grps <- survey::make.formula(groups(.svy))
+
+  if (class(arg[[1]]) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
 
   # svyby breaks when you feed it raw vector to be measured... Add it to
   # the data.frame with mutate and then pass in the name

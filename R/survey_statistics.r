@@ -120,7 +120,7 @@ survey_quantile.tbl_svy <- function(.svy, ..., quantiles, na.rm = FALSE, vartype
   se <- "se" %in% vartype
   ci <- "ci" %in% vartype
 
-  stat <- svyquantile(data.frame(arg[[1]]), .svy,
+  stat <- survey::svyquantile(data.frame(arg[[1]]), .svy,
                       quantiles = quantiles, na.rm = na.rm,
                       se = se, ci = ci)
 
@@ -157,7 +157,7 @@ survey_quantile.grouped_svy <- function(.svy, ..., quantiles, na.rm = FALSE, var
 
   .svy$variables[["___arg"]] <- arg[[1]]
 
-  out <- svyby(~`___arg`, grps, .svy, svyquantile,
+  out <- survey::svyby(~`___arg`, grps, .svy, survey::svyquantile,
                       quantiles = quantiles, na.rm = na.rm,
                       ci = TRUE, vartype = vartype)
 

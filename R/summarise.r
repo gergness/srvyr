@@ -55,8 +55,12 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'    Calculate the survey mean of the entire population or by \code{groups}.}
 #' \item{\code{survey_total(..., na.rm = FALSE, vartype = c("se", "ci", "var")}}{
 #'    Calculate the survey total of the entire population or by \code{groups}.}
-#'  \item{\code{survey_mean(..., na.rm = FALSE, vartype = c("se", "ci", "var")}}{
+#'  \item{\code{survey_ratio(..., na.rm = FALSE, vartype = c("se", "ci", "var")}}{
 #'    Calculate the ratio of 2 variables in the entire population or by \code{groups}.}
+#' \item{\code{survey_quantile(..., quantiles, na.rm = FALSE, vartype = c("se", "ci")}}{
+#'    Calculate quantiles in the entire population or by \code{groups}.}
+#'  \item{\code{survey_median(..., na.rm = FALSE, vartype = c("se", "ci")}}{
+#'    Calculate the median in the entire population or by \code{groups}.}
 #' }
 #'
 #' @usage summarise(.data, ...)
@@ -88,7 +92,7 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'             api_diff = survey_mean(api00 - api99))
 #'
 #' @name summarise
-#' @aliases survey_mean survey_total survey_ratio
+#' @aliases survey_mean survey_total survey_ratio survey_quantile survey_median
 #' @export
 #' @importFrom dplyr summarise
 NULL

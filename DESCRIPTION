@@ -11,11 +11,11 @@ Imports:
     survey,
     dplyr,
     magrittr,
-    lazyeval,
-    pander
+    lazyeval
 License: GPL-2 | GPL-3
 LazyData: TRUE
 Suggests: testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    pander
 VignetteBuilder: knitr

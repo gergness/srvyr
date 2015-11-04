@@ -9,7 +9,7 @@ design_survey(.data, ...)
 
 design_survey_(.data, ids = NULL, probs = NULL, strata = NULL,
   variables = NULL, fpc = NULL, nest = FALSE, check.strata = !nest,
-  weights = NULL, pps = FALSE)
+  weights = NULL, pps = FALSE, variance = c("HT", "YG"))
 }
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}
@@ -38,6 +38,9 @@ Defaults to all variables in .data}
 \item{pps}{"brewer" to use Brewer's approximation for PPS sampling without replacement.
 "overton" to use Overton's approximation. An object of class HR to use the Hartley-Rao
 approximation. An object of class ppsmat to use the Horvitz-Thompson estimator.}
+
+\item{variance}{r pps without replacement, use variance="YG" for the Yates-Grundy estimator
+instead of the Horvitz-Thompson estimator}
 }
 \value{
 An object of class \code{tbl_svy}

@@ -22,6 +22,8 @@
 #' @param pps "brewer" to use Brewer's approximation for PPS sampling without replacement.
 #' "overton" to use Overton's approximation. An object of class HR to use the Hartley-Rao
 #' approximation. An object of class ppsmat to use the Horvitz-Thompson estimator.
+#' @param variance r pps without replacement, use variance="YG" for the Yates-Grundy estimator
+#' instead of the Horvitz-Thompson estimator
 #' @return An object of class \code{tbl_svy}
 #' @examples
 #' # Examples from ?survey::svydesign
@@ -73,7 +75,7 @@ design_survey <- function(.data, ...) {
   # Use lazy_dots(...) instead of named arguments because otherwise it would
   # follow promises to functions defined in other packages.
   arg_names <- c("ids", "probs", "strata", "variables", "fpc", "nest", "check.strata",
-                 "weights", "pps")
+                 "weights", "pps", "variance")
   dots <- match_dot_args(lazyeval::lazy_dots(...), arg_names)
 
   # Turn other variable specifications into character strings of variable names
@@ -90,9 +92,12 @@ design_survey <- function(.data, ...) {
                                                                            ) else !nest
   pps <- if(!is.null(dots[["pps"]])) lazyeval::lazy_eval(dots[["pps"]]) else FALSE
 
+  variance <- if(!is.null(dots[["variance"]])) lazyeval::lazy_eval(dots[["variance"]]) else "HT"
+
   design_survey_(.data, var_args$ids, probs = var_args$probs, strata = var_args$strata,
                  variables = var_args$variables, fpc = var_args$fpc, nest = nest,
-                 check.strata = check.strata, weights = var_args$weights, pps = pps)
+                 check.strata = check.strata, weights = var_args$weights, pps = pps,
+                 variance = variance)
 }
 
 
@@ -100,7 +105,7 @@ design_survey <- function(.data, ...) {
 #' @rdname design_survey
 design_survey_ <- function(.data, ids = NULL, probs = NULL, strata = NULL, variables = NULL,
                            fpc = NULL, nest = FALSE, check.strata = !nest,
-                           weights = NULL, pps = FALSE) {
+                           weights = NULL, pps = FALSE, variance = c("HT", "YG")) {
 
 
   # svydesign expects ~0 instead of NULL if no ids are included
@@ -119,7 +124,8 @@ design_survey_ <- function(.data, ids = NULL, probs = NULL, strata = NULL, varia
                            variables = survey_selector(variables),
                            fpc = survey_selector(fpc),
                            weights = survey_selector(weights),
-                           nest = nest, check.strata = check.strata, pps = pps)
+                           nest = nest, check.strata = check.strata, pps = pps,
+                           variance = variance)
 
   class(out) <- c("tbl_svy", class(out))
   out$variables <- dplyr::tbl_df(out$variables)

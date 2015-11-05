@@ -1,62 +1,55 @@
 #' @export
-survey_mean <- function(.svy, ..., na.rm, vartype = c("se", "ci", "var")) {
+survey_mean <- function(.svy, x, na.rm, vartype = c("se", "ci", "var")) {
   UseMethod("survey_mean")
 }
 
-survey_mean.tbl_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se", "ci", "var")) {
+survey_mean.tbl_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var")) {
   if(missing(vartype)) vartype <- "se"
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
-  arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
 
-  survey_stat_ungrouped(.svy, survey::svymean, arg, na.rm, vartype)
+  survey_stat_ungrouped(.svy, survey::svymean, x, na.rm, vartype)
 }
 
-survey_mean.grouped_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se", "ci", "var")) {
+survey_mean.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var")) {
   if(missing(vartype)) vartype <- "se"
   vartype <- c(match.arg(vartype, several.ok = TRUE))
-  arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
 
-  if (length(arg) == 1) survey_stat_grouped(.svy, survey::svymean, arg, na.rm, vartype)
-  else if (length(arg) == 0) survey_stat_factor(.svy, survey::svymean, arg, na.rm, vartype)
-  else stop("Unexpected arguments")
+  if (!missing(x)) survey_stat_grouped(.svy, survey::svymean, x, na.rm, vartype)
+  else survey_stat_factor(.svy, survey::svymean, na.rm, vartype)
 }
 
 
 #' @export
-survey_total <- function(.svy, ..., na.rm, vartype = c("se", "ci", "var")) {
+survey_total <- function(.svy, x, na.rm, vartype = c("se", "ci", "var")) {
   UseMethod("survey_total")
 }
 
-survey_total.tbl_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se", "ci", "var")) {
+survey_total.tbl_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var")) {
   if(missing(vartype)) vartype <- "se"
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
-  arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
 
-  survey_stat_ungrouped(.svy, survey::svytotal, arg, na.rm, vartype)
+  survey_stat_ungrouped(.svy, survey::svytotal, x, na.rm, vartype)
 }
 
-survey_total.grouped_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se", "ci", "var")) {
+survey_total.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var")) {
   if(missing(vartype)) vartype <- "se"
   vartype <- c(match.arg(vartype, several.ok = TRUE))
-  arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
 
-  if (length(arg) == 1) survey_stat_grouped(.svy, survey::svytotal, arg, na.rm, vartype)
-  else if (length(arg) == 0) survey_stat_factor(.svy, survey::svytotal, arg, na.rm, vartype)
-  else stop("Unexpected arguments")
+  if (!missing(x)) survey_stat_grouped(.svy, survey::svytotal, x, na.rm, vartype)
+  else survey_stat_factor(.svy, survey::svytotal, na.rm, vartype)
 }
 
 
 #' @export
-survey_ratio <- function(.svy, ..., na.rm, vartype = c("se", "ci", "var")) {
+survey_ratio <- function(.svy, numerator, denominator, na.rm, vartype = c("se", "ci", "var")) {
   UseMethod("survey_ratio")
 }
 
-survey_ratio.tbl_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se", "ci", "var")) {
+survey_ratio.tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var")) {
   if(missing(vartype)) vartype <- "se"
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
-  arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
 
-  stat <- survey::svyratio(arg[[1]], arg[[2]], .svy, na.rm = na.rm)
+  stat <- survey::svyratio(numerator, denominator, .svy, na.rm = na.rm)
 
   out <- lapply(vartype, function(vvv) {
     if (vvv == "coef") {
@@ -81,17 +74,16 @@ survey_ratio.tbl_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se", "ci
   dplyr::bind_cols(out)
 }
 
-survey_ratio.grouped_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se", "ci", "var")) {
+survey_ratio.grouped_svy <- function(.svy, numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var")) {
   if(missing(vartype)) vartype <- "se"
   vartype <- c(match.arg(vartype, several.ok = TRUE))
-  arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
 
   grps <- survey::make.formula(groups(.svy))
 
   # svyby breaks when you feed it raw vector to be measured... Add it to
   # the data.frame with mutate and then pass in the name
-  .svy$variables[["___numerator"]] <- arg[[1]]
-  .svy$variables[["___denominator"]] <- arg[[2]]
+  .svy$variables[["___numerator"]] <- numerator
+  .svy$variables[["___denominator"]] <- denominator
 
   out <- survey::svyby(~`___numerator`, grps, .svy, survey::svyratio,
                        denominator = ~`___denominator`,
@@ -109,20 +101,19 @@ survey_ratio.grouped_svy <- function(.svy, ..., na.rm = FALSE, vartype = c("se",
 }
 
 #' @export
-survey_quantile <- function(.svy, ..., quantiles, na.rm = FALSE, vartype = c("none", "se", "ci")) {
+survey_quantile <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci")) {
   UseMethod("survey_quantile")
 }
 
-survey_quantile.tbl_svy <- function(.svy, ..., quantiles, na.rm = FALSE, vartype = c("none", "se", "ci")) {
+survey_quantile.tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci")) {
   if(missing(vartype)) vartype <- "none"
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
-  arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
 
   vartype <- setdiff(vartype, "none")
   se <- "se" %in% vartype
   ci <- "ci" %in% vartype
 
-  stat <- survey::svyquantile(data.frame(arg[[1]]), .svy,
+  stat <- survey::svyquantile(data.frame(x), .svy,
                       quantiles = quantiles, na.rm = na.rm,
                       se = se, ci = ci)
 
@@ -149,15 +140,14 @@ survey_quantile.tbl_svy <- function(.svy, ..., quantiles, na.rm = FALSE, vartype
   dplyr::bind_cols(out)
 }
 
-survey_quantile.grouped_svy <- function(.svy, ..., quantiles, na.rm = FALSE, vartype = c("none", "se", "ci")) {
+survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci")) {
   if(missing(vartype)) vartype <- "none"
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
-  arg <- lazyeval::lazy_eval(lazyeval::lazy_dots(...), .svy$variables)
 
   vartype <- setdiff(vartype, "none")
   grps <- survey::make.formula(groups(.svy))
 
-  .svy$variables[["___arg"]] <- arg[[1]]
+  .svy$variables[["___arg"]] <- x
 
   out <- survey::svyby(~`___arg`, grps, .svy, survey::svyquantile,
                       quantiles = quantiles, na.rm = na.rm,
@@ -178,25 +168,25 @@ survey_quantile.grouped_svy <- function(.svy, ..., quantiles, na.rm = FALSE, var
 
 
 #' @export
-survey_median <- function(.svy, ..., na.rm = FALSE, vartype = c("none", "se", "ci")) {
+survey_median <- function(.svy, x, na.rm = FALSE, vartype = c("none", "se", "ci")) {
   UseMethod("survey_median")
 }
 
-survey_median.default <- function(.svy, ..., na.rm = FALSE, vartype = c("none", "se", "ci")) {
+survey_median.default <- function(.svy, x, na.rm = FALSE, vartype = c("none", "se", "ci")) {
   if(missing(vartype)) vartype <- "se"
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
 
-  survey_quantile(.svy, ..., quantiles = 0.5, na.rm = na.rm, vartype = vartype)
+  survey_quantile(.svy, x, quantiles = 0.5, na.rm = na.rm, vartype = vartype)
 }
 
 
 #' @export
-unweighted <- function(.svy, ..., na.rm, vartype = c("se", "ci", "var")) {
+unweighted <- function(.svy, x, na.rm, vartype = c("se", "ci", "var")) {
   UseMethod("unweighted")
 }
 
-unweighted.default <-  function(.svy, ...) {
-  dots <-lazyeval::lazy_dots(...)
+unweighted.default <-  function(.svy, x) {
+  dots <- lazyeval::lazy(x)
 
   out <- summarize_(.svy[["variables"]], .dots = dots)
   names(out)[length(names(out))] <- ""
@@ -204,9 +194,9 @@ unweighted.default <-  function(.svy, ...) {
 }
 
 
-survey_stat_ungrouped <- function(.svy, func, arg, na.rm, vartype) {
-  if (class(arg[[1]]) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
-  stat <- func(data.frame(arg[[1]]), .svy, na.rm = na.rm)
+survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype) {
+  if (class(x) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
+  stat <- func(data.frame(x), .svy, na.rm = na.rm)
 
   out <- lapply(vartype, function(vvv) {
       if (vvv == "coef") {
@@ -231,14 +221,14 @@ survey_stat_ungrouped <- function(.svy, func, arg, na.rm, vartype) {
   dplyr::bind_cols(out)
 }
 
-survey_stat_grouped <- function(.svy, func, arg, na.rm, vartype ) {
+survey_stat_grouped <- function(.svy, func, x, na.rm, vartype ) {
   grps <- survey::make.formula(groups(.svy))
 
-  if (class(arg[[1]]) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
+  if (class(x) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
 
   # svyby breaks when you feed it raw vector to be measured... Add it to
   # the data.frame with mutate and then pass in the name
-  .svy$variables[["___arg"]] <- arg[[1]]
+  .svy$variables[["___arg"]] <- x
   out <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm, vartype = vartype)
 
   # Format it nicely
@@ -252,7 +242,7 @@ survey_stat_grouped <- function(.svy, func, arg, na.rm, vartype ) {
   out
 }
 
-survey_stat_factor <- function(.svy, func, arg, na.rm, vartype) {
+survey_stat_factor <- function(.svy, func, na.rm, vartype) {
   grps <- as.character(groups(.svy))
   peel <- grps[length(grps)]
   grps <- setdiff(grps, peel)

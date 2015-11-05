@@ -15,7 +15,7 @@ svyby_fix <-function (formula, by, design, FUN, ..., deff = FALSE, keep.var = TR
   if (multicore && !require("parallel", quietly = TRUE))
     multicore <- FALSE
   if (!inherits(formula, "formula")) {
-    if (NROW(formula) != length(byfactor))
+    if (NROW(formula) != NROW(byfactors))
       stop("'formula' is the wrong length")
     if (!(is.data.frame(formula) || is.matrix(formula) ||
           is.vector(formula))) {

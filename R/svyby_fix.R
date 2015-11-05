@@ -21,7 +21,7 @@ svyby_fix<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
   ## some people insist on using vectors rather than formulas
   ## so I suppose we should be nice to them
   if (!inherits(formula, "formula")){
-    if (NROW(formula)!=length(byfactor))
+    if (NROW(formula)!=NROW(byfactors))
       stop("'formula' is the wrong length")
     if (!(is.data.frame(formula) ||
           is.matrix(formula) ||
@@ -54,6 +54,7 @@ svyby_fix<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
 
   if (keep.var){
     unwrap <-function(x){
+      if (is.null((names(x)))) names(x) <- "V1"
       rval<-c(coef(x))
       nvar<-length(rval)
       rval<-c(rval,c(se=SE(x),
@@ -86,6 +87,7 @@ svyby_fix<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
                                                            deff=deff,...)
                                                      }
                                                    })
+
     rval<-t(sapply(results, unwrap))
     if (covmat || return.replicates) {
       replicates<-do.call(cbind,lapply(results,"[[","replicates"))

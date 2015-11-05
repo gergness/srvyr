@@ -74,6 +74,8 @@ survey_ratio.grouped_svy <- function(.svy, numerator, denominator, na.rm = FALSE
 
   # svyby breaks when you feed it raw vector to be measured... Add it to
   # the data.frame with mutate and then pass in the name
+  # For svyratio, this would be hard to fix, because svyby would need to know to
+  # subset denominator even though it's not the main argument
   .svy$variables[["___numerator"]] <- numerator
   .svy$variables[["___denominator"]] <- denominator
 
@@ -220,14 +222,11 @@ survey_stat_grouped <- function(.svy, func, x, na.rm, vartype ) {
 
   if (class(x) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
 
-  # svyby breaks when you feed it raw vector to be measured... Add it to
-  # the data.frame with mutate and then pass in the name
-  .svy$variables[["___arg"]] <- x
-  out <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm, vartype = vartype)
+  out <- svyby_fix(x, grps, .svy, func, na.rm = na.rm, vartype = vartype)
 
   # Format it nicely
   out <- dplyr::tbl_df(as.data.frame(out))
-  names(out)[names(out) == "`___arg`"] <- ""
+  names(out)[names(out) == "V1"] <- ""
   names(out)[names(out) == "se"] <- "_se"
   names(out)[names(out) == "ci_l"] <- "_low"
   names(out)[names(out) == "ci_u"] <- "_upp"

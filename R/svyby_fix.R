@@ -79,11 +79,11 @@ svyby_fix<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
                                                        data<-subset(formula, byfactor %in% byfactor[i])
                                                      if (covmat || return.replicates) {
                                                        FUN(data,
-                                                           design[byfactor %in% byfactor[i],],
+                                                           design = design[byfactor %in% byfactor[i],],
                                                            deff=deff,...,return.replicates=TRUE)
                                                      } else {
                                                        FUN(data,
-                                                           design[byfactor %in% byfactor[i],],
+                                                           design = design[byfactor %in% byfactor[i],],
                                                            deff=deff,...)
                                                      }
                                                    })

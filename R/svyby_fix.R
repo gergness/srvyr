@@ -12,7 +12,7 @@ svyby_fix <-function (formula, by, design, FUN, ..., deff = FALSE, keep.var = TR
     if (!inherits(design, "svyrep.design"))
       stop("covmat=TRUE not implemented for this design type")
   }
-  if (multicore && !require("parallel", quietly = TRUE))
+  if (multicore && !requireNamespace("parallel", quietly = TRUE))
     multicore <- FALSE
   if (!inherits(formula, "formula")) {
     if (NROW(formula) != NROW(byfactors))

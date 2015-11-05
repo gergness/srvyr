@@ -4,16 +4,12 @@ survey_mean <- function(.svy, x, na.rm, vartype = c("se", "ci", "var")) {
 }
 
 survey_mean.tbl_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var")) {
-  if(missing(vartype)) vartype <- "se"
-  vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
-
+  if (missing(vartype)) vartype <- "se"
   survey_stat_ungrouped(.svy, survey::svymean, x, na.rm, vartype)
 }
 
 survey_mean.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var")) {
-  if(missing(vartype)) vartype <- "se"
-  vartype <- c(match.arg(vartype, several.ok = TRUE))
-
+  if (missing(vartype)) vartype <- "se"
   if (!missing(x)) survey_stat_grouped(.svy, survey::svymean, x, na.rm, vartype)
   else survey_stat_factor(.svy, survey::svymean, na.rm, vartype)
 }
@@ -25,16 +21,12 @@ survey_total <- function(.svy, x, na.rm, vartype = c("se", "ci", "var")) {
 }
 
 survey_total.tbl_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var")) {
-  if(missing(vartype)) vartype <- "se"
-  vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
-
+  if (missing(vartype)) vartype <- "se"
   survey_stat_ungrouped(.svy, survey::svytotal, x, na.rm, vartype)
 }
 
 survey_total.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var")) {
-  if(missing(vartype)) vartype <- "se"
-  vartype <- c(match.arg(vartype, several.ok = TRUE))
-
+  if (missing(vartype)) vartype <- "se"
   if (!missing(x)) survey_stat_grouped(.svy, survey::svytotal, x, na.rm, vartype)
   else survey_stat_factor(.svy, survey::svytotal, na.rm, vartype)
 }
@@ -173,11 +165,7 @@ survey_median <- function(.svy, x, na.rm = FALSE, vartype = c("none", "se", "ci"
 }
 
 survey_median.default <- function(.svy, x, na.rm = FALSE, vartype = c("none", "se", "ci")) {
-<<<<<<< HEAD
   if(missing(vartype)) vartype <- "none"
-=======
-  if(missing(vartype)) vartype <- "se"
->>>>>>> parent of b495ddd... More refactoring - remove some unnecessary argument construction
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
 
   survey_quantile(.svy, x, quantiles = 0.5, na.rm = na.rm, vartype = vartype)
@@ -200,8 +188,10 @@ unweighted.default <-  function(.svy, x) {
 
 survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype) {
   if (class(x) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
+
   stat <- func(data.frame(x), .svy, na.rm = na.rm)
 
+  vartype <- c("coef", vartype)
   out <- lapply(vartype, function(vvv) {
       if (vvv == "coef") {
         coef <- data.frame(coef(stat))

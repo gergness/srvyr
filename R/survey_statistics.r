@@ -4,16 +4,12 @@ survey_mean <- function(.svy, x, na.rm, vartype = c("se", "ci", "var")) {
 }
 
 survey_mean.tbl_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var")) {
-  if(missing(vartype)) vartype <- "se"
-  vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
-
+  if (missing(vartype)) vartype <- "se"
   survey_stat_ungrouped(.svy, survey::svymean, x, na.rm, vartype)
 }
 
 survey_mean.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var")) {
-  if(missing(vartype)) vartype <- "se"
-  vartype <- c(match.arg(vartype, several.ok = TRUE))
-
+  if (missing(vartype)) vartype <- "se"
   if (!missing(x)) survey_stat_grouped(.svy, survey::svymean, x, na.rm, vartype)
   else survey_stat_factor(.svy, survey::svymean, na.rm, vartype)
 }
@@ -25,16 +21,12 @@ survey_total <- function(.svy, x, na.rm, vartype = c("se", "ci", "var")) {
 }
 
 survey_total.tbl_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var")) {
-  if(missing(vartype)) vartype <- "se"
-  vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
-
+  if (missing(vartype)) vartype <- "se"
   survey_stat_ungrouped(.svy, survey::svytotal, x, na.rm, vartype)
 }
 
 survey_total.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var")) {
-  if(missing(vartype)) vartype <- "se"
-  vartype <- c(match.arg(vartype, several.ok = TRUE))
-
+  if (missing(vartype)) vartype <- "se"
   if (!missing(x)) survey_stat_grouped(.svy, survey::svytotal, x, na.rm, vartype)
   else survey_stat_factor(.svy, survey::svytotal, na.rm, vartype)
 }
@@ -105,11 +97,11 @@ survey_quantile <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none
   UseMethod("survey_quantile")
 }
 
-survey_quantile.tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci")) {
-  if(missing(vartype)) vartype <- "none"
+survey_quantile.tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("", "se", "ci")) {
+  if(missing(vartype)) vartype <- ""
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
 
-  vartype <- setdiff(vartype, "none")
+  vartype <- setdiff(vartype, "")
   se <- "se" %in% vartype
   ci <- "ci" %in% vartype
 
@@ -140,11 +132,11 @@ survey_quantile.tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype =
   dplyr::bind_cols(out)
 }
 
-survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci")) {
-  if(missing(vartype)) vartype <- "none"
+survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("", "se", "ci")) {
+  if(missing(vartype)) vartype <- ""
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
 
-  vartype <- setdiff(vartype, "none")
+  vartype <- setdiff(vartype, "")
   grps <- survey::make.formula(groups(.svy))
 
   .svy$variables[["___arg"]] <- x
@@ -168,12 +160,12 @@ survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, varty
 
 
 #' @export
-survey_median <- function(.svy, x, na.rm = FALSE, vartype = c("none", "se", "ci")) {
+survey_median <- function(.svy, x, na.rm = FALSE, vartype = c("", "se", "ci")) {
   UseMethod("survey_median")
 }
 
-survey_median.default <- function(.svy, x, na.rm = FALSE, vartype = c("none", "se", "ci")) {
-  if(missing(vartype)) vartype <- "se"
+survey_median.default <- function(.svy, x, na.rm = FALSE, vartype = c("", "se", "ci")) {
+  if(missing(vartype)) vartype <- ""
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
 
   survey_quantile(.svy, x, quantiles = 0.5, na.rm = na.rm, vartype = vartype)
@@ -196,8 +188,10 @@ unweighted.default <-  function(.svy, x) {
 
 survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype) {
   if (class(x) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
+
   stat <- func(data.frame(x), .svy, na.rm = na.rm)
 
+  vartype <- c("coef", vartype)
   out <- lapply(vartype, function(vvv) {
       if (vvv == "coef") {
         coef <- data.frame(coef(stat))

@@ -17,6 +17,5 @@ LazyData: TRUE
 Suggests: testthat,
     knitr,
     rmarkdown,
-    pander,
-    parallel
+    pander
 VignetteBuilder: knitr

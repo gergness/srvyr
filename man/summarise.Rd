@@ -26,17 +26,17 @@ Summarise multiple values to a single value.
 \details{
 \describe{
 Summarise for \code{tbl_svy} objects accepts several specialized functions:
-\item{\code{survey_mean(..., na.rm = FALSE, vartype = c("se", "ci", "var"))}}{
+\item{\code{survey_mean(x, na.rm = FALSE, vartype = c("se", "ci", "var"))}}{
    Calculate the survey mean of the entire population or by \code{groups}.}
-\item{\code{survey_total(..., na.rm = FALSE, vartype = c("se", "ci", "var"))}}{
+\item{\code{survey_total(x, na.rm = FALSE, vartype = c("se", "ci", "var"))}}{
    Calculate the survey total of the entire population or by \code{groups}.}
- \item{\code{survey_ratio(..., na.rm = FALSE, vartype = c("se", "ci", "var"))}}{
+ \item{\code{survey_ratio(numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var"))}}{
    Calculate the ratio of 2 variables in the entire population or by \code{groups}.}
-\item{\code{survey_quantile(..., quantiles, na.rm = FALSE, vartype = c("se", "ci"))}}{
+\item{\code{survey_quantile(x, quantiles, na.rm = FALSE, vartype = c("se", "ci"))}}{
    Calculate quantiles in the entire population or by \code{groups}.}
- \item{\code{survey_median(..., na.rm = FALSE, vartype = c("se", "ci"))}}{
+ \item{\code{survey_median(x, na.rm = FALSE, vartype = c("se", "ci"))}}{
    Calculate the median in the entire population or by \code{groups}.}
- \item{\code{unweighted(...)}}{
+ \item{\code{unweighted(x)}}{
    Calculate an unweighted estimate.}
 }
 }

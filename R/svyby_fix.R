@@ -47,16 +47,16 @@ svyby_fix <-function (formula, by, design, FUN, ..., deff = FALSE, keep.var = TR
     unwrap <- function(x) {
       rval <- c(coef(x))
       nvar <- length(rval)
-      rval <- c(rval, c(se = SE(x), ci_l = confint(x)[,
-                                                      1], ci_u = confint(x)[, 2], cv = cv(x, warn = FALSE),
-                        `cv%` = cv(x, warn = FALSE) * 100, var = SE(x)^2)[rep((nvartype -
+      rval <- c(rval, c(se = survey::SE(x), ci_l = confint(x)[,
+                                                      1], ci_u = confint(x)[, 2], cv = survey::cv(x, warn = FALSE),
+                        `cv%` = survey::cv(x, warn = FALSE) * 100, var = survey::SE(x)^2)[rep((nvartype -
                                                                                  1) * (nvar), each = nvar) + (1:nvar)])
       if (!is.null(attr(x, "deff")))
         rval <- c(rval, DEff = deff(x))
       rval
     }
     results <- (if (multicore)
-      mclapply
+      parallel::mclapply
       else lapply)(uniques, function(i) {
         if (verbose && !multicore)
           print(as.character(byfactor[i]))
@@ -78,7 +78,7 @@ svyby_fix <-function (formula, by, design, FUN, ..., deff = FALSE, keep.var = TR
                                           "replicates"))
       colnames(replicates) <- rep(as.character(uniquelevels),
                                   each = NCOL(replicates)/length(uniquelevels))
-      covmat.mat <- svrVar(replicates, design$scale, design$rscales,
+      covmat.mat <- survey::svrVar(replicates, design$scale, design$rscales,
                            mse = design$mse, coef = as.vector(sapply(results,
                                                                      coef)))
     }

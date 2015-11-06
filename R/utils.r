@@ -1,19 +1,3 @@
-# Small helper function to get argument names from lazy dots
-# and use them in order if no explicit names given
-match_dot_args <- function(dots, arg_names) {
-  dots_names <- names(dots)
-
-  unused_args <- dots_names[!(dots_names %in% c("", arg_names))]
-  if (length(unused_args) > 0) stop("unused argument ", unused_args[1])
-
-  arg_nums <- match(dots_names, arg_names)
-  # Complex way to use the arguments in order if they don't have names.
-  arg_nums[is.na(arg_nums)] <- seq_along(arg_names)[setdiff(seq_along(arg_names), arg_nums)][seq_len(sum(is.na(arg_nums)))]
-
-  names(dots) <- arg_names[arg_nums]
-  dots
-}
-
 lazy_parent <- function(expr) {
   # Need to go up twice, because lazy_parent creates an environment for itself
   e1 <- substitute(expr)

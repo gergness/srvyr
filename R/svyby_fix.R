@@ -54,7 +54,6 @@ svyby_fix<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
 
   if (keep.var){
     unwrap <-function(x){
-      if (is.null((names(x)))) names(x) <- "V1"
       rval<-c(coef(x))
       nvar<-length(rval)
       rval<-c(rval,c(se=SE(x),

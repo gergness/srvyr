@@ -15,7 +15,7 @@ svyby_fix<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
       stop("covmat=TRUE not implemented for this design type")
   }
 
-  if (multicore && !require("parallel",quietly=TRUE))
+  if (multicore && !requireNamespace("parallel",quietly=TRUE))
     multicore<-FALSE
 
   ## some people insist on using vectors rather than formulas
@@ -56,12 +56,12 @@ svyby_fix<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
     unwrap <-function(x){
       rval<-c(coef(x))
       nvar<-length(rval)
-      rval<-c(rval,c(se=SE(x),
+      rval<-c(rval,c(se=survey::SE(x),
                      ci_l=confint(x)[,1],
                      ci_u=confint(x)[,2],
-                     cv=cv(x,warn=FALSE),
-                     `cv%`=cv(x,warn=FALSE)*100,
-                     var=SE(x)^2)[rep((nvartype-1)*(nvar),each=nvar)+(1:nvar)])
+                     cv=survey::cv(x,warn=FALSE),
+                     `cv%`=survey::cv(x,warn=FALSE)*100,
+                     var=survey::SE(x)^2)[rep((nvartype-1)*(nvar),each=nvar)+(1:nvar)])
       if(!is.null(attr(x,"deff")))
         rval<-c(rval,DEff=deff(x))
       rval
@@ -69,7 +69,7 @@ svyby_fix<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
 
     ## In dire need of refactoring (or rewriting)
     ## but it seems to work.
-    results<-(if (multicore) mclapply else lapply)(uniques,
+    results<-(if (multicore) parallel::mclapply else lapply)(uniques,
                                                    function(i){
                                                      if(verbose && !multicore) print(as.character(byfactor[i]))
                                                      if (inherits(formula,"formula"))
@@ -91,7 +91,7 @@ svyby_fix<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
     if (covmat || return.replicates) {
       replicates<-do.call(cbind,lapply(results,"[[","replicates"))
       colnames(replicates)<-rep(as.character(uniquelevels), each=NCOL(replicates)/length(uniquelevels))
-      covmat.mat<-svrVar(replicates,design$scale,design$rscales, mse=design$mse,coef=as.vector(sapply(results,coef)))
+      covmat.mat<-survey::svrVar(replicates,design$scale,design$rscales, mse=design$mse,coef=as.vector(sapply(results,coef)))
     } else{
       covmats<-lapply(results,vcov)
       ncovmat<-sum(sapply(covmats,ncol))
@@ -188,68 +188,4 @@ svyby_fix<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
   attr(rval,"call")<-sys.call()
   class(rval)<-c("svyby","data.frame")
   rval
-}
-
-SE.svyby <-function(object,...){
-  aa<-attr(object,"svyby")
-  if (!aa$vars) stop("Object does not contain variances")
-  vartype<-attr(object,"svyby")$vartype
-  if (pos<-match("se",vartype,0))
-    object[,max(aa$margins)+aa$nstats*pos+(1:aa$nstats)]
-  else if (pos<-match("var",vartype,0))
-    sqrt(object[,max(aa$margins)+aa$nstats*pos+(1:aa$nstats)])
-  else if (pos<-match("cv",vartype,0))
-    object[,max(aa$margins)+aa$nstats*pos+(1:aa$nstats)]*coef(object)
-  else if (pos<-match("cvpct",vartype,0))
-    object[,max(aa$margins)+aa$nstats*pos+(1:aa$nstats)]*coef(object)/100
-  else stop("This can't happen")
-
-}
-
-coef.svyby<-function (object, ...)
-{
-  aa <- attr(object, "svyby")
-  rval <- object[, max(aa$margins) + (1:aa$nstats)]
-  if (is.null(dim(rval))){
-    names(rval) <- row.names(object)
-  } else {
-    rval<-as.vector(as.matrix(rval))
-    names(rval)<-outer(rownames(object),
-                       gsub("statistics\\.","",aa$variables), paste, sep=":")
-  }
-  rval
-}
-
-deff.svyby<-function(object,...){
-  aa<-attr(object,"svyby")
-  if (!aa$deffs) stop("object does not have design effect information")
-  object[,max(aa$margins)+aa$nstats*(1+aa$vars)+(1:aa$nstats)]
-}
-
-vcov.svyby<-function(object,...){
-  rval<-attr(object,"var")
-  if(is.null(rval)){
-    warning("Only diagonal elements of vcov() available")
-    se<-SE(object)
-    if (is.data.frame(se)) se<-as.vector(as.matrix(se))
-    if(length(se)>1)
-      rval<-diag(se^2)
-    else
-      rval<-as.matrix(se^2)
-  }
-  nms<-names(coef(object))
-  dimnames(rval)<-list(nms,nms)
-  rval
-}
-
-confint.svyquantile<-function(object,parm=NULL,level=NULL,...){
-  if (!is.null(level)) stop("need to re-run svyquantile to specify level")
-  ci<-t(matrix(as.vector(object$CIs),nrow=2))
-  colnames(ci)<-dimnames(object$CIs)[[1]]
-  rownames(ci)<-outer(dimnames(object$CIs)[[2]],
-                      dimnames(object$CIs)[[3]],paste,sep="_")
-  if (is.null(parm))
-    ci
-  else
-    ci[parm,,drop=FALSE]
 }

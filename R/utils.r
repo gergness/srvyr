@@ -14,6 +14,14 @@ match_dot_args <- function(dots, arg_names) {
   dots
 }
 
+lazy_parent <- function(expr) {
+  # Need to go up twice, because lazy_parent creates an environment for itself
+  e1 <- substitute(expr)
+  e2 <- do.call("substitute", list(e1), envir = parent.frame(1))
+
+  lazyeval::lazy_(e2, parent.frame(2))
+}
+
 nullable <- function(f, x) {
   if (is.null(x)) NULL
   else f(x)

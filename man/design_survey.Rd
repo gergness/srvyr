@@ -5,7 +5,9 @@
 \alias{design_survey_}
 \title{Create a tbl_svy survey object using sampling design}
 \usage{
-design_survey(.data, ...)
+design_survey(.data, ids = NULL, probs = NULL, strata = NULL,
+  variables = NULL, fpc = NULL, nest = FALSE, check.strata = !nest,
+  weights = NULL, pps = FALSE, variance = c("HT", "YG"))
 
 design_survey_(.data, ids = NULL, probs = NULL, strata = NULL,
   variables = NULL, fpc = NULL, nest = FALSE, check.strata = !nest,
@@ -13,8 +15,6 @@ design_survey_(.data, ids = NULL, probs = NULL, strata = NULL,
 }
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}
-
-\item{...}{arguments described below, others are ignored}
 
 \item{ids}{Variables specifying cluster ids from largest level to smallest level
 (or NULL / nothing if no clusters).}

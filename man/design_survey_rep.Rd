@@ -5,7 +5,11 @@
 \alias{design_survey_rep_}
 \title{Create a tbl_svy survey object using replicate weights}
 \usage{
-design_survey_rep(.data, ...)
+design_survey_rep(.data, variables = NULL, repweights = NULL,
+  weights = NULL, type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
+  "other"), combined_weights = TRUE, rho = NULL, bootstrap_average = NULL,
+  scale = NULL, rscales = NULL, fpc = NULL, fpctype = c("fraction",
+  "correction"), mse = getOption("survey.replicates.mse"))
 
 design_survey_rep_(.data, variables = NULL, repweights = NULL,
   weights = NULL, type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
@@ -15,8 +19,6 @@ design_survey_rep_(.data, variables = NULL, repweights = NULL,
 }
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}
-
-\item{...}{arguments described below, others are ignored}
 
 \item{variables}{Variables to include in the design (default is all)}
 

@@ -7,7 +7,6 @@
 #'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
-#' @param ... arguments described below, others are ignored
 #' @param ids Variables specifying cluster ids from largest level to smallest level
 #' (or NULL / nothing if no clusters).
 #' @param probs Variables specifying cluster sampling probabilities.
@@ -70,33 +69,22 @@
 #'   design_survey_(strata = strata_var, weights = weights_var)
 #'
 
-design_survey <- function(.data, ...) {
-  # Lazyeval hack (related to http://stackoverflow.com/questions/32143395/)
-  # Use lazy_dots(...) instead of named arguments because otherwise it would
-  # follow promises to functions defined in other packages.
-  arg_names <- c("ids", "probs", "strata", "variables", "fpc", "nest", "check.strata",
-                 "weights", "pps", "variance")
-  dots <- match_dot_args(lazyeval::lazy_dots(...), arg_names)
+design_survey <- function(.data, ids = NULL, probs = NULL, strata = NULL, variables = NULL,
+                          fpc = NULL, nest = FALSE, check.strata = !nest,
+                          weights = NULL, pps = FALSE, variance = c("HT", "YG")) {
 
-  # Turn other variable specifications into character strings of variable names
-  var_args <- lapply(list(ids = "ids", probs = "probs", strata = "strata", fpc = "fpc",
-                          weights = "weights", variables = "variables"),
-                     function(var) {
-                       nullable(function(x) unname(dplyr::select_vars_(names(.data), x)), dots[[var]])
-                     })
+  # Need to turn bare variable to variable names, NSE makes looping difficult
+  helper <- function(x) unname(dplyr::select_vars_(names(.data), x))
+  if (!missing(ids)) ids <- helper(lazy_parent(ids))
+  if (!missing(probs)) probs <- helper(lazy_parent(probs))
+  if (!missing(strata)) strata <- helper(lazy_parent(strata))
+  if (!missing(fpc)) fpc <- helper(lazy_parent(fpc))
+  if (!missing(weights)) weights <- helper(lazy_parent(weights))
+  if (!missing(variables)) variables <- helper(lazy_parent(variables))
 
-  # nest, check.strata, and pps are all logical values. Get values if passed in, otherwise default
-  # values
-  nest <- if(!is.null(dots[["nest"]])) lazyeval::lazy_eval(dots[["nest"]]) else FALSE
-  check.strata <- if(!is.null(dots[["check.strata"]])) lazyeval::lazy_eval(dots[["check.strata"]]
-                                                                           ) else !nest
-  pps <- if(!is.null(dots[["pps"]])) lazyeval::lazy_eval(dots[["pps"]]) else FALSE
-
-  variance <- if(!is.null(dots[["variance"]])) lazyeval::lazy_eval(dots[["variance"]]) else "HT"
-
-  design_survey_(.data, var_args$ids, probs = var_args$probs, strata = var_args$strata,
-                 variables = var_args$variables, fpc = var_args$fpc, nest = nest,
-                 check.strata = check.strata, weights = var_args$weights, pps = pps,
+  design_survey_(.data, ids, probs = probs, strata = strata,
+                 variables = variables, fpc = fpc, nest = nest,
+                 check.strata = check.strata, weights = weights, pps = pps,
                  variance = variance)
 }
 

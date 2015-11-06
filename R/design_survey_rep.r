@@ -7,7 +7,6 @@
 #'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
-#' @param ... arguments described below, others are ignored
 #' @param variables Variables to include in the design (default is all)
 #' @param repweights Variables specifying the replication weight varibles
 #' @param weights Variables specifying sampling weights
@@ -39,36 +38,24 @@
 #'
 #' # svyratio(~alive, ~arrests, scdrep)
 #'
-design_survey_rep <- function(.data, ...) {
-  # Lazyeval hack (related to http://stackoverflow.com/questions/32143395/)
-  # Use lazy_dots(...) instead of named arguments because otherwise it would
-  # follow promises to functions defined in other packages.
-  arg_names <- c("variables", "repweights", "weights", "type",
-                 "combined_weights","rho", "bootstrap_average", "scale",
-                 "rscales", "fpc", "fpctype", "mse")
-  dots <- match_dot_args(lazyeval::lazy_dots(...), arg_names)
+design_survey_rep <- function(.data, variables = NULL, repweights = NULL, weights = NULL,
+                              type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
+                                       "other"), combined_weights = TRUE,
+                              rho = NULL, bootstrap_average = NULL, scale = NULL,
+                              rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
+                              mse = getOption("survey.replicates.mse")) {
 
-  # Turn other variable specifications into character strings of variable names
-  var_args <- lapply(list(variables = "variables", repweights = "repweights",
-                          weights = "weights",  fpc = "fpc"),
-                     function(var) {
-                       nullable(function(x) unname(dplyr::select_vars_(names(.data), x)), dots[[var]])
-                     })
+  # Need to turn bare variable to variable names, NSE makes looping difficult
+  helper <- function(x) unname(dplyr::select_vars_(names(.data), x))
+  if (!missing(variables)) variables <- helper(lazy_parent(variables))
+  if (!missing(repweights)) repweights <- helper(lazy_parent(repweights))
+  if (!missing(weights)) weights <- helper(lazy_parent(weights))
+  if (!missing(fpc)) fpc <- helper(lazy_parent(fpc))
 
-  type <- nullable(function(x) match.arg(lazyeval::lazy_eval(x), c("BRR", "Fay", "JK1", "JKn", "bootstrap", "other")), dots[["type"]])
-  combined_weights <- if(!is.null(dots[["combined_weights"]])) lazyeval::lazy_eval(dots[["combined_weights"]]) else TRUE
-  rho <- nullable(lazyeval::lazy_eval, dots[["rho"]])
-  bootstrap_average <- nullable(lazyeval::lazy_eval, dots[["bootstrap_average"]])
-  scale <- nullable(lazyeval::lazy_eval, dots[["scale"]])
-  rscales <- nullable(lazyeval::lazy_eval, dots[["rscales"]])
-  fpctype <- nullable(function(x) match.arg(x, c("fraction", "correction")), dots[["fpctype"]])
-  mse <- if(!is.null(dots[["mse"]])) lazyeval::lazy_eval(dots[["mse"]]) else getOption("survey.replicates.mse")
-
-
-  design_survey_rep_(.data, var_args[["variables"]], var_args[["repweights"]],
-                     var_args[["weights"]], type, combined_weights,
+  design_survey_rep_(.data, variables, repweights,
+                     weights, type, combined_weights,
                      rho, bootstrap_average, scale, rscales,
-                     var_args[["fpc"]], fpctype, mse)
+                     fpc, fpctype, mse)
 }
 
 

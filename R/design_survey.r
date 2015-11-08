@@ -75,7 +75,10 @@ design_survey <- function(.data, ids = NULL, probs = NULL, strata = NULL, variab
 
   # Need to turn bare variable to variable names, NSE makes looping difficult
   helper <- function(x) unname(dplyr::select_vars_(names(.data), x))
-  if (!missing(ids)) ids <- helper(lazy_parent(ids))
+  if (!missing(ids)) {
+    ids <- lazy_parent(ids)
+    ids <- if (ids$expr == 1 || ids$expr == 0) NULL else ids <- helper(ids)
+  }
   if (!missing(probs)) probs <- helper(lazy_parent(probs))
   if (!missing(strata)) strata <- helper(lazy_parent(strata))
   if (!missing(fpc)) fpc <- helper(lazy_parent(fpc))
@@ -97,8 +100,12 @@ design_survey_ <- function(.data, ids = NULL, probs = NULL, strata = NULL, varia
 
 
   # svydesign expects ~0 instead of NULL if no ids are included
-  ids_call <- if (missing(ids) || is.null(ids)) ~0 else dplyr::select_(.data, .dots = ids)
-
+  if (missing(ids) || is.null(ids) || ids == 1 || ids == 0) {
+    ids_call <- ~0
+    ids <- NULL
+  } else {
+    ids_call <- dplyr::select_(.data, .dots = ids)
+  }
   # Need to convert to data.frame to appease survey package and also not
   # send NULL to dplyr::select
   survey_selector <- function(x) {

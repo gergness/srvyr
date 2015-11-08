@@ -40,7 +40,7 @@ NULL
 
 # Mostly mimics survey:::print.survey.design2
 #' @export
-print.tbl_svy <- function (x, varnames = TRUE, design.summaries = FALSE, ...) {
+print.tbl_svy <- function (x, varnames = TRUE, ...) {
   NextMethod()
 
   print(survey_vars(x))
@@ -49,33 +49,7 @@ print.tbl_svy <- function (x, varnames = TRUE, design.summaries = FALSE, ...) {
     cat(paste0(deparse_all(groups(x)), collapse = ", "))
     cat("\n")
   }
-  if (design.summaries) {
-    cat("Probabilities:\n")
-    print(summary(x$prob))
-    if (x$has.strata) {
-      if (NCOL(x$cluster) > 1)
-        cat("First-level ")
-      cat("Stratum Sizes: \n")
-      oo <- order(unique(x$strata[, 1]))
-      a <- rbind(obs = table(x$strata[, 1]),
-                 design.PSU = x$fpc$sampsize[!duplicated(x$strata[,1]), 1][oo],
-                 actual.PSU = table(x$strata[!duplicated(x$cluster[, 1]), 1]))
-      print(a)
-    }
-    if (!is.null(x$fpc$popsize)) {
-      if (x$has.strata) {
-        cat("Population stratum sizes (PSUs): \n")
-        s <- !duplicated(x$strata[, 1])
-        a <- x$fpc$popsize[s, 1]
-        names(a) <- x$strata[s, 1]
-        a <- a[order(names(a))]
-        print(a)
-      }
-      else {
-        cat("Population size (PSUs):", x$fpc$popsize[1, 1], "\n")
-      }
-    }
-  }
+
   if (varnames) {
     vars <- colnames(x$variables)
     types <- vapply(x$variables, dplyr::type_sum, character(1))

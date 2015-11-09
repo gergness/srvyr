@@ -37,6 +37,7 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
     unchanged_names <- groups
     changed_names <- setdiff(names(out[[x]]), groups)
     results <- setNames(out[[x]], c(unchanged_names, paste0(names(out[x]), changed_names)))
+    results <- dplyr::arrange_(results, unchanged_names)
 
     # Only keep stratifying vars in first calculation so they're not repeated
     if (x > 1) results <- results[, !(names(results) %in% groups)]

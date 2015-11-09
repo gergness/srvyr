@@ -188,7 +188,7 @@ unweighted.default <-  function(.svy, x) {
 
 survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype) {
   if (class(x) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
-
+  if (class(x) == "logical") x <- as.integer(x)
   stat <- func(data.frame(x), .svy, na.rm = na.rm)
 
   vartype <- c("coef", vartype)
@@ -219,7 +219,7 @@ survey_stat_grouped <- function(.svy, func, x, na.rm, vartype ) {
   grps <- survey::make.formula(groups(.svy))
 
   if (class(x) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
-
+  if (class(x) == "logical") x <- as.integer(x)
   # svyby breaks when you feed it raw vector to be measured... Add it to
   # the data.frame with mutate and then pass in the name
   .svy$variables[["___arg"]] <- x

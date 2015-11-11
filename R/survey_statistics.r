@@ -134,22 +134,27 @@ survey_quantile.tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype =
 
 survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci")) {
   if(missing(vartype)) vartype <- "none"
-  vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
-
+  vartype <- match.arg(vartype, several.ok = TRUE)
   vartype <- setdiff(vartype, "none")
+
   grps <- survey::make.formula(groups(.svy))
 
   .svy$variables[["___arg"]] <- x
 
   out <- survey::svyby(~`___arg`, grps, .svy, survey::svyquantile,
                       quantiles = quantiles, na.rm = na.rm,
-                      ci = TRUE, vartype = vartype)
+                      ci = TRUE, vartype = c(vartype, "se"))
 
   q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2, flag = "0")))
   # Format it nicely
   out <- dplyr::tbl_df(as.data.frame(out))
   names(out)[1 + seq_along(q_text)] <- q_text
-  if ("se" %in% vartype) names(out)[grep("^se", names(out))] <- paste0(q_text, "_se")
+  if ("se" %in% vartype) {
+    names(out)[grep("^se", names(out))] <- paste0(q_text, "_se")
+  } else {
+    out <- out[!grepl("^se", names(out))]
+  }
+
   if ("ci" %in% vartype) {
     names(out)[grep("^ci_l", names(out))] <- paste0(q_text, "_low")
     names(out)[grep("^ci_u", names(out))] <- paste0(q_text, "_upp")
@@ -165,8 +170,7 @@ survey_median <- function(.svy, x, na.rm = FALSE, vartype = c("none", "se", "ci"
 }
 
 survey_median.default <- function(.svy, x, na.rm = FALSE, vartype = c("none", "se", "ci")) {
-  if(missing(vartype)) vartype <- "none"
-  vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
+  if (missing(vartype)) vartype <- "none"
 
   survey_quantile(.svy, x, quantiles = 0.5, na.rm = na.rm, vartype = vartype)
 }

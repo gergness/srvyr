@@ -18,6 +18,7 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-    pander
+    pander,
+    ggplot2
 VignetteBuilder: knitr
 RoxygenNote: 5.0.0

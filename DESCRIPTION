@@ -4,9 +4,9 @@ Title: 'dplyr'-like Syntax for Summary Statistics of Survey Data
 Version: 0.0.1
 Date: 2015-08-22
 Authors@R: person("Greg", "Freedman", email = "greg.freedman@gmail.com", role = c("aut", "cre"))
-Description: Use piping, verbs like 'group_by' and 'summarize', and other 'dplyr' inspired
-             syntactic style when calculating summary statistics on survey data using functions
-             from the 'survey' package.
+Description: Use piping, verbs like 'group_by' and 'summarize', and other
+    'dplyr' inspired syntactic style when calculating summary statistics on survey
+    data using functions from the 'survey' package.
 Imports:
     survey,
     dplyr,
@@ -14,8 +14,10 @@ Imports:
     lazyeval
 License: GPL-2 | GPL-3
 LazyData: TRUE
-Suggests: testthat,
+Suggests:
+    testthat,
     knitr,
     rmarkdown,
     pander
 VignetteBuilder: knitr
+RoxygenNote: 5.0.0

@@ -29,7 +29,7 @@
 #' d2pbc <- pbc %>%
 #'   design_twophase(id = list(id, id), subset = randomized)
 #'
-#' # d2pbc<-twophase(id=list(~id,~id), data=pbc, subset=~randomized)
+#' # d2pbc_old<-twophase(id=list(~id,~id), data=pbc, subset=~randomized)
 #' svymean(~bili, d2pbc)
 #'
 #' ## two-stage sampling as two-phase
@@ -101,6 +101,10 @@ design_twophase_ <- function(.data, id, strata = NULL, probs = NULL, weights = N
   # Make a list of names that have the survey vars.
   survey_vars(out) <- list(ids = id, strata = strata, probs = probs, weights = weights, fpc = fpc,
                            subset = subset)
+
+  # To make twophase behave similarly to the other survey objects, add sample variables
+  # from phase1 to the first level of the object.
+  out$variables <- out$phase1$sample$variables
 
   out
 }

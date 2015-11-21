@@ -77,7 +77,7 @@ design_survey <- function(.data, ids = NULL, probs = NULL, strata = NULL, variab
   helper <- function(x) unname(dplyr::select_vars_(names(.data), x))
   if (!missing(ids)) {
     ids <- lazy_parent(ids)
-    ids <- if (ids$expr == 1 || ids$expr == 0) NULL else ids <- helper(ids)
+    ids <- if (ids$expr == 1 || ids$expr == 0) NULL else helper(ids)
   }
   if (!missing(probs)) probs <- helper(lazy_parent(probs))
   if (!missing(strata)) strata <- helper(lazy_parent(strata))

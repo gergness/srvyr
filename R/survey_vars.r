@@ -8,7 +8,14 @@ survey_vars <- function(svy) {
 
 # Set the survey vars of a svy_tbl object
 `survey_vars<-` <- function(svy, value) {
-  value <- lapply(value, function(x) if (length(x) > 0) lapply(x, as.name))
+  value <- lapply(value, function(x) {
+    if (length(x) > 0) {
+      lapply(x, function(y) {
+        if (is.null(y)) y <- "NULL"
+        as.name(y)
+      })
+    }
+  })
   class(value) <- "survey_vars"
   attr(svy, "survey_vars") <- value
   svy

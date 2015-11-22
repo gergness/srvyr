@@ -29,31 +29,41 @@
 #' d2pbc <- pbc %>%
 #'   design_twophase(id = list(id, id), subset = randomized)
 #'
-#' # d2pbc_old<-twophase(id=list(~id,~id), data=pbc, subset=~randomized)
-#' svymean(~bili, d2pbc)
+#' d2pbc %>% summarize(mean = survey_mean(bili))
 #'
 #' ## two-stage sampling as two-phase
 #' data(mu284)
-#' ii<-with(mu284, c(1:15, rep(1:5,n2[1:5]-3)))
-#' mu284.1<-mu284[ii,]
-#' mu284.1$id<-1:nrow(mu284.1)
-#' mu284.1$sub<-rep(c(TRUE,FALSE),c(15,34-15))
-#' dmu284<-svydesign(id=~id1+id2,fpc=~n1+n2, data=mu284)
+#'
+#' mu284_1 <- mu284 %>%
+#'   slice(c(1:15, rep(1:5, n2[1:5] - 3))) %>%
+#'   mutate(id = row_number(),
+#'          sub = rep(c(TRUE, FALSE), c(15, 34-15)))
+#'
+#' dmu284 <- mu284 %>%
+#'   design_survey(ids = c(id1, id2), fpc = c(n1, n2))
 #' ## first phase cluster sample, second phase stratified within cluster
-#' d2mu284<-twophase(id=list(~id1,~id),strata=list(NULL,~id1),
-#'                   fpc=list(~n1,NULL),data=mu284.1,subset=~sub)
-#' svytotal(~y1, dmu284)
-#' svytotal(~y1, d2mu284)
-#' svymean(~y1, dmu284)
-#' svymean(~y1, d2mu284)
+#' d2mu284 <- mu284_1 %>%
+#'   design_twophase(id = list(id1, id), strata = list(NULL, id1),
+#'                   fpc = list(n1, NULL), subset = sub)
+#' dmu284 %>%
+#'   summarize(total = survey_total(y1),
+#'             mean = survey_mean(y1))
+#' d2mu284 %>%
+#'   summarize(total = survey_total(y1),
+#'             mean = survey_mean(y1))
+#'
 design_twophase <- function(.data, id, strata = NULL, probs = NULL, weights = NULL, fpc = NULL,
                           subset, method = c("full", "approx", "simple")) {
   # Need to turn bare variable to variable names inside list (for 2phase)
+  # NULLS are allowed in the list and should be carried forward.
   helper_list <- function(x) {
     x <- x[["expr"]]
     if(x[[1]] != "list" || length(x) > 3) stop("design_twophase requies a list of 2 sets of variables")
-    list(unname(dplyr::select_vars_(names(.data), x[[2]])),
-         unname(dplyr::select_vars_(names(.data), x[[3]])))
+    name1 <- unname(dplyr::select_vars_(names(.data), x[[2]]))
+    name1 <- if (length(name1) == 0) NULL else name1
+    name2 <- unname(dplyr::select_vars_(names(.data), x[[3]]))
+    name2 <- if (length(name2) == 0) NULL else name2
+    list(name1, name2)
   }
 
   # Need to turn bare variable to variable names (when not in list)
@@ -76,12 +86,10 @@ design_twophase <- function(.data, id, strata = NULL, probs = NULL, weights = NU
 #' @rdname design_twophase
 design_twophase_ <- function(.data, id, strata = NULL, probs = NULL, weights = NULL, fpc = NULL,
                              subset, method = c("full", "approx", "simple")) {
-
-
   # survey::twophase doesn't work with values, needs to be formula of variable names
   # Change list of variable names to formulas
   list_to_formula <- function(x) {
-    if (!is.null(x)) lapply(x, survey::make.formula) else NULL
+    if (!is.null(x)) lapply(x, function(y) nullable(survey::make.formula, y)) else NULL
   }
 
   out <- survey::twophase(data = .data,

@@ -6,11 +6,10 @@
 \title{Create a tbl_svy survey object using two phase design}
 \usage{
 design_twophase(.data, id, strata = NULL, probs = NULL, weights = NULL,
-  variables = NULL, subset, method = c("full", "approx", "simple"))
+  fpc = NULL, subset, method = c("full", "approx", "simple"))
 
-design_twophase_(.data, ids = NULL, probs = NULL, strata = NULL,
-  variables = NULL, fpc = NULL, nest = FALSE, check.strata = !nest,
-  weights = NULL, pps = FALSE, variance = c("HT", "YG"))
+design_twophase_(.data, id, strata = NULL, probs = NULL, weights = NULL,
+  fpc = NULL, subset, method = c("full", "approx", "simple"))
 }
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}
@@ -24,12 +23,12 @@ design_twophase_(.data, ids = NULL, probs = NULL, strata = NULL,
 \item{weights}{Only for method = "approx", list of two sets of variable names (or \code{NULLs})
 for sampling weights}
 
+\item{fpc}{list of two sets of variables (or \code{NULLs} for finite population corrections}
+
 \item{method}{"full" requires (much) more memory, but gives unbiased variance estimates for
 general multistage designs at both phases. "simple" or "approx" use less memory, and is correect for
 designs with simple random sampling at phase one and stratifed randoms sampling at phase two. See
 \code{\link[survey]{twophase}} for more details.}
-
-\item{fpc}{list of two sets of variables (or \code{NULLs} for finite population corrections}
 }
 \value{
 An object of class \code{tbl_svy}
@@ -42,5 +41,37 @@ standard evaluation counterpart to \code{design_twophase}
 }
 \examples{
 # Examples from ?survey::twophase
+## two-phase simple random sampling.
+data(pbc, package="survival")
+
+pbc <- pbc \%>\%
+  mutate(randomized = !is.na(trt) & trt > 0,
+         id = row_number())
+d2pbc <- pbc \%>\%
+  design_twophase(id = list(id, id), subset = randomized)
+
+d2pbc \%>\% summarize(mean = survey_mean(bili))
+
+## two-stage sampling as two-phase
+data(mu284)
+
+mu284_1 <- mu284 \%>\%
+  slice(c(1:15, rep(1:5, n2[1:5] - 3))) \%>\%
+  mutate(id = row_number(),
+         sub = rep(c(TRUE, FALSE), c(15, 34-15)))
+
+dmu284 <- mu284 \%>\%
+  design_survey(ids = c(id1, id2), fpc = c(n1, n2))
+## first phase cluster sample, second phase stratified within cluster
+d2mu284 <- mu284_1 \%>\%
+  design_twophase(id = list(id1, id), strata = list(NULL, id1),
+                  fpc = list(n1, NULL), subset = sub)
+dmu284 \%>\%
+  summarize(total = survey_total(y1),
+            mean = survey_mean(y1))
+d2mu284 \%>\%
+  summarize(total = survey_total(y1),
+            mean = survey_mean(y1))
+
 }
 

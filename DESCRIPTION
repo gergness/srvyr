@@ -19,6 +19,8 @@ Suggests:
     knitr,
     rmarkdown,
     pander,
-    ggplot2
+    ggplot2,
+    survival,
+    Matrix
 VignetteBuilder: knitr
 RoxygenNote: 5.0.0

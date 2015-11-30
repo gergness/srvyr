@@ -13,6 +13,7 @@
 #' @param weights Only for method = "approx", list of two sets of variable names (or \code{NULLs})
 #' for sampling weights
 #' @param fpc list of two sets of variables (or \code{NULLs} for finite population corrections
+#' @param subset bare name of a variable which specifies which observations are selected in phase 2
 #' @param method "full" requires (much) more memory, but gives unbiased variance estimates for
 #' general multistage designs at both phases. "simple" or "approx" use less memory, and is correect for
 #' designs with simple random sampling at phase one and stratifed randoms sampling at phase two. See
@@ -32,10 +33,11 @@
 #' d2pbc %>% summarize(mean = survey_mean(bili))
 #'
 #' ## two-stage sampling as two-phase
+#' library(survey)
 #' data(mu284)
 #'
 #' mu284_1 <- mu284 %>%
-#'   slice(c(1:15, rep(1:5, n2[1:5] - 3))) %>%
+#'   dplyr::slice(c(1:15, rep(1:5, n2[1:5] - 3))) %>%
 #'   mutate(id = row_number(),
 #'          sub = rep(c(TRUE, FALSE), c(15, 34-15)))
 #'

@@ -158,9 +158,9 @@ survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, varty
   q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2, flag = "0")))
   # Format it nicely
   out <- dplyr::tbl_df(as.data.frame(out))
-  names(out)[1 + seq_along(q_text)] <- q_text
+  names(out)[length(groups(.svy)) + seq_along(q_text)] <- q_text
   if ("se" %in% vartype) {
-    names(out)[grep("^se", names(out))] <- paste0(q_text, "_se")
+    names(out)[length(names(out)) - (rev(seq_along(q_text)) - 1)] <- paste0(q_text, "_se")
   } else {
     out <- out[!grepl("^se", names(out))]
   }

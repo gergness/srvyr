@@ -71,3 +71,16 @@ out_srvyr <- dstrata %>%
 test_that("survey_quantile works for ungrouped surveys - no ci",
           expect_equal(c(out_survey[[1]]),
                        c(out_srvyr[[1, 1]])))
+
+
+suppressWarnings(out_survey <- svyby(~api00, ~stype+awards, dstrata, svyquantile, quantiles = c(0.5, 0.75), ci = TRUE))
+
+suppressWarnings(out_srvyr <- dstrata %>%
+                   group_by(stype, awards) %>%
+                   summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75), vartype = "se")))
+
+test_that("survey_quantile works for grouped surveys - with multiple grouping variables",
+          expect_equal(c(out_survey$`0.5`[[1]], out_survey$`se.0.5`[[1]]),
+                       c(out_srvyr[[1, "api00_q50"]], out_srvyr[[1, "api00_q50_se"]])))
+
+

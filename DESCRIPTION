@@ -1,6 +1,6 @@
 Package: srvyr
 Type: Package
-Title: 'dplyr'-like Syntax for Summary Statistics of Survey Data
+Title: 'dplyr'-Like Syntax for Summary Statistics of Survey Data
 Version: 0.0.1
 Date: 2015-08-22
 Authors@R: person("Greg", "Freedman", email = "greg.freedman@gmail.com", role = c("aut", "cre"))

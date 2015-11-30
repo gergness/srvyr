@@ -41,7 +41,7 @@ survey_ratio.tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE, va
   if(missing(vartype)) vartype <- "se"
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
 
-  stat <- survey::svyratio(numerator, denominator, .svy, na.rm = na.rm)
+  stat <- survey::svyratio(data.frame(numerator), data.frame(denominator), .svy, na.rm = na.rm)
 
   out <- lapply(vartype, function(vvv) {
     if (vvv == "coef") {
@@ -76,6 +76,11 @@ survey_ratio.grouped_svy <- function(.svy, numerator, denominator, na.rm = FALSE
   # the data.frame with mutate and then pass in the name
   .svy$variables[["___numerator"]] <- numerator
   .svy$variables[["___denominator"]] <- denominator
+
+  # Slight hack for twophase -- move the created variables to where survey expects them
+  if (inherits(.svy, "twophase2")) {
+    .svy$phase1$sample$variables <- .svy$variables
+  }
 
   out <- survey::svyby(~`___numerator`, grps, .svy, survey::svyratio,
                        denominator = ~`___denominator`,
@@ -140,6 +145,11 @@ survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, varty
   grps <- survey::make.formula(groups(.svy))
 
   .svy$variables[["___arg"]] <- x
+
+  # Slight hack for twophase -- move the created variables to where survey expects them
+  if (inherits(.svy, "twophase2")) {
+    .svy$phase1$sample$variables <- .svy$variables
+  }
 
   out <- survey::svyby(~`___arg`, grps, .svy, survey::svyquantile,
                       quantiles = quantiles, na.rm = na.rm,
@@ -227,6 +237,12 @@ survey_stat_grouped <- function(.svy, func, x, na.rm, vartype ) {
   # svyby breaks when you feed it raw vector to be measured... Add it to
   # the data.frame with mutate and then pass in the name
   .svy$variables[["___arg"]] <- x
+
+  # Slight hack for twophase -- move the created variables to where survey expects them
+  if (inherits(.svy, "twophase2")) {
+    .svy$phase1$sample$variables <- .svy$variables
+  }
+
   out <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm, vartype = vartype)
 
   # Format it nicely

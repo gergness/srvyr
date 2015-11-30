@@ -45,10 +45,10 @@ survey_results <- list(
   select(-sex2, -sex3)
 
 srvyr_results <- d2pbc_srvyr %>%
-  group_by(test = sex) %>%
+  group_by(sex) %>%
   summarize(mean = survey_mean(bili),
             total = survey_total(bili),
-            median = survey_median(bili, vartype = "se")) %>% rename(sex = test)
+            median = survey_median(bili, vartype = "se"))
 
 
 test_that("design_twophase gets same mean / total / median / ratio in srvyr (grouped)",

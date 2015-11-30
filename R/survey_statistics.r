@@ -162,7 +162,7 @@ survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, varty
   if ("se" %in% vartype) {
     names(out)[length(names(out)) - (rev(seq_along(q_text)) - 1)] <- paste0(q_text, "_se")
   } else {
-    out <- out[!grepl("^se", names(out))]
+    out <- out[-(length(names(out)) - (rev(seq_along(q_text)) - 1))]
   }
 
   if ("ci" %in% vartype) {

@@ -43,27 +43,8 @@ survey_ratio.tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE, va
 
   stat <- survey::svyratio(data.frame(numerator), data.frame(denominator), .svy, na.rm = na.rm)
 
-  out <- lapply(vartype, function(vvv) {
-    if (vvv == "coef") {
-      coef <- data.frame(stat$ratio)
-      names(coef) <- ""
-      coef
-    } else if (vvv == "se") {
-      se <- data.frame(sqrt(stat$var))
-      names(se) <- "_se"
-      se
-    } else if (vvv == "ci") {
-      ci <- data.frame(confint(stat))
-      names(ci) <- c("_low", "_upp")
-      ci
-    } else if (vvv == "var") {
-      var <- data.frame(stat$var)
-      names(var) <- "_var"
-      var
-    }
-  })
-
-  dplyr::bind_cols(out)
+  out <- get_var_est(stat, vartype)
+  out
 }
 
 survey_ratio.grouped_svy <- function(.svy, numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var")) {
@@ -107,34 +88,15 @@ survey_quantile.tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype =
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
 
   vartype <- setdiff(vartype, "none")
-  se <- "se" %in% vartype
-  ci <- "ci" %in% vartype
 
   stat <- survey::svyquantile(data.frame(x), .svy,
                       quantiles = quantiles, na.rm = na.rm,
-                      se = se, ci = ci)
+                      ci = TRUE)
 
   q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2, flag = "0")))
 
-  out <- lapply(vartype, function(vvv) {
-    if (vvv == "coef") {
-      # Accessors to svquantile change if there's CI or not
-      if (class(stat) == "matrix") coef <- data.frame(stat)
-      else coef <- data.frame(stat[["quantiles"]])
-      names(coef) <- q_text
-      coef
-    } else if (vvv == "se") {
-      se <- data.frame(t(attr(stat, "SE")))
-      names(se) <- paste0(q_text, "_se")
-      se
-    } else if (vvv == "ci") {
-      ci <- data.frame(t(stat[["CIs"]][seq_len(2 * length(q_text))]))
-      names(ci) <- paste0(rep(q_text, each = 2),
-                          rep(c("_low", "_upp"), length = 2 * length(q_text)))
-      ci
-    }
-  })
-  dplyr::bind_cols(out)
+  out <- get_var_est(stat, vartype, q_text)
+  out
 }
 
 survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci")) {
@@ -191,7 +153,7 @@ unweighted <- function(.svy, x, na.rm, vartype = c("se", "ci", "var")) {
   UseMethod("unweighted")
 }
 
-unweighted.default <-  function(.svy, x) {
+unweighted.default <- function(.svy, x) {
   dots <- lazyeval::lazy(x)
 
   out <- summarize_(.svy[["variables"]], .dots = dots)
@@ -206,27 +168,9 @@ survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype) {
   stat <- func(data.frame(x), .svy, na.rm = na.rm)
 
   vartype <- c("coef", vartype)
-  out <- lapply(vartype, function(vvv) {
-      if (vvv == "coef") {
-        coef <- data.frame(coef(stat))
-        names(coef) <- ""
-        coef
-      } else if (vvv == "se") {
-        se <- data.frame(sqrt(attr(stat, "var")))
-        names(se) <- "_se"
-        se
-      } else if (vvv == "ci") {
-        ci <- data.frame(confint(stat))
-        names(ci) <- c("_low", "_upp")
-        ci
-      } else if (vvv == "var") {
-        var <- data.frame(attr(stat, "var"))
-        names(var) <- "_var"
-        var
-      }
-    })
+  out <- get_var_est(stat, vartype)
 
-  dplyr::bind_cols(out)
+  out
 }
 
 survey_stat_grouped <- function(.svy, func, x, na.rm, vartype ) {
@@ -316,7 +260,7 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype) {
         names(coef) <- ""
         coef
       } else if (vvv == "se") {
-        se <- data.frame(sqrt(diag(attr(stat, "var"))))
+        se <- data.frame(survey::SE(stat))
         names(se) <- "_se"
         se
       } else if (vvv == "ci") {
@@ -324,7 +268,7 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype) {
         names(ci) <- c("_low", "_upp")
         ci
       } else if (vvv == "var") {
-        var <- data.frame(diag(attr(stat, "var")))
+        var <- data.frame(survey::SE(stat)^2)
         names(var) <- "_var"
         var
       }
@@ -332,4 +276,27 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype) {
 
     dplyr::bind_cols(out)
   }
+}
+
+get_var_est <- function(stat, vartype, names = "") {
+  out <- lapply(vartype, function(vvv) {
+    if (vvv == "coef") {
+      coef <- data.frame(t(coef(stat)))
+      names(coef) <- names
+      coef
+    } else if (vvv == "se") {
+      se <- data.frame(t(survey::SE(stat)))
+      names(se) <- paste0(names, "_se")
+      se
+    } else if (vvv == "ci") {
+      ci <- data.frame(matrix(confint(stat), nrow = 1))
+      names(ci) <- c(paste0(names, "_low"), paste0(names, "_upp"))
+      ci
+    } else if (vvv == "var") {
+      var <- data.frame(t(survey::SE(stat)^2))
+      names(var) <- paste0(names, "_var")
+      var
+    }
+  })
+  dplyr::bind_cols(out)
 }

@@ -1,4 +1,4 @@
-context("Quick tests for added survey_mean / survey_total of grouping variables")
+context("Quick tests for survey factors")
 
 library(srvyr)
 library(survey)

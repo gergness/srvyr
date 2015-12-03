@@ -95,7 +95,7 @@ survey_quantile.tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype =
 
   q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2, flag = "0")))
 
-  out <- get_var_est(stat, vartype, q_text)
+  out <- get_var_est(stat, vartype, var_names = q_text)
   out
 }
 
@@ -245,57 +245,43 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype) {
     vartype <- c("lvls", vartype) # Needed because grouped don't usually have "coef"
     stat <- func(survey::make.formula(peel), .svy, na.rm = na.rm)
 
-    out <- lapply(vartype, function(vvv) {
-      if (vvv == "lvls") {
-        # Add on level variable -- survey leaves it in an ugly state, with the
-        # varname pasted in, so we have to remove it. Also, check if it was
-        # originally a character and convert if it was.
-        lvls <- data.frame(names(coef(stat)))
-        levels(lvls[[1]]) <- gsub(paste0("^", peel), "", levels(lvls[[1]]))
-        if (class(.svy[["variables"]][[peel]]) == "character") lvls[[1]] <- as.character(lvls[[1]])
-        names(lvls) <- peel
-        lvls
-      } else if (vvv == "coef") {
-        coef <- data.frame(coef(stat))
-        names(coef) <- ""
-        coef
-      } else if (vvv == "se") {
-        se <- data.frame(survey::SE(stat))
-        names(se) <- "_se"
-        se
-      } else if (vvv == "ci") {
-        ci <- data.frame(confint(stat))
-        names(ci) <- c("_low", "_upp")
-        ci
-      } else if (vvv == "var") {
-        var <- data.frame(survey::SE(stat)^2)
-        names(var) <- "_var"
-        var
-      }
-    })
+    out <- get_var_est(stat, vartype, peel = peel,
+                       peel_class = class(.svy[["variables"]][[peel]]))
+
 
     dplyr::bind_cols(out)
   }
 }
 
-get_var_est <- function(stat, vartype, names = "") {
+get_var_est <- function(stat, vartype, var_names = "", peel = "", peel_class = NULL) {
+  out_width <- length(var_names)
   out <- lapply(vartype, function(vvv) {
     if (vvv == "coef") {
-      coef <- data.frame(t(coef(stat)))
-      names(coef) <- names
+      coef <- data.frame(matrix(coef(stat), ncol = out_width))
+      names(coef) <- var_names
       coef
     } else if (vvv == "se") {
-      se <- data.frame(t(survey::SE(stat)))
-      names(se) <- paste0(names, "_se")
+      se <- data.frame(matrix(survey::SE(stat), ncol = out_width))
+      names(se) <- paste0(var_names, "_se")
       se
     } else if (vvv == "ci") {
-      ci <- data.frame(matrix(confint(stat), nrow = 1))
-      names(ci) <- c(paste0(names, "_low"), paste0(names, "_upp"))
+      ci <- data.frame(matrix(confint(stat), ncol = 2 * out_width))
+      names(ci) <- c(paste0(var_names, "_low"), paste0(var_names, "_upp"))
       ci
     } else if (vvv == "var") {
-      var <- data.frame(t(survey::SE(stat)^2))
-      names(var) <- paste0(names, "_var")
+      var <- data.frame(matrix(survey::SE(stat)^2, ncol = out_width))
+      names(var) <- paste0(var_names, "_var")
       var
+    } else  if (vvv == "lvls") {
+      # Only for survey_stat_factor with only one groups
+      # Add on level variable -- survey leaves it in an ugly state, with the
+      # varname pasted in, so we have to remove it. Also, check if it was
+      # originally a character and convert if it was.
+      lvls <- data.frame(names(coef(stat)))
+      levels(lvls[[1]]) <- gsub(paste0("^", peel), "", levels(lvls[[1]]))
+      if (peel_class == "character") lvls[[1]] <- as.character(lvls[[1]])
+      names(lvls) <- peel
+      lvls
     }
   })
   dplyr::bind_cols(out)

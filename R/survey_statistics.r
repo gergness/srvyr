@@ -63,17 +63,13 @@ survey_ratio.grouped_svy <- function(.svy, numerator, denominator, na.rm = FALSE
     .svy$phase1$sample$variables <- .svy$variables
   }
 
-  out <- survey::svyby(~`___numerator`, grps, .svy, survey::svyratio,
+  stat <- survey::svyby(~`___numerator`, grps, .svy, survey::svyratio,
                        denominator = ~`___denominator`,
-                       na.rm = na.rm, vartype = vartype)
+                       na.rm = na.rm, ci = TRUE)
 
-  # Format it nicely
-  out <- dplyr::tbl_df(as.data.frame(out))
-  names(out)[names(out) == "___numerator/___denominator"] <- ""
-  names(out)[names(out) == "se.___numerator/___denominator"] <- "_se"
-  names(out)[names(out) == "ci_l"] <- "_low"
-  names(out)[names(out) == "ci_u"] <- "_upp"
-  names(out)[names(out) == "var.___numerator/___denominator"] <- "_var"
+  vartype <- c("grps", "coef", vartype)
+
+  out <- get_var_est(stat, vartype, grps = as.character(groups(.svy)))
 
   out
 }
@@ -113,24 +109,13 @@ survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, varty
     .svy$phase1$sample$variables <- .svy$variables
   }
 
-  out <- survey::svyby(~`___arg`, grps, .svy, survey::svyquantile,
+  stat <- survey::svyby(~`___arg`, grps, .svy, survey::svyquantile,
                       quantiles = quantiles, na.rm = na.rm,
-                      ci = TRUE, vartype = c(vartype, "se"))
+                      ci = TRUE)
 
   q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2, flag = "0")))
-  # Format it nicely
-  out <- dplyr::tbl_df(as.data.frame(out))
-  names(out)[length(groups(.svy)) + seq_along(q_text)] <- q_text
-  if ("se" %in% vartype) {
-    names(out)[length(names(out)) - (rev(seq_along(q_text)) - 1)] <- paste0(q_text, "_se")
-  } else {
-    out <- out[-(length(names(out)) - (rev(seq_along(q_text)) - 1))]
-  }
-
-  if ("ci" %in% vartype) {
-    names(out)[grep("^ci_l", names(out))] <- paste0(q_text, "_low")
-    names(out)[grep("^ci_u", names(out))] <- paste0(q_text, "_upp")
-  }
+  vartype <- c("grps", "coef", vartype)
+  out <- get_var_est(stat, vartype, var_names = q_text, grps = as.character(groups(.svy)))
 
   out
 }
@@ -187,15 +172,10 @@ survey_stat_grouped <- function(.svy, func, x, na.rm, vartype ) {
     .svy$phase1$sample$variables <- .svy$variables
   }
 
-  out <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm, vartype = vartype)
+  stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm, se = TRUE)
+  vartype <- c("grps", "coef", vartype)
 
-  # Format it nicely
-  out <- dplyr::tbl_df(as.data.frame(out))
-  names(out)[names(out) == "`___arg`"] <- ""
-  names(out)[names(out) == "se"] <- "_se"
-  names(out)[names(out) == "ci_l"] <- "_low"
-  names(out)[names(out) == "ci_u"] <- "_upp"
-  names(out)[names(out) == "var"] <- "_var"
+  out <- get_var_est(stat, vartype, grps = as.character(groups(.svy)))
 
   out
 }
@@ -248,12 +228,12 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype) {
     out <- get_var_est(stat, vartype, peel = peel,
                        peel_class = class(.svy[["variables"]][[peel]]))
 
-
-    dplyr::bind_cols(out)
+    out
   }
 }
 
-get_var_est <- function(stat, vartype, var_names = "", peel = "", peel_class = NULL) {
+get_var_est <- function(stat, vartype, var_names = "", grps = "",
+                        peel = "", peel_class = NULL) {
   out_width <- length(var_names)
   out <- lapply(vartype, function(vvv) {
     if (vvv == "coef") {
@@ -261,7 +241,8 @@ get_var_est <- function(stat, vartype, var_names = "", peel = "", peel_class = N
       names(coef) <- var_names
       coef
     } else if (vvv == "se") {
-      se <- data.frame(matrix(survey::SE(stat), ncol = out_width))
+      se <- survey::SE(stat)
+      if (!inherits(se, "data.frame")) se <- data.frame(matrix(se, ncol = out_width)) # Needed for grouped quantile
       names(se) <- paste0(var_names, "_se")
       se
     } else if (vvv == "ci") {
@@ -272,7 +253,10 @@ get_var_est <- function(stat, vartype, var_names = "", peel = "", peel_class = N
       var <- data.frame(matrix(survey::SE(stat)^2, ncol = out_width))
       names(var) <- paste0(var_names, "_var")
       var
-    } else  if (vvv == "lvls") {
+    } else if (vvv == "grps") {
+      # For grouped variables, get the groups
+      stat[grps]
+    } else if (vvv == "lvls") {
       # Only for survey_stat_factor with only one groups
       # Add on level variable -- survey leaves it in an ugly state, with the
       # varname pasted in, so we have to remove it. Also, check if it was

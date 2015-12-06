@@ -135,7 +135,7 @@ survey_median.default <- function(.svy, x, na.rm = FALSE, vartype = c("none", "s
 
 
 #' @export
-unweighted <- function(.svy, x, na.rm, vartype = c("se", "ci", "var")) {
+unweighted <- function(.svy, x) {
   UseMethod("unweighted")
 }
 

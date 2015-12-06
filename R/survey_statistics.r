@@ -190,35 +190,15 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype) {
   if (length(grps) > 0) {
     stat <- survey::svyby(survey::make.formula(peel),
                           survey::make.formula(grps),
-                          .svy, func, na.rm = na.rm, vartype = vartype)
+                          .svy, func, na.rm = na.rm, se = TRUE)
 
-    stat <- data.frame(stat)
-    vlist <- list(paste0(peel, unique(.svy[["variables"]][[peel]])))
-    vnames <- "coef"
-    if ("se" %in% vartype) {
-      vlist[[length(vlist) + 1]] <- paste0("se.", vlist[[1]])
-      vnames <- c(vnames, "se")
-    }
-    if ("var" %in% vartype) {
-      vlist[[length(vlist) + 1]] <- paste0("var.", vlist[[1]])
-      vnames <- c(vnames, "var")
-    }
-    if ("ci" %in% vartype) {
-      vlist[[length(vlist) + 1]] <- paste0("ci_l.", vlist[[1]])
-      vlist[[length(vlist) + 1]] <- paste0("ci_u.", vlist[[1]])
-      vnames <- c(vnames, "low", "upp")
-    }
+    var_names <- attr(stat, "svyby")[["variables"]]
+    var_names <- unlist(lapply(var_names, function(x) substring(x, nchar(peel)+1)))
 
-    out <- reshape(stat, varying = vlist,
-            idvar = grps, times = unique(.svy[["variables"]][[peel]]), timevar = peel,
-            v.names = vnames, direction = "long")
+    vartype <- c("grps", vartype)
 
-    out <- data.frame(out)
-    names(out)[names(out) == "coef"] <- ""
-    names(out)[names(out) == "se"] <- "_se"
-    names(out)[names(out) == "var"] <- "_var"
-    names(out)[names(out) == "low"] <- "_low"
-    names(out)[names(out) == "upp"] <- "_upp"
+    out <- get_var_est(stat, vartype, var_names = var_names, grps = grps)
+    out <- factor_stat_reshape(out, grps, peel, var_names)
 
     out
   } else {
@@ -254,7 +234,6 @@ get_var_est <- function(stat, vartype, var_names = "", grps = "",
       names(var) <- paste0(var_names, "_var")
       var
     } else if (vvv == "grps") {
-      # For grouped variables, get the groups
       stat[grps]
     } else if (vvv == "lvls") {
       # Only for survey_stat_factor with only one groups
@@ -269,4 +248,19 @@ get_var_est <- function(stat, vartype, var_names = "", grps = "",
     }
   })
   dplyr::bind_cols(out)
+}
+
+# base reshape was difficult to work with, but might be worth reinvestigating
+# (or others, but have to weight the cost of extra dependency). This takes the survey stat
+# object that has the peel variable wide, and makes it long.
+factor_stat_reshape <- function(stat, grps, peel, var_names) {
+  out <- lapply(var_names, function(this_var) {
+    wide_names <- names(stat)[grep(paste0("^", this_var, "(_se|_low|_upp|_var)?$"), names(stat))]
+    stat[[peel]] <- this_var
+    out <- stat[, c(grps, peel, wide_names)]
+    names(out)[names(out) %in% wide_names] <- sub(this_var, "",  names(out)[names(out) %in% wide_names])
+
+    out
+  })
+  dplyr::bind_rows(out)
 }

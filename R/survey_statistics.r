@@ -1,14 +1,14 @@
 #' @export
-survey_mean <- function(.svy, x, na.rm, vartype = c("se", "ci", "var"), level = 0.95) {
+survey_mean <- function(.svy, x, na.rm, vartype = c("se", "ci", "var", "cv"), level = 0.95) {
   UseMethod("survey_mean")
 }
 
-survey_mean.tbl_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95) {
+survey_mean.tbl_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95) {
   if (missing(vartype)) vartype <- "se"
   survey_stat_ungrouped(.svy, survey::svymean, x, na.rm, vartype, level)
 }
 
-survey_mean.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95) {
+survey_mean.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95) {
   if (missing(vartype)) vartype <- "se"
   if (!missing(x)) survey_stat_grouped(.svy, survey::svymean, x, na.rm, vartype, level)
   else survey_stat_factor(.svy, survey::svymean, na.rm, vartype, level)
@@ -16,16 +16,16 @@ survey_mean.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "c
 
 
 #' @export
-survey_total <- function(.svy, x, na.rm, vartype = c("se", "ci", "var"), level = 0.95) {
+survey_total <- function(.svy, x, na.rm, vartype = c("se", "ci", "var", "cv"), level = 0.95) {
   UseMethod("survey_total")
 }
 
-survey_total.tbl_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95) {
+survey_total.tbl_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95) {
   if (missing(vartype)) vartype <- "se"
   survey_stat_ungrouped(.svy, survey::svytotal, x, na.rm, vartype, level)
 }
 
-survey_total.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95) {
+survey_total.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95) {
   if (missing(vartype)) vartype <- "se"
   if (!missing(x)) survey_stat_grouped(.svy, survey::svytotal, x, na.rm, vartype, level)
   else survey_stat_factor(.svy, survey::svytotal, na.rm, vartype)
@@ -33,11 +33,11 @@ survey_total.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "
 
 
 #' @export
-survey_ratio <- function(.svy, numerator, denominator, na.rm, vartype = c("se", "ci", "var"), level = 0.95) {
+survey_ratio <- function(.svy, numerator, denominator, na.rm, vartype = c("se", "ci", "var", "cv"), level = 0.95) {
   UseMethod("survey_ratio")
 }
 
-survey_ratio.tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95) {
+survey_ratio.tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95) {
   if(missing(vartype)) vartype <- "se"
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
 
@@ -47,7 +47,7 @@ survey_ratio.tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE, va
   out
 }
 
-survey_ratio.grouped_svy <- function(.svy, numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95) {
+survey_ratio.grouped_svy <- function(.svy, numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95) {
   if(missing(vartype)) vartype <- "se"
   vartype <- c(match.arg(vartype, several.ok = TRUE))
 
@@ -239,6 +239,10 @@ get_var_est <- function(stat, vartype, var_names = "", grps = "",
       var <- data.frame(matrix(survey::SE(stat)^2, ncol = out_width))
       names(var) <- paste0(var_names, "_var")
       var
+    } else if (vvv == "cv") {
+      cv <- data.frame((matrix(survey::cv(stat), ncol = out_width)))
+      names(cv) <- paste0(var_names, "_cv")
+      cv
     } else if (vvv == "grps") {
       stat[grps]
     } else if (vvv == "lvls") {
@@ -261,7 +265,7 @@ get_var_est <- function(stat, vartype, var_names = "", grps = "",
 # object that has the peel variable wide, and makes it long.
 factor_stat_reshape <- function(stat, grps, peel, var_names) {
   out <- lapply(var_names, function(this_var) {
-    wide_names <- names(stat)[grep(paste0("^", this_var, "(_se|_low|_upp|_var)?$"), names(stat))]
+    wide_names <- names(stat)[grep(paste0("^", this_var, "(_se|_low|_upp|_var|_cv)?$"), names(stat))]
     stat[[peel]] <- this_var
     out <- stat[, c(grps, peel, wide_names)]
     names(out)[names(out) %in% wide_names] <- sub(this_var, "",  names(out)[names(out) %in% wide_names])

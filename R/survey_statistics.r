@@ -1,17 +1,32 @@
 #' @export
-survey_mean <- function(.svy, x, na.rm, vartype = c("se", "ci", "var", "cv"), level = 0.95) {
+survey_mean <- function(.svy, x, na.rm, vartype = c("se", "ci", "var", "cv"),
+                        level = 0.95, proportion = FALSE,
+                        prop_method = c("logit", "likelihood", "asin", "beta", "mean")) {
   UseMethod("survey_mean")
 }
 
-survey_mean.tbl_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95) {
+survey_mean.tbl_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
+                                level = 0.95, proportion = FALSE,
+                                prop_method = c("logit", "likelihood", "asin", "beta", "mean")) {
   if (missing(vartype)) vartype <- "se"
-  survey_stat_ungrouped(.svy, survey::svymean, x, na.rm, vartype, level)
+
+  if (!proportion) {
+    survey_stat_ungrouped(.svy, survey::svymean, x, na.rm, vartype, level)
+  } else {
+    # survey::ciprop only accepts formulas so can't use main function
+    survey_stat_proportion(.svy, x, na.rm, vartype, level, prop_method)
+  }
 }
 
-survey_mean.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95) {
+survey_mean.grouped_svy <- function(.svy, x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
+                                    level = 0.95, proportion = FALSE,
+                                    prop_method = c("logit", "likelihood", "asin", "beta", "mean")) {
   if (missing(vartype)) vartype <- "se"
-  if (!missing(x)) survey_stat_grouped(.svy, survey::svymean, x, na.rm, vartype, level)
-  else survey_stat_factor(.svy, survey::svymean, na.rm, vartype, level)
+  if (missing(x)) {
+    survey_stat_factor(.svy, survey::svymean, na.rm, vartype, level)
+  } else if (proportion) {
+    survey_stat_grouped(.svy, survey::svyciprop, x, na.rm, vartype, level, prop_method)
+  } else survey_stat_grouped(.svy, survey::svymean, x, na.rm, vartype, level)
 }
 
 
@@ -159,7 +174,7 @@ survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype, level) {
   out
 }
 
-survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level) {
+survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level, prop_method = NULL) {
   grps <- survey::make.formula(groups(.svy))
 
   if (class(x) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
@@ -172,12 +187,17 @@ survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level) {
   if (inherits(.svy, "twophase2")) {
     .svy$phase1$sample$variables <- .svy$variables
   }
-
-  stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm, se = TRUE)
   vartype <- c("grps", "coef", vartype)
 
-  out <- get_var_est(stat, vartype, grps = as.character(groups(.svy)), level = level)
+  if (is.null(prop_method)) {
+    stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm, se = TRUE)
+  } else {
+    vartype[vartype == "ci"] <- "ci-prop"
+    stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm, se = TRUE, vartype = c("ci", "se"),
+                          method = prop_method)
+  }
 
+  out <- get_var_est(stat, vartype, grps = as.character(groups(.svy)), level = level)
   out
 }
 
@@ -213,6 +233,16 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level) {
   }
 }
 
+survey_stat_proportion <- function(.svy, x, na.rm, vartype, level, prop_method) {
+  .svy$variables["___arg"] <- x
+  stat <- survey::svyciprop(~`___arg`, .svy, na.rm = na.rm, level = level, method = prop_method)
+
+  vartype <- c("coef", vartype)
+
+  out <- get_var_est(stat, vartype, quantile = TRUE)
+  out
+}
+
 get_var_est <- function(stat, vartype, var_names = "", grps = "",
                         peel = "", peel_class = NULL, level = 0.95,
                         quantile = FALSE) {
@@ -233,6 +263,10 @@ get_var_est <- function(stat, vartype, var_names = "", grps = "",
       } else {
         ci <- data.frame(matrix(confint(stat), ncol = 2 * out_width))
       }
+      names(ci) <- c(paste0(var_names, "_low"), paste0(var_names, "_upp"))
+      ci
+    } else if (vvv == "ci-prop") {
+      ci <- data.frame(stat[c("ci_l", "ci_u")])
       names(ci) <- c(paste0(var_names, "_low"), paste0(var_names, "_upp"))
       ci
     } else if (vvv == "var") {

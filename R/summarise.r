@@ -54,7 +54,7 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'
 #' \describe{
 #' Summarise for \code{tbl_svy} objects accepts several specialized functions:
-#' \item{\code{survey_mean(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95)}}{
+#' \item{\code{survey_mean(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95, proportion = FALSE, prop_method = NULL)}}{
 #'    Calculate the survey mean of the entire population or by \code{groups}.}
 #' \item{\code{survey_total(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95)}}{
 #'    Calculate the survey total of the entire population or by \code{groups}.}

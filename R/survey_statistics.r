@@ -90,11 +90,17 @@ survey_ratio.grouped_svy <- function(.svy, numerator, denominator, na.rm = FALSE
 }
 
 #' @export
-survey_quantile <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci"), level = 0.95) {
+survey_quantile <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci"),
+                            level = 0.95, q_method = "linear", f = 1,
+                            interval_type = c("Wald", "score", "betaWald"),
+                            ties = c("discrete", "rounded")) {
   UseMethod("survey_quantile")
 }
 
-survey_quantile.tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci"), level = 0.95) {
+survey_quantile.tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci"),
+                                    level = 0.95, q_method = "linear", f = 1,
+                                    interval_type = c("Wald", "score", "betaWald"),
+                                    ties = c("discrete", "rounded")) {
   if(missing(vartype)) vartype <- "none"
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
 
@@ -102,7 +108,8 @@ survey_quantile.tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype =
 
   stat <- survey::svyquantile(data.frame(x), .svy,
                       quantiles = quantiles, na.rm = na.rm,
-                      ci = TRUE, level = level)
+                      ci = TRUE, level = level, method = q_method, f = f,
+                      interval.type = interval_type, ties = ties)
 
   q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2, flag = "0")))
 
@@ -110,7 +117,10 @@ survey_quantile.tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype =
   out
 }
 
-survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci"), level = 0.95) {
+survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci"),
+                                        level = 0.95, q_method = "linear", f = 1,
+                                        interval_type = c("Wald", "score", "betaWald"),
+                                        ties = c("discrete", "rounded")) {
   if(missing(vartype)) vartype <- "none"
   vartype <- match.arg(vartype, several.ok = TRUE)
   vartype <- setdiff(vartype, "none")
@@ -124,9 +134,10 @@ survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, varty
     .svy$phase1$sample$variables <- .svy$variables
   }
 
-  stat <- survey::svyby(~`___arg`, grps, .svy, survey::svyquantile,
+  stat <- survey::svyby(formula = ~`___arg`, grps, .svy, survey::svyquantile,
                       quantiles = quantiles, na.rm = na.rm,
-                      ci = TRUE, level = level)
+                      ci = TRUE, level = level, method = q_method,
+                      f = f, interval.type = interval_type, ties = ties)
 
   q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2, flag = "0")))
   vartype <- c("grps", "coef", vartype)
@@ -138,14 +149,22 @@ survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE, varty
 
 
 #' @export
-survey_median <- function(.svy, x, na.rm = FALSE, vartype = c("none", "se", "ci"), level = 0.95) {
+survey_median <- function(.svy, x, na.rm = FALSE, vartype = c("none", "se", "ci"),
+                          level = 0.95, q_method = "linear", f = 1,
+                          interval_type = c("Wald", "score", "betaWald"),
+                          ties = c("discrete", "rounded")) {
   UseMethod("survey_median")
 }
 
-survey_median.default <- function(.svy, x, na.rm = FALSE, vartype = c("none", "se", "ci"), level = 0.95) {
+survey_median.default <- function(.svy, x, na.rm = FALSE, vartype = c("none", "se", "ci"),
+                                  level = 0.95, q_method = "linear", f = 1,
+                                  interval_type = c("Wald", "score", "betaWald"),
+                                  ties = c("discrete", "rounded")) {
   if (missing(vartype)) vartype <- "none"
 
-  survey_quantile(.svy, x, quantiles = 0.5, na.rm = na.rm, vartype = vartype, level = level)
+  survey_quantile(.svy, x, quantiles = 0.5, na.rm = na.rm, vartype = vartype,
+                  level = level, q_method = q_method, f = f, interval_type = interval_type,
+                  ties = ties)
 }
 
 

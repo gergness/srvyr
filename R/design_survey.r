@@ -74,7 +74,7 @@ design_survey <- function(.data, ids = NULL, probs = NULL, strata = NULL, variab
                           weights = NULL, pps = FALSE, variance = c("HT", "YG")) {
 
   # Need to turn bare variable to variable names, NSE makes looping difficult
-  helper <- function(x) unname(dplyr::select_vars_(names(.data), x))
+  helper <- function(x) unname(dplyr::select_vars_(dplyr::tbl_vars(.data), x))
   if (!missing(ids)) {
     ids <- lazy_parent(ids)
     ids <- if (ids$expr == 1 || ids$expr == 0) NULL else helper(ids)
@@ -123,7 +123,7 @@ design_survey_ <- function(.data, ids = NULL, probs = NULL, strata = NULL, varia
                            variance = variance)
 
   class(out) <- c("tbl_svy", class(out))
-  out$variables <- dplyr::tbl_df(out$variables)
+  if (is.data.frame(out$variables)) out$variables <- dplyr::tbl_df(out$variables)
 
   # Make a list of names that have the survey vars.
   survey_vars(out) <- list(ids = ids, probs = probs, strata = strata, fpc = fpc, weights = weights)

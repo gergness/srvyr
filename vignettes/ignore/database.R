@@ -19,7 +19,9 @@ dstrata <- dstrata %>%
 
 # Works
 dstrata %>%
-  summarize(x = survey_mean(api99))
+  summarize(x = survey_mean(api99),
+            y = survey_median(api99),
+            z = survey_ratio(api99, api00))
 
 # Doesn't work
 dstrata %>% select(api99)

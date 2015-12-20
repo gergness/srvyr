@@ -56,6 +56,9 @@ survey_ratio.tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE, va
   if(missing(vartype)) vartype <- "se"
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
 
+  if (inherits(numerator, "tbl_sql")) numerator <- collect(numerator)[[1]]
+  if (inherits(denominator, "tbl_sql")) denominator <- collect(denominator)[[1]]
+
   stat <- survey::svyratio(data.frame(numerator), data.frame(denominator), .svy, na.rm = na.rm)
 
   out <- get_var_est(stat, vartype, level = level)
@@ -103,8 +106,9 @@ survey_quantile.tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE, vartype =
                                     ties = c("discrete", "rounded")) {
   if(missing(vartype)) vartype <- "none"
   vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
-
   vartype <- setdiff(vartype, "none")
+
+  if (inherits(x, "tbl_sql")) x <- collect(x)[[1]]
 
   stat <- survey::svyquantile(data.frame(x), .svy,
                       quantiles = quantiles, na.rm = na.rm,

@@ -183,6 +183,7 @@ unweighted.default <- function(.svy, x) {
 
 
 survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype, level) {
+  if (inherits(x, "tbl_sql")) x <- collect(x)[[1]]
   if (class(x) == "factor") stop("Factor not allowed in survey functions, should be used as a grouping variable")
   if (class(x) == "logical") x <- as.integer(x)
   stat <- func(data.frame(x), .svy, na.rm = na.rm)

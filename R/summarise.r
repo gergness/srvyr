@@ -9,7 +9,14 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
                       survey_median = function(...) survey_median(.data, ...),
                       unweighted = function(...) unweighted(.data, ...))
 
-  out <- lazyeval::lazy_eval(.dots, c(survey_funs, .data$variables))
+  if (inherits(.data$variables, "tbl_sql")) {
+    sql_vars <- lapply(tbl_vars(.data$variables), function(x) { select_(.data$variables, x)})
+    names(sql_vars) <- tbl_vars(.data$variables)
+
+    out <- lazyeval::lazy_eval(.dots, c(survey_funs, sql_vars))
+  } else {
+    out <- lazyeval::lazy_eval(.dots, c(survey_funs, .data$variables))
+  }
   # use the argument names to name the output
   out <- lapply(seq_along(out), function(x) {
     setNames(out[[x]], paste0(names(out[x]), names(out[[x]])))

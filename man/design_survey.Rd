@@ -89,7 +89,7 @@ data(election)
 dpps <- election_pps \%>\%
   design_survey(fpc = p, pps = "brewer")
 
-## design_survey_() uses standard evaluation
+## design_survey_ uses standard evaluation
 strata_var <- "stype"
 weights_var <- "pw"
 dstrata2 <- apistrat \%>\%

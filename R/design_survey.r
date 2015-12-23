@@ -62,16 +62,17 @@
 #' dpps <- election_pps %>%
 #'   design_survey(fpc = p, pps = "brewer")
 #'
-#' ## design_survey_() uses standard evaluation
+#' ## design_survey_ uses standard evaluation
 #' strata_var <- "stype"
 #' weights_var <- "pw"
 #' dstrata2 <- apistrat %>%
 #'   design_survey_(strata = strata_var, weights = weights_var)
 #'
 
-design_survey <- function(.data, ids = NULL, probs = NULL, strata = NULL, variables = NULL,
-                          fpc = NULL, nest = FALSE, check.strata = !nest,
-                          weights = NULL, pps = FALSE, variance = c("HT", "YG")) {
+design_survey <- function(.data, ids = NULL, probs = NULL, strata = NULL,
+                          variables = NULL, fpc = NULL, nest = FALSE,
+                          check.strata = !nest,weights = NULL, pps = FALSE,
+                          variance = c("HT", "YG")) {
 
   # Need to turn bare variable to variable names, NSE makes looping difficult
   helper <- function(x) unname(dplyr::select_vars_(names(.data), x))
@@ -94,9 +95,10 @@ design_survey <- function(.data, ids = NULL, probs = NULL, strata = NULL, variab
 
 #' @export
 #' @rdname design_survey
-design_survey_ <- function(.data, ids = NULL, probs = NULL, strata = NULL, variables = NULL,
-                           fpc = NULL, nest = FALSE, check.strata = !nest,
-                           weights = NULL, pps = FALSE, variance = c("HT", "YG")) {
+design_survey_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
+                           variables = NULL, fpc = NULL, nest = FALSE,
+                           check.strata = !nest,weights = NULL, pps = FALSE,
+                           variance = c("HT", "YG")) {
 
 
   # svydesign expects ~0 instead of NULL if no ids are included
@@ -126,7 +128,8 @@ design_survey_ <- function(.data, ids = NULL, probs = NULL, strata = NULL, varia
   out$variables <- dplyr::tbl_df(out$variables)
 
   # Make a list of names that have the survey vars.
-  survey_vars(out) <- list(ids = ids, probs = probs, strata = strata, fpc = fpc, weights = weights)
+  survey_vars(out) <- list(ids = ids, probs = probs, strata = strata, fpc = fpc,
+                           weights = weights)
 
   # To make printing better, change call
   out$call <- "called via srvyr"

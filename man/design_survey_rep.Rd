@@ -67,7 +67,7 @@ scdrep <- scd \%>\%
   design_survey_rep(type = "BRR", repweights = starts_with("rep"),
                     combined_weights = FALSE)
 
-# svyratio(~alive, ~arrests, scdrep)
+svyratio(~alive, ~arrests, scdrep)
 
 }
 

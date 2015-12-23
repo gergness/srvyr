@@ -15,8 +15,7 @@ nullable <- function(f, x) {
 "%||%" <- function(x, y) if(is.null(x)) y else x
 
 # From dplyr (utils.r)
-names2 <- function (x)
-{
+names2 <- function (x) {
   names(x) %||% rep("", length(x))
 }
 

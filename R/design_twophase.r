@@ -21,7 +21,7 @@
 #' @return An object of class \code{tbl_svy}
 #' @examples
 #' # Examples from ?survey::twophase
-#' ## two-phase simple random sampling.
+#' # two-phase simple random sampling.
 #' data(pbc, package="survival")
 #'
 #' pbc <- pbc %>%
@@ -32,7 +32,7 @@
 #'
 #' d2pbc %>% summarize(mean = survey_mean(bili))
 #'
-#' ## two-stage sampling as two-phase
+#' # two-stage sampling as two-phase
 #' library(survey)
 #' data(mu284)
 #'
@@ -43,7 +43,7 @@
 #'
 #' dmu284 <- mu284 %>%
 #'   design_survey(ids = c(id1, id2), fpc = c(n1, n2))
-#' ## first phase cluster sample, second phase stratified within cluster
+#' # first phase cluster sample, second phase stratified within cluster
 #' d2mu284 <- mu284_1 %>%
 #'   design_twophase(id = list(id1, id), strata = list(NULL, id1),
 #'                   fpc = list(n1, NULL), subset = sub)
@@ -54,13 +54,16 @@
 #'   summarize(total = survey_total(y1),
 #'             mean = survey_mean(y1))
 #'
-design_twophase <- function(.data, id, strata = NULL, probs = NULL, weights = NULL, fpc = NULL,
-                          subset, method = c("full", "approx", "simple")) {
+design_twophase <- function(.data, id, strata = NULL, probs = NULL,
+                            weights = NULL, fpc = NULL, subset,
+                            method = c("full", "approx", "simple")) {
   # Need to turn bare variable to variable names inside list (for 2phase)
   # NULLS are allowed in the list and should be carried forward.
   helper_list <- function(x) {
     x <- x[["expr"]]
-    if(x[[1]] != "list" || length(x) > 3) stop("design_twophase requies a list of 2 sets of variables")
+    if(x[[1]] != "list" || length(x) > 3) {
+      stop("design_twophase requies a list of 2 sets of variables")
+    }
     name1 <- unname(dplyr::select_vars_(names(.data), x[[2]]))
     name1 <- if (length(name1) == 0) NULL else name1
     name2 <- unname(dplyr::select_vars_(names(.data), x[[3]]))
@@ -86,12 +89,16 @@ design_twophase <- function(.data, id, strata = NULL, probs = NULL, weights = NU
 
 #' @export
 #' @rdname design_twophase
-design_twophase_ <- function(.data, id, strata = NULL, probs = NULL, weights = NULL, fpc = NULL,
-                             subset, method = c("full", "approx", "simple")) {
-  # survey::twophase doesn't work with values, needs to be formula of variable names
+design_twophase_ <- function(.data, id, strata = NULL, probs = NULL,
+                             weights = NULL, fpc = NULL, subset,
+                             method = c("full", "approx", "simple")) {
+  # survey::twophase doesn't work with values, needs to be formula of
+  # variable names
   # Change list of variable names to formulas
   list_to_formula <- function(x) {
-    if (!is.null(x)) lapply(x, function(y) nullable(survey::make.formula, y)) else NULL
+    if (!is.null(x)) {
+      lapply(x, function(y) nullable(survey::make.formula, y))
+    } else NULL
   }
 
   out <- survey::twophase(data = .data,
@@ -109,11 +116,11 @@ design_twophase_ <- function(.data, id, strata = NULL, probs = NULL, weights = N
   out$phase1$sample$variables <- dplyr::tbl_df(out$phase1$sample$variables)
 
   # Make a list of names that have the survey vars.
-  survey_vars(out) <- list(ids = id, strata = strata, probs = probs, weights = weights, fpc = fpc,
-                           subset = subset)
+  survey_vars(out) <- list(ids = id, strata = strata, probs = probs,
+                           weights = weights, fpc = fpc, subset = subset)
 
-  # To make twophase behave similarly to the other survey objects, add sample variables
-  # from phase1 to the first level of the object.
+  # To make twophase behave similarly to the other survey objects, add sample
+  # variables from phase1 to the first level of the object.
   out$variables <- out$phase1$sample$variables
 
   out

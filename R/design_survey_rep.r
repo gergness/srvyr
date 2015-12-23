@@ -36,15 +36,15 @@
 #'   design_survey_rep(type = "BRR", repweights = starts_with("rep"),
 #'                     combined_weights = FALSE)
 #'
-#' # svyratio(~alive, ~arrests, scdrep)
+#' svyratio(~alive, ~arrests, scdrep)
 #'
-design_survey_rep <- function(.data, variables = NULL, repweights = NULL, weights = NULL,
-                              type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
-                                       "other"), combined_weights = TRUE,
-                              rho = NULL, bootstrap_average = NULL, scale = NULL,
-                              rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
-                              mse = getOption("survey.replicates.mse")) {
-
+design_survey_rep <-
+  function(.data, variables = NULL, repweights = NULL, weights = NULL,
+           type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
+                    "other"), combined_weights = TRUE,
+           rho = NULL, bootstrap_average = NULL, scale = NULL,
+           rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
+           mse = getOption("survey.replicates.mse")) {
   # Need to turn bare variable to variable names, NSE makes looping difficult
   helper <- function(x) unname(dplyr::select_vars_(names(.data), x))
   if (!missing(variables)) variables <- helper(lazy_parent(variables))
@@ -61,12 +61,13 @@ design_survey_rep <- function(.data, variables = NULL, repweights = NULL, weight
 
 #' @export
 #' @rdname design_survey_rep
-design_survey_rep_ <- function(.data, variables = NULL, repweights = NULL, weights = NULL,
-                               type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
-                                      "other"), combined_weights = TRUE,
-                               rho = NULL, bootstrap_average = NULL, scale = NULL,
-                               rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
-                               mse = getOption("survey.replicates.mse")) {
+design_survey_rep_ <-
+  function(.data, variables = NULL, repweights = NULL, weights = NULL,
+           type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
+                    "other"), combined_weights = TRUE,
+           rho = NULL, bootstrap_average = NULL, scale = NULL,
+           rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
+           mse = getOption("survey.replicates.mse")) {
 
 
   # Need to convert to data.frame to appease survey package and also not
@@ -74,25 +75,27 @@ design_survey_rep_ <- function(.data, variables = NULL, repweights = NULL, weigh
   survey_selector <- function(x) {
     if (!is.null(x)) data.frame(dplyr::select_(.data, .dots = x)) else NULL
   }
-  out <- survey::svrepdesign(data = .data,
-                           variables = survey_selector(variables),
-                           repweights = survey_selector(repweights),
-                           weights = nullable(as.matrix, survey_selector(weights)[[1]]),
-                           type = match.arg(type),
-                           combined.weights = combined_weights,
-                           rho = rho,
-                           bootstrap.average = bootstrap_average,
-                           scale = scale,
-                           rscales = rscales,
-                           fpc = survey_selector(fpc),
-                           fpctype = fpctype,
-                           mse = mse)
+  out <- survey::svrepdesign(
+    data = .data,
+    variables = survey_selector(variables),
+    repweights = survey_selector(repweights),
+    weights = nullable(as.matrix, survey_selector(weights)[[1]]),
+    type = match.arg(type),
+    combined.weights = combined_weights,
+    rho = rho,
+    bootstrap.average = bootstrap_average,
+    scale = scale,
+    rscales = rscales,
+    fpc = survey_selector(fpc),
+    fpctype = fpctype,
+    mse = mse)
 
   class(out) <- c("tbl_svy", class(out))
   out$variables <- dplyr::tbl_df(out$variables)
 
   # Make a list of names that have the survey vars.
-  survey_vars(out) <- list(repweights = repweights,  weights = weights, fpc = fpc)
+  survey_vars(out) <- list(repweights = repweights,  weights = weights,
+                           fpc = fpc)
 
   # To make printing better, change call
   out$call <- "called via srvyr"

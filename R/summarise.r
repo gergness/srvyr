@@ -2,12 +2,14 @@
 summarise_.tbl_svy <- function(.data, ..., .dots) {
   .dots <- lazyeval::all_dots(.dots, ...)
 
-  survey_funs <- list(survey_mean = function(...) survey_mean(.data, ...),
-                      survey_total = function(...) survey_total(.data, ...),
-                      survey_ratio = function(...) survey_ratio(.data, ...),
-                      survey_quantile = function(...) survey_quantile(.data, ...),
-                      survey_median = function(...) survey_median(.data, ...),
-                      unweighted = function(...) unweighted(.data, ...))
+  survey_funs <- list(
+    survey_mean = function(...) survey_mean(.data, ...),
+    survey_total = function(...) survey_total(.data, ...),
+    survey_ratio = function(...) survey_ratio(.data, ...),
+    survey_quantile = function(...) survey_quantile(.data, ...),
+    survey_median = function(...) survey_median(.data, ...),
+    unweighted = function(...) unweighted(.data, ...)
+  )
 
   out <- lazyeval::lazy_eval(.dots, c(survey_funs, .data$variables))
   # use the argument names to name the output
@@ -36,7 +38,8 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
   out <- lapply(seq_along(out), function(x) {
     unchanged_names <- groups
     changed_names <- setdiff(names(out[[x]]), groups)
-    results <- setNames(out[[x]], c(unchanged_names, paste0(names(out[x]), changed_names)))
+    results <- setNames(out[[x]], c(unchanged_names, paste0(names(out[x]),
+                                                            changed_names)))
     results <- dplyr::arrange_(results, unchanged_names)
 
     # Only keep stratifying vars in first calculation so they're not repeated
@@ -119,4 +122,3 @@ NULL
 #' @export
 #' @importFrom dplyr summarize_
 NULL
-

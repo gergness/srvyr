@@ -4,9 +4,9 @@ library(srvyr)
 # From survey::as.svrepdesign examples
 library(survey)
 data(scd)
-scddes<-svydesign(data = scd, prob = ~1, id = ~ambulance, strata = ~ESA,
+scddes <- svydesign(data = scd, prob = ~1, id = ~ambulance, strata = ~ESA,
                   nest = TRUE, fpc = rep(5, 6))
-scdnofpc<-svydesign(data = scd, prob = ~1, id = ~ambulance, strata = ~ESA,
+scdnofpc <- svydesign(data = scd, prob = ~1, id = ~ambulance, strata = ~ESA,
                     nest = TRUE)
 
 # ------------------------------------------------------------------

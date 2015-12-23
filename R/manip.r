@@ -2,7 +2,9 @@
 mutate_.tbl_svy <- function(.data, ..., .dots) {
   dots <- lazyeval::all_dots(.dots, ..., all_named = FALSE)
 
-  if (any(names2(dots) %in% as.character(survey_vars(.data)))) stop("Cannot modify survey variable")
+  if (any(names2(dots) %in% as.character(survey_vars(.data)))) {
+    stop("Cannot modify survey variable")
+  }
 
   .data$variables <- mutate_(.data$variables, .dots = dots)
   .data
@@ -39,12 +41,14 @@ rename_.tbl_svy <- function(.data, ..., .dots) {
 filter_.tbl_svy <- function(.data, ..., .dots) {
   dots <- lazyeval::all_dots(.dots, ...)
 
-  # There's probably a better way to do this... But I need to use survey::subset
-  # because I want to make sure that I recalculate the survey_vars correctly.
-  # Create a variable with the row numbers, run dplyr on the variables data.frame
-  # and then pass the row_numbers that are kept into survey::svydesign2 `[`
+  # There's probably a better way to do this... But I need to use
+  # survey::subset because I want to make sure that I recalculate the
+  # survey_vars correctly. Create a variable with the row numbers, run dplyr
+  # on the variables data.frame and then pass the row_numbers that are kept
+  # into survey::svydesign2 `[`
   row_numbers <- .data$variables
-  row_numbers <- dplyr::mutate_(row_numbers, "`___row_nums` = dplyr::row_number(1)")
+  row_numbers <-
+    dplyr::mutate_(row_numbers, "`___row_nums` = dplyr::row_number(1)")
   row_numbers <- dplyr::filter_(row_numbers, .dots = dots)
   row_numbers <- row_numbers$`___row_nums`
 
@@ -67,10 +71,13 @@ rename_special_vars <- function(svy, var_list) {
 
     # Make changes in actual sydesign2 object's structures
     names(svy$cluster)[names(svy$cluster) == this_var] <- names(this_var)
-    if(svy$has.strata) names(svy$strata)[names(svy$strata) == this_var] <- names(this_var)
+    if(svy$has.strata) {
+      names(svy$strata)[names(svy$strata) == this_var] <- names(this_var)
+    }
     names(svy$allprob)[names(svy$allprob) == this_var] <- names(this_var)
-    attr(svy$fpc$popsize, "dimnames")[[2]][attr(svy$fpc$popsize, "dimnames")[[2]] == this_var] <-
-      names(this_var)
+    attr(svy$fpc$popsize, "dimnames")[[2]][
+      attr(svy$fpc$popsize, "dimnames")[[2]] == this_var
+      ] <- names(this_var)
   }
 
   survey_vars(svy) <- svars
@@ -200,5 +207,3 @@ NULL
 #' @importFrom dplyr funs_
 #' @rdname dplyr_single
 NULL
-
-

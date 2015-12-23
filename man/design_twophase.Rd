@@ -43,7 +43,7 @@ standard evaluation counterpart to \code{design_twophase}
 }
 \examples{
 # Examples from ?survey::twophase
-## two-phase simple random sampling.
+# two-phase simple random sampling.
 data(pbc, package="survival")
 
 pbc <- pbc \%>\%
@@ -54,7 +54,7 @@ d2pbc <- pbc \%>\%
 
 d2pbc \%>\% summarize(mean = survey_mean(bili))
 
-## two-stage sampling as two-phase
+# two-stage sampling as two-phase
 library(survey)
 data(mu284)
 
@@ -65,7 +65,7 @@ mu284_1 <- mu284 \%>\%
 
 dmu284 <- mu284 \%>\%
   design_survey(ids = c(id1, id2), fpc = c(n1, n2))
-## first phase cluster sample, second phase stratified within cluster
+# first phase cluster sample, second phase stratified within cluster
 d2mu284 <- mu284_1 \%>\%
   design_twophase(id = list(id1, id), strata = list(NULL, id1),
                   fpc = list(n1, NULL), subset = sub)

@@ -31,7 +31,8 @@ print.survey_vars <- function(x, ...) {
   cat("Sampling variables:\n")
   lapply(seq_along(x), function(y) {
     if (!is.null(x[[y]])) {
-      cat(paste0(" - ", names(x[y]), ": ", paste(x[[y]], collapse = ", "), "\n"))
+      cat(paste0(" - ", names(x[y]), ": ", paste(x[[y]], collapse = ", "),
+                 "\n"))
     }
     })
   invisible(x)

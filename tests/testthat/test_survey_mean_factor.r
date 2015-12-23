@@ -14,9 +14,10 @@ out_srvyr <- dstrata %>%
   group_by(awards) %>%
   summarize(pct = survey_mean())
 
-test_that("survey_mean gets correct values for factors with single grouped surveys",
-          expect_equal(c(out_survey[[1]], sqrt(diag(attr(out_survey, "var")))[[1]]),
-                       c(out_srvyr[[1, 2]], out_srvyr[[1, 3]])))
+test_that(
+  "survey_mean gets correct values for factors with single grouped surveys",
+  expect_equal(c(out_survey[[1]], sqrt(diag(attr(out_survey, "var")))[[1]]),
+               c(out_srvyr[[1, 2]], out_srvyr[[1, 3]])))
 
 test_that("survey_mean preserves factor levels",
           expect_equal(levels(apistrat$awards), levels(out_srvyr$awards)))
@@ -30,15 +31,19 @@ out_srvyr <- dstrata %>%
 test_that("survey_mean preserves factor levels",
           expect_equal("character", class(out_srvyr$awards)))
 
-# 2+ groups
+# More than 2 groups
 out_srvyr <- dstrata %>%
   group_by(stype, awards) %>%
   summarize(tot = survey_total())
 
 out_survey <- svyby(~awards, ~stype, dstrata, svytotal)
 
-test_that("survey_total gets correct values when doing proportions with multiple groups",
-          expect_equal(out_survey$awardsNo, out_srvyr %>% filter(awards == "No") %>% .$tot))
+test_that("survey_total is correct when doing props with multiple groups",
+          expect_equal(out_survey$awardsNo,
+                       out_srvyr %>% filter(awards == "No") %>% .$tot))
 
-test_that("survey_total gets correct values when doing proportions with multiple groups (se)",
-          expect_equal(out_survey$`se.awardsNo`, out_srvyr %>% filter(awards == "No") %>% .$tot_se))
+test_that("survey_total is correct when doing props with multiple groups (se)",
+          expect_equal(out_survey$`se.awardsNo`,
+                       out_srvyr %>%
+                         filter(awards == "No") %>%
+                         .$tot_se))

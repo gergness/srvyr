@@ -146,7 +146,8 @@ survey_quantile.tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE,
 
 survey_quantile.grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
                                         vartype = c("none", "se", "ci"),
-                                        level = 0.95, q_method = "linear", f = 1,
+                                        level = 0.95, q_method = "linear",
+                                        f = 1,
                                         interval_type = c("Wald", "score",
                                                           "betaWald"),
                                         ties = c("discrete", "rounded")) {

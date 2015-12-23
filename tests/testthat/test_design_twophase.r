@@ -22,7 +22,8 @@ survey_results <- list(
   data.frame(albumin = svyratio(~bili, ~albumin, d2pbc_survey)[[1]],
              se = sqrt(unname(svyratio(~bili, ~albumin, d2pbc_survey)[[2]])))
 ) %>% dplyr::bind_cols() %>%
-  setNames(c("mean", "mean_se", "total", "total_se", "median_q50", "ratio", "ratio_se"))
+  setNames(c("mean", "mean_se", "total", "total_se", "median_q50", "ratio",
+             "ratio_se"))
 
 srvyr_results <- d2pbc_srvyr %>%
   summarize(mean = survey_mean(bili),
@@ -38,7 +39,8 @@ test_that("design_twophase gets same mean / total / median / ratio in srvyr",
 survey_results <- list(
   as.data.frame(svyby(~bili, ~sex, d2pbc_survey, svymean)),
   as.data.frame(svyby(~bili, ~sex, d2pbc_survey, svytotal)),
-  as.data.frame(suppressWarnings(svyby(~bili, ~sex, d2pbc_survey, svyquantile, quantiles = 0.5, ci = TRUE)))
+  as.data.frame(suppressWarnings(svyby(~bili, ~sex, d2pbc_survey, svyquantile,
+                                       quantiles = 0.5, ci = TRUE)))
 ) %>% dplyr::bind_cols() %>%
   setNames(c("sex", "mean", "mean_se", "sex2", "total", "total_se",
              "sex3", "median_q50", "median_q50_se")) %>%
@@ -50,6 +52,6 @@ suppressWarnings(srvyr_results <- d2pbc_srvyr %>%
             total = survey_total(bili),
             median = survey_median(bili, vartype = "se")))
 
-test_that("design_twophase gets same mean / total / median / ratio in srvyr (grouped)",
-          expect_equal(survey_results, srvyr_results))
-
+test_that(
+  "design_twophase gets same mean / total / median / ratio in srvyr (grouped)",
+  expect_equal(survey_results, srvyr_results))

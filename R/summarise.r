@@ -24,12 +24,14 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
 summarise_.grouped_svy <- function(.data, ..., .dots) {
   .dots <- lazyeval::all_dots(.dots, ...)
 
-  survey_funs <- list(survey_mean = function(...) survey_mean(.data, ...),
-                      survey_total = function(...) survey_total(.data, ...),
-                      survey_ratio = function(...) survey_ratio(.data, ...),
-                      survey_quantile = function(...) survey_quantile(.data, ...),
-                      survey_median = function(...) survey_median(.data, ...),
-                      unweighted = function(...) unweighted(.data, ...))
+  survey_funs <- list(
+    survey_mean = function(...) survey_mean(.data, ...),
+    survey_total = function(...) survey_total(.data, ...),
+    survey_ratio = function(...) survey_ratio(.data, ...),
+    survey_quantile = function(...) survey_quantile(.data, ...),
+    survey_median = function(...) survey_median(.data, ...),
+    unweighted = function(...) unweighted(.data, ...)
+  )
 
   groups <- as.character(groups(.data))
 

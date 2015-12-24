@@ -1,4 +1,4 @@
-context("Quick tests for added summary statistics (survey_ratio / survey_quantile)")
+context("Quick tests for added summary stats (ratio / quantile)")
 
 library(srvyr)
 library(survey)
@@ -17,7 +17,8 @@ test_that("survey_ratio works for ungrouped surveys",
                        c(out_srvyr[[1, 1]], out_srvyr[[1, 2]])))
 
 
-out_survey <- svyby(~api00, ~stype, denominator = ~api99, dstrata, svyratio) %>%
+out_survey <- svyby(~api00, ~stype, denominator = ~api99, dstrata,
+                    svyratio) %>%
   as.data.frame()
 
 out_srvyr <- dstrata %>%
@@ -44,22 +45,27 @@ test_that("survey_quantile works for ungrouped surveys - no ci",
 out_survey <- svyquantile(~api00, dstrata, c(0.5, 0.75), ci = TRUE)
 
 out_srvyr <- dstrata %>%
-  summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75), vartype = "ci"))
+  summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75),
+                                    vartype = "ci"))
 
 test_that("survey_quantile works for ungrouped surveys - with ci",
           expect_equal(c(out_survey$CIs[[1]], out_survey$CIs[[2]]),
-                       c(out_srvyr[[1, "api00_q50_low"]], out_srvyr[[1, "api00_q50_upp"]])))
+                       c(out_srvyr[[1, "api00_q50_low"]],
+                         out_srvyr[[1, "api00_q50_upp"]])))
 
 
-suppressWarnings(out_survey <- svyby(~api00, ~stype, dstrata, svyquantile, quantiles = c(0.5, 0.75), ci = TRUE))
+suppressWarnings(out_survey <- svyby(~api00, ~stype, dstrata, svyquantile,
+                                     quantiles = c(0.5, 0.75), ci = TRUE))
 
 suppressWarnings(out_srvyr <- dstrata %>%
   group_by(stype) %>%
-  summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75), vartype = "se")))
+  summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75),
+                                    vartype = "se")))
 
 test_that("survey_quantile works for grouped surveys - with se",
-          expect_equal(c(out_survey$`0.5`[[1]], out_survey$`se.0.5`[[1]]),
-                       c(out_srvyr[[1, "api00_q50"]], out_srvyr[[1, "api00_q50_se"]])))
+          expect_equal(c(out_survey$`0.5`[[1]], out_survey[["se.0.5"]][[1]]),
+                       c(out_srvyr[[1, "api00_q50"]],
+                         out_srvyr[[1, "api00_q50_se"]])))
 
 # survey_quantile
 out_survey <- svyquantile(~api00, dstrata, c(0.5))
@@ -73,15 +79,22 @@ test_that("survey_quantile works for ungrouped surveys - no ci",
                        c(out_srvyr[[1, 1]])))
 
 
-suppressWarnings(out_survey <- svyby(~api00, ~stype+awards, dstrata, svyquantile, quantiles = c(0.5, 0.75), ci = TRUE))
+suppressWarnings(
+  out_survey <- svyby(~api00, ~stype + awards, dstrata, svyquantile,
+                      quantiles = c(0.5, 0.75), ci = TRUE)
+)
 
-suppressWarnings(out_srvyr <- dstrata %>%
-                   group_by(stype, awards) %>%
-                   summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75), vartype = "se")))
+suppressWarnings(
+  out_srvyr <- dstrata %>%
+    group_by(stype, awards) %>%
+    summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75),
+                                      vartype = "se"))
+)
 
-test_that("survey_quantile works for grouped surveys - with multiple grouping variables",
-          expect_equal(c(out_survey$`0.5`[[1]], out_survey$`se.0.5`[[1]]),
-                       c(out_srvyr[[1, "api00_q50"]], out_srvyr[[1, "api00_q50_se"]])))
+test_that(
+  "survey_quantile works for grouped surveys - multiple grouping variables",
+  expect_equal(c(out_survey$`0.5`[[1]], out_survey[["se.0.5"]][[1]]),
+               c(out_srvyr[[1, "api00_q50"]], out_srvyr[[1, "api00_q50_se"]])))
 
 
 
@@ -99,9 +112,10 @@ ratio <- confint(ratio, level = 0.9)
 mdn <- svyquantile(~api00, dstrata, quantile = 0.5, ci = TRUE, level = 0.9)
 mdn <- confint(mdn)
 out_survey <- c(mn[1], mn[2], ratio[1], ratio[2], mdn[1], mdn[2])
-names(out_survey) <- c("mn_low", "mn_upp", "ratio_low", "ratio_upp", "mdn_q50_low", "mdn_q50_upp")
+names(out_survey) <- c("mn_low", "mn_upp", "ratio_low",
+                       "ratio_upp", "mdn_q50_low", "mdn_q50_upp")
 
-test_that("mean / median / ratio with CIs respect level parameter (ungrouped)",
+test_that("mean/median/ratio with CIs respect level parameter (ungrouped)",
           expect_equal(out_srvyr, out_survey))
 
 
@@ -117,10 +131,13 @@ mn <- svyby(~api00, ~stype, dstrata, svymean)
 mn <- confint(mn, level = 0.9)
 ratio <- svyby(~api00, ~stype, denominator = ~api99, dstrata, svyratio)
 ratio <- confint(ratio, level = 0.9)
-suppressWarnings(mdn <- svyby(~api00, ~stype, dstrata, svyquantile, quantile = 0.5, ci = TRUE, level = 0.90))
+suppressWarnings(mdn <- svyby(~api00, ~stype, dstrata, svyquantile,
+                              quantile = 0.5, ci = TRUE, level = 0.90))
 mdn <- confint(mdn, level = 0.9)
-out_survey <- dplyr::bind_cols(data.frame(mn), data.frame(ratio), data.frame(mdn))
-names(out_survey) <- c("mn_low", "mn_upp", "ratio_low", "ratio_upp", "mdn_q50_low", "mdn_q50_upp")
+out_survey <- dplyr::bind_cols(data.frame(mn), data.frame(ratio),
+                               data.frame(mdn))
+names(out_survey) <- c("mn_low", "mn_upp", "ratio_low", "ratio_upp",
+                       "mdn_q50_low", "mdn_q50_upp")
 
-test_that("mean / median / ratio with CIs respect level parameter (ungrouped)",
+test_that("mean/median/ratio with CIs respect level parameter (ungrouped)",
           expect_equal(out_srvyr, out_survey))

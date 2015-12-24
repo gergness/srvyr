@@ -39,11 +39,11 @@ out_srvyr <- dstrata %>%
 out_survey <- svyby(~awards, ~stype, dstrata, svytotal)
 
 test_that("survey_total is correct when doing props with multiple groups",
-          expect_equal(out_survey$awardsNo,
+          expect_equal(out_survey[["awardsNo"]],
                        out_srvyr %>% filter(awards == "No") %>% .$tot))
 
 test_that("survey_total is correct when doing props with multiple groups (se)",
-          expect_equal(out_survey$`se.awardsNo`,
+          expect_equal(out_survey[["se.awardsNo"]],
                        out_srvyr %>%
                          filter(awards == "No") %>%
                          .$tot_se))

@@ -51,7 +51,7 @@ variation, we have to completely rewrite the `dplyr` code for the `survey` packa
 
 # Preparing a survey dataset
 
-`design_survey()` and `design_survey_rep()` are analagous to `survey::svydesign()`
+`as_survey_design()` and `as_survey_rep()` are analagous to `survey::svydesign()`
 and `survey::svrepdesign()` respectively. Because they are designed to match
 `dplyr`'s style of non-standard evaluation, they accept bare column names instead
 of formulas (~). They also move the data argument first, so that it is easier to use
@@ -61,7 +61,7 @@ of formulas (~). They also move the data argument first, so that it is easier to
 library(srvyr)
 
 # simple random sample
-srs_design_srvyr <- apisrs %>% design_survey(ids = 1, fpc = fpc)
+srs_design_srvyr <- apisrs %>% as_survey_design(ids = 1, fpc = fpc)
 
 srs_design_survey <- svydesign(ids = ~1, fpc = ~fpc, data = apisrs)
 ```
@@ -72,7 +72,7 @@ analagous:
 ```{r, message = FALSE}
 # selecting variables to keep in the survey object (stratified example)
 strat_design_srvyr <- apistrat %>%
-  design_survey(1, strata = stype, fpc = fpc, weight = pw,
+  as_survey_design(1, strata = stype, fpc = fpc, weight = pw,
                 variables = c(stype, starts_with("api")))
 
 strat_design_survey <- svydesign(~1, strata = ~stype, fpc = ~fpc,
@@ -160,7 +160,7 @@ little extra set up, and replacing `weighted.mean()` with `survey_mean`.
 
   ```{r, message = FALSE, fig.width = 6}
 strat_design <- apistrat %>%
-  design_survey(strata = stype, fpc = fpc, weight  = pw)
+  as_survey_design(strata = stype, fpc = fpc, weight  = pw)
 
 out <- strat_design %>%
   mutate(hs_grad_pct = cut(hsg, c(0, 20, 100), include.lowest = TRUE,
@@ -199,7 +199,7 @@ with a "_" at the end. These functions can be useful when programming because th
 make it easier to send arguments from other functions.
 
 ```{r, message = FALSE}
-srs_design_srvyr <- apisrs %>% design_survey_(ids = "1", fpc = "fpc")
+srs_design_srvyr <- apisrs %>% as_survey_design_(ids = "1", fpc = "fpc")
 
 strat_design_srvyr %>%
   group_by_("stype") %>%

@@ -6,7 +6,7 @@ data(api)
 # Overall
 ## srvyr
 dstrata_srvyr <- apistrat %>%
-  design_survey(strata = stype, weights = pw)
+  as_survey(strata = stype, weights = pw)
 
 srvyr_results <- dstrata_srvyr %>%
   summarise(api99_mn = survey_mean(api99, vartype = c("se", "var", "ci")),

@@ -86,7 +86,7 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #' data(api)
 #'
 #' dstrata <- apistrat %>%
-#'   design_survey(strata = stype, weights = pw)
+#'   as_survey_design(strata = stype, weights = pw)
 #'
 #' dstrata %>%
 #'   summarise(api99 = survey_mean(api99),

@@ -1,4 +1,4 @@
-context("design_twophase works as expected.")
+context("as_survey_twophase works as expected.")
 library(srvyr)
 library(survey)
 
@@ -12,7 +12,7 @@ pbc <- pbc %>%
 d2pbc_survey <- twophase(id=list(~id,~id), data=pbc, subset=~randomized)
 
 d2pbc_srvyr <- pbc %>%
-  design_twophase(id = list(id, id), subset = randomized)
+  as_survey_twophase(id = list(id, id), subset = randomized)
 
 
 survey_results <- list(
@@ -32,7 +32,7 @@ srvyr_results <- d2pbc_srvyr %>%
             ratio = survey_ratio(bili, albumin))
 
 
-test_that("design_twophase gets same mean / total / median / ratio in srvyr",
+test_that("as_survey_twophase gets same mean / total / median / ratio in srvyr",
           expect_equal(survey_results, srvyr_results))
 
 
@@ -53,5 +53,5 @@ suppressWarnings(srvyr_results <- d2pbc_srvyr %>%
             median = survey_median(bili, vartype = "se")))
 
 test_that(
-  "design_twophase gets same mean / total / median / ratio in srvyr (grouped)",
+  "as_survey_twophase gets same mean / total / median / ratio in srvyr (grouped)",
   expect_equal(survey_results, srvyr_results))

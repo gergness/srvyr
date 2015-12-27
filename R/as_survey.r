@@ -1,8 +1,8 @@
 #' Create a tbl_svy from a data.frame
 #'
 #'#' \code{as_survey} can be used to create a \code{tbl_svy} using design information
-#' (\code{\link{design_survey}}), replicate weights (\code{\link{design_survey_rep}}),
-#' or a two phase design (\code{\link{design_twophase}}). \code{as_survey_} is its
+#' (\code{\link{as_survey_design}}), replicate weights (\code{\link{as_survey_rep}}),
+#' or a two phase design (\code{\link{as_survey_twophase}}). \code{as_survey_} is its
 #' standard evaluation counterpart.
 #'
 #' @param .data a data.frame
@@ -44,17 +44,17 @@
 as_survey <- function(.data, ...) {
   dots <- lazyeval::lazy_dots(...)
   if ("repweights" %in% names(dots)) {
-    design_survey_rep(.data, ...)
+    as_survey_rep(.data, ...)
   } else if ("id" %in% names(dots) | "ids" %in% names(dots)) {
     # twophase has a list of 2 groups for id, while regular id is just a set of variables
     id_expr <- as.character(dots$id$expr)
     if ("list" %in% id_expr & length(id_expr) == 3) {
-      design_twophase(.data, ...)
+      as_survey_twophase(.data, ...)
     } else {
-      design_survey(.data, ...)
+      as_survey_design(.data, ...)
     }
   } else {
-    design_survey(.data, ...)
+    as_survey_design(.data, ...)
   }
 }
 
@@ -63,16 +63,16 @@ as_survey <- function(.data, ...) {
 as_survey_ <- function(.data, ...) {
   dots <- lazyeval::lazy_dots(...)
   if ("repweights" %in% names(dots)) {
-    design_survey_rep_(.data, ...)
+    as_survey_rep_(.data, ...)
   } else if ("id" %in% names(dots) | "ids" %in% names(dots)) {
     # twophase has a list of 2 groups for id, while regular id is just a set of variables
     id_expr <- as.character(dots$id$expr)
     if ("list" %in% id_expr & length(id_expr) == 3) {
-      design_twophase_(.data, ...)
+      as_survey_twophase_(.data, ...)
     } else {
-      design_survey_(.data, ...)
+      as_survey_design_(.data, ...)
     }
   } else {
-    design_survey_(.data, ...)
+    as_survey_design_(.data, ...)
   }
 }

@@ -5,7 +5,7 @@ library(survey)
 
 data(api)
 dstrata <- apistrat %>%
-  design_survey(strata = stype, weights = pw)
+  as_survey_design(strata = stype, weights = pw)
 
 
 out_srvyr <- dstrata %>%

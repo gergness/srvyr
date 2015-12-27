@@ -2,8 +2,8 @@
 #'
 #' A wrapper around \code{\link[survey]{twophase}}. All survey variables must be included
 #' in the data.frame itself. Select variables by using bare column names, or convenience
-#' functions described in \code{\link[dplyr]{select}}. \code{design_twophase_} is the
-#' standard evaluation counterpart to \code{design_twophase}
+#' functions described in \code{\link[dplyr]{select}}. \code{as_survey_twophase_} is the
+#' standard evaluation counterpart to \code{as_survey_twophase}
 #'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
@@ -28,7 +28,7 @@
 #'   mutate(randomized = !is.na(trt) & trt > 0,
 #'          id = row_number())
 #' d2pbc <- pbc %>%
-#'   design_twophase(id = list(id, id), subset = randomized)
+#'   as_survey_twophase(id = list(id, id), subset = randomized)
 #'
 #' d2pbc %>% summarize(mean = survey_mean(bili))
 #'
@@ -42,10 +42,10 @@
 #'          sub = rep(c(TRUE, FALSE), c(15, 34-15)))
 #'
 #' dmu284 <- mu284 %>%
-#'   design_survey(ids = c(id1, id2), fpc = c(n1, n2))
+#'   as_survey_design(ids = c(id1, id2), fpc = c(n1, n2))
 #' # first phase cluster sample, second phase stratified within cluster
 #' d2mu284 <- mu284_1 %>%
-#'   design_twophase(id = list(id1, id), strata = list(NULL, id1),
+#'   as_survey_twophase(id = list(id1, id), strata = list(NULL, id1),
 #'                   fpc = list(n1, NULL), subset = sub)
 #' dmu284 %>%
 #'   summarize(total = survey_total(y1),
@@ -54,7 +54,7 @@
 #'   summarize(total = survey_total(y1),
 #'             mean = survey_mean(y1))
 #'
-design_twophase <- function(.data, id, strata = NULL, probs = NULL,
+as_survey_twophase <- function(.data, id, strata = NULL, probs = NULL,
                             weights = NULL, fpc = NULL, subset,
                             method = c("full", "approx", "simple")) {
   # Need to turn bare variable to variable names inside list (for 2phase)
@@ -62,7 +62,7 @@ design_twophase <- function(.data, id, strata = NULL, probs = NULL,
   helper_list <- function(x) {
     x <- x[["expr"]]
     if(x[[1]] != "list" || length(x) > 3) {
-      stop("design_twophase requies a list of 2 sets of variables")
+      stop("as_survey_twophase requies a list of 2 sets of variables")
     }
     name1 <- unname(dplyr::select_vars_(names(.data), x[[2]]))
     name1 <- if (length(name1) == 0) NULL else name1
@@ -81,15 +81,15 @@ design_twophase <- function(.data, id, strata = NULL, probs = NULL,
   if (!missing(fpc)) fpc <- helper_list(lazy_parent(fpc))
   subset <- helper(lazy_parent(subset))
 
-  design_twophase_(.data, id, strata = strata, probs = probs,
+  as_survey_twophase_(.data, id, strata = strata, probs = probs,
                  weights = weights, fpc = fpc, subset = subset,
                  method = method)
 }
 
 
 #' @export
-#' @rdname design_twophase
-design_twophase_ <- function(.data, id, strata = NULL, probs = NULL,
+#' @rdname as_survey_twophase
+as_survey_twophase_ <- function(.data, id, strata = NULL, probs = NULL,
                              weights = NULL, fpc = NULL, subset,
                              method = c("full", "approx", "simple")) {
   # survey::twophase doesn't work with values, needs to be formula of

@@ -64,7 +64,7 @@ svy <- list()
 srvyr <- list()
 out_setup <- lapply(seq_along(data), function(ddd) {
   microbenchmark(`svy setup` = svy[[ddd]] <<- svydesign(~1, strata = ~strata, probs = ~probs, data = data[[ddd]]), 
-                 `srvyr setup` = srvyr[[ddd]] <<- data[[ddd]] %>% design_survey(strata = strata, probs = probs), 
+                 `srvyr setup` = srvyr[[ddd]] <<- data[[ddd]] %>% as_survey_design(strata = strata, probs = probs), 
                  times = micro_times, unit = "s")
 })
 
@@ -133,7 +133,7 @@ svy <- list()
 srvyr <- list()
 out_setup <- lapply(seq_along(data), function(ddd) {
   microbenchmark(`svy setup` = svy[[ddd]] <<- svydesign(~1, strata = ~strata, probs = ~probs, data = data[[ddd]]), 
-                 `srvyr setup` = srvyr[[ddd]] <<- data[[ddd]] %>% design_survey(strata = strata, probs = probs), 
+                 `srvyr setup` = srvyr[[ddd]] <<- data[[ddd]] %>% as_survey_design(strata = strata, probs = probs), 
                  times = micro_times, unit = "s")
 })
 
@@ -223,7 +223,7 @@ svy <- list()
 srvyr <- list()
 out_setup <- lapply(seq_along(data), function(ddd) {
   microbenchmark(`svy setup` = svy[[ddd]] <<- svydesign(~1, strata = ~strata, probs = ~probs, data = data[[ddd]]), 
-                 `srvyr setup` = srvyr[[ddd]] <<- data[[ddd]] %>% design_survey(strata = strata, probs = probs), 
+                 `srvyr setup` = srvyr[[ddd]] <<- data[[ddd]] %>% as_survey_design(strata = strata, probs = probs), 
                  times = micro_times, unit = "s")
 })
 

@@ -1,4 +1,4 @@
-context("design_survey_rep arguments work as expected.")
+context("as_survey_rep arguments work as expected.")
 library(srvyr)
 
 # From survey::as.svrepdesign examples
@@ -19,7 +19,7 @@ scd2brr_srvyr <- scd2brr$repweights %>%
   setNames(paste0("rep", 1:4)) %>%
   dplyr::bind_cols(scd) %>%
   mutate(weights = 1) %>%
-  design_survey_rep(repweights = starts_with("rep"),
+  as_survey_rep(repweights = starts_with("rep"),
                     type = "BRR", rho = scd2brr$rho,
                     scale = scd2brr$scale, rscales = scd2brr$rscales,
                     mse = scd2brr$mse, weights = weights)
@@ -28,7 +28,7 @@ out_survey <- svymean(~alive, scd2brr)
 out_srvyr <- scd2brr_srvyr %>%
   summarize(alive = survey_mean(alive))
 
-test_that("design_survey_rep works when using BRR method of replicate weights",
+test_that("as_survey_rep works when using BRR method of replicate weights",
           expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
                        c(out_srvyr[[1, 1]], out_srvyr[[1, 2]])))
 
@@ -43,7 +43,7 @@ scd2fay_srvyr <- scd2fay$repweights %>%
   setNames(paste0("rep", 1:4)) %>%
   dplyr::bind_cols(scd) %>%
   mutate(weights = 1) %>%
-  design_survey_rep(repweights = starts_with("rep"),
+  as_survey_rep(repweights = starts_with("rep"),
                     type = "Fay", rho = 0.3,
                     scale = scd2fay$scale, rscales = scd2fay$rscales,
                     mse = scd2fay$mse, weights = weights)
@@ -53,7 +53,7 @@ out_srvyr <- scd2fay_srvyr %>%
   summarize(alive = survey_mean(alive))
 
 
-test_that("design_survey_rep works when using Fay method of replicate weights",
+test_that("as_survey_rep works when using Fay method of replicate weights",
           expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
                        c(out_srvyr[[1, 1]], out_srvyr[[1, 2]])))
 
@@ -67,7 +67,7 @@ scd2jkn_srvyr <- scd2jkn$repweights %>%
   setNames(paste0("rep", 1:6)) %>%
   dplyr::bind_cols(scd) %>%
   mutate(weights = 1) %>%
-  design_survey_rep(repweights = starts_with("rep"),
+  as_survey_rep(repweights = starts_with("rep"),
                     type = "JKn",
                     scale = scd2jkn$scale, rscales = scd2jkn$rscales,
                     weights = weights)
@@ -77,7 +77,7 @@ out_srvyr <- scd2jkn_srvyr %>%
   summarize(alive = survey_mean(alive))
 
 
-test_that("design_survey_rep works when using JKn method of replicate weights",
+test_that("as_survey_rep works when using JKn method of replicate weights",
           expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
                        c(out_srvyr[[1, 1]], out_srvyr[[1, 2]])))
 
@@ -92,7 +92,7 @@ scd2jknf_srvyr <- scd2jknf$repweights %>%
   setNames(paste0("rep", 1:6)) %>%
   dplyr::bind_cols(scd) %>%
   mutate(weights = 1) %>%
-  design_survey_rep(repweights = starts_with("rep"),
+  as_survey_rep(repweights = starts_with("rep"),
                     type = "JKn",
                     scale = scd2jknf$scale, rscales = scd2jknf$rscales,
                     weights = weights)
@@ -102,7 +102,7 @@ out_srvyr <- scd2jknf_srvyr %>%
   summarize(alive = survey_mean(alive))
 
 
-test_that("design_survey_rep works when using JKn method of replicate weights",
+test_that("as_survey_rep works when using JKn method of replicate weights",
           expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
                        c(out_srvyr[[1, 1]], out_srvyr[[1, 2]])))
 
@@ -118,7 +118,7 @@ scd2brr1_srvyr <- scd2brr1$repweights %>%
   setNames(paste0("rep", 1:12)) %>%
   dplyr::bind_cols(scd) %>%
   mutate(weights = 1) %>%
-  design_survey_rep(repweights = starts_with("rep"),
+  as_survey_rep(repweights = starts_with("rep"),
                     type = "JKn",
                     scale = scd2brr1$scale, rscales = scd2brr1$rscales,
                     weights = weights)
@@ -128,6 +128,6 @@ out_srvyr <- scd2brr1_srvyr %>%
   summarize(alive = survey_mean(alive))
 
 
-test_that("design_survey_rep works when using JKn method of replicate weights",
+test_that("as_survey_rep works when using JKn method of replicate weights",
           expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
                        c(out_srvyr[[1, 1]], out_srvyr[[1, 2]])))

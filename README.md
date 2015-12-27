@@ -14,14 +14,14 @@ You can try it out (only available on github at the moment):
 devtools::install_github("gergness/srvyr")
 ```
 
-To create a `svy_tbl` object (the core concept behind the srvyr package), use the function `design_survey()` with the bare column names of the names you would use in `survey::svydesign()` object.
+To create a `svy_tbl` object (the core concept behind the srvyr package), use the function `as_survey_design()` with the bare column names of the names you would use in `survey::svydesign()` object.
 
 ``` r
 library(survey)
 data(api)
 
 dstrata <- apistrat %>%
-   design_survey(strata = stype, weights = pw)
+   as_survey_design(strata = stype, weights = pw)
 ```
 
 Now many of the dplyr-verbs are available.

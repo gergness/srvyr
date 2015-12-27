@@ -6,7 +6,7 @@
 \description{
 A \code{svy_tbl} wraps a locally stored svydesign and adds methods for
 dplyr single-table verbs like \code{mutate}, \code{group_by} and
-\code{summarise}. Create a \code{svy_tbl} using \code{\link{design_survey}}.
+\code{summarise}. Create a \code{svy_tbl} using \code{\link{as_survey_design}}.
 }
 \section{Methods}{
 
@@ -25,7 +25,7 @@ dplyr single-table verbs like \code{mutate}, \code{group_by} and
 \examples{
 library(survey)
 data(api)
-svy <- design_survey(apistrat, strata = stype, weights = pw)
+svy <- as_survey_design(apistrat, strata = stype, weights = pw)
 svy
 
 # Data manipulation verbs ---------------------------------------------------

@@ -34,7 +34,7 @@ operations similar to those allowed in \code{\link[survey]{svyby}}.
 library(survey)
 data(api)
 dstrata <- apistrat \%>\%
-  design_survey(strata = stype, weights = pw) \%>\%
+  as_survey_design(strata = stype, weights = pw) \%>\%
   group_by(stype)
 
   dstrata \%>\%

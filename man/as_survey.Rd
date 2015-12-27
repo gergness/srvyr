@@ -19,8 +19,8 @@ a tbl_svy
 }
 \description{
 #' \code{as_survey} can be used to create a \code{tbl_svy} using design information
-(\code{\link{design_survey}}), replicate weights (\code{\link{design_survey_rep}}),
-or a two phase design (\code{\link{design_twophase}}). \code{as_survey_} is its
+(\code{\link{as_survey_design}}), replicate weights (\code{\link{as_survey_rep}}),
+or a two phase design (\code{\link{as_survey_twophase}}). \code{as_survey_} is its
 standard evaluation counterpart.
 }
 \examples{

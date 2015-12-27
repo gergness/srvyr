@@ -1,5 +1,5 @@
-context("Function as_survey_design works.")
-
+context("Function as_survey_ design works.")
+data(api, package = "survey")
 df <- data.frame(id = 1:5, strata = c(2, 2, 3, 3, 3), x = 11:15)
 
  test_that("as_survey_design works with both tbl_dfs and data.frames",

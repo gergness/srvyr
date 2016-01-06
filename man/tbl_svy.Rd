@@ -2,11 +2,11 @@
 % Please edit documentation in R/tbl-svy.r
 \name{tbl_svy}
 \alias{tbl_svy}
-\title{svy_tbl object.}
+\title{tbl_svy object.}
 \description{
-A \code{svy_tbl} wraps a locally stored svydesign and adds methods for
+A \code{tbl_svy} wraps a locally stored svydesign and adds methods for
 dplyr single-table verbs like \code{mutate}, \code{group_by} and
-\code{summarise}. Create a \code{svy_tbl} using \code{\link{as_survey_design}}.
+\code{summarise}. Create a \code{tbl_svy} using \code{\link{as_survey_design}}.
 }
 \section{Methods}{
 

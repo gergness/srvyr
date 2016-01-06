@@ -48,26 +48,33 @@ around the point estimate, rather than the mean of the replicates}
 An object of class \code{tbl_svy}
 }
 \description{
-A wrapper around \code{\link[survey]{svrepdesign}}. All survey variables must be included
-in the data.frame itself. Select variables by using bare column names, or convenience
-functions described in \code{\link[dplyr]{select}}. \code{as_survey_rep_} is the
-standard evaluation counterpart to \code{as_survey_rep}
+Create a survey object by specifying replicate weights. It is a wrapper
+wrapper around \code{\link[survey]{svrepdesign}}. All survey variables must
+be included in the data.frame itself. Variables are selected by using bare column
+names, or convenience functions described in \code{\link[dplyr]{select}}.
+\code{as_survey_rep_} is the standard evaluation counterpart to
+\code{as_survey_rep}.
 }
 \examples{
 # Examples from ?survey::svrepdesign()
 library(survey)
 data(scd)
 # use BRR replicate weights from Levy and Lemeshow
-scd$rep1 <- 2 * c(1, 0, 1, 0, 1, 0)
-scd$rep2 <- 2 * c(1, 0, 0, 1, 0, 1)
-scd$rep3 <- 2 * c(0, 1, 1, 0, 0, 1)
-scd$rep4 <- 2 * c(0, 1, 0, 1, 1, 0)
+scd <- scd \%>\%
+  mutate(rep1 = 2 * c(1, 0, 1, 0, 1, 0),
+         rep2 = 2 * c(1, 0, 0, 1, 0, 1),
+         rep3 = 2 * c(0, 1, 1, 0, 0, 1),
+         rep4 = 2 * c(0, 1, 0, 1, 1, 0))
 
 scdrep <- scd \%>\%
   as_survey_rep(type = "BRR", repweights = starts_with("rep"),
                 combined_weights = FALSE)
 
-svyratio(~alive, ~arrests, scdrep)
+# as_survey_rep_ uses standard evaluation
+repwts <- names(scd)[grep("^rep", names(scd))]
+scdrep <- scd \%>\%
+  as_survey_rep_(type = "BRR", repweights = repwts,
+                combined_weights = FALSE)
 
 }
 

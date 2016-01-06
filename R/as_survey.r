@@ -1,6 +1,6 @@
 #' Create a tbl_svy from a data.frame
 #'
-#'#' \code{as_survey} can be used to create a \code{tbl_svy} using design information
+#' \code{as_survey} can be used to create a \code{tbl_svy} using design information
 #' (\code{\link{as_survey_design}}), replicate weights (\code{\link{as_survey_rep}}),
 #' or a two phase design (\code{\link{as_survey_twophase}}). \code{as_survey_} is its
 #' standard evaluation counterpart.
@@ -31,7 +31,7 @@
 #'   as_survey(type = "BRR", repweights = starts_with("rep"),
 #'                     combined_weights = FALSE)
 #'
-#'#' # Examples from ?survey::twophase
+#' # Examples from ?survey::twophase
 #' # two-phase simple random sampling.
 #' data(pbc, package="survival")
 #'
@@ -40,6 +40,10 @@
 #'          id = row_number())
 #' d2pbc <- pbc %>%
 #'   as_survey(id = list(id, id), subset = randomized)
+#'
+#' # as_survey_ uses standard evaluation
+#' dstrata <- apistrat %>%
+#'   as_survey_(strata = "stype", weights = "pw")
 #'
 as_survey <- function(.data, ...) {
   dots <- lazyeval::lazy_dots(...)

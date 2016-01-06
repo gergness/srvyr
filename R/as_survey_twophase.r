@@ -1,9 +1,11 @@
 #' Create a tbl_svy survey object using two phase design
 #'
-#' A wrapper around \code{\link[survey]{twophase}}. All survey variables must be included
-#' in the data.frame itself. Select variables by using bare column names, or convenience
-#' functions described in \code{\link[dplyr]{select}}. \code{as_survey_twophase_} is the
-#' standard evaluation counterpart to \code{as_survey_twophase}
+#' Create a survey object by specifying the survey's two phase design. It is a
+#' wrapper around \code{\link[survey]{twophase}}. All survey variables must be
+#' included in the data.frame itself. Variables are selected by using bare
+#' column names, or convenience functions described in
+#' \code{\link[dplyr]{select}}. \code{as_survey_twophase_} is the standard
+#' evaluation counterpart to \code{as_survey_twophase}.
 #'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
@@ -53,6 +55,12 @@
 #' d2mu284 %>%
 #'   summarize(total = survey_total(y1),
 #'             mean = survey_mean(y1))
+#'
+#' ## as_survey_twophase_ uses standard evaluation
+#' id1 <- "id"
+#' id2 <- "id"
+#' d2pbc <- pbc %>%
+#'   as_survey_twophase_(id = list(id1, id2), subset = "randomized")
 #'
 as_survey_twophase <- function(.data, id, strata = NULL, probs = NULL,
                             weights = NULL, fpc = NULL, subset,

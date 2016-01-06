@@ -37,10 +37,12 @@ designs with simple random sampling at phase one and stratifed randoms sampling 
 An object of class \code{tbl_svy}
 }
 \description{
-A wrapper around \code{\link[survey]{twophase}}. All survey variables must be included
-in the data.frame itself. Select variables by using bare column names, or convenience
-functions described in \code{\link[dplyr]{select}}. \code{as_survey_twophase_} is the
-standard evaluation counterpart to \code{as_survey_twophase}
+Create a survey object by specifying the survey's two phase design. It is a
+wrapper around \code{\link[survey]{twophase}}. All survey variables must be
+included in the data.frame itself. Variables are selected by using bare
+column names, or convenience functions described in
+\code{\link[dplyr]{select}}. \code{as_survey_twophase_} is the standard
+evaluation counterpart to \code{as_survey_twophase}.
 }
 \examples{
 # Examples from ?survey::twophase
@@ -76,6 +78,12 @@ dmu284 \%>\%
 d2mu284 \%>\%
   summarize(total = survey_total(y1),
             mean = survey_mean(y1))
+
+## as_survey_twophase_ uses standard evaluation
+id1 <- "id"
+id2 <- "id"
+d2pbc <- pbc \%>\%
+  as_survey_twophase_(id = list(id1, id2), subset = "randomized")
 
 }
 

@@ -57,30 +57,39 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'
 #' Summarise multiple values to a single value.
 #'
-#' \describe{
-#' Summarise for \code{tbl_svy} objects accepts several specialized functions:
-#' \item{\code{survey_mean(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95, proportion = FALSE, prop_method = NULL)}}{
-#'    Calculate the survey mean of the entire population or by \code{groups}.}
-#' \item{\code{survey_total(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95)}}{
-#'    Calculate the survey total of the entire population or by \code{groups}.}
-#'  \item{\code{survey_ratio(numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95)}}{
-#'    Calculate the ratio of 2 variables in the entire population or by \code{groups}.}
-#' \item{\code{survey_quantile(x, quantiles, na.rm = FALSE, vartype = c("se", "ci"), level = 0.95, q_method = "linear", f = 1, interval_type = c("Wald", "score", "betaWald"), ties = c("discrete", "rounded"))}}{
-#'    Calculate quantiles in the entire population or by \code{groups}.}
-#'  \item{\code{survey_median(x, na.rm = FALSE, vartype = c("se", "ci"), level = 0.95)}}{
-#'    Calculate the median in the entire population or by \code{groups}.}
-#'  \item{\code{unweighted(x)}}{
-#'    Calculate an unweighted estimate as you would on a regular \code{tbl_df}.}
-#' }
-#'
 #' @usage summarise(.data, ...)
-#' @usage summarize(.data, ...)
-#' @usage summarise_(.data, ..., .dots)
-#' @usage summarize_(.data, ..., .dots)
+#' summarize(.data, ...)
+#' summarise_(.data, ..., .dots)
+#' summarize_(.data, ..., .dots)
 #'
-#' @param .data A \code{tbl_svy} object
-#' @param ... Name-value paris of summary functions
+#' @param .data, tbl A \code{tbl_svy} object
+#' @param ... Name-value pairs of summary functions
+#' @param .dots Used to work around non-standard evaluation. See
+#' \code{vignette("nse", package = "dplyr")} for details.
 #'
+#' @details
+#' Summarise for \code{tbl_svy} objects accepts several specialized functions. Each of the functions takes
+#' \code{x}, a variable from the data.frame and default to providing the measure and its standard error. The
+#' argument \code{vartype} can choose one or more measures of uncertainty, \code{se} for standard error,
+#' \code{ci} for confidence interval, \code{var} for variance, and \code{cv} for coefficient of variation.
+#'  The other arguments correspond to the analagous function arguments from the survey package.
+#'
+#'  The available functions are:
+#'
+#'\describe{
+#' \item{\code{survey_mean(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95, proportion = FALSE, prop_method = NULL)}}{
+#'    Calculate the survey mean of the entire population or by \code{groups}. Based on \code{\link[survey]{svymean}}.}
+#' \item{\code{survey_total(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95)}}{
+#'    Calculate the survey total of the entire population or by \code{groups}. Based on \code{\link[survey]{svytotal}}.}
+#'  \item{\code{survey_ratio(numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95)}}{
+#'    Calculate the ratio of 2 variables in the entire population or by \code{groups}. Based on \code{\link[survey]{svyratio}}.}
+#' \item{\code{survey_quantile(x, quantiles, na.rm = FALSE, vartype = c("se", "ci"), level = 0.95, q_method = "linear", f = 1, interval_type = c("Wald", "score", "betaWald"), ties = c("discrete", "rounded"))}}{
+#'    Calculate quantiles in the entire population or by \code{groups}. Based on \code{\link[survey]{svyquantile}}.}
+#'  \item{\code{survey_median(x, na.rm = FALSE, vartype = c("se", "ci"), level = 0.95, q_method = "linear", f = 1, interval_type = c("Wald", "score", "betaWald"), ties = c("discrete", "rounded"))}}{
+#'    Calculate the median in the entire population or by \code{groups}. \code{\link[survey]{svyquantile}}.}
+#'  \item{\code{unweighted(x)}}{
+#'    Calculate an unweighted estimate as you would on a regular \code{tbl_df}. Based on dplyr's \code{\link[dplyr]{summarise}}.}
+#'}
 #' @examples
 #' library(survey)
 #' data(api)
@@ -114,13 +123,13 @@ NULL
 NULL
 
 #' @name summarize
-#' @rdname summarise
 #' @export
 #' @importFrom dplyr summarize
+#' @rdname summarise
 NULL
 
 #' @name summarize_
-#' @rdname summarise
 #' @export
 #' @importFrom dplyr summarize_
+#' @rdname summarise
 NULL

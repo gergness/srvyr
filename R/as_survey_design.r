@@ -1,27 +1,29 @@
 #' Create a tbl_svy survey object using sampling design
 #'
-#' A wrapper around \code{\link[survey]{svydesign}}. All survey variables must be included
-#' in the data.frame itself. Select variables by using bare column names, or convenience
-#' functions described in \code{\link[dplyr]{select}}. \code{as_survey_design_} is the
-#' standard evaluation counterpart to \code{as_survey_design}
+#' Create a survey object by specifying the survey's design. It is a wrapper
+#' around \code{\link[survey]{svydesign}}. All survey variables must be included
+#' in the data.frame itself. Variables are selected by using bare column names, or
+#' convenience functions described in \code{\link[dplyr]{select}}.
+#' \code{as_survey_design_} is the standard evaluation counterpart to
+#' \code{as_survey_design}.
 #'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
 #' @param ids Variables specifying cluster ids from largest level to smallest level
-#' (or NULL / nothing if no clusters).
+#' (leaving the argument empty, NULL, 1, or 0 indicate no clusters).
 #' @param probs Variables specifying cluster sampling probabilities.
 #' @param strata Variables specifying strata.
 #' @param variables Variables specifying variables to be included in survey.
 #' Defaults to all variables in .data
-#' @param fpc Variables specifying a finite population correct see
+#' @param fpc Variables specifying a finite population correct, see
 #' \code{\link[survey]{svydesign}} for more details.
 #' @param nest If \code{TRUE}, relabel cluster ids to enforce nesting within strata.
-#' @param check.strata If \code{TRUE}, check that clusters are nested in strata.
+#' @param check_strata If \code{TRUE}, check that clusters are nested in strata.
 #' @param weights Variables specifying weights (inverse of probability).
 #' @param pps "brewer" to use Brewer's approximation for PPS sampling without replacement.
 #' "overton" to use Overton's approximation. An object of class HR to use the Hartley-Rao
 #' approximation. An object of class ppsmat to use the Horvitz-Thompson estimator.
-#' @param variance r pps without replacement, use variance="YG" for the Yates-Grundy estimator
+#' @param variance For pps without replacement, use variance="YG" for the Yates-Grundy estimator
 #' instead of the Horvitz-Thompson estimator
 #' @return An object of class \code{tbl_svy}
 #' @examples
@@ -39,7 +41,6 @@
 #'
 #' # two-stage cluster sample: weights computed from population sizes.
 #' dclus2 <- apiclus2 %>%
-#'   mutate(fpc2 = as.vector(fpc2)) %>% # work around dplyr's dislike of attributes
 #'   as_survey_design(c(dnum, snum), fpc = c(fpc1, fpc2))
 #'
 #' ## multistage sampling has no effect when fpc is not given, so
@@ -70,7 +71,7 @@
 #'
 as_survey_design <- function(.data, ids = NULL, probs = NULL, strata = NULL,
                              variables = NULL, fpc = NULL, nest = FALSE,
-                             check.strata = !nest,weights = NULL, pps = FALSE,
+                             check_strata = !nest,weights = NULL, pps = FALSE,
                              variance = c("HT", "YG")) {
 
   # Need to turn bare variable to variable names, NSE makes looping difficult
@@ -87,7 +88,7 @@ as_survey_design <- function(.data, ids = NULL, probs = NULL, strata = NULL,
 
   as_survey_design_(.data, ids, probs = probs, strata = strata,
                     variables = variables, fpc = fpc, nest = nest,
-                    check.strata = check.strata, weights = weights, pps = pps,
+                    check_strata = check_strata, weights = weights, pps = pps,
                     variance = variance)
 }
 
@@ -96,7 +97,7 @@ as_survey_design <- function(.data, ids = NULL, probs = NULL, strata = NULL,
 #' @rdname as_survey_design
 as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
                               variables = NULL, fpc = NULL, nest = FALSE,
-                              check.strata = !nest,weights = NULL, pps = FALSE,
+                              check_strata = !nest,weights = NULL, pps = FALSE,
                               variance = c("HT", "YG")) {
 
 
@@ -120,7 +121,7 @@ as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
                            variables = survey_selector(variables),
                            fpc = survey_selector(fpc),
                            weights = survey_selector(weights),
-                           nest = nest, check.strata = check.strata, pps = pps,
+                           nest = nest, check.strata = check_strata, pps = pps,
                            variance = variance)
 
   class(out) <- c("tbl_svy", class(out))

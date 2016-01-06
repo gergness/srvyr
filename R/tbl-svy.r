@@ -1,8 +1,8 @@
-#' svy_tbl object.
+#' tbl_svy object.
 #'
-#' A \code{svy_tbl} wraps a locally stored svydesign and adds methods for
+#' A \code{tbl_svy} wraps a locally stored svydesign and adds methods for
 #' dplyr single-table verbs like \code{mutate}, \code{group_by} and
-#' \code{summarise}. Create a \code{svy_tbl} using \code{\link{as_survey_design}}.
+#' \code{summarise}. Create a \code{tbl_svy} using \code{\link{as_survey_design}}.
 #'
 #' @section Methods:
 #'

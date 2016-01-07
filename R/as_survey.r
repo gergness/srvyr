@@ -56,7 +56,8 @@ as_survey.data.frame <- function(.data, ...) {
   if ("repweights" %in% names(dots)) {
     as_survey_rep(.data, ...)
   } else if ("id" %in% names(dots) | "ids" %in% names(dots)) {
-    # twophase has a list of 2 groups for id, while regular id is just a set of variables
+    # twophase has a list of 2 groups for id, while regular id is just a
+    # set of variables
     id_expr <- as.character(dots$id$expr)
     if ("list" %in% id_expr & length(id_expr) == 3) {
       as_survey_twophase(.data, ...)
@@ -95,7 +96,8 @@ as_survey_ <- function(.data, ...) {
   if ("repweights" %in% names(dots)) {
     as_survey_rep_(.data, ...)
   } else if ("id" %in% names(dots) | "ids" %in% names(dots)) {
-    # twophase has a list of 2 groups for id, while regular id is just a set of variables
+    # twophase has a list of 2 groups for id, while regular id is
+    # just a set of variables
     id_expr <- as.character(dots$id$expr)
     if ("list" %in% id_expr & length(id_expr) == 3) {
       as_survey_twophase_(.data, ...)

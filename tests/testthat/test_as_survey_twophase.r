@@ -53,5 +53,5 @@ suppressWarnings(srvyr_results <- d2pbc_srvyr %>%
             median = survey_median(bili, vartype = "se")))
 
 test_that(
-  "as_survey_twophase gets same mean / total / median / ratio in srvyr (grouped)",
+  "as_survey_twophase gets same mean / total / median / ratio in (grouped)",
   expect_equal(survey_results, srvyr_results))

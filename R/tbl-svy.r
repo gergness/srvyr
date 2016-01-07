@@ -43,7 +43,9 @@ NULL
 print.tbl_svy <- function (x, varnames = TRUE, ...) {
   NextMethod()
 
-  print(survey_vars(x))
+  if (length(survey_vars(x)) > 0) {
+    print(survey_vars(x))
+  }
   if(!is.null(groups(x))) {
     cat("Grouping variables: ")
     cat(paste0(deparse_all(groups(x)), collapse = ", "))
@@ -71,4 +73,28 @@ NULL
 #' @export
 tbl_vars.tbl_svy <- function(x) {
   names(x[["variables"]])
+}
+
+
+as_tbl_svy <- function(x, var_names = list()) {
+  if (!inherits(x, "tbl_svy")) {
+    class(x) <- c("tbl_svy", class(x))
+  }
+
+  if (inherits(x, "twophase2")) {
+    x$phase1$full$variables <- dplyr::tbl_df(x$phase1$full$variables)
+    x$phase1$sample$variables <- dplyr::tbl_df(x$phase1$sample$variables)
+
+    # To make twophase behave similarly to the other survey objects, add sample
+    # variables from phase1 to the first level of the object.
+    x$variables <- x$phase1$sample$variables
+  } else {
+    x$variables <- dplyr::tbl_df(x$variables)
+  }
+
+  survey_vars(x) <- var_names
+
+  # To make printing better, change call
+  x$call <- "called via srvyr"
+  x
 }

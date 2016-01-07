@@ -20,6 +20,7 @@
 #' general multistage designs at both phases. "simple" or "approx" use less memory, and is correect for
 #' designs with simple random sampling at phase one and stratifed randoms sampling at phase two. See
 #' \code{\link[survey]{twophase}} for more details.
+#' @param ... ignored
 #' @return An object of class \code{tbl_svy}
 #' @examples
 #' # Examples from ?survey::twophase
@@ -62,36 +63,34 @@
 #' d2pbc <- pbc %>%
 #'   as_survey_twophase_(id = list(id1, id2), subset = "randomized")
 #'
-as_survey_twophase <- function(.data, id, strata = NULL, probs = NULL,
-                            weights = NULL, fpc = NULL, subset,
-                            method = c("full", "approx", "simple")) {
-  # Need to turn bare variable to variable names inside list (for 2phase)
-  # NULLS are allowed in the list and should be carried forward.
-  helper_list <- function(x) {
-    x <- x[["expr"]]
-    if(x[[1]] != "list" || length(x) > 3) {
-      stop("as_survey_twophase requies a list of 2 sets of variables")
-    }
-    name1 <- unname(dplyr::select_vars_(names(.data), x[[2]]))
-    name1 <- if (length(name1) == 0) NULL else name1
-    name2 <- unname(dplyr::select_vars_(names(.data), x[[3]]))
-    name2 <- if (length(name2) == 0) NULL else name2
-    list(name1, name2)
-  }
+as_survey_twophase <- function(.data, ...) {
+  UseMethod("as_survey_twophase")
+}
 
-  # Need to turn bare variable to variable names (when not in list)
-  helper <- function(x) unname(dplyr::select_vars_(names(.data), x))
+#' @export
+#' @rdname as_survey_twophase
+as_survey_twophase.data.frame <-
+  function(.data, id, strata = NULL, probs = NULL,
+           weights = NULL, fpc = NULL, subset,
+           method = c("full", "approx", "simple"), ...) {
 
-  id <- helper_list(lazy_parent(id))
-  if (!missing(strata)) strata <- helper_list(lazy_parent(strata))
-  if (!missing(probs)) probs <- helper_list(lazy_parent(probs))
-  if (!missing(weights)) weights <- helper_list(lazy_parent(weights))
-  if (!missing(fpc)) fpc <- helper_list(lazy_parent(fpc))
-  subset <- helper(lazy_parent(subset))
+  id <- helper_list(lazy_parent(id), .data)
+  if (!missing(strata)) strata <- helper_list(lazy_parent(strata), .data)
+  if (!missing(probs)) probs <- helper_list(lazy_parent(probs), .data)
+  if (!missing(weights)) weights <- helper_list(lazy_parent(weights), .data)
+  if (!missing(fpc)) fpc <- helper_list(lazy_parent(fpc), .data)
+  subset <- helper(lazy_parent(subset), .data)
 
   as_survey_twophase_(.data, id, strata = strata, probs = probs,
                  weights = weights, fpc = fpc, subset = subset,
                  method = method)
+}
+
+
+#' @export
+#' @rdname as_survey_twophase
+as_survey_twophase.twophase2 <- function(.data, ...) {
+  as_tbl_svy(.data)
 }
 
 
@@ -118,18 +117,6 @@ as_survey_twophase_ <- function(.data, id, strata = NULL, probs = NULL,
                           subset = survey::make.formula(subset),
                           method = method)
 
-  class(out) <- c("tbl_svy", class(out))
-
-  out$phase1$full$variables <- dplyr::tbl_df(out$phase1$full$variables)
-  out$phase1$sample$variables <- dplyr::tbl_df(out$phase1$sample$variables)
-
-  # Make a list of names that have the survey vars.
-  survey_vars(out) <- list(ids = id, strata = strata, probs = probs,
-                           weights = weights, fpc = fpc, subset = subset)
-
-  # To make twophase behave similarly to the other survey objects, add sample
-  # variables from phase1 to the first level of the object.
-  out$variables <- out$phase1$sample$variables
-
-  out
+  as_tbl_svy(out, list(ids = id, strata = strata, probs = probs,
+                       weights = weights, fpc = fpc, subset = subset))
 }

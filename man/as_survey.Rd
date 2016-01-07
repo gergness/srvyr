@@ -2,17 +2,29 @@
 % Please edit documentation in R/as_survey.r
 \name{as_survey}
 \alias{as_survey}
+\alias{as_survey.data.frame}
+\alias{as_survey.survey.design2}
+\alias{as_survey.svyrepdesign}
+\alias{as_survey.twophase2}
 \alias{as_survey_}
 \title{Create a tbl_svy from a data.frame}
 \usage{
 as_survey(.data, ...)
 
+\method{as_survey}{data.frame}(.data, ...)
+
+\method{as_survey}{survey.design2}(.data, ...)
+
+\method{as_survey}{svyrepdesign}(.data, ...)
+
+\method{as_survey}{twophase2}(.data, ...)
+
 as_survey_(.data, ...)
 }
 \arguments{
-\item{.data}{a data.frame}
+\item{.data}{a data.frame or an object from the survey package}
 
-\item{...}{other arguments, see details.}
+\item{...}{other arguments, see other functions for details}
 }
 \value{
 a tbl_svy
@@ -20,8 +32,8 @@ a tbl_svy
 \description{
 \code{as_survey} can be used to create a \code{tbl_svy} using design information
 (\code{\link{as_survey_design}}), replicate weights (\code{\link{as_survey_rep}}),
-or a two phase design (\code{\link{as_survey_twophase}}). \code{as_survey_} is its
-standard evaluation counterpart.
+or a two phase design (\code{\link{as_survey_twophase}}), or an object created by the
+survye package. \code{as_survey_} is its standard evaluation counterpart.
 }
 \examples{
 # Examples from ?survey::svydesign

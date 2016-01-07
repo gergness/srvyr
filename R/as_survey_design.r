@@ -1,11 +1,16 @@
 #' Create a tbl_svy survey object using sampling design
 #'
-#' Create a survey object by specifying the survey's design. It is a wrapper
+#' Create a survey object with a survey design.
+#'
+#' If provided a data.frame, it is a wrapper
 #' around \code{\link[survey]{svydesign}}. All survey variables must be included
 #' in the data.frame itself. Variables are selected by using bare column names, or
 #' convenience functions described in \code{\link[dplyr]{select}}.
 #' \code{as_survey_design_} is the standard evaluation counterpart to
 #' \code{as_survey_design}.
+#'
+#' If provided a \code{survey.design2} object from the survey package,
+#' it will turn it into a srvyr object, so that srvyr functions will work with it
 #'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
@@ -25,6 +30,7 @@
 #' approximation. An object of class ppsmat to use the Horvitz-Thompson estimator.
 #' @param variance For pps without replacement, use variance="YG" for the Yates-Grundy estimator
 #' instead of the Horvitz-Thompson estimator
+#' @param ... ignored
 #' @return An object of class \code{tbl_svy}
 #' @examples
 #' # Examples from ?survey::svydesign
@@ -69,27 +75,39 @@
 #' dstrata2 <- apistrat %>%
 #'   as_survey_design_(strata = strata_var, weights = weights_var)
 #'
-as_survey_design <- function(.data, ids = NULL, probs = NULL, strata = NULL,
-                             variables = NULL, fpc = NULL, nest = FALSE,
-                             check_strata = !nest,weights = NULL, pps = FALSE,
-                             variance = c("HT", "YG")) {
+as_survey_design <- function(.data, ...) {
+  UseMethod("as_survey_design")
+}
 
-  # Need to turn bare variable to variable names, NSE makes looping difficult
-  helper <- function(x) unname(dplyr::select_vars_(names(.data), x))
+#' @export
+#' @rdname as_survey_design
+as_survey_design.data.frame <-
+  function(.data, ids = NULL, probs = NULL, strata = NULL,
+           variables = NULL, fpc = NULL, nest = FALSE,
+           check_strata = !nest,weights = NULL, pps = FALSE,
+           variance = c("HT", "YG"), ...) {
+
   if (!missing(ids)) {
     ids <- lazy_parent(ids)
-    ids <- if (ids$expr == 1 || ids$expr == 0) NULL else helper(ids)
+    ids <- if (ids$expr == 1 || ids$expr == 0) NULL else helper(ids, .data)
   }
-  if (!missing(probs)) probs <- helper(lazy_parent(probs))
-  if (!missing(strata)) strata <- helper(lazy_parent(strata))
-  if (!missing(fpc)) fpc <- helper(lazy_parent(fpc))
-  if (!missing(weights)) weights <- helper(lazy_parent(weights))
-  if (!missing(variables)) variables <- helper(lazy_parent(variables))
+  if (!missing(probs)) probs <- helper(lazy_parent(probs), .data)
+  if (!missing(strata)) strata <- helper(lazy_parent(strata), .data)
+  if (!missing(fpc)) fpc <- helper(lazy_parent(fpc), .data)
+  if (!missing(weights)) weights <- helper(lazy_parent(weights), .data)
+  if (!missing(variables)) variables <- helper(lazy_parent(variables), .data)
 
   as_survey_design_(.data, ids, probs = probs, strata = strata,
                     variables = variables, fpc = fpc, nest = nest,
                     check_strata = check_strata, weights = weights, pps = pps,
                     variance = variance)
+}
+
+
+#' @export
+#' @rdname as_survey_design
+as_survey_design.survey.design2 <- function(.data, ...) {
+  as_tbl_svy(.data)
 }
 
 
@@ -124,14 +142,6 @@ as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
                            nest = nest, check.strata = check_strata, pps = pps,
                            variance = variance)
 
-  class(out) <- c("tbl_svy", class(out))
-  out$variables <- dplyr::tbl_df(out$variables)
-
-  # Make a list of names that have the survey vars.
-  survey_vars(out) <- list(ids = ids, probs = probs, strata = strata, fpc = fpc,
-                           weights = weights)
-
-  # To make printing better, change call
-  out$call <- "called via srvyr"
-  out
+  as_tbl_svy(out, list(ids = ids, probs = probs, strata = strata, fpc = fpc,
+                       weights = weights))
 }

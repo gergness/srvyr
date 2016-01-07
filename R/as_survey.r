@@ -2,11 +2,11 @@
 #'
 #' \code{as_survey} can be used to create a \code{tbl_svy} using design information
 #' (\code{\link{as_survey_design}}), replicate weights (\code{\link{as_survey_rep}}),
-#' or a two phase design (\code{\link{as_survey_twophase}}). \code{as_survey_} is its
-#' standard evaluation counterpart.
+#' or a two phase design (\code{\link{as_survey_twophase}}), or an object created by the
+#' survye package. \code{as_survey_} is its standard evaluation counterpart.
 #'
-#' @param .data a data.frame
-#' @param ... other arguments, see details.
+#' @param .data a data.frame or an object from the survey package
+#' @param ... other arguments, see other functions for details
 #'
 #' @return a tbl_svy
 #' @export
@@ -46,6 +46,12 @@
 #'   as_survey_(strata = "stype", weights = "pw")
 #'
 as_survey <- function(.data, ...) {
+  UseMethod("as_survey")
+}
+
+#' @export
+#' @rdname as_survey
+as_survey.data.frame <- function(.data, ...) {
   dots <- lazyeval::lazy_dots(...)
   if ("repweights" %in% names(dots)) {
     as_survey_rep(.data, ...)
@@ -60,6 +66,26 @@ as_survey <- function(.data, ...) {
   } else {
     as_survey_design(.data, ...)
   }
+}
+
+
+#' @export
+#' @rdname as_survey
+as_survey.survey.design2 <- function(.data, ...) {
+  as_tbl_svy(.data)
+}
+
+
+#' @export
+#' @rdname as_survey
+as_survey.svyrepdesign <- function(.data, ...) {
+  as_tbl_svy(.data)
+}
+
+#' @export
+#' @rdname as_survey
+as_survey.twophase2 <- function(.data, ...) {
+  as_tbl_svy(.data)
 }
 
 #' @export

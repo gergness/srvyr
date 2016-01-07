@@ -2,11 +2,18 @@
 % Please edit documentation in R/as_survey_twophase.r
 \name{as_survey_twophase}
 \alias{as_survey_twophase}
+\alias{as_survey_twophase.data.frame}
+\alias{as_survey_twophase.twophase2}
 \alias{as_survey_twophase_}
 \title{Create a tbl_svy survey object using two phase design}
 \usage{
-as_survey_twophase(.data, id, strata = NULL, probs = NULL, weights = NULL,
-  fpc = NULL, subset, method = c("full", "approx", "simple"))
+as_survey_twophase(.data, ...)
+
+\method{as_survey_twophase}{data.frame}(.data, id, strata = NULL,
+  probs = NULL, weights = NULL, fpc = NULL, subset, method = c("full",
+  "approx", "simple"), ...)
+
+\method{as_survey_twophase}{twophase2}(.data, ...)
 
 as_survey_twophase_(.data, id, strata = NULL, probs = NULL,
   weights = NULL, fpc = NULL, subset, method = c("full", "approx",
@@ -14,6 +21,8 @@ as_survey_twophase_(.data, id, strata = NULL, probs = NULL,
 }
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}
+
+\item{...}{ignored}
 
 \item{id}{list of two sets of variable names for sampling unit identifers}
 

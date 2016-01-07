@@ -2,14 +2,33 @@
 % Please edit documentation in R/as_survey_rep.r
 \name{as_survey_rep}
 \alias{as_survey_rep}
+\alias{as_survey_rep.data.frame}
+\alias{as_survey_rep.survey.design2}
+\alias{as_survey_rep.svyrep.design}
+\alias{as_survey_rep.tbl_svy}
 \alias{as_survey_rep_}
 \title{Create a tbl_svy survey object using replicate weights}
 \usage{
-as_survey_rep(.data, variables = NULL, repweights = NULL, weights = NULL,
-  type = c("BRR", "Fay", "JK1", "JKn", "bootstrap", "other"),
-  combined_weights = TRUE, rho = NULL, bootstrap_average = NULL,
-  scale = NULL, rscales = NULL, fpc = NULL, fpctype = c("fraction",
-  "correction"), mse = getOption("survey.replicates.mse"))
+as_survey_rep(.data, ...)
+
+\method{as_survey_rep}{data.frame}(.data, variables = NULL,
+  repweights = NULL, weights = NULL, type = c("BRR", "Fay", "JK1", "JKn",
+  "bootstrap", "other"), combined_weights = TRUE, rho = NULL,
+  bootstrap_average = NULL, scale = NULL, rscales = NULL, fpc = NULL,
+  fpctype = c("fraction", "correction"),
+  mse = getOption("survey.replicates.mse"), ...)
+
+\method{as_survey_rep}{svyrep.design}(.data, ...)
+
+\method{as_survey_rep}{survey.design2}(.data, type = c("auto", "JK1", "JKn",
+  "BRR", "bootstrap", "subbootstrap", "mrbbootstrap", "Fay"), rho = 0,
+  fpc = NULL, fpctype = NULL, ..., compress = TRUE,
+  mse = getOption("survey.replicates.mse"))
+
+\method{as_survey_rep}{tbl_svy}(.data, type = c("auto", "JK1", "JKn", "BRR",
+  "bootstrap", "subbootstrap", "mrbbootstrap", "Fay"), rho = 0, fpc = NULL,
+  fpctype = NULL, ..., compress = TRUE,
+  mse = getOption("survey.replicates.mse"))
 
 as_survey_rep_(.data, variables = NULL, repweights = NULL, weights = NULL,
   type = c("BRR", "Fay", "JK1", "JKn", "bootstrap", "other"),
@@ -19,6 +38,8 @@ as_survey_rep_(.data, variables = NULL, repweights = NULL, weights = NULL,
 }
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}
+
+\item{...}{ignored}
 
 \item{variables}{Variables to include in the design (default is all)}
 
@@ -43,17 +64,29 @@ weights have been averaged, gives the number of iterations averaged over.}
 
 \item{mse}{if \code{TRUE}, compute varainces based on sum of squares
 around the point estimate, rather than the mean of the replicates}
+
+\item{compress}{if \code{TRUE}, store replicate weights in compressed form
+(if converting from design)}
 }
 \value{
 An object of class \code{tbl_svy}
 }
 \description{
-Create a survey object by specifying replicate weights. It is a wrapper
-wrapper around \code{\link[survey]{svrepdesign}}. All survey variables must
-be included in the data.frame itself. Variables are selected by using bare column
-names, or convenience functions described in \code{\link[dplyr]{select}}.
-\code{as_survey_rep_} is the standard evaluation counterpart to
-\code{as_survey_rep}.
+Create a survey object with replicate weights.
+}
+\details{
+If provided a data.frame, it is a wrapper around \code{\link[survey]{svrepdesign}}.
+All survey variables must be included in the data.frame itself. Variables are
+selected by using bare column names, or convenience functions described in
+\code{\link[dplyr]{select}}. \code{as_survey_rep_} is the standard evaluation
+counterpart to \code{as_survey_rep}.
+
+If provided a \code{svyrep.design} object from the survey package,
+it will turn it into a srvyr object, so that srvyr functions will work with it
+
+If provided a survey design (\code{survey.design2} or \code{tbl_svy}), it is a wrapper
+around \code{\link[survey]{as.svrepdesign}}, and will convert from a survey design to
+replicate weights.
 }
 \examples{
 # Examples from ?survey::svrepdesign()

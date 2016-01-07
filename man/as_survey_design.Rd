@@ -2,12 +2,19 @@
 % Please edit documentation in R/as_survey_design.r
 \name{as_survey_design}
 \alias{as_survey_design}
+\alias{as_survey_design.data.frame}
+\alias{as_survey_design.survey.design2}
 \alias{as_survey_design_}
 \title{Create a tbl_svy survey object using sampling design}
 \usage{
-as_survey_design(.data, ids = NULL, probs = NULL, strata = NULL,
-  variables = NULL, fpc = NULL, nest = FALSE, check_strata = !nest,
-  weights = NULL, pps = FALSE, variance = c("HT", "YG"))
+as_survey_design(.data, ...)
+
+\method{as_survey_design}{data.frame}(.data, ids = NULL, probs = NULL,
+  strata = NULL, variables = NULL, fpc = NULL, nest = FALSE,
+  check_strata = !nest, weights = NULL, pps = FALSE, variance = c("HT",
+  "YG"), ...)
+
+\method{as_survey_design}{survey.design2}(.data, ...)
 
 as_survey_design_(.data, ids = NULL, probs = NULL, strata = NULL,
   variables = NULL, fpc = NULL, nest = FALSE, check_strata = !nest,
@@ -15,6 +22,8 @@ as_survey_design_(.data, ids = NULL, probs = NULL, strata = NULL,
 }
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}
+
+\item{...}{ignored}
 
 \item{ids}{Variables specifying cluster ids from largest level to smallest level
 (leaving the argument empty, NULL, 1, or 0 indicate no clusters).}
@@ -46,12 +55,18 @@ instead of the Horvitz-Thompson estimator}
 An object of class \code{tbl_svy}
 }
 \description{
-Create a survey object by specifying the survey's design. It is a wrapper
+Create a survey object with a survey design.
+}
+\details{
+If provided a data.frame, it is a wrapper
 around \code{\link[survey]{svydesign}}. All survey variables must be included
 in the data.frame itself. Variables are selected by using bare column names, or
 convenience functions described in \code{\link[dplyr]{select}}.
 \code{as_survey_design_} is the standard evaluation counterpart to
 \code{as_survey_design}.
+
+If provided a \code{survey.design2} object from the survey package,
+it will turn it into a srvyr object, so that srvyr functions will work with it
 }
 \examples{
 # Examples from ?survey::svydesign

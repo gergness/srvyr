@@ -47,3 +47,42 @@ test_that("survey_total is correct when doing props with multiple groups (se)",
                        out_srvyr %>%
                          filter(awards == "No") %>%
                          .$tot_se))
+
+# Preserves factor orderings and character
+out_srvyr <- dstrata %>%
+  mutate(stype2 = relevel(stype, "H")) %>%
+  group_by(stype2) %>%
+  summarize(tot = survey_total())
+
+test_that("survey_* preserves factor levels when calculating a statistic (1 grp)",
+          expect_true(class(out_srvyr$stype) == "factor" &
+                        all(levels(out_srvyr$stype) == c("H", "E", "M")))
+          )
+
+out_srvyr <- dstrata %>%
+  mutate(stype2 = as.character(stype)) %>%
+  group_by(stype2) %>%
+  summarize(tot = survey_total())
+
+test_that("survey_* preserves character when calculating a statistic (1 grp)",
+          expect_true(class(out_srvyr$stype) == "character")
+)
+
+out_srvyr <- dstrata %>%
+  mutate(stype2 = relevel(stype, "H")) %>%
+  group_by(awards, stype2) %>%
+  summarize(tot = survey_total())
+
+test_that("survey_* preserves factor levels when calculating a statistic (multi grps)",
+          expect_true(class(out_srvyr$stype) == "factor" &
+                        all(levels(out_srvyr$stype) == c("H", "E", "M")))
+)
+
+out_srvyr <- dstrata %>%
+  mutate(stype2 = as.character(stype)) %>%
+  group_by(awards, stype2) %>%
+  summarize(tot = survey_total())
+
+test_that("survey_* preserves character when calculating a statistic (multi grps)",
+          expect_true(class(out_srvyr$stype) == "character")
+)

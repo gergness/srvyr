@@ -287,7 +287,8 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level) {
 
     out <- get_var_est(stat, vartype, var_names = var_names, grps = grps,
                        level = level)
-    out <- factor_stat_reshape(out, grps, peel, var_names)
+    peel_levels <- levels(.svy[["variables"]][[peel]])
+    out <- factor_stat_reshape(out, grps, peel, var_names, peel_levels)
 
     out
   } else {
@@ -296,7 +297,7 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level) {
     stat <- func(survey::make.formula(peel), .svy, na.rm = na.rm)
 
     out <- get_var_est(stat, vartype, peel = peel,
-                       peel_class = class(.svy[["variables"]][[peel]]))
+                       peel_levels = levels(.svy[["variables"]][[peel]]))
 
     out
   }
@@ -315,7 +316,7 @@ survey_stat_proportion <- function(.svy, x, na.rm, vartype, level,
 }
 
 get_var_est <- function(stat, vartype, var_names = "", grps = "",
-                        peel = "", peel_class = NULL, level = 0.95,
+                        peel = "", peel_levels = NULL, level = 0.95,
                         quantile = FALSE) {
   out_width <- length(var_names)
   out <- lapply(vartype, function(vvv) {
@@ -359,9 +360,11 @@ get_var_est <- function(stat, vartype, var_names = "", grps = "",
       # Add on level variable -- survey leaves it in an ugly state, with the
       # varname pasted in, so we have to remove it. Also, check if it was
       # originally a character and convert if it was.
-      lvls <- data.frame(names(coef(stat)))
-      levels(lvls[[1]]) <- gsub(paste0("^", peel), "", levels(lvls[[1]]))
-      if (peel_class == "character") lvls[[1]] <- as.character(lvls[[1]])
+      lvls <- data.frame(names(coef(stat)), stringsAsFactors = FALSE)
+      lvls[[1]] <- gsub(paste0("^", peel), "", lvls[[1]])
+      if (!is.null(peel_levels)) {
+        lvls[[1]] <- factor(lvls[[1]], peel_levels)
+      }
       names(lvls) <- peel
       lvls
     }
@@ -372,7 +375,7 @@ get_var_est <- function(stat, vartype, var_names = "", grps = "",
 # base reshape was difficult to work with, but might be worth reinvestigating
 # (or others, but have to weight the cost of extra dependency). This takes the
 # survey stat object that has the peel variable wide, and makes it long.
-factor_stat_reshape <- function(stat, grps, peel, var_names) {
+factor_stat_reshape <- function(stat, grps, peel, var_names, peel_levels = NULL) {
   out <- lapply(var_names, function(this_var) {
     wide_names <- names(stat)[
       grep(paste0("^", this_var, "(_se|_low|_upp|_var|_cv)?$"), names(stat))
@@ -384,5 +387,9 @@ factor_stat_reshape <- function(stat, grps, peel, var_names) {
 
     out
   })
-  dplyr::bind_rows(out)
+  out <- dplyr::bind_rows(out)
+  if (!is.null(peel_levels)) {
+    out[[peel]] <- factor(out[[peel]], peel_levels)
+  }
+  out
 }

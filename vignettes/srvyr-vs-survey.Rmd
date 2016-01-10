@@ -4,7 +4,7 @@ author: "Greg Freedman"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{srvyr Compared to the survey Package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,16 +15,17 @@ information about survey design and analysis, check out the vignettes in the `su
 package, or Thomas Lumley's book, [*Complex Surveys: A Guide to Analysis
 Using R*](http://r-survey.r-forge.r-project.org/svybook/).
 
-Everything that `srvyr` can do, can also be done in `survey`. In fact, behind the scenes
-the `survey` package is doing all of the hard work for `srvyr`. 
-`srvyr` strives to make your code simpler and more easily readable to you,
+Everything that `srvyr` can do, can also be done in `survey`. In fact, behind
+the scenes the `survey` package is doing all of the hard work for `srvyr`. 
+`srvyr` strives to make your code simpler and more easily readable to you, 
 especially if you are already used to the `dplyr` package.
 
 # Motivating example
 
 The `dplyr` package has made it fast and easy to write code to summarize data.
-For example, if we wanted to check how the year-to-year change in academic progress indicator score
-varied by school level and percent of parents were high school graduates, we can do this:
+For example, if we wanted to check how the year-to-year change in academic 
+progress indicator scorevaried by school level and percent of parents were 
+high school graduates, we can do this:
 
 ```{r, message = FALSE, fig.width = 6}
 library(survey)
@@ -51,11 +52,11 @@ variation, we have to completely rewrite the `dplyr` code for the `survey` packa
 
 # Preparing a survey dataset
 
-`as_survey_design()` and `as_survey_rep()` are analagous to `survey::svydesign()`
-and `survey::svrepdesign()` respectively. Because they are designed to match
-`dplyr`'s style of non-standard evaluation, they accept bare column names instead
-of formulas (~). They also move the data argument first, so that it is easier to use
-`magrittr` pipes (`%>%`).
+`as_survey_design()` and `as_survey_rep()` are analagous to
+`survey::svydesign()` and `survey::svrepdesign()` respectively. Because they are
+designed to match `dplyr`'s style of non-standard evaluation, they accept bare
+column names instead of formulas (~). They also move the data argument first, so
+that it is easier to use `magrittr` pipes (`%>%`).
 
 ```{r, message = FALSE}
 library(srvyr)
@@ -94,20 +95,22 @@ strat_design_survey$variables$api_diff <- strat_design_survey$variables$api00 -
 names(strat_design_survey$variables)[names(strat_design_survey$variables) == "api.stu"] <- "api_students"
 ```
 
-Note that `arrange()` is not available, because the `srvyr` object expects to stay in
-the same order. Nor are two-table verbs such as `full_join()`, `bind_rows()`, etc.
-available to `srvyr` objects either because they may have implications on the
-survey design. If you need to use these functions, you should use them earlier in your
-analysis pipeline, when the objects are still stored as `data.frame`s.
+Note that `arrange()` is not available, because the `srvyr` object expects to
+stay in the same order. Nor are two-table verbs such as `full_join()`,
+`bind_rows()`, etc. available to `srvyr` objects either because they may have
+implications on the survey design. If you need to use these functions, you
+should use them earlier in your analysis pipeline, when the objects are still
+stored as `data.frame`s.
 
 # Summary statistics
 
 ## Of the entire population
-`srvyr` also provides `summarize()` and several survey-specific functions that calculate
-summary statistics: `survey_mean()`, `survey_total()`, `survey_quantile()` and
-`survey_ratio()`. These functions differ from their counterparts in `survey` because they
-always return a data.frame in a consistent format. As such, they do not return the
-variance-covariance matrix, and so are not as flexible.
+`srvyr` also provides `summarize()` and several survey-specific functions that
+calculate summary statistics: `survey_mean()`, `survey_total()`,
+`survey_quantile()` and `survey_ratio()`. These functions differ from their
+counterparts in `survey` because they always return a data.frame in a consistent
+format. As such, they do not return the variance-covariance matrix, and so are
+not as flexible.
 
 ```{r, message = FALSE}
 # Using srvyr
@@ -158,7 +161,7 @@ So now, we have all the tools needed to create the first graph and add error bou
 Notice that the data manipulation code is nearly identical to the `dplyr` code, with a
 little extra set up, and replacing `weighted.mean()` with `survey_mean`. 
 
-  ```{r, message = FALSE, fig.width = 6}
+```{r, message = FALSE, fig.width = 6}
 strat_design <- apistrat %>%
   as_survey_design(strata = stype, fpc = fpc, weight  = pw)
 
@@ -178,9 +181,10 @@ ggplot(data = out, aes(x = stype, y = api_diff, group = hs_grad_pct, fill = hs_g
 
 ```
 
-# Extras
 
-## Using `srvyr` objects with `survey` functions
+# Grab Bag
+
+## Using `survey` functions on `srvyr` objects
 
 Because `srvyr` objects are just `survey` objects with some extra structure,
 all of the functions from `survey` will still work with them. If you need to calculate
@@ -201,9 +205,11 @@ make it easier to send arguments from other functions.
 ```{r, message = FALSE}
 srs_design_srvyr <- apisrs %>% as_survey_design_(ids = "1", fpc = "fpc")
 
+grouping_var <- "stype"
+
 strat_design_srvyr %>%
-  group_by_("stype") %>%
-  summarize_(api_increase = "survey_total(api_diff >= 0)",
+  group_by_(grouping_var) %>% # You can use a character variable 
+  summarize_(api_increase = "survey_total(api_diff >= 0)", # or a string
              api_decrease = "survey_total(api_diff < 0)")
 
 

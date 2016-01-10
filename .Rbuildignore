@@ -3,4 +3,3 @@
 ^README\.Rmd$
 ^README-.*\.png$
 ^\.travis\.yml$
-^/vignettes/ignore

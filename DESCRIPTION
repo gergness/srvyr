@@ -1,26 +1,30 @@
 Package: srvyr
 Type: Package
 Title: 'dplyr'-Like Syntax for Summary Statistics of Survey Data
-Version: 0.0.1
-Date: 2015-08-22
-Authors@R: person("Greg", "Freedman", email = "greg.freedman@gmail.com", role = c("aut", "cre"))
 Description: Use piping, verbs like 'group_by' and 'summarize', and other
     'dplyr' inspired syntactic style when calculating summary statistics on survey
     data using functions from the 'survey' package.
+Version: 0.1.0
+Date: 2016-01-09
+Authors@R: person("Greg", "Freedman", email = "greg.freedman@gmail.com", role = c("aut", "cre"))
+URL: https://github.com/gergness/srvyr
+BugReports: https://github.com/gergness/srvyr/issues
+Depends:
+    R (>= 3.2.2)
 Imports:
-    survey,
     dplyr,
+    lazyeval,
     magrittr,
-    lazyeval
+    survey
 License: GPL-2 | GPL-3
 LazyData: TRUE
 Suggests:
-    testthat,
+    ggplot2,
     knitr,
+    Matrix,
     rmarkdown,
     pander,
-    ggplot2,
     survival,
-    Matrix
+    testthat
 VignetteBuilder: knitr
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1

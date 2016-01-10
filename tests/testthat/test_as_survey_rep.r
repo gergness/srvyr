@@ -2,7 +2,7 @@ context("as_survey_rep arguments work as expected.")
 library(srvyr)
 
 # From survey::as.svrepdesign examples
-library(survey)
+suppressPackageStartupMessages(library(survey))
 data(scd)
 scddes <- svydesign(data = scd, prob = ~1, id = ~ambulance, strata = ~ESA,
                   nest = TRUE, fpc = rep(5, 6))

@@ -1,5 +1,5 @@
 ---
-title: "srvyr compared to the survey package"
+title: "`srvyr` compared to the `survey` package"
 author: "Greg Freedman"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -24,7 +24,7 @@ especially if you are already used to the `dplyr` package.
 
 The `dplyr` package has made it fast and easy to write code to summarize data.
 For example, if we wanted to check how the year-to-year change in academic 
-progress indicator scorevaried by school level and percent of parents were 
+progress indicator score varied by school level and percent of parents were 
 high school graduates, we can do this:
 
 ```{r, message = FALSE, fig.width = 6}
@@ -52,11 +52,12 @@ variation, we have to completely rewrite the `dplyr` code for the `survey` packa
 
 # Preparing a survey dataset
 
-`as_survey_design()` and `as_survey_rep()` are analagous to
-`survey::svydesign()` and `survey::svrepdesign()` respectively. Because they are
-designed to match `dplyr`'s style of non-standard evaluation, they accept bare
-column names instead of formulas (~). They also move the data argument first, so
-that it is easier to use `magrittr` pipes (`%>%`).
+`as_survey_design()`, `as_survey_rep()` and `as_survey_twophase()` are analagous
+to `survey::svydesign()`, `survey::svrepdesign()` and `survey::twophase()` 
+respectively. Because they are designed to match `dplyr`'s style of non-standard
+evaluation, they accept bare column names instead of formulas (~). They also
+move the data argument first, so that it is easier to use `magrittr` pipes
+(`%>%`).
 
 ```{r, message = FALSE}
 library(srvyr)
@@ -79,6 +80,14 @@ strat_design_srvyr <- apistrat %>%
 strat_design_survey <- svydesign(~1, strata = ~stype, fpc = ~fpc,
                                  variables = ~stype + api99 + api00 + api.stu,
                                  weight = ~pw, data = apistrat)
+```
+
+The function `as_survey()` will automatically choose between the three `as_survey_*` 
+functions based on the arguments, so you can save a few keystrokes.
+
+```{r, message = FALSE}
+# simple random sample (again)
+srs_design_srvyr2 <- apisrs %>% as_survey(ids = 1, fpc = fpc)
 ```
 
 # Data manipulation
@@ -106,7 +115,7 @@ stored as `data.frame`s.
 
 ## Of the entire population
 `srvyr` also provides `summarize()` and several survey-specific functions that
-calculate summary statistics: `survey_mean()`, `survey_total()`,
+calculate summary statistics on numeric variables: `survey_mean()`, `survey_total()`,
 `survey_quantile()` and `survey_ratio()`. These functions differ from their
 counterparts in `survey` because they always return a data.frame in a consistent
 format. As such, they do not return the variance-covariance matrix, and so are
@@ -128,7 +137,8 @@ confint(out)
 
 ## By group
 
-`srvyr` also allows you to calculate statistics by group, using `group_by()`.
+`srvyr` also allows you to calculate statistics on numeric variablesby group, 
+using `group_by()`.
 ```{r, message = FALSE}
 # Using srvyr
 strat_design_srvyr %>%
@@ -138,6 +148,23 @@ strat_design_srvyr %>%
 
 # Using survey
 svyby(~api_diff >= 0, ~stype, strat_design_survey, svytotal)
+```
+
+## Proportions by group
+
+You can also calculate the proportion or count in each group of a factor 
+or character variable by leaving x empty in `survey_mean()` or `survey_total()`.
+
+```{r, message = FALSE}
+# Using srvyr
+srs_design_srvyr %>%
+  group_by(awards) %>%
+  summarize(proportion = survey_mean(),
+            total = survey_total())
+
+# Using survey
+svymean(~awards, srs_design_survey)
+svytotal(~awards, srs_design_survey)
 ```
 
 ## Unweighted calculations

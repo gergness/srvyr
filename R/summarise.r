@@ -68,13 +68,20 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #' \code{vignette("nse", package = "dplyr")} for details.
 #'
 #' @details
-#' Summarise for \code{tbl_svy} objects accepts several specialized functions. Each of the functions takes
-#' \code{x}, a variable from the data.frame and default to providing the measure and its standard error. The
-#' argument \code{vartype} can choose one or more measures of uncertainty, \code{se} for standard error,
-#' \code{ci} for confidence interval, \code{var} for variance, and \code{cv} for coefficient of variation.
-#'  The other arguments correspond to the analagous function arguments from the survey package.
+#' Summarise for \code{tbl_svy} objects accepts several specialized functions.
+#' Each of the functions a variable (or two, in the case of
+#' \code{survey_ratio}), from the data.frame and default to providing the measure
+#' and its standard error.
 #'
-#'  The available functions are:
+#' The argument \code{vartype} can choose one or more measures of uncertainty,
+#' \code{se} for standard error, \code{ci} for confidence interval, \code{var}
+#' for variance, and \code{cv} for coefficient of variation. \code{level}
+#' specifies the level for the confidence interval.
+#'
+#' The other arguments correspond to the analagous function arguments from the
+#' survey package.
+#'
+#' The available functions are:
 #'
 #'\describe{
 #' \item{\code{survey_mean(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95, proportion = FALSE, prop_method = NULL)}}{

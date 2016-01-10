@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 [![Coverage Status](https://img.shields.io/codecov/c/github/gergness/srvyr/master.svg)](https://codecov.io/github/gergness/srvyr?branch=master)
 
 srvyr brings parts of [dplyr's](https://github.com/hadley/dplyr/) syntax to survey
-analysis, using the [survey](https://cran.r-project.org/web/packages/survey/index.html) 
+analysis, using the [survey](http://cran.r-project.org/package=survey) 
 package.
 
 srvyr focuses on calculating summary statistics from survey data, such as the

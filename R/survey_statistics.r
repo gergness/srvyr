@@ -334,10 +334,10 @@ get_var_est <- function(stat, vartype, var_names = "", grps = "",
       se
     } else if (vvv == "ci") {
       if (!quantile) {
-        ci <- data.frame(matrix(survey::confint(stat, level = level),
+        ci <- data.frame(matrix(stats::confint(stat, level = level),
                                 ncol = 2 * out_width))
       } else {
-        ci <- data.frame(matrix(survey::confint(stat), ncol = 2 * out_width))
+        ci <- data.frame(matrix(stats::confint(stat), ncol = 2 * out_width))
       }
       names(ci) <- c(paste0(var_names, "_low"), paste0(var_names, "_upp"))
       ci

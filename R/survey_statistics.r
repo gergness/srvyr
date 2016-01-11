@@ -341,7 +341,7 @@ get_var_est <- function(stat, vartype, var_names = "", grps = "",
         } else {
           lci <- lapply(level, function(x) {as.data.frame(stats::confint(stat,level = x))})
           ci <- dplyr::bind_cols(lci)
-          names(ci) <- paste0(var_names,"_", c("low","high"),rep(level,each=2)*100)
+          names(ci) <- paste0(var_names,"_", c("low","upp"),rep(level,each=2)*100)
         }
       } else {
         ci <- data.frame(matrix(stats::confint(stat), ncol = 2 * out_width))

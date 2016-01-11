@@ -335,16 +335,16 @@ get_var_est <- function(stat, vartype, var_names = "", grps = "",
     } else if (vvv == "ci") {
       if (!quantile) {
         if (length(level)==1) {
-          ci <- data.frame(matrix(confint(stat, level = level),
+          ci <- data.frame(matrix(stats::confint(stat, level = level),
                                   ncol = 2 * out_width))
           names(ci) <- c(paste0(var_names, "_low"), paste0(var_names, "_upp"))
         } else {
-          lci <- lapply(level, function(x) {as.data.frame(confint(stat,level = x))})
+          lci <- lapply(level, function(x) {as.data.frame(stats::confint(stat,level = x))})
           ci <- dplyr::bind_cols(lci)
           names(ci) <- paste0(var_names,"_", names(ci))
         }
       } else {
-        ci <- data.frame(matrix(confint(stat), ncol = 2 * out_width))
+        ci <- data.frame(matrix(stats::confint(stat), ncol = 2 * out_width))
         names(ci) <- c(paste0(var_names, "_low"), paste0(var_names, "_upp"))
       }
 

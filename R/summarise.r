@@ -14,7 +14,7 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
   out <- lazyeval::lazy_eval(.dots, c(survey_funs, .data$variables))
   # use the argument names to name the output
   out <- lapply(seq_along(out), function(x) {
-    setNames(out[[x]], paste0(names(out[x]), names(out[[x]])))
+    stats::setNames(out[[x]], paste0(names(out[x]), names(out[[x]])))
   })
 
   dplyr::bind_cols(out)
@@ -40,7 +40,7 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
   out <- lapply(seq_along(out), function(x) {
     unchanged_names <- groups
     changed_names <- setdiff(names(out[[x]]), groups)
-    results <- setNames(out[[x]], c(unchanged_names, paste0(names(out[x]),
+    results <- stats::setNames(out[[x]], c(unchanged_names, paste0(names(out[x]),
                                                             changed_names)))
     results <- dplyr::arrange_(results, unchanged_names)
 

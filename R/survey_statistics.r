@@ -283,7 +283,7 @@ survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
 #' @param vartype Report variability as one or more of: standard error ("se", default),
 #'                confidence interval ("ci") (variance and coefficient of variation not
 #'                available).
-#' @param level A single number or vector of numbers indicating the confidence level
+#' @param level A single number indicating the confidence level (only one level allowed)
 #' @param q_method See "method" in \code{\link[stats]{approxfun}}
 #' @param f See \code{\link[stats]{approxfun}}
 #' @param interval_type See \code{\link[survey]{svyquantile}}
@@ -322,6 +322,11 @@ survey_quantile <- function(x, quantiles, na.rm = FALSE,
   interval_type <- match.arg(interval_type, several.ok = TRUE)
   if (missing(ties)) ties <- "discrete"
   ties <- match.arg(ties, several.ok = TRUE)
+
+  if (length(level) > 1) {
+    warning("Only the first confidence level will be used")
+    level <- level[1]
+  }
 
   if (inherits(.svy, "grouped_svy")) {
     survey_quantile_grouped_svy(.svy, x, quantiles, na.rm, vartype, level, q_method, f,
@@ -414,6 +419,11 @@ survey_median <- function(x, na.rm = FALSE,
   if (missing(ties)) ties <- "discrete"
   ties <- match.arg(ties, several.ok = TRUE)
 
+  if (length(level) > 1) {
+    warning("Only the first confidence level will be used")
+    level <- level[1]
+  }
+
   survey_quantile(x, quantiles = 0.5, na.rm = na.rm, vartype = vartype,
                   level = level, q_method = q_method, f = f,
                   interval_type = interval_type, ties = ties, .svy = .svy)
@@ -445,7 +455,7 @@ survey_median <- function(x, na.rm = FALSE,
 unweighted <- function(x, ...) {
   args <- list(...)
   if (!".svy" %in% names(args)) {
-    stop_direct_call("survey_quantile")
+    stop_direct_call("unweighted")
   }
 
   .svy <- args[[".svy"]]

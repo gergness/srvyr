@@ -25,7 +25,7 @@ survey_median(x, na.rm = FALSE, vartype = c("none", "se", "ci"),
 confidence interval ("ci") (variance and coefficient of variation not
 available).}
 
-\item{level}{A single number or vector of numbers indicating the confidence level}
+\item{level}{A single number indicating the confidence level (only one level allowed)}
 
 \item{q_method}{See "method" in \code{\link[stats]{approxfun}}}
 

@@ -63,7 +63,7 @@ print.tbl_svy <- function (x, varnames = TRUE, ...) {
 }
 
 #' List variables produced by a tbl.
-#' #' @param x A \code{tbl} object
+#' @param x A \code{tbl} object
 #' @name tbl_vars
 #' @export
 #' @importFrom dplyr tbl_vars

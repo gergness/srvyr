@@ -2,10 +2,11 @@
 % Please edit documentation in R/tbl-svy.r
 \name{tbl_vars}
 \alias{tbl_vars}
-\title{List variables produced by a tbl.
-#' @param x A \code{tbl} object}
+\title{List variables produced by a tbl.}
+\arguments{
+\item{x}{A \code{tbl} object}
+}
 \description{
 List variables produced by a tbl.
-#' @param x A \code{tbl} object
 }
 

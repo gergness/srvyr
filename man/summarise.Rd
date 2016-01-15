@@ -5,12 +5,6 @@
 \alias{summarise_}
 \alias{summarize}
 \alias{summarize_}
-\alias{survey_mean}
-\alias{survey_median}
-\alias{survey_quantile}
-\alias{survey_ratio}
-\alias{survey_total}
-\alias{unweighted}
 \title{Summarise multiple values to a single value.}
 \usage{
 summarise(.data, ...)

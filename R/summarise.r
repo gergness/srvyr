@@ -3,12 +3,12 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
   .dots <- lazyeval::all_dots(.dots, ...)
 
   survey_funs <- list(
-    survey_mean = function(...) survey_mean(.data, ...),
-    survey_total = function(...) survey_total(.data, ...),
-    survey_ratio = function(...) survey_ratio(.data, ...),
-    survey_quantile = function(...) survey_quantile(.data, ...),
-    survey_median = function(...) survey_median(.data, ...),
-    unweighted = function(...) unweighted(.data, ...)
+    survey_mean = function(...) survey_mean(..., .svy = .data),
+    survey_total = function(...) survey_total(..., .svy = .data),
+    survey_ratio = function(...) survey_ratio(..., .svy = .data),
+    survey_quantile = function(...) survey_quantile(..., .svy = .data),
+    survey_median = function(...) survey_median(..., .svy = .data),
+    unweighted = function(...) unweighted(..., .svy = .data)
   )
 
   out <- lazyeval::lazy_eval(.dots, c(survey_funs, .data$variables))
@@ -25,12 +25,12 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
   .dots <- lazyeval::all_dots(.dots, ...)
 
   survey_funs <- list(
-    survey_mean = function(...) survey_mean(.data, ...),
-    survey_total = function(...) survey_total(.data, ...),
-    survey_ratio = function(...) survey_ratio(.data, ...),
-    survey_quantile = function(...) survey_quantile(.data, ...),
-    survey_median = function(...) survey_median(.data, ...),
-    unweighted = function(...) unweighted(.data, ...)
+    survey_mean = function(...) survey_mean(..., .svy = .data),
+    survey_total = function(...) survey_total(..., .svy = .data),
+    survey_ratio = function(...) survey_ratio(..., .svy = .data),
+    survey_quantile = function(...) survey_quantile(..., .svy = .data),
+    survey_median = function(...) survey_median(..., .svy = .data),
+    unweighted = function(...) unweighted(..., .svy = .data)
   )
 
   groups <- as.character(groups(.data))
@@ -118,7 +118,6 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'             api_diff = survey_mean(api00 - api99))
 #'
 #' @name summarise
-#' @aliases survey_mean survey_total survey_ratio survey_quantile survey_median unweighted
 #' @export
 #' @importFrom dplyr summarise
 NULL

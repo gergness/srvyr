@@ -61,7 +61,9 @@ survey_mean <- function(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
 
   .svy <- args[[".svy"]]
   if (missing(vartype)) vartype <- "se"
+  vartype <- match.arg(vartype, several.ok = TRUE)
   if (missing(prop_method)) prop_method <- "logit"
+  prop_method <- match.arg(prop_method, several.ok = TRUE)
 
   if (inherits(.svy, "grouped_svy")) {
     survey_mean_grouped_svy(.svy, x, na.rm, vartype, level, proportion, prop_method)
@@ -147,6 +149,7 @@ survey_total <- function(x = NULL, na.rm = FALSE, vartype = c("se", "ci", "var",
 
   .svy <- args[[".svy"]]
   if (missing(vartype)) vartype <- "se"
+  vartype <- match.arg(vartype, several.ok = TRUE)
 
   if (inherits(.svy, "grouped_svy")) {
     survey_total_grouped_svy(.svy, x, na.rm, vartype, level)
@@ -215,6 +218,7 @@ survey_ratio <- function(numerator, denominator, na.rm = FALSE,
 
   .svy <- args[[".svy"]]
   if (missing(vartype)) vartype <- "se"
+  vartype <- match.arg(vartype, several.ok = TRUE)
 
   if (inherits(.svy, "grouped_svy")) {
     survey_ratio_grouped_svy(.svy, numerator, denominator, na.rm, vartype, level)
@@ -229,8 +233,6 @@ survey_ratio <- function(numerator, denominator, na.rm = FALSE,
 survey_ratio_tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE,
                                  vartype = c("se", "ci", "var", "cv"),
                                  level = 0.95) {
-  if(missing(vartype)) vartype <- "se"
-  vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
 
   stat <- survey::svyratio(data.frame(numerator), data.frame(denominator),
                            .svy, na.rm = na.rm)
@@ -243,8 +245,6 @@ survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
                                      na.rm = FALSE,
                                      vartype = c("se", "ci", "var", "cv"),
                                      level = 0.95) {
-  if(missing(vartype)) vartype <- "se"
-  vartype <- c(match.arg(vartype, several.ok = TRUE))
 
   grps <- survey::make.formula(groups(.svy))
 
@@ -316,9 +316,12 @@ survey_quantile <- function(x, quantiles, na.rm = FALSE,
   }
 
   .svy <- args[[".svy"]]
-  if (missing(vartype)) vartype <- "se"
+  if (missing(vartype)) vartype <- "none"
+  vartype <- match.arg(vartype, several.ok = TRUE)
   if (missing(interval_type)) interval_type <- "Wald"
+  interval_type <- match.arg(interval_type, several.ok = TRUE)
   if (missing(ties)) ties <- "discrete"
+  ties <- match.arg(ties, several.ok = TRUE)
 
   if (inherits(.svy, "grouped_svy")) {
     survey_quantile_grouped_svy(.svy, x, quantiles, na.rm, vartype, level, q_method, f,
@@ -405,8 +408,11 @@ survey_median <- function(x, na.rm = FALSE,
 
   .svy <- args[[".svy"]]
   if (missing(vartype)) vartype <- "none"
+  vartype <- match.arg(vartype, several.ok = TRUE)
   if (missing(interval_type)) interval_type <- "Wald"
+  interval_type <- match.arg(interval_type, several.ok = TRUE)
   if (missing(ties)) ties <- "discrete"
+  ties <- match.arg(ties, several.ok = TRUE)
 
   survey_quantile(x, quantiles = 0.5, na.rm = na.rm, vartype = vartype,
                   level = level, q_method = q_method, f = f,

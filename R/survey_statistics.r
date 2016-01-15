@@ -234,6 +234,7 @@ survey_ratio_tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE,
                                  vartype = c("se", "ci", "var", "cv"),
                                  level = 0.95) {
 
+  vartype <- c("coef", vartype)
   stat <- survey::svyratio(data.frame(numerator), data.frame(denominator),
                            .svy, na.rm = na.rm)
 

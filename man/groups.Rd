@@ -5,7 +5,7 @@
 \alias{ungroup}
 \title{Get/set the grouping variables for tbl.}
 \arguments{
-\item{x}{data \code{link[dplyr]{tbl}} or \code{\link{tbl_svy}} object.}
+\item{x}{data \code{\link[dplyr]{tbl_df}} or \code{\link{tbl_svy}} object.}
 }
 \description{
 These functions do not perform non-standard evaluation, and

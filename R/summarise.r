@@ -84,18 +84,24 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #' The available functions are:
 #'
 #'\describe{
-#' \item{\code{survey_mean(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95, proportion = FALSE, prop_method = NULL)}}{
-#'    Calculate the survey mean of the entire population or by \code{groups}. Based on \code{\link[survey]{svymean}}.}
-#' \item{\code{survey_total(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95)}}{
-#'    Calculate the survey total of the entire population or by \code{groups}. Based on \code{\link[survey]{svytotal}}.}
-#'  \item{\code{survey_ratio(numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95)}}{
-#'    Calculate the ratio of 2 variables in the entire population or by \code{groups}. Based on \code{\link[survey]{svyratio}}.}
-#' \item{\code{survey_quantile(x, quantiles, na.rm = FALSE, vartype = c("se", "ci"), level = 0.95, q_method = "linear", f = 1, interval_type = c("Wald", "score", "betaWald"), ties = c("discrete", "rounded"))}}{
-#'    Calculate quantiles in the entire population or by \code{groups}. Based on \code{\link[survey]{svyquantile}}.}
-#'  \item{\code{survey_median(x, na.rm = FALSE, vartype = c("se", "ci"), level = 0.95, q_method = "linear", f = 1, interval_type = c("Wald", "score", "betaWald"), ties = c("discrete", "rounded"))}}{
-#'    Calculate the median in the entire population or by \code{groups}. \code{\link[survey]{svyquantile}}.}
-#'  \item{\code{unweighted(x)}}{
-#'    Calculate an unweighted estimate as you would on a regular \code{tbl_df}. Based on dplyr's \code{\link[dplyr]{summarise}}.}
+#' \item{\code{\link{survey_mean}}}{
+#'    Calculate the survey mean of the entire population or by \code{groups}.
+#'    Based on \code{\link[survey]{svymean}}.}
+#' \item{\code{\link{survey_total}}}{
+#'    Calculate the survey total of the entire population or by \code{groups}.
+#'    Based on \code{\link[survey]{svytotal}}.}
+#'  \item{\code{\link{survey_ratio}}}{
+#'    Calculate the ratio of 2 variables in the entire population or by \code{groups}.
+#'    Based on \code{\link[survey]{svyratio}}.}
+#' \item{\code{\link{survey_quantile}}}{
+#'    Calculate quantiles in the entire population or by \code{groups}. Based on
+#'    \code{\link[survey]{svyquantile}}.}
+#'  \item{\code{\link{survey_median}}}{
+#'    Calculate the median in the entire population or by \code{groups}.
+#'    \code{\link[survey]{svyquantile}}.}
+#'  \item{\code{\link{unweighted}}}{
+#'    Calculate an unweighted estimate as you would on a regular \code{tbl_df}.
+#'    Based on dplyr's \code{\link[dplyr]{summarise}}.}
 #'}
 #' @examples
 #' library(survey)

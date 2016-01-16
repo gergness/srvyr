@@ -72,7 +72,7 @@ NULL
 #' \code{ungroup} is a convenient inline way of removing existing
 #' grouping.
 #'
-#' @param x data \code{link[dplyr]{tbl}} or \code{\link{tbl_svy}} object.
+#' @param x data \code{\link[dplyr]{tbl_df}} or \code{\link{tbl_svy}} object.
 #' @seealso \code{\link[dplyr]{groups}} for information.
 
 #' @name groups

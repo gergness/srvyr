@@ -3,7 +3,7 @@
 #' \code{as_survey} can be used to create a \code{tbl_svy} using design information
 #' (\code{\link{as_survey_design}}), replicate weights (\code{\link{as_survey_rep}}),
 #' or a two phase design (\code{\link{as_survey_twophase}}), or an object created by the
-#' survye package. \code{as_survey_} is its standard evaluation counterpart.
+#' survey package. \code{as_survey_} is its standard evaluation counterpart.
 #'
 #' @param .data a data.frame or an object from the survey package
 #' @param ... other arguments, see other functions for details
@@ -19,7 +19,7 @@
 #' dstrata <- apistrat %>%
 #'   as_survey(strata = stype, weights = pw)
 #'
-#' # Examples from ?survey::svrepdesign()
+#' # Examples from ?survey::svrepdesign
 #' data(scd)
 #' # use BRR replicate weights from Levy and Lemeshow
 #' scd$rep1 <- 2 * c(1, 0, 1, 0, 1, 0)

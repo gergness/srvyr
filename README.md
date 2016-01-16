@@ -8,10 +8,12 @@ srvyr brings parts of [dplyr's](https://github.com/hadley/dplyr/) syntax to surv
 
 srvyr focuses on calculating summary statistics from survey data, such as the mean, total or quantile. It allows for the use of many dplyr verbs, such as `summarize`, `group_by`, and `mutate`, the convenience of pipe-able functions, lazyeval's style of non-standard evaluation and more consistent return types than the survey package.
 
-You can try it out (only available on github at the moment):
+You can try it out:
 
 ``` r
-devtools::install_github("gergness/srvyr")
+install.packages("srvyr")
+# or for development version
+# devtools::install_github("gergness/srvyr")
 ```
 
 To create a `tbl_svy` object (the core concept behind the srvyr package), use the function `as_survey_design()` with the bare column names of the names you would use in `survey::svydesign()` object.

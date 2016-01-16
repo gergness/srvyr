@@ -29,10 +29,12 @@ mean, total or quantile. It allows for the use of  many dplyr verbs, such as
 lazyeval's style of non-standard evaluation and more consistent return types
 than the survey package.
 
-You can try it out (only available on github at the moment):
+You can try it out:
 
 ```R
-devtools::install_github("gergness/srvyr")
+install.packages("srvyr")
+# or for development version
+# devtools::install_github("gergness/srvyr")
 ```
 
 To create a `tbl_svy` object (the core concept behind the srvyr package), 

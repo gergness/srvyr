@@ -26,6 +26,17 @@ cascade_.grouped_svy <- function(.data, ..., .dots, .fill = NA) {
                 })
 
   out <- dplyr::bind_rows(out)
+
+  # Preserve factors
+  if (!is.na(.fill)) {
+    for (vvv in groups) {
+      if (class(.data$variables[[vvv]]) == "factor") {
+        out[[vvv]] <- factor(out[[vvv]],
+                             levels = c(levels(.data$variables[[vvv]]), .fill))
+      }
+    }
+  }
+
   out <- dplyr::arrange_(out, groups)
   out
 }

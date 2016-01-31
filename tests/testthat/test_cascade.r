@@ -44,9 +44,9 @@ test_that("cascade works for 1 group",
 
 
 # .fill works
-test_that(".fill works",
+test_that(".fill works & respects factors",
           expect_equal(dstrata_srvyr %>%
                          group_by(stype) %>%
-                         cascade(api99_mn = survey_mean(api99), .fill = "X") %>%
+                         cascade(api99_mn = survey_mean(api99), .fill = "AAA") %>%
                          .$stype,
-                       c("E", "H", "M", "X")))
+                       factor(c("E", "H", "M", "AAA"), levels = c("E", "H", "M", "AAA"))))

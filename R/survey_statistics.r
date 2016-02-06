@@ -171,7 +171,7 @@ survey_total_grouped_svy <- function(.svy, x, na.rm = FALSE,
                                      level = 0.95) {
   if (!is.null(x)) survey_stat_grouped(.svy, survey::svytotal, x, na.rm,
                                        vartype, level)
-  else survey_stat_factor(.svy, survey::svytotal, na.rm, vartype)
+  else survey_stat_factor(.svy, survey::svytotal, na.rm, vartype, level)
 }
 
 
@@ -522,6 +522,11 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level) {
   grps <- setdiff(grps, peel)
 
   vartype <- c("coef", vartype)
+
+  if (length(level) > 1) {
+    warning("Only the first confidence level will be used")
+    level <- level[1]
+  }
 
   if (length(grps) > 0) {
     stat <- survey::svyby(survey::make.formula(peel),

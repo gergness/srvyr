@@ -94,6 +94,7 @@ survey_mean_grouped_svy <- function(.svy, x, na.rm = FALSE,
                                     prop_method = c("logit", "likelihood",
                                                     "asin", "beta", "mean")) {
   if (missing(x)) {
+    if (proportion) stop("proportion does not work with factors.")
     survey_stat_factor(.svy, survey::svymean, na.rm, vartype, level)
   } else if (proportion) {
     survey_stat_grouped(.svy, survey::svyciprop, x, na.rm, vartype, level,

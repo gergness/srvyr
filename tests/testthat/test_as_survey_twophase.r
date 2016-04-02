@@ -46,6 +46,9 @@ survey_results <- list(
              "sex3", "median_q50", "median_q50_se")) %>%
   select(-sex2, -sex3)
 
+attr(survey_results, "svyby") <- NULL
+attr(survey_results, "call") <- NULL
+
 suppressWarnings(srvyr_results <- d2pbc_srvyr %>%
   group_by(sex) %>%
   summarize(mean = survey_mean(bili),

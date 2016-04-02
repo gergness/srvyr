@@ -47,8 +47,9 @@ filter_.tbl_svy <- function(.data, ..., .dots) {
   # on the variables data.frame and then pass the row_numbers that are kept
   # into survey::svydesign2 `[`
   row_numbers <- .data$variables
+  total_num_rows <- nrow(row_numbers)
   row_numbers <-
-    dplyr::mutate_(row_numbers, "`___row_nums` = dplyr::row_number(1)")
+    dplyr::mutate(row_numbers, `___row_nums` = seq(1, total_num_rows))
   row_numbers <- dplyr::filter_(row_numbers, .dots = dots)
   row_numbers <- row_numbers$`___row_nums`
 

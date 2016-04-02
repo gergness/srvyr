@@ -13,6 +13,7 @@
 #' @examples
 #' # Examples from ?survey::svydesign
 #' library(survey)
+#' library(dplyr)
 #' data(api)
 #'
 #' # stratified sample

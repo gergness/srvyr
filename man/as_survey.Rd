@@ -38,6 +38,7 @@ survey package. \code{as_survey_} is its standard evaluation counterpart.
 \examples{
 # Examples from ?survey::svydesign
 library(survey)
+library(dplyr)
 data(api)
 
 # stratified sample

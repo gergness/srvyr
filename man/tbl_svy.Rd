@@ -24,6 +24,7 @@ dplyr single-table verbs like \code{mutate}, \code{group_by} and
 }
 \examples{
 library(survey)
+library(dplyr)
 data(api)
 svy <- as_survey_design(apistrat, strata = stype, weights = pw)
 svy

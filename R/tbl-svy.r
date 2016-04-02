@@ -19,6 +19,7 @@
 #'
 #' @examples
 #' library(survey)
+#' library(dplyr)
 #' data(api)
 #' svy <- as_survey_design(apistrat, strata = stype, weights = pw)
 #' svy

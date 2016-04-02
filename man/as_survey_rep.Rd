@@ -91,6 +91,7 @@ replicate weights.
 \examples{
 # Examples from ?survey::svrepdesign()
 library(survey)
+library(dplyr)
 data(scd)
 # use BRR replicate weights from Levy and Lemeshow
 scd <- scd \%>\%

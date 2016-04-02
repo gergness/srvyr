@@ -1,5 +1,6 @@
 context("as_survey_rep arguments work as expected.")
 library(srvyr)
+suppressPackageStartupMessages(library(dplyr))
 
 # From survey::as.svrepdesign examples
 suppressPackageStartupMessages(library(survey))

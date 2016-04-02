@@ -17,7 +17,8 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
     stats::setNames(out[[x]], paste0(names(out[x]), names(out[[x]])))
   })
 
-  dplyr::bind_cols(out)
+  out <- dplyr::bind_cols(out)
+  dplyr::tbl_df(out)
 }
 
 #' @export
@@ -49,8 +50,8 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
     results
   })
 
-
-  dplyr::bind_cols(out)
+  out <- dplyr::bind_cols(out)
+  dplyr::tbl_df(out)
 }
 
 #' Summarise multiple values to a single value.

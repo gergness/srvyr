@@ -23,7 +23,8 @@ survey_results <- list(
              se = sqrt(unname(svyratio(~bili, ~albumin, d2pbc_survey)[[2]])))
 ) %>% dplyr::bind_cols() %>%
   setNames(c("mean", "mean_se", "total", "total_se", "median_q50", "ratio",
-             "ratio_se"))
+             "ratio_se")) %>%
+  dplyr::tbl_df()
 
 srvyr_results <- d2pbc_srvyr %>%
   summarize(mean = survey_mean(bili),
@@ -44,7 +45,8 @@ survey_results <- list(
 ) %>% dplyr::bind_cols() %>%
   setNames(c("sex", "mean", "mean_se", "sex2", "total", "total_se",
              "sex3", "median_q50", "median_q50_se")) %>%
-  select(-sex2, -sex3)
+  select(-sex2, -sex3) %>%
+  dplyr::tbl_df()
 
 attr(survey_results, "svyby") <- NULL
 attr(survey_results, "call") <- NULL

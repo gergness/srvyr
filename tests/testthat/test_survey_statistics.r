@@ -14,7 +14,7 @@ out_srvyr <- dstrata %>%
 
 test_that("survey_ratio works for ungrouped surveys",
           expect_equal(c(out_survey[[1]], sqrt(out_survey$var)),
-                       c(out_srvyr[[1, 1]], out_srvyr[[1, 2]])))
+                       c(out_srvyr[[1]][[1]], out_srvyr[[2]][[1]])))
 
 
 out_survey <- svyby(~api00, ~stype, denominator = ~api99, dstrata,
@@ -38,7 +38,7 @@ out_srvyr <- dstrata %>%
 
 test_that("survey_quantile works for ungrouped surveys - no ci",
           expect_equal(c(out_survey[[1]], out_survey[[2]]),
-                       c(out_srvyr[[1, 1]], out_srvyr[[1, 2]])))
+                       c(out_srvyr[[1]][[1]], out_srvyr[[2]][[1]])))
 
 
 
@@ -50,8 +50,8 @@ out_srvyr <- dstrata %>%
 
 test_that("survey_quantile works for ungrouped surveys - with ci",
           expect_equal(c(out_survey$CIs[[1]], out_survey$CIs[[2]]),
-                       c(out_srvyr[[1, "api00_q50_low"]],
-                         out_srvyr[[1, "api00_q50_upp"]])))
+                       c(out_srvyr[["api00_q50_low"]][[1]],
+                         out_srvyr[["api00_q50_upp"]][[1]])))
 
 
 suppressWarnings(out_survey <- svyby(~api00, ~stype, dstrata, svyquantile,
@@ -64,8 +64,8 @@ suppressWarnings(out_srvyr <- dstrata %>%
 
 test_that("survey_quantile works for grouped surveys - with se",
           expect_equal(c(out_survey$`0.5`[[1]], out_survey[["se.0.5"]][[1]]),
-                       c(out_srvyr[[1, "api00_q50"]],
-                         out_srvyr[[1, "api00_q50_se"]])))
+                       c(out_srvyr[["api00_q50"]][[1]],
+                         out_srvyr[["api00_q50_se"]][[1]])))
 
 # survey_quantile
 out_survey <- svyquantile(~api00, dstrata, c(0.5))
@@ -76,7 +76,7 @@ out_srvyr <- dstrata %>%
 
 test_that("survey_quantile works for ungrouped surveys - no ci",
           expect_equal(c(out_survey[[1]]),
-                       c(out_srvyr[[1, 1]])))
+                       c(out_srvyr[[1]][[1]])))
 
 
 suppressWarnings(
@@ -94,7 +94,7 @@ suppressWarnings(
 test_that(
   "survey_quantile works for grouped surveys - multiple grouping variables",
   expect_equal(c(out_survey$`0.5`[[1]], out_survey[["se.0.5"]][[1]]),
-               c(out_srvyr[[1, "api00_q50"]], out_srvyr[[1, "api00_q50_se"]])))
+               c(out_srvyr[["api00_q50"]][[1]], out_srvyr[["api00_q50_se"]][[1]])))
 
 
 

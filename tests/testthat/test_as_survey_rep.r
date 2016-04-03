@@ -31,7 +31,7 @@ out_srvyr <- scd2brr_srvyr %>%
 
 test_that("as_survey_rep works when using BRR method of replicate weights",
           expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
-                       c(out_srvyr[[1, 1]], out_srvyr[[1, 2]])))
+                       c(out_srvyr[[1]][[1]], out_srvyr[[2]][[1]])))
 
 
 # ------------------------------------------------------------------
@@ -56,7 +56,7 @@ out_srvyr <- scd2fay_srvyr %>%
 
 test_that("as_survey_rep works when using Fay method of replicate weights",
           expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
-                       c(out_srvyr[[1, 1]], out_srvyr[[1, 2]])))
+                       c(out_srvyr[[1]][[1]], out_srvyr[[2]][[1]])))
 
 # ------------------------------------------------------------------
 # Test JKn replicate weights
@@ -80,7 +80,7 @@ out_srvyr <- scd2jkn_srvyr %>%
 
 test_that("as_survey_rep works when using JKn method of replicate weights",
           expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
-                       c(out_srvyr[[1, 1]], out_srvyr[[1, 2]])))
+                       c(out_srvyr[[1]][[1]], out_srvyr[[2]][[1]])))
 
 
 # ------------------------------------------------------------------
@@ -105,7 +105,7 @@ out_srvyr <- scd2jknf_srvyr %>%
 
 test_that("as_survey_rep works when using JKn method of replicate weights",
           expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
-                       c(out_srvyr[[1, 1]], out_srvyr[[1, 2]])))
+                       c(out_srvyr[[1]][[1]], out_srvyr[[2]][[1]])))
 
 
 # ------------------------------------------------------------------
@@ -131,4 +131,4 @@ out_srvyr <- scd2brr1_srvyr %>%
 
 test_that("as_survey_rep works when using JKn method of replicate weights",
           expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
-                       c(out_srvyr[[1, 1]], out_srvyr[[1, 2]])))
+                       c(out_srvyr[[1]][[1]], out_srvyr[[2]][[1]])))

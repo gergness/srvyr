@@ -21,24 +21,24 @@ survey_mn <- svymean(~api99, dstrata_survey)
 survey_tot <- svytotal(~api99, dstrata_survey)
 
 test_that("srvyr and survey get same mean (overall)",
-          expect_equal(survey_mn[[1]], srvyr_results[[1, 1]]))
+          expect_equal(survey_mn[[1]], srvyr_results[[1]][[1]]))
 
 test_that("srvyr and survey get same mean var (overall)",
-          expect_equal(attr(survey_mn, "var")[[1]], srvyr_results[[1, 3]]))
+          expect_equal(attr(survey_mn, "var")[[1]], srvyr_results[[3]][[1]]))
 
 test_that("srvyr and survey get same mean CIs (overall)",
-          expect_equal(confint(survey_mn)[1:2], c(srvyr_results[[1, 4]],
-                                                  srvyr_results[[1, 5]])))
+          expect_equal(confint(survey_mn)[1:2], c(srvyr_results[[4]][[1]],
+                                                  srvyr_results[[5]][[1]])))
 
 test_that("srvyr and survey get same total (overall)",
-          expect_equal(survey_tot[[1]], srvyr_results[[1, 6]]))
+          expect_equal(survey_tot[[1]], srvyr_results[[6]][[1]]))
 
 test_that("srvyr and survey get same total var (overall)",
-          expect_equal(attr(survey_tot, "var")[[1]], srvyr_results[[1, 8]]))
+          expect_equal(attr(survey_tot, "var")[[1]], srvyr_results[[8]][[1]]))
 
 test_that("srvyr and survey get same total CIs (overall)",
-          expect_equal(confint(survey_tot)[1:2], c(srvyr_results[[1, 9]],
-                                                   srvyr_results[[1, 10]])))
+          expect_equal(confint(survey_tot)[1:2], c(srvyr_results[[9]][[1]],
+                                                   srvyr_results[[10]][[1]])))
 
 
 # Grouped data

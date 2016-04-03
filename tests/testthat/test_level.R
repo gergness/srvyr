@@ -21,17 +21,23 @@ survey_mn <- svymean(~api99, dstrata_survey)
 survey_tot <- svytotal(~api99, dstrata_survey)
 
 test_that("Test that CIs are correct for .75",
-          expect_equal(confint(survey_mn,level=.75)[1:2], c(srvyr_results[[1,2]],srvyr_results[[1,3]])))
+          expect_equal(confint(survey_mn, level=.75)[1:2],
+                       c(srvyr_results[[2]][[1]], srvyr_results[[3]][[1]])))
 test_that("Test that CIs are correct for .9",
-          expect_equal(confint(survey_mn,level=.9)[1:2], c(srvyr_results[[1,4]],srvyr_results[[1,5]])))
+          expect_equal(confint(survey_mn, level=.9)[1:2],
+                       c(srvyr_results[[4]][[1]], srvyr_results[[5]][[1]])))
 test_that("Test that CIs are correct for .95",
-          expect_equal(confint(survey_mn,level=.95)[1:2], c(srvyr_results[[1,6]],srvyr_results[[1,7]])))
+          expect_equal(confint(survey_mn, level=.95)[1:2],
+                       c(srvyr_results[[6]][[1]],srvyr_results[[7]][[1]])))
 test_that("Test that CIs are correct for .75",
-          expect_equal(confint(survey_tot,level=.75)[1:2], c(srvyr_results[[1,9]],srvyr_results[[1,10]])))
+          expect_equal(confint(survey_tot, level=.75)[1:2],
+                       c(srvyr_results[[9]][[1]],srvyr_results[[10]][[1]])))
 test_that("Test that CIs are correct for .9",
-          expect_equal(confint(survey_tot,level=.9)[1:2], c(srvyr_results[[1,11]],srvyr_results[[1,12]])))
+          expect_equal(confint(survey_tot, level=.9)[1:2],
+                       c(srvyr_results[[11]][[1]], srvyr_results[[12]][[1]])))
 test_that("Test that CIs are correct for .95",
-          expect_equal(confint(survey_tot,level=.95)[1:2], c(srvyr_results[[1,13]],srvyr_results[[1,14]])))
+          expect_equal(confint(survey_tot, level=.95)[1:2],
+                       c(srvyr_results[[13]][[1]], srvyr_results[[14]][[1]])))
 
 
 # Grouped data

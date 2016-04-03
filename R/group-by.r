@@ -6,12 +6,12 @@ group_by_.tbl_svy <- function(.data, ..., .dots, add = FALSE) {
 }
 
 #' @export
-ungroup.tbl_svy <- function(x) {
+ungroup.tbl_svy <- function(x, ...) {
   x
 }
 
 #' @export
-ungroup.grouped_svy <- function(x) {
+ungroup.grouped_svy <- function(x, ...) {
   x$variables <- ungroup(x$variables)
   class(x) <- setdiff(class(x), "grouped_svy")
   x

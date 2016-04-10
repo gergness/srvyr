@@ -94,11 +94,11 @@ out_survey_tot <- svytotal(~awards, dstrata)
 out_survey <- dplyr::data_frame(
   awards = factor(c("No", "Yes")),
   pct = as.numeric(out_survey_mn),
-  pct_low = as.numeric(confint(out_survey_mn)[, 1]),
-  pct_upp = as.numeric(confint(out_survey_mn)[, 2]),
+  pct_low = as.numeric(confint(out_survey_mn, df = degf(dstrata))[, 1]),
+  pct_upp = as.numeric(confint(out_survey_mn, df = degf(dstrata))[, 2]),
   tot = as.numeric(out_survey_tot),
-  tot_low = as.numeric(confint(out_survey_tot)[, 1]),
-  tot_upp = as.numeric(confint(out_survey_tot)[, 2])
+  tot_low = as.numeric(confint(out_survey_tot, df = degf(dstrata))[, 1]),
+  tot_upp = as.numeric(confint(out_survey_tot, df = degf(dstrata))[, 2])
 )
 
 out_srvyr <- dstrata %>%

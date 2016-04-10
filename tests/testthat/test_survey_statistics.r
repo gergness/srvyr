@@ -106,7 +106,7 @@ out_srvyr <- dstrata %>%
   unlist()
 
 mn <- svymean(~api00, dstrata)
-mn <- confint(mn, level = 0.9)
+mn <- confint(mn, level = 0.9, df = degf(dstrata))
 ratio <- svyratio(~api00, ~api99, dstrata)
 ratio <- confint(ratio, level = 0.9)
 mdn <- svyquantile(~api00, dstrata, quantile = 0.5, ci = TRUE, level = 0.9)
@@ -128,7 +128,7 @@ suppressWarnings(out_srvyr <- dstrata %>%
 )
 
 mn <- svyby(~api00, ~stype, dstrata, svymean)
-mn <- confint(mn, level = 0.9)
+mn <- confint(mn, level = 0.9, df = degf(dstrata))
 ratio <- svyby(~api00, ~stype, denominator = ~api99, dstrata, svyratio)
 ratio <- confint(ratio, level = 0.9)
 suppressWarnings(mdn <- svyby(~api00, ~stype, dstrata, svyquantile,

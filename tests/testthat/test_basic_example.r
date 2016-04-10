@@ -27,8 +27,8 @@ test_that("srvyr and survey get same mean var (overall)",
           expect_equal(attr(survey_mn, "var")[[1]], srvyr_results[[3]][[1]]))
 
 test_that("srvyr and survey get same mean CIs (overall)",
-          expect_equal(confint(survey_mn)[1:2], c(srvyr_results[[4]][[1]],
-                                                  srvyr_results[[5]][[1]])))
+          expect_equal(confint(survey_mn, df = degf(dstrata_survey))[1:2],
+                       c(srvyr_results[[4]][[1]], srvyr_results[[5]][[1]])))
 
 test_that("srvyr and survey get same total (overall)",
           expect_equal(survey_tot[[1]], srvyr_results[[6]][[1]]))
@@ -37,8 +37,8 @@ test_that("srvyr and survey get same total var (overall)",
           expect_equal(attr(survey_tot, "var")[[1]], srvyr_results[[8]][[1]]))
 
 test_that("srvyr and survey get same total CIs (overall)",
-          expect_equal(confint(survey_tot)[1:2], c(srvyr_results[[9]][[1]],
-                                                   srvyr_results[[10]][[1]])))
+          expect_equal(confint(survey_tot, df = degf(dstrata_survey))[1:2],
+                       c(srvyr_results[[9]][[1]], srvyr_results[[10]][[1]])))
 
 
 # Grouped data
@@ -49,9 +49,16 @@ srvyr_grouped_results <- dstrata_srvyr %>%
 
 survey_grouped_results_mn <- svyby(~api99, ~stype, dstrata_survey, svymean,
                                 vartype = c("se", "var", "ci"))
+# Add in ci with degrees of freedom to object
+survey_grouped_results_mn[, c("ci_l", "ci_u")] <-
+  confint(survey_grouped_results_mn, df = degf(dstrata_survey))
 
 survey_grouped_results_tot <- svyby(~api99, ~stype, dstrata_survey, svytotal,
                                    vartype = c("se", "var", "ci"))
+# Add in ci with degrees of freedom to object
+survey_grouped_results_tot[, c("ci_l", "ci_u")] <-
+  confint(survey_grouped_results_tot, df = degf(dstrata_survey))
+
 
 test_that("srvyr and survey get same mean (grouped)",
           expect_equal(survey_grouped_results_mn$api99,

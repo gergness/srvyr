@@ -14,12 +14,18 @@
 #' @param vartype Report variability as one or more of: standard error ("se", default),
 #'                confidence interval ("ci"), variance ("var") or coefficient of variation
 #'                ("cv").
-#' @param level A single number or vector of numbers indicating the confidence level
+#' @param level (For vartype = "ci" only) A single number or vector of numbers indicating
+#'              the confidence level
 #' @param proportion Use methods to calculate the proportion that may have more accurate
 #'                   confidence intervals near 0 and 1. Based on
 #'                   \code{\link[survey]{svyciprop}}.
 #' @param prop_method Type of proportion method to use if proportion is \code{TRUE}. See
 #'                    \code{\link[survey]{svyciprop}} for details.
+#' @param deff A logical value to indicate whether the design effect should be returned.
+#' @param df (For vartype = "ci" only) A numeric value indicating the degrees of freedom
+#'           for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
+#'           but Inf is the usual survey package's default (except in
+#'           \codes{\link[survey]{svyciprop}}.
 #' @param ... Ignored
 #' @examples
 #' library(survey)
@@ -53,7 +59,7 @@
 survey_mean <- function(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
                         level = 0.95, proportion = FALSE,
                         prop_method = c("logit", "likelihood", "asin", "beta",
-                                        "mean"), ...) {
+                                        "mean"), deff = FALSE, df = NULL, ...) {
   args <- list(...)
   if (!".svy" %in% names(args)) {
     stop_direct_call("survey_mean")
@@ -65,10 +71,12 @@ survey_mean <- function(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
   if (missing(prop_method)) prop_method <- "logit"
   prop_method <- match.arg(prop_method, several.ok = TRUE)
 
+  if (is.null(df)) df <- survey::degf(.svy)
+
   if (inherits(.svy, "grouped_svy")) {
-    survey_mean_grouped_svy(.svy, x, na.rm, vartype, level, proportion, prop_method)
+    survey_mean_grouped_svy(.svy, x, na.rm, vartype, level, deff, df, proportion, prop_method)
   } else if (inherits(.svy, "tbl_svy")) {
-    survey_mean_tbl_svy(.svy, x, na.rm, vartype, level, proportion, prop_method)
+    survey_mean_tbl_svy(.svy, x, na.rm, vartype, level, deff, df, proportion, prop_method)
   } else {
     stop_fake_method("survey_mean", class(.svy))
   }
@@ -76,30 +84,32 @@ survey_mean <- function(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
 
 survey_mean_tbl_svy <- function(.svy, x, na.rm = FALSE,
                                 vartype = c("se", "ci", "var", "cv"),
-                                level = 0.95, proportion = FALSE,
+                                level = 0.95, deff = FALSE, df = survey::degf(.svy),
+                                proportion = FALSE,
                                 prop_method = c("logit", "likelihood", "asin",
                                                 "beta", "mean")) {
 
   if (!proportion) {
-    survey_stat_ungrouped(.svy, survey::svymean, x, na.rm, vartype, level)
+    survey_stat_ungrouped(.svy, survey::svymean, x, na.rm, vartype, level, deff, df)
   } else {
     # survey::ciprop only accepts formulas so can't use main function
-    survey_stat_proportion(.svy, x, na.rm, vartype, level, prop_method)
+    survey_stat_proportion(.svy, x, na.rm, vartype, level, prop_method, df)
   }
 }
 
 survey_mean_grouped_svy <- function(.svy, x, na.rm = FALSE,
                                     vartype = c("se", "ci", "var", "cv"),
-                                    level = 0.95, proportion = FALSE,
+                                    level = 0.95, deff = FALSE, df = survey::degf(.svy),
+                                    proportion = FALSE,
                                     prop_method = c("logit", "likelihood",
                                                     "asin", "beta", "mean")) {
   if (missing(x)) {
     if (proportion) stop("proportion does not work with factors.")
-    survey_stat_factor(.svy, survey::svymean, na.rm, vartype, level)
+    survey_stat_factor(.svy, survey::svymean, na.rm, vartype, level, deff, df)
   } else if (proportion) {
     survey_stat_grouped(.svy, survey::svyciprop, x, na.rm, vartype, level,
-                        prop_method)
-  } else survey_stat_grouped(.svy, survey::svymean, x, na.rm, vartype, level)
+                        deff = FALSE, df, prop_method)
+  } else survey_stat_grouped(.svy, survey::svymean, x, na.rm, vartype, level, deff, df)
 }
 
 
@@ -115,6 +125,11 @@ survey_mean_grouped_svy <- function(.svy, x, na.rm = FALSE,
 #'                confidence interval ("ci"), variance ("var") or coefficient of variation
 #'                ("cv").
 #' @param level A single number or vector of numbers indicating the confidence level
+#' @param deff A logical value to indicate whether the design effect should be returned.
+#' @param df (For vartype = "ci" only) A numeric value indicating the degrees of freedom
+#'           for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
+#'           but Inf is the usual survey package's default.
+
 #' @param ... Ignored
 #' @examples
 #' library(survey)
@@ -142,7 +157,7 @@ survey_mean_grouped_svy <- function(.svy, x, na.rm = FALSE,
 #'
 #' @export
 survey_total <- function(x = NULL, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
-                         level = 0.95, ...) {
+                         level = 0.95, deff = FALSE, df = NULL, ...) {
   args <- list(...)
   if (!".svy" %in% names(args)) {
     stop_direct_call("survey_total")
@@ -152,10 +167,12 @@ survey_total <- function(x = NULL, na.rm = FALSE, vartype = c("se", "ci", "var",
   if (missing(vartype)) vartype <- "se"
   vartype <- match.arg(vartype, several.ok = TRUE)
 
+  if (is.null(df)) df <- survey::degf(.svy)
+
   if (inherits(.svy, "grouped_svy")) {
-    survey_total_grouped_svy(.svy, x, na.rm, vartype, level)
+    survey_total_grouped_svy(.svy, x, na.rm, vartype, level, deff, df)
   } else if (inherits(.svy, "tbl_svy")) {
-    survey_total_tbl_svy(.svy, x, na.rm, vartype, level)
+    survey_total_tbl_svy(.svy, x, na.rm, vartype, level, deff, df)
   } else {
     stop_fake_method("survey_total", class(.svy))
   }
@@ -163,16 +180,18 @@ survey_total <- function(x = NULL, na.rm = FALSE, vartype = c("se", "ci", "var",
 
 survey_total_tbl_svy <- function(.svy, x, na.rm = FALSE,
                                  vartype = c("se", "ci", "var", "cv"),
-                                 level = 0.95) {
-  survey_stat_ungrouped(.svy, survey::svytotal, x, na.rm, vartype, level)
+                                 level = 0.95, deff = FALSE,
+                                 df = survey::degf(.svy)) {
+  survey_stat_ungrouped(.svy, survey::svytotal, x, na.rm, vartype, level, deff, df)
 }
 
 survey_total_grouped_svy <- function(.svy, x, na.rm = FALSE,
                                      vartype = c("se", "ci", "var", "cv"),
-                                     level = 0.95) {
+                                     level = 0.95, deff = FALSE,
+                                     df = survey::degf(.svy)) {
   if (!is.null(x)) survey_stat_grouped(.svy, survey::svytotal, x, na.rm,
-                                       vartype, level)
-  else survey_stat_factor(.svy, survey::svytotal, na.rm, vartype, level)
+                                       vartype, level, deff, df)
+  else survey_stat_factor(.svy, survey::svytotal, na.rm, vartype, level, deff, df)
 }
 
 
@@ -469,22 +488,23 @@ unweighted <- function(x, ...) {
 }
 
 
-survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype, level) {
+survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype, level, deff, df) {
   if (class(x) == "factor") {
     stop(paste0("Factor not allowed in survey functions, should ",
                 "be used as a grouping variable"))
   }
   if (class(x) == "logical") x <- as.integer(x)
-  stat <- func(data.frame(x), .svy, na.rm = na.rm)
+  stat <- func(data.frame(x), .svy, na.rm = na.rm, deff = deff)
 
   vartype <- c("coef", vartype)
-  out <- get_var_est(stat, vartype, level = level)
+  if (deff) vartype <- c(vartype, "deff")
+  out <- get_var_est(stat, vartype, level = level, df = df)
 
   out
 }
 
 survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level,
-                                prop_method = NULL) {
+                                deff, df, prop_method = NULL) {
   grps <- survey::make.formula(groups(.svy))
 
   if (class(x) == "factor") {
@@ -502,9 +522,10 @@ survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level,
     .svy$phase1$sample$variables <- .svy$variables
   }
   vartype <- c("grps", "coef", vartype)
+  if (deff) vartype = c(vartype, "deff")
 
   if (is.null(prop_method)) {
-    stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm, se = TRUE)
+    stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm, se = TRUE, deff = deff)
   } else {
     vartype[vartype == "ci"] <- "ci-prop"
     stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm,
@@ -513,16 +534,17 @@ survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level,
   }
 
   out <- get_var_est(stat, vartype, grps = as.character(groups(.svy)),
-                     level = level)
+                     level = level, df = df)
   out
 }
 
-survey_stat_factor <- function(.svy, func, na.rm, vartype, level) {
+survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
   grps <- as.character(groups(.svy))
   peel <- grps[length(grps)]
   grps <- setdiff(grps, peel)
 
   vartype <- c("coef", vartype)
+  if (deff) vartype <- c(vartype, "deff")
 
   if (length(level) > 1) {
     warning("Only the first confidence level will be used")
@@ -532,7 +554,7 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level) {
   if (length(grps) > 0) {
     stat <- survey::svyby(survey::make.formula(peel),
                           survey::make.formula(grps),
-                          .svy, func, na.rm = na.rm, se = TRUE)
+                          .svy, func, na.rm = na.rm, se = TRUE, deff = deff)
 
     var_names <- attr(stat, "svyby")[["variables"]]
     var_names <- unlist(lapply(var_names,
@@ -541,7 +563,7 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level) {
     vartype <- c("grps", vartype)
 
     out <- get_var_est(stat, vartype, var_names = var_names, grps = grps,
-                       level = level)
+                       level = level, df = df)
     peel_levels <- levels(.svy[["variables"]][[peel]])
     out <- factor_stat_reshape(out, grps, peel, var_names, peel_levels)
 
@@ -549,30 +571,31 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level) {
   } else {
     # Needed because grouped don't usually have "coef"
     vartype <- c("lvls", vartype)
-    stat <- func(survey::make.formula(peel), .svy, na.rm = na.rm)
+    stat <- func(survey::make.formula(peel), .svy, na.rm = na.rm, deff = deff)
 
     out <- get_var_est(stat, vartype, peel = peel,
-                       peel_levels = levels(.svy[["variables"]][[peel]]))
+                       peel_levels = levels(.svy[["variables"]][[peel]]),
+                       df = df)
 
     out
   }
 }
 
 survey_stat_proportion <- function(.svy, x, na.rm, vartype, level,
-                                   prop_method) {
+                                   prop_method, df) {
   .svy$variables["___arg"] <- x
   stat <- survey::svyciprop(~`___arg`, .svy, na.rm = na.rm, level = level,
                             method = prop_method)
 
   vartype <- c("coef", vartype)
 
-  out <- get_var_est(stat, vartype, quantile = TRUE)
+  out <- get_var_est(stat, vartype, quantile = TRUE, df = df)
   out
 }
 
 get_var_est <- function(stat, vartype, var_names = "", grps = "",
                         peel = "", peel_levels = NULL, level = 0.95,
-                        quantile = FALSE) {
+                        quantile = FALSE, df = Inf) {
   out_width <- length(var_names)
   out <- lapply(vartype, function(vvv) {
     if (vvv == "coef") {
@@ -590,11 +613,11 @@ get_var_est <- function(stat, vartype, var_names = "", grps = "",
     } else if (vvv == "ci") {
       if (!quantile) {
         if (length(level)==1) {
-          ci <- data.frame(matrix(stats::confint(stat, level = level),
+          ci <- data.frame(matrix(stats::confint(stat, level = level, df = df),
                                   ncol = 2 * out_width))
           names(ci) <- c(paste0(var_names, "_low"), paste0(var_names, "_upp"))
         } else {
-          lci <- lapply(level, function(x) {as.data.frame(stats::confint(stat,level = x))})
+          lci <- lapply(level, function(x) {as.data.frame(stats::confint(stat,level = x, df = df))})
           ci <- dplyr::bind_cols(lci)
           names(ci) <- paste0(var_names,"_", c("low","upp"),rep(level,each=2)*100)
         }
@@ -616,6 +639,10 @@ get_var_est <- function(stat, vartype, var_names = "", grps = "",
       cv <- data.frame((matrix(survey::cv(stat), ncol = out_width)))
       names(cv) <- paste0(var_names, "_cv")
       cv
+    } else if (vvv == "deff") {
+      deff <- data.frame(matrix(survey::deff(stat), ncol = out_width))
+      names(deff) <- paste0(var_names, "_deff")
+      deff
     } else if (vvv == "grps") {
       stat[grps]
     } else if (vvv == "lvls") {

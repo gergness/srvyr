@@ -47,13 +47,24 @@
 #'   group_by(awards) %>%
 #'   summarise(pct = survey_mean())
 #'
-#' # Setting proportion = TRUE uses another method for calculating confidence intervals
+#' # Setting proportion = TRUE uses a different method for calculating confidence intervals
 #' dstrata %>%
 #'   summarise(high_api = survey_mean(api00 > 875, proportion = TRUE, vartype = "ci"))
 #'
 #' # level takes a vector for multiple levels of confidence intervals
 #' dstrata %>%
 #'   summarise(api99 = survey_mean(api99, vartype = "ci", level = c(0.95, 0.65)))
+#'
+#' # Note that the default degrees of freedom in srvyr is different from
+#' # survey, so your confidence intervals might not be exact matches. To
+#' # Replicate survey's behavior, use df = Inf
+#' dstrata %>%
+#'   summarise(srvyr_default = survey_mean(api99, vartype = "ci"),
+#'             survey_defualt = survey_mean(api99, vartype = "ci", df = Inf))
+#'
+#' comparison <- survey::svymean(~api99, dstrata)
+#' confint(comparison) # survey's default
+#' confint(comparison, df = survey::degf(dstrata)) # srvyr's default
 #'
 #' @export
 survey_mean <- function(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
@@ -154,6 +165,17 @@ survey_mean_grouped_svy <- function(.svy, x, na.rm = FALSE,
 #' # level takes a vector for multiple levels of confidence intervals
 #' dstrata %>%
 #'   summarise(enroll = survey_total(enroll, vartype = "ci", level = c(0.95, 0.65)))
+#'
+#' # Note that the default degrees of freedom in srvyr is different from
+#' # survey, so your confidence intervals might not exactly match. To
+#' # replicate survey's behavior, use df = Inf
+#' dstrata %>%
+#'   summarise(srvyr_default = survey_total(api99, vartype = "ci"),
+#'             survey_defualt = survey_total(api99, vartype = "ci", df = Inf))
+#'
+#' comparison <- survey::svytotal(~api99, dstrata)
+#' confint(comparison) # survey's default
+#' confint(comparison, df = survey::degf(dstrata)) # srvyr's default
 #'
 #' @export
 survey_total <- function(x = NULL, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),

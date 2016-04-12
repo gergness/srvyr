@@ -140,7 +140,6 @@ survey_mean_grouped_svy <- function(.svy, x, na.rm = FALSE,
 #' @param df (For vartype = "ci" only) A numeric value indicating the degrees of freedom
 #'           for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
 #'           but Inf is the usual survey package's default.
-
 #' @param ... Ignored
 #' @examples
 #' library(survey)
@@ -230,6 +229,11 @@ survey_total_grouped_svy <- function(.svy, x, na.rm = FALSE,
 #'                confidence interval ("ci"), variance ("var") or coefficient of variation
 #'                ("cv").
 #' @param level A single number or vector of numbers indicating the confidence level
+#' @param deff A logical value to indicate whether the design effect should be returned.
+#' @param df (For vartype = "ci" only) A numeric value indicating the degrees of freedom
+#'           for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
+#'           but Inf is the usual survey package's default (except in
+#'           \code{\link[survey]{svyciprop}}.
 #' @param ... Ignored
 #' @examples
 #' library(survey)
@@ -249,10 +253,21 @@ survey_total_grouped_svy <- function(.svy, x, na.rm = FALSE,
 #' dstrata %>%
 #'   summarise(enroll = survey_ratio(api99, api00, vartype = "ci", level = c(0.95, 0.65)))
 #'
+#' # Note that the default degrees of freedom in srvyr is different from
+#' # survey, so your confidence intervals might not exactly match. To
+#' # replicate survey's behavior, use df = Inf
+#' dstrata %>%
+#'   summarise(srvyr_default = survey_total(api99, vartype = "ci"),
+#'             survey_defualt = survey_total(api99, vartype = "ci", df = Inf))
+#'
+#' comparison <- survey::svytotal(~api99, dstrata)
+#' confint(comparison) # survey's default
+#' confint(comparison, df = survey::degf(dstrata)) # srvyr's default
+#'
 #' @export
 survey_ratio <- function(numerator, denominator, na.rm = FALSE,
                          vartype = c("se", "ci", "var", "cv"),
-                         level = 0.95, ...) {
+                         level = 0.95, deff = FALSE, df = NULL, ...) {
   args <- list(...)
   if (!".svy" %in% names(args)) {
     stop_direct_call("survey_ratio")
@@ -262,10 +277,12 @@ survey_ratio <- function(numerator, denominator, na.rm = FALSE,
   if (missing(vartype)) vartype <- "se"
   vartype <- match.arg(vartype, several.ok = TRUE)
 
+  if (is.null(df)) df <- survey::degf(.svy)
+
   if (inherits(.svy, "grouped_svy")) {
-    survey_ratio_grouped_svy(.svy, numerator, denominator, na.rm, vartype, level)
+    survey_ratio_grouped_svy(.svy, numerator, denominator, na.rm, vartype, level, deff, df)
   } else if (inherits(.svy, "tbl_svy")) {
-    survey_ratio_tbl_svy(.svy, numerator, denominator, na.rm, vartype, level)
+    survey_ratio_tbl_svy(.svy, numerator, denominator, na.rm, vartype, level, deff, df)
   } else {
     stop_fake_method("survey_ratio", class(.svy))
   }
@@ -274,20 +291,24 @@ survey_ratio <- function(numerator, denominator, na.rm = FALSE,
 
 survey_ratio_tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE,
                                  vartype = c("se", "ci", "var", "cv"),
-                                 level = 0.95) {
+                                 level = 0.95, deff = FALSE,
+                                 df = survey::degf(.svy)) {
 
   vartype <- c("coef", vartype)
-  stat <- survey::svyratio(data.frame(numerator), data.frame(denominator),
-                           .svy, na.rm = na.rm)
+  if (deff) vartype <- c(vartype, "deff")
 
-  out <- get_var_est(stat, vartype, level = level)
+  stat <- survey::svyratio(data.frame(numerator), data.frame(denominator),
+                           .svy, na.rm = na.rm, deff = deff, df = df)
+
+  out <- get_var_est(stat, vartype, level = level, df = df)
   out
 }
 
 survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
                                      na.rm = FALSE,
                                      vartype = c("se", "ci", "var", "cv"),
-                                     level = 0.95) {
+                                     level = 0.95, deff = FALSE,
+                                     df = survey::degf(.svy)) {
 
   grps <- survey::make.formula(groups(.svy))
 
@@ -303,13 +324,14 @@ survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
   }
 
   stat <- survey::svyby(~`___numerator`, grps, .svy, survey::svyratio,
-                       denominator = ~`___denominator`,
-                       na.rm = na.rm, ci = TRUE)
+                        denominator = ~`___denominator`,
+                        na.rm = na.rm, ci = TRUE, deff = deff)
 
   vartype <- c("grps", "coef", vartype)
+  if (deff) vartype <- c(vartype, "deff")
 
   out <- get_var_est(stat, vartype, grps = as.character(groups(.svy)),
-                     level = level)
+                     level = level, df = df)
 
   out
 }
@@ -393,9 +415,9 @@ survey_quantile_tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   vartype <- c("coef", vartype)
 
   stat <- survey::svyquantile(data.frame(x), .svy,
-                      quantiles = quantiles, na.rm = na.rm,
-                      ci = TRUE, level = level, method = q_method, f = f,
-                      interval.type = interval_type, ties = ties)
+                              quantiles = quantiles, na.rm = na.rm,
+                              ci = TRUE, level = level, method = q_method, f = f,
+                              interval.type = interval_type, ties = ties)
 
   q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2,
                                                  flag = "0")))
@@ -426,9 +448,9 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   }
 
   stat <- survey::svyby(formula = ~`___arg`, grps, .svy, survey::svyquantile,
-                      quantiles = quantiles, na.rm = na.rm,
-                      ci = TRUE, level = level, method = q_method,
-                      f = f, interval.type = interval_type, ties = ties)
+                        quantiles = quantiles, na.rm = na.rm,
+                        ci = TRUE, level = level, method = q_method,
+                        f = f, interval.type = interval_type, ties = ties)
 
   q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2,
                                                  flag = "0")))
@@ -691,7 +713,7 @@ factor_stat_reshape <- function(stat, grps, peel, var_names, peel_levels = NULL)
   out <- lapply(var_names, function(this_var) {
     wide_names <- names(stat)[
       grep(paste0("^", this_var, "(_se|_low|_upp|_var|_cv)?$"), names(stat))
-    ]
+      ]
     stat[[peel]] <- this_var
     out <- stat[, c(grps, peel, wide_names)]
     names(out)[names(out) %in% wide_names] <-

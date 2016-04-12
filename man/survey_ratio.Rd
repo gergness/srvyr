@@ -5,7 +5,7 @@
 \title{Calculate the ratio and its variation using survey methods}
 \usage{
 survey_ratio(numerator, denominator, na.rm = FALSE, vartype = c("se", "ci",
-  "var", "cv"), level = 0.95, ...)
+  "var", "cv"), level = 0.95, deff = FALSE, df = NULL, ...)
 }
 \arguments{
 \item{numerator}{The numerator of the ratio}
@@ -19,6 +19,13 @@ confidence interval ("ci"), variance ("var") or coefficient of variation
 ("cv").}
 
 \item{level}{A single number or vector of numbers indicating the confidence level}
+
+\item{deff}{A logical value to indicate whether the design effect should be returned.}
+
+\item{df}{(For vartype = "ci" only) A numeric value indicating the degrees of freedom
+for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
+but Inf is the usual survey package's default (except in
+\code{\link[survey]{svyciprop}}.}
 
 \item{...}{Ignored}
 }
@@ -44,6 +51,17 @@ dstrata \%>\%
 # level takes a vector for multiple levels of confidence intervals
 dstrata \%>\%
   summarise(enroll = survey_ratio(api99, api00, vartype = "ci", level = c(0.95, 0.65)))
+
+# Note that the default degrees of freedom in srvyr is different from
+# survey, so your confidence intervals might not exactly match. To
+# replicate survey's behavior, use df = Inf
+dstrata \%>\%
+  summarise(srvyr_default = survey_total(api99, vartype = "ci"),
+            survey_defualt = survey_total(api99, vartype = "ci", df = Inf))
+
+comparison <- survey::svytotal(~api99, dstrata)
+confint(comparison) # survey's default
+confint(comparison, df = survey::degf(dstrata)) # srvyr's default
 
 }
 

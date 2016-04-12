@@ -3,6 +3,8 @@ context("Quick tests for summary stats (ratio / quantile)")
 library(srvyr)
 library(survey)
 
+df_test <- 30
+
 data(api)
 dstrata <- apistrat %>%
   as_survey_design(strata = stype, weights = pw)
@@ -105,7 +107,7 @@ out_srvyr <- dstrata %>%
   unlist()
 
 ratio <- svyratio(~api00, ~api99, dstrata)
-ratio <- confint(ratio, level = 0.9)
+ratio <- confint(ratio, level = 0.9, df = degf(dstrata))
 mdn <- svyquantile(~api00, dstrata, quantile = 0.5, ci = TRUE, level = 0.9)
 mdn <- confint(mdn)
 out_survey <- c(ratio[1], ratio[2], mdn[1], mdn[2])
@@ -123,7 +125,7 @@ suppressWarnings(out_srvyr <- dstrata %>%
 )
 
 ratio <- svyby(~api00, ~stype, denominator = ~api99, dstrata, svyratio)
-ratio <- confint(ratio, level = 0.9)
+ratio <- confint(ratio, level = 0.9, df = degf(dstrata))
 suppressWarnings(mdn <- svyby(~api00, ~stype, dstrata, svyquantile,
                               quantile = 0.5, ci = TRUE, level = 0.90))
 mdn <- confint(mdn, level = 0.9)
@@ -131,4 +133,41 @@ out_survey <- dplyr::bind_cols(data.frame(ratio), data.frame(mdn))
 names(out_survey) <- c("ratio_low", "ratio_upp", "mdn_q50_low", "mdn_q50_upp")
 
 test_that("median/ratio with CIs respect level parameter (ungrouped)",
+          expect_equal(out_srvyr, out_survey))
+
+
+out_survey <- svyratio(~api99, ~api00, dstrata, deff = TRUE)
+
+out_srvyr <- dstrata %>%
+  summarise(survey_ratio = survey_ratio(api99, api00, deff = TRUE, vartype = "ci", df = df_test))
+
+test_that("deff works for ungrouped survey total",
+          expect_equal(c(out_survey[[1]], deff(out_survey)[[1]]),
+                       c(out_srvyr[["survey_ratio"]][[1]], out_srvyr[["survey_ratio_deff"]][[1]])))
+
+test_that("df works for ungrouped survey total",
+          expect_equal(confint(out_survey, df = df_test)[c(1, 2)],
+                       c(out_srvyr[["survey_ratio_low"]][[1]], out_srvyr[["survey_ratio_upp"]][[1]])))
+
+
+
+
+
+out_srvyr <- dstrata %>%
+  group_by(stype) %>%
+  summarise(survey_ratio = survey_ratio(api99, api00, deff = TRUE, vartype = "ci", df = df_test))
+
+temp_survey <- svyby(~api99, ~stype, dstrata, svyratio, deff = TRUE, vartype = c("se", "ci"),
+                     denominator = ~api00)
+out_survey <- temp_survey %>%
+  data.frame() %>%
+  dplyr::tbl_df() %>%
+  rename(survey_ratio = api99.api00, survey_ratio_low = ci_l, survey_ratio_upp = ci_u,
+         survey_ratio_deff = `DEff`) %>%
+  select(-se.api99.api00)
+
+out_survey[, c("survey_ratio_low", "survey_ratio_upp")] <-
+  confint(temp_survey, df = df_test)
+
+test_that("deff and df work for grouped survey total",
           expect_equal(out_srvyr, out_survey))

@@ -6,7 +6,7 @@
 \usage{
 survey_mean(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
   level = 0.95, proportion = FALSE, prop_method = c("logit", "likelihood",
-  "asin", "beta", "mean"), ...)
+  "asin", "beta", "mean"), deff = FALSE, df = NULL, ...)
 }
 \arguments{
 \item{x}{A variable or expression, or empty}
@@ -17,7 +17,8 @@ survey_mean(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
 confidence interval ("ci"), variance ("var") or coefficient of variation
 ("cv").}
 
-\item{level}{A single number or vector of numbers indicating the confidence level}
+\item{level}{(For vartype = "ci" only) A single number or vector of numbers indicating
+the confidence level}
 
 \item{proportion}{Use methods to calculate the proportion that may have more accurate
 confidence intervals near 0 and 1. Based on
@@ -25,6 +26,13 @@ confidence intervals near 0 and 1. Based on
 
 \item{prop_method}{Type of proportion method to use if proportion is \code{TRUE}. See
 \code{\link[survey]{svyciprop}} for details.}
+
+\item{deff}{A logical value to indicate whether the design effect should be returned.}
+
+\item{df}{(For vartype = "ci" only) A numeric value indicating the degrees of freedom
+for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
+but Inf is the usual survey package's default (except in
+\code{\link[survey]{svyciprop}}.}
 
 \item{...}{Ignored}
 }
@@ -54,13 +62,24 @@ dstrata \%>\%
   group_by(awards) \%>\%
   summarise(pct = survey_mean())
 
-# Setting proportion = TRUE uses another method for calculating confidence intervals
+# Setting proportion = TRUE uses a different method for calculating confidence intervals
 dstrata \%>\%
   summarise(high_api = survey_mean(api00 > 875, proportion = TRUE, vartype = "ci"))
 
 # level takes a vector for multiple levels of confidence intervals
 dstrata \%>\%
   summarise(api99 = survey_mean(api99, vartype = "ci", level = c(0.95, 0.65)))
+
+# Note that the default degrees of freedom in srvyr is different from
+# survey, so your confidence intervals might not be exact matches. To
+# Replicate survey's behavior, use df = Inf
+dstrata \%>\%
+  summarise(srvyr_default = survey_mean(api99, vartype = "ci"),
+            survey_defualt = survey_mean(api99, vartype = "ci", df = Inf))
+
+comparison <- survey::svymean(~api99, dstrata)
+confint(comparison) # survey's default
+confint(comparison, df = survey::degf(dstrata)) # srvyr's default
 
 }
 

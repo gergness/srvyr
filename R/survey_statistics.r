@@ -25,7 +25,7 @@
 #' @param df (For vartype = "ci" only) A numeric value indicating the degrees of freedom
 #'           for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
 #'           but Inf is the usual survey package's default (except in
-#'           \codes{\link[survey]{svyciprop}}.
+#'           \code{\link[survey]{svyciprop}}.
 #' @param ... Ignored
 #' @examples
 #' library(survey)

@@ -446,7 +446,15 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
                                         ties = c("discrete", "rounded"),
                                         df = Inf) {
 
-  vartype <- setdiff(vartype, "none")
+
+  if (vartype == "none") {
+    vartype <- "se"
+    remove_se <- TRUE
+  } else {
+    vartype <- setdiff(vartype, "none")
+    remove_se <- FALSE
+  }
+
 
   grps <- survey::make.formula(groups(.svy))
 
@@ -457,6 +465,7 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   if (inherits(.svy, "twophase2")) {
     .svy$phase1$sample$variables <- .svy$variables
   }
+
   # Because of machine precision issues, 1 - 0.95 != 0.05...
   # Here's a hacky way to force it, though it technically limits
   # us to 7 digits of precision in alpha (seems like enough,
@@ -467,11 +476,13 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
                         quantiles = quantiles, na.rm = na.rm,
                         ci = TRUE, alpha = alpha, method = q_method,
                         f = f, interval.type = interval_type, ties = ties,
-                        df = df)
+                        df = df, vartype = vartype)
 
   q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2,
                                                  flag = "0")))
   vartype <- c("grps", "coef", vartype)
+  vartype[vartype == "ci"] <- "ci-prop"
+
   out <- get_var_est(stat, vartype, var_names = q_text,
                      grps = as.character(groups(.svy)), level = level,
                      quantile = TRUE)

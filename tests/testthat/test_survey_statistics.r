@@ -108,7 +108,7 @@ out_srvyr <- dstrata %>%
 
 ratio <- svyratio(~api00, ~api99, dstrata)
 ratio <- confint(ratio, level = 0.9, df = degf(dstrata))
-mdn <- svyquantile(~api00, dstrata, quantile = 0.5, ci = TRUE, level = 0.9)
+mdn <- svyquantile(~api00, dstrata, quantile = 0.5, ci = TRUE, alpha = 0.1)
 mdn <- confint(mdn)
 out_survey <- c(ratio[1], ratio[2], mdn[1], mdn[2])
 names(out_survey) <- c("ratio_low", "ratio_upp", "mdn_q50_low", "mdn_q50_upp")
@@ -126,10 +126,13 @@ suppressWarnings(out_srvyr <- dstrata %>%
 
 ratio <- svyby(~api00, ~stype, denominator = ~api99, dstrata, svyratio)
 ratio <- confint(ratio, level = 0.9, df = degf(dstrata))
+
 suppressWarnings(mdn <- svyby(~api00, ~stype, dstrata, svyquantile,
-                              quantile = 0.5, ci = TRUE, level = 0.90))
-mdn <- confint(mdn, level = 0.9)
-out_survey <- dplyr::bind_cols(data.frame(ratio), data.frame(mdn))
+                              quantile = 0.5, ci = TRUE, alpha = 0.1, vartype = "ci") %>%
+  data.frame() %>%
+  select(-api00, -stype))
+
+out_survey <- dplyr::bind_cols(data.frame(ratio), mdn)
 names(out_survey) <- c("ratio_low", "ratio_upp", "mdn_q50_low", "mdn_q50_upp")
 
 test_that("median/ratio with CIs respect level parameter (grouped)",

@@ -171,3 +171,35 @@ out_survey[, c("survey_ratio_low", "survey_ratio_upp")] <-
 
 test_that("deff and df work for grouped survey total",
           expect_equal(out_srvyr, out_survey))
+
+
+out_survey <- svyquantile(~api99, dstrata, c(0.5), ci = TRUE, df = df_test)
+
+out_srvyr <- dstrata %>%
+  summarise(survey = survey_median(api99, vartype = "ci", df = df_test))
+
+test_that("df works for ungrouped survey total",
+          expect_equal(confint(out_survey)[c(1, 2)],
+                       c(out_srvyr[["survey_q50_low"]][[1]], out_srvyr[["survey_q50_upp"]][[1]])))
+
+
+
+
+
+out_srvyr <- suppressWarnings(
+  dstrata %>%
+    group_by(stype) %>%
+    summarise(survey = survey_median(api99, vartype = "ci", df = df_test))
+)
+
+temp_survey <- suppressWarnings(svyby(~api99, ~stype, dstrata, svyquantile, quantiles = c(0.5), ci = TRUE,
+                     vartype = c("se", "ci"), df = df_test))
+out_survey <- temp_survey %>%
+  data.frame() %>%
+  dplyr::tbl_df() %>%
+  rename(survey_q50 = api99, survey_q50_low = ci_l, survey_q50_upp = ci_u) %>%
+  select(-se)
+
+test_that("df works for grouped survey quantile",
+          expect_equal(out_srvyr, out_survey))
+

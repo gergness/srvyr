@@ -8,11 +8,11 @@
 survey_quantile(x, quantiles, na.rm = FALSE, vartype = c("none", "se",
   "ci"), level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald"), ties = c("discrete",
-  "rounded"), ...)
+  "rounded"), df = Inf, ...)
 
 survey_median(x, na.rm = FALSE, vartype = c("none", "se", "ci"),
   level = 0.95, q_method = "linear", f = 1, interval_type = c("Wald",
-  "score", "betaWald"), ties = c("discrete", "rounded"), ...)
+  "score", "betaWald"), ties = c("discrete", "rounded"), df = Inf, ...)
 }
 \arguments{
 \item{x}{A variable or expression}
@@ -34,6 +34,10 @@ available).}
 \item{interval_type}{See \code{\link[survey]{svyquantile}}}
 
 \item{ties}{See \code{\link[survey]{svyquantile}}}
+
+\item{df}{A number indicating the degrees of freedom for t-distribution. The
+default, Inf uses the normal distribution (matches the survey package).
+Also, has no effect for \code{type = "betaWald"}.}
 
 \item{...}{Ignored}
 }

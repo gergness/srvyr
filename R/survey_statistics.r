@@ -353,6 +353,9 @@ survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
 #' @param f See \code{\link[stats]{approxfun}}
 #' @param interval_type See \code{\link[survey]{svyquantile}}
 #' @param ties See \code{\link[survey]{svyquantile}}
+#' @param df A number indicating the degrees of freedom for t-distribution. The
+#'           default, Inf uses the normal distribution (matches the survey package).
+#'           Also, has no effect for \code{type = "betaWald"}.
 #' @param ... Ignored
 #' @examples
 #' library(survey)
@@ -374,7 +377,7 @@ survey_quantile <- function(x, quantiles, na.rm = FALSE,
                             vartype = c("none", "se", "ci"),
                             level = 0.95, q_method = "linear", f = 1,
                             interval_type = c("Wald", "score", "betaWald"),
-                            ties = c("discrete", "rounded"), ...) {
+                            ties = c("discrete", "rounded"), df = Inf, ...) {
   args <- list(...)
   if (!".svy" %in% names(args)) {
     stop_direct_call("survey_quantile")
@@ -395,10 +398,10 @@ survey_quantile <- function(x, quantiles, na.rm = FALSE,
 
   if (inherits(.svy, "grouped_svy")) {
     survey_quantile_grouped_svy(.svy, x, quantiles, na.rm, vartype, level, q_method, f,
-                                interval_type, ties)
+                                interval_type, ties, df)
   } else if (inherits(.svy, "tbl_svy")) {
     survey_quantile_tbl_svy(.svy, x, quantiles, na.rm, vartype, level, q_method, f,
-                            interval_type, ties)
+                            interval_type, ties, df)
   } else {
     stop_fake_method("survey_quantile", class(.svy))
   }
@@ -409,7 +412,8 @@ survey_quantile_tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE,
                                     level = 0.95, q_method = "linear", f = 1,
                                     interval_type = c("Wald", "score",
                                                       "betaWald"),
-                                    ties = c("discrete", "rounded")) {
+                                    ties = c("discrete", "rounded"),
+                                    df = Inf) {
 
   vartype <- setdiff(vartype, "none")
   vartype <- c("coef", vartype)
@@ -417,7 +421,7 @@ survey_quantile_tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   stat <- survey::svyquantile(data.frame(x), .svy,
                               quantiles = quantiles, na.rm = na.rm,
                               ci = TRUE, level = level, method = q_method, f = f,
-                              interval.type = interval_type, ties = ties)
+                              interval.type = interval_type, ties = ties, df = df)
 
   q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2,
                                                  flag = "0")))
@@ -433,7 +437,8 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
                                         f = 1,
                                         interval_type = c("Wald", "score",
                                                           "betaWald"),
-                                        ties = c("discrete", "rounded")) {
+                                        ties = c("discrete", "rounded"),
+                                        df = Inf) {
 
   vartype <- setdiff(vartype, "none")
 
@@ -450,13 +455,15 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   stat <- survey::svyby(formula = ~`___arg`, grps, .svy, survey::svyquantile,
                         quantiles = quantiles, na.rm = na.rm,
                         ci = TRUE, level = level, method = q_method,
-                        f = f, interval.type = interval_type, ties = ties)
+                        f = f, interval.type = interval_type, ties = ties,
+                        df = df)
 
   q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2,
                                                  flag = "0")))
   vartype <- c("grps", "coef", vartype)
   out <- get_var_est(stat, vartype, var_names = q_text,
-                     grps = as.character(groups(.svy)), level = level)
+                     grps = as.character(groups(.svy)), level = level,
+                     quantile = TRUE)
 
   out
 }
@@ -469,7 +476,8 @@ survey_median <- function(x, na.rm = FALSE,
                           level = 0.95, q_method = "linear", f = 1,
                           interval_type = c("Wald", "score",
                                             "betaWald"),
-                          ties = c("discrete", "rounded"), ...) {
+                          ties = c("discrete", "rounded"), df = Inf,
+                          ...) {
 
   args <- list(...)
   if (!".svy" %in% names(args)) {
@@ -491,7 +499,8 @@ survey_median <- function(x, na.rm = FALSE,
 
   survey_quantile(x, quantiles = 0.5, na.rm = na.rm, vartype = vartype,
                   level = level, q_method = q_method, f = f,
-                  interval_type = interval_type, ties = ties, .svy = .svy)
+                  interval_type = interval_type, ties = ties,
+                  df = df, .svy = .svy)
 }
 
 #' Calculate the an unweighted summary statistic from a survey

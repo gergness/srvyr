@@ -132,7 +132,7 @@ mdn <- confint(mdn, level = 0.9)
 out_survey <- dplyr::bind_cols(data.frame(ratio), data.frame(mdn))
 names(out_survey) <- c("ratio_low", "ratio_upp", "mdn_q50_low", "mdn_q50_upp")
 
-test_that("median/ratio with CIs respect level parameter (ungrouped)",
+test_that("median/ratio with CIs respect level parameter (grouped)",
           expect_equal(out_srvyr, out_survey))
 
 

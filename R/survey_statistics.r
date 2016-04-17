@@ -418,9 +418,15 @@ survey_quantile_tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   vartype <- setdiff(vartype, "none")
   vartype <- c("coef", vartype)
 
+  # Because of machine precision issues, 1 - 0.95 != 0.05...
+  # Here's a hacky way to force it, though it technically limits
+  # us to 7 digits of precision in alpha (seems like enough,
+  # we could go higher, but I worry about 32bit vs 64bit systems)
+  alpha = round(1 - level, 7)
+
   stat <- survey::svyquantile(data.frame(x), .svy,
                               quantiles = quantiles, na.rm = na.rm,
-                              ci = TRUE, level = level, method = q_method, f = f,
+                              ci = TRUE, alpha = alpha, method = q_method, f = f,
                               interval.type = interval_type, ties = ties, df = df)
 
   q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2,
@@ -451,10 +457,15 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   if (inherits(.svy, "twophase2")) {
     .svy$phase1$sample$variables <- .svy$variables
   }
+  # Because of machine precision issues, 1 - 0.95 != 0.05...
+  # Here's a hacky way to force it, though it technically limits
+  # us to 7 digits of precision in alpha (seems like enough,
+  # we could go higher, but I worry about 32bit vs 64bit systems)
+  alpha = round(1 - level, 7)
 
   stat <- survey::svyby(formula = ~`___arg`, grps, .svy, survey::svyquantile,
                         quantiles = quantiles, na.rm = na.rm,
-                        ci = TRUE, level = level, method = q_method,
+                        ci = TRUE, alpha = alpha, method = q_method,
                         f = f, interval.type = interval_type, ties = ties,
                         df = df)
 

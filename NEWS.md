@@ -1,3 +1,6 @@
+# srvyr 0.1.1.900
+* Fixed a problem with confidence levels not being passed into quantiles
+
 # srvyr 0.1.1
 
 * New function `cascade` summarizes groups, and cascades to create

@@ -109,3 +109,52 @@ out_srvyr <- dstrata %>%
 test_that(
   "survey_mean and survey_total work with cis",
   expect_equal(out_srvyr, out_survey))
+
+# One group
+out_survey <- svymean(~awards, dstrata)
+
+out_srvyr <- dstrata %>%
+  group_by(awards) %>%
+  summarize(pct = survey_mean())
+
+test_that(
+  "survey_mean gets correct values for factors with single grouped surveys",
+  expect_equal(c(out_survey[[1]], sqrt(diag(attr(out_survey, "var")))[[1]]),
+               c(out_srvyr[[2]][[1]], out_srvyr[[3]][[1]])))
+
+test_that("survey_mean preserves factor levels",
+          expect_equal(levels(apistrat$awards), levels(out_srvyr$awards)))
+
+## Special characters in peel
+dstrata <- dstrata %>%
+  mutate(grp = rep_len(c("ac\\a+", "[320+](1)"), nrow(dstrata$variables)))
+
+# 1 group
+out_survey <- svymean(~grp, dstrata)
+
+out_srvyr <- dstrata %>%
+  group_by(grp) %>%
+  summarize(pct = survey_mean())
+
+test_that(
+  "survey_mean gets correct values for factors with special characters in single grouped surveys",
+  expect_equal(c(out_survey[[1]], sqrt(diag(attr(out_survey, "var")))[[1]]),
+               c(out_srvyr[[2]][[1]], out_srvyr[[3]][[1]])))
+
+# More than 2 groups
+out_srvyr <- dstrata %>%
+  group_by(stype, grp) %>%
+  summarize(tot = survey_total())
+
+out_survey <- svyby(~grp, ~stype, dstrata, svytotal)
+
+test_that("survey_total is correct with special chars in peel",
+          expect_equal(out_survey[["grp[320+](1)"]],
+                       out_srvyr %>% filter(grp == "[320+](1)") %>% .$tot))
+
+test_that("survey_total is correct with special chars in peel (se)",
+          expect_equal(out_survey[["se.grp[320+](1)"]],
+                       out_srvyr %>%
+                         filter(grp == "[320+](1)") %>%
+                         .$tot_se))
+

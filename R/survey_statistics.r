@@ -301,7 +301,7 @@ survey_ratio_tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE,
                            .svy, na.rm = na.rm, deff = deff, df = df)
 
   out <- get_var_est(stat, vartype, level = level, df = df)
-  out
+  dplyr::bind_cols(out)
 }
 
 survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
@@ -333,7 +333,7 @@ survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
   out <- get_var_est(stat, vartype, grps = as.character(groups(.svy)),
                      level = level, df = df)
 
-  out
+  dplyr::bind_cols(out)
 }
 
 #' Calculate the quantile and its variation using survey methods
@@ -434,7 +434,7 @@ survey_quantile_tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE,
 
   out <- get_var_est(stat, vartype, var_names = q_text, level = level,
                      quantile = TRUE)
-  out
+  dplyr::bind_cols(out)
 }
 
 survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
@@ -487,7 +487,7 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
                      grps = as.character(groups(.svy)), level = level,
                      quantile = TRUE)
 
-  out
+  dplyr::bind_cols(out)
 }
 
 
@@ -575,7 +575,7 @@ survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype, level, deff, df
   if (deff) vartype <- c(vartype, "deff")
   out <- get_var_est(stat, vartype, level = level, df = df)
 
-  out
+  dplyr::bind_cols(out)
 }
 
 survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level,
@@ -610,7 +610,7 @@ survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level,
 
   out <- get_var_est(stat, vartype, grps = as.character(groups(.svy)),
                      level = level, df = df)
-  out
+  dplyr::bind_cols(out)
 }
 
 survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
@@ -639,8 +639,10 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
 
     out <- get_var_est(stat, vartype, var_names = var_names, grps = grps,
                        level = level, df = df)
+    # out <- dplyr::bind_cols(out)
+    names(out) <- vartype
     peel_levels <- levels(.svy[["variables"]][[peel]])
-    out <- factor_stat_reshape(out, grps, peel, var_names, peel_levels)
+    out <- factor_stat_reshape(out, peel, var_names, peel_levels)
 
     out
   } else {
@@ -652,7 +654,7 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
                        peel_levels = levels(.svy[["variables"]][[peel]]),
                        df = df)
 
-    out
+    dplyr::bind_cols(out)
   }
 }
 
@@ -665,7 +667,7 @@ survey_stat_proportion <- function(.svy, x, na.rm, vartype, level,
   vartype <- c("coef", vartype)
 
   out <- get_var_est(stat, vartype, quantile = TRUE, df = df)
-  out
+  dplyr::bind_cols(out)
 }
 
 get_var_est <- function(stat, vartype, var_names = "", grps = "",
@@ -734,28 +736,42 @@ get_var_est <- function(stat, vartype, var_names = "", grps = "",
       lvls
     }
   })
-  dplyr::bind_cols(out)
 }
 
-# base reshape was difficult to work with, but might be worth reinvestigating
-# (or others, but have to weight the cost of extra dependency). This takes the
-# survey stat object that has the peel variable wide, and makes it long.
-factor_stat_reshape <- function(stat, grps, peel, var_names, peel_levels = NULL) {
-  out <- lapply(var_names, function(this_var) {
-    wide_names <- names(stat)[
-      grep(paste0("^", this_var, "(_se|_low|_upp|_var|_cv)?$"), names(stat))
-      ]
-    stat[[peel]] <- this_var
-    out <- stat[, c(grps, peel, wide_names)]
-    names(out)[names(out) %in% wide_names] <-
-      sub(this_var, "", names(out)[names(out) %in% wide_names])
 
-    out
+factor_stat_reshape <- function(stat, peel, var_names, peel_levels) {
+  out <- lapply(seq_along(stat), function(iii) {
+    stat_name <- names(stat)[iii]
+    stat_df <- stat[[iii]]
+    if (stat_name == "grps") {
+      stat_df <- dplyr::tbl_df(stat_df)
+      stat_df[rep(seq_len(nrow(stat_df)), length(var_names)), ]
+    } else if(stat_name == "ci") {
+      out <- stack(stat_df)
+      out <- data.frame(
+        `_low` = out[substr_right(out$ind, 4) == "_low", "values"],
+        `_upp` = out[substr_right(out$ind, 4) == "_upp", "values"],
+        check.names = FALSE, stringsAsFactors = FALSE
+      )
+    } else if(stat_name == "coef") {
+      out <- stack(stat_df)
+      names(out) <- c("", peel)
+      out[, c(2, 1)]
+    } else {
+      out <- stack(stat_df)
+      out <- select_(out, "-ind")
+      names(out) <- paste0("_", stat_name)
+      out
+    }
   })
-  out <- dplyr::bind_rows(out)
+  out <- dplyr::bind_cols(out)
+
+  # peel's factor was created by stack, but is just alphabetic
+  out[[peel]] <- as.character(out[[peel]])
   if (!is.null(peel_levels)) {
     out[[peel]] <- factor(out[[peel]], peel_levels)
   }
+
   out
 }
 

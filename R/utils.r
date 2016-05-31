@@ -62,6 +62,13 @@ helper <- function(x, .data) {
   unname(dplyr::select_vars_(names(.data), x))
 }
 
+# From http://stackoverflow.com/questions/7963898
+# Not very safe, so only use with known strings
+substr_right <- function(x, n){
+  x <- as.character(x)
+  substr(x, nchar(x)-n+1, nchar(x))
+}
+
 #' Pipe operator
 #'
 #' See \code{\link[magrittr]{\%>\%}} for more details.

@@ -1,6 +1,6 @@
 #' @export
 summarise_.tbl_svy <- function(.data, ..., .dots) {
-  .dots <- lazyeval::all_dots(.dots, ...)
+  .dots <- lazyeval::all_dots(.dots, ..., all_named = TRUE)
 
   survey_funs <- list(
     survey_mean = function(...) survey_mean(..., .svy = .data),
@@ -23,7 +23,7 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
 
 #' @export
 summarise_.grouped_svy <- function(.data, ..., .dots) {
-  .dots <- lazyeval::all_dots(.dots, ...)
+  .dots <- lazyeval::all_dots(.dots, ..., all_named = TRUE)
 
   survey_funs <- list(
     survey_mean = function(...) survey_mean(..., .svy = .data),

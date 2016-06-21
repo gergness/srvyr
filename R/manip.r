@@ -1,6 +1,6 @@
 #' @export
 mutate_.tbl_svy <- function(.data, ..., .dots) {
-  dots <- lazyeval::all_dots(.dots, ..., all_named = FALSE)
+  dots <- lazyeval::all_dots(.dots, ..., all_named = TRUE)
 
   if (any(names2(dots) %in% as.character(survey_vars(.data)))) {
     stop("Cannot modify survey variable")
@@ -39,7 +39,7 @@ rename_.tbl_svy <- function(.data, ..., .dots) {
 
 #' @export
 filter_.tbl_svy <- function(.data, ..., .dots) {
-  dots <- lazyeval::all_dots(.dots, ...)
+  dots <- lazyeval::all_dots(.dots, ..., all_named = TRUE)
 
   # There's probably a better way to do this... But I need to use
   # survey::subset because I want to make sure that I recalculate the

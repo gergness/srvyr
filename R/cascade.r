@@ -1,11 +1,11 @@
 #' @export
 cascade_.tbl_svy <- function(.data, ..., .dots, .fill = NA) {
-  summarise_.tbl_svy(.data, ..., .dots)
+  summarise_.tbl_svy(.data, ..., .dots, all_named = TRUE)
 }
 
 #' @export
 cascade_.grouped_svy <- function(.data, ..., .dots, .fill = NA) {
-  .dots <- lazyeval::all_dots(.dots, ...)
+  .dots <- lazyeval::all_dots(.dots, ..., all_named = TRUE)
 
   groups <- as.character(groups(.data))
   group_cascade <- lapply(rev(seq_along(groups)), function(x) groups[seq_len(x)])

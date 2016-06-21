@@ -747,18 +747,18 @@ factor_stat_reshape <- function(stat, peel, var_names, peel_levels) {
       stat_df <- dplyr::tbl_df(stat_df)
       stat_df[rep(seq_len(nrow(stat_df)), length(var_names)), ]
     } else if(stat_name == "ci") {
-      out <- stack(stat_df)
+      out <- utils::stack(stat_df)
       out <- data.frame(
         `_low` = out[substr_right(out$ind, 4) == "_low", "values"],
         `_upp` = out[substr_right(out$ind, 4) == "_upp", "values"],
         check.names = FALSE, stringsAsFactors = FALSE
       )
     } else if(stat_name == "coef") {
-      out <- stack(stat_df)
+      out <- utils::stack(stat_df)
       names(out) <- c("", peel)
       out[, c(2, 1)]
     } else {
-      out <- stack(stat_df)
+      out <- utils::stack(stat_df)
       out <- select_(out, "-ind")
       names(out) <- paste0("_", stat_name)
       out

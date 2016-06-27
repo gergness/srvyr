@@ -39,7 +39,7 @@ rename_.tbl_svy <- function(.data, ..., .dots) {
 
 #' @export
 filter_.tbl_svy <- function(.data, ..., .dots) {
-  dots <- lazyeval::all_dots(.dots, ..., all_named = TRUE)
+  dots <- lazyeval::all_dots(.dots, ...)
 
   # There's probably a better way to do this... But I need to use
   # survey::subset because I want to make sure that I recalculate the

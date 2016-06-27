@@ -1,8 +1,11 @@
-# srvyr 0.1.1.900
+# srvyr 0.1.2
 * Fixed a problem with confidence levels not being passed into quantiles
 
 * Added deff parameter to `survey_mean()`, `survey_total()` and `survey_median()`, and 
   a df parameter to those functions and `survey_quantile()` / `survey_median()`.
+
+* `summarize` and `mutate` match dplyr's behavior when arguments aren't named 
+  (uses `dplyr::auto_name()`)
 
 # srvyr 0.1.1
 

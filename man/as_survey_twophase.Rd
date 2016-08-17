@@ -3,6 +3,7 @@
 \name{as_survey_twophase}
 \alias{as_survey_twophase}
 \alias{as_survey_twophase.data.frame}
+\alias{as_survey_twophase.tbl_sql}
 \alias{as_survey_twophase.twophase2}
 \alias{as_survey_twophase_}
 \title{Create a tbl_svy survey object using two phase design}
@@ -18,6 +19,8 @@ as_survey_twophase(.data, ...)
 as_survey_twophase_(.data, id, strata = NULL, probs = NULL,
   weights = NULL, fpc = NULL, subset, method = c("full", "approx",
   "simple"))
+
+\method{as_survey_twophase}{tbl_sql}(...)
 }
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}

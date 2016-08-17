@@ -120,3 +120,11 @@ as_survey_twophase_ <- function(.data, id, strata = NULL, probs = NULL,
   as_tbl_svy(out, list(ids = id, strata = strata, probs = probs,
                        weights = weights, fpc = fpc, subset = subset))
 }
+
+#' @export
+#' @rdname as_survey_twophase
+as_survey_twophase.tbl_sql <- function(...) {
+  stop("Twophase surveys don't support databases")
+}
+
+

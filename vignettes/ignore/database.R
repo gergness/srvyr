@@ -100,3 +100,53 @@ mysvy %>%
             # y = survey_median(arrests),
             z = survey_ratio(arrests, alive))
 
+
+# Twophase Survey --------
+# data(mu284, package = "survey")
+
+# mu284_1 <- mu284 %>%
+#   dplyr::slice(c(1:15, rep(1:5, n2[1:5] - 3))) %>%
+#   mutate(id = row_number(),
+#          sub = rep(c(TRUE, FALSE), c(15, 34-15)))
+
+# mu284_1_sqlite <- copy_to(my_db, mu284_1, temporary = FALSE)
+
+# Doesn't Work - twophase expects to be able to subset with data[subset, ]
+# data.frame. Twophase in original survey package doesn't support SQL
+# so this isn't a huge problem.
+mu284_1_sqlite <- tbl(my_db, sql("SELECT * FROM mu284_1"))
+mysvy <- mu284_1_sqlite %>%
+  as_survey_twophase(id = list(id1, id), strata = list(NULL, id1),
+                     fpc = list(n1, NULL), subset = sub)
+
+# Works
+mysvy <- mysvy %>%
+  mutate(diff = arrests - alive)
+
+# Works
+mysvy %>%
+  summarize(x = survey_mean(arrests),
+            # y = survey_median(arrests), # Unrelated problem with medians of replicate weights
+            z = survey_ratio(arrests, alive))
+
+
+# Also Works
+mysvy %>%
+  summarize(x = survey_mean(diff))
+
+# Also Works
+mysvy %>%
+  mutate(x = arrests + 10) %>%
+  summarize(x = survey_mean(x))
+
+# Doesn't work
+mysvy %>% select(arrests)
+
+# Doesn't work
+mysvy %>%
+  group_by(stype) %>%
+  summarize(x = survey_mean(arrests),
+            # y = survey_median(arrests),
+            z = survey_ratio(arrests, alive))
+
+

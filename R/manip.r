@@ -13,7 +13,7 @@ mutate_.tbl_svy <- function(.data, ..., .dots) {
 #' @export
 select_.tbl_svy <- function(.data, ..., .dots) {
   dots <- lazyeval::all_dots(.dots, ...)
-  vars <- dplyr::select_vars_(names(.data$variables), dots,
+  vars <- dplyr::select_vars_(dplyr::tbl_vars(.data$variables), dots,
                        include = attr(.data, "group_vars"))
 
   .data$variables <- select_(.data$variables, .dots = vars)

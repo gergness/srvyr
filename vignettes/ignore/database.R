@@ -16,11 +16,6 @@ api_sqlite <- tbl(my_db, sql("SELECT * FROM apistrat"))
 mysvy <- api_sqlite %>%
   as_survey_design(strata = stype, weights = pw)
 
-# Works
-scd_sqlite <- tbl(my_db, sql("SELECT * FROM scd"))
-mysvy <- scd %>%
-  as_survey_rep(type = "BRR", repweights = starts_with("rep"),
-                combined_weights = FALSE)
 
 # Works
 mysvy <- mysvy %>%
@@ -42,7 +37,7 @@ mysvy %>%
   mutate(x = api99 + 10) %>%
   summarize(x = survey_mean(x))
 
-# Doesn't work
+# Works
 mysvy %>% select(api99)
 
 # Doesn't work
@@ -90,8 +85,9 @@ mysvy %>%
   mutate(x = arrests + 10) %>%
   summarize(x = survey_mean(x))
 
-# Doesn't work
+# Works
 mysvy %>% select(arrests)
+
 
 # Doesn't work
 mysvy %>%

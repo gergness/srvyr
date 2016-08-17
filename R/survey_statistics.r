@@ -417,7 +417,6 @@ survey_quantile_tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE,
                                     ties = c("discrete", "rounded"),
                                     df = Inf) {
   if(missing(vartype)) vartype <- "none"
-  vartype <- c("coef", match.arg(vartype, several.ok = TRUE))
   vartype <- setdiff(vartype, "none")
   vartype <- c("coef", vartype)
 

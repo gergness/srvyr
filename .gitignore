@@ -2,4 +2,4 @@
 .Rhistory
 .RData
 inst/doc
-my_db.sqlite3
+/vignettes/ignore/my_db.sqlite3

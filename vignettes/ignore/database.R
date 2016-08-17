@@ -6,7 +6,7 @@ library(RSQLite)
 
 
 data(api)
-my_db <- src_sqlite("my_db.sqlite3", create = T)
+my_db <- src_sqlite("vignettes/ignore/my_db.sqlite3", create = T)
 
 # Designed surveys ---------
 # api_sqlite <- copy_to(my_db, apistrat, temporary = FALSE)
@@ -55,13 +55,13 @@ mysvy %>%
 
 # Replicate Survey --------
 # data(scd, package = "survey")
-
+#
 # scd <- scd %>%
 #  mutate(rep1 = 2 * c(1, 0, 1, 0, 1, 0),
 #         rep2 = 2 * c(1, 0, 0, 1, 0, 1),
 #         rep3 = 2 * c(0, 1, 1, 0, 0, 1),
 #         rep4 = 2 * c(0, 1, 0, 1, 1, 0))
-
+#
 # scd_sqlite <- copy_to(my_db, scd, temporary = FALSE)
 
 # Works
@@ -103,12 +103,12 @@ mysvy %>%
 
 # Twophase Survey --------
 # data(mu284, package = "survey")
-
+#
 # mu284_1 <- mu284 %>%
 #   dplyr::slice(c(1:15, rep(1:5, n2[1:5] - 3))) %>%
 #   mutate(id = row_number(),
 #          sub = rep(c(TRUE, FALSE), c(15, 34-15)))
-
+#
 # mu284_1_sqlite <- copy_to(my_db, mu284_1, temporary = FALSE)
 
 # Doesn't Work - twophase expects to be able to subset with data[subset, ]
@@ -119,22 +119,22 @@ mysvy <- mu284_1_sqlite %>%
   as_survey_twophase(id = list(id1, id), strata = list(NULL, id1),
                      fpc = list(n1, NULL), subset = sub)
 
-# Works
+# Doesn't works
 mysvy <- mysvy %>%
   mutate(diff = arrests - alive)
 
-# Works
+# Doesn't work
 mysvy %>%
   summarize(x = survey_mean(arrests),
-            # y = survey_median(arrests), # Unrelated problem with medians of replicate weights
+            y = survey_median(arrests),
             z = survey_ratio(arrests, alive))
 
 
-# Also Works
+# Doesn't work
 mysvy %>%
   summarize(x = survey_mean(diff))
 
-# Also Works
+# Doesn't work
 mysvy %>%
   mutate(x = arrests + 10) %>%
   summarize(x = survey_mean(x))

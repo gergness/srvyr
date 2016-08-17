@@ -296,8 +296,8 @@ survey_ratio_tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE,
 
   vartype <- c("coef", vartype)
   if (deff) vartype <- c(vartype, "deff")
-  if (inherits(numerator, "tbl_sql")) numerator <- collect(numerator)[[1]]
-  if (inherits(denominator, "tbl_sql")) denominator <- collect(denominator)[[1]]
+  if (inherits(numerator, "tbl_sql")) numerator <- dplyr::collect(numerator)[[1]]
+  if (inherits(denominator, "tbl_sql")) denominator <- dplyr::collect(denominator)[[1]]
 
   stat <- survey::svyratio(data.frame(numerator), data.frame(denominator),
                            .svy, na.rm = na.rm, deff = deff, df = df)
@@ -426,7 +426,7 @@ survey_quantile_tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   # we could go higher, but I worry about 32bit vs 64bit systems)
   alpha = round(1 - level, 7)
 
-  if (inherits(x, "tbl_sql")) x <- collect(x)[[1]]
+  if (inherits(x, "tbl_sql")) x <- dplyr::collect(x)[[1]]
 
   stat <- survey::svyquantile(data.frame(x), .svy,
                               quantiles = quantiles, na.rm = na.rm,
@@ -568,7 +568,7 @@ unweighted <- function(x, ...) {
 
 
 survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype, level, deff, df) {
-  if (inherits(x, "tbl_sql")) x <- collect(x)[[1]]
+  if (inherits(x, "tbl_sql")) x <- dplyr::collect(x)[[1]]
   if (class(x) == "factor") {
     stop(paste0("Factor not allowed in survey functions, should ",
                 "be used as a grouping variable"))

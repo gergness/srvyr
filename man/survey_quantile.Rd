@@ -7,12 +7,13 @@
 \usage{
 survey_quantile(x, quantiles, na.rm = FALSE, vartype = c("none", "se",
   "ci"), level = 0.95, q_method = "linear", f = 1,
-  interval_type = c("Wald", "score", "betaWald"), ties = c("discrete",
-  "rounded"), df = Inf, ...)
+  interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
+  ties = c("discrete", "rounded"), df = Inf, ...)
 
 survey_median(x, na.rm = FALSE, vartype = c("none", "se", "ci"),
   level = 0.95, q_method = "linear", f = 1, interval_type = c("Wald",
-  "score", "betaWald"), ties = c("discrete", "rounded"), df = Inf, ...)
+  "score", "betaWald", "probability", "quantile"), ties = c("discrete",
+  "rounded"), df = Inf, ...)
 }
 \arguments{
 \item{x}{A variable or expression}

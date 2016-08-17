@@ -206,3 +206,33 @@ out_survey <- temp_survey %>%
 test_that("df works for grouped survey quantile",
           expect_equal(out_srvyr, out_survey))
 
+
+data(scd, package = "survey")
+
+scd <- scd %>%
+  mutate(rep1 = 2 * c(1, 0, 1, 0, 1, 0),
+         rep2 = 2 * c(1, 0, 0, 1, 0, 1),
+         rep3 = 2 * c(0, 1, 1, 0, 0, 1),
+         rep4 = 2 * c(0, 1, 0, 1, 1, 0))
+
+suppressWarnings(mysvy <- scd %>%
+  as_survey_rep(type = "BRR", repweights = starts_with("rep"),
+                combined_weights = FALSE))
+
+results_srvyr <- mysvy %>%
+  summarize(x = survey_median(arrests, interval_type = "probability"))
+
+results_survey <- svyquantile(~arrests, mysvy, quantiles = 0.5,
+                              interval_type = "probability")
+
+test_that("srvyr allows you to select probability for interval_type of replicate weights",
+          expect_equal(results_srvyr[[1]], results_survey[[1]]))
+
+
+results_srvyr <- mysvy %>%
+  summarize(x = survey_median(arrests))
+
+results_survey <- svyquantile(~arrests, mysvy, quantiles = 0.5)
+
+test_that("srvyr does the right thing by default for quantiles of replicate surveys",
+          expect_equal(results_srvyr[[1]], results_survey[[1]]))

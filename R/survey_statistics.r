@@ -378,7 +378,8 @@ survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
 survey_quantile <- function(x, quantiles, na.rm = FALSE,
                             vartype = c("none", "se", "ci"),
                             level = 0.95, q_method = "linear", f = 1,
-                            interval_type = c("Wald", "score", "betaWald"),
+                            interval_type = c("Wald", "score", "betaWald",
+                                              "probability", "quantile"),
                             ties = c("discrete", "rounded"), df = Inf, ...) {
   args <- list(...)
   if (!".svy" %in% names(args)) {
@@ -388,7 +389,8 @@ survey_quantile <- function(x, quantiles, na.rm = FALSE,
   .svy <- args[[".svy"]]
   if (missing(vartype)) vartype <- "none"
   vartype <- match.arg(vartype, several.ok = TRUE)
-  if (missing(interval_type)) interval_type <- "Wald"
+  if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "Wald"
+  if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "probability"
   interval_type <- match.arg(interval_type, several.ok = TRUE)
   if (missing(ties)) ties <- "discrete"
   ties <- match.arg(ties, several.ok = TRUE)
@@ -413,7 +415,8 @@ survey_quantile_tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE,
                                     vartype = c("none", "se", "ci"),
                                     level = 0.95, q_method = "linear", f = 1,
                                     interval_type = c("Wald", "score",
-                                                      "betaWald"),
+                                                      "betaWald", "probability",
+                                                      "quantile"),
                                     ties = c("discrete", "rounded"),
                                     df = Inf) {
   if(missing(vartype)) vartype <- "none"
@@ -446,7 +449,9 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
                                         level = 0.95, q_method = "linear",
                                         f = 1,
                                         interval_type = c("Wald", "score",
-                                                          "betaWald"),
+                                                          "betaWald",
+                                                          "probability",
+                                                          "quantile"),
                                         ties = c("discrete", "rounded"),
                                         df = Inf) {
 
@@ -501,7 +506,8 @@ survey_median <- function(x, na.rm = FALSE,
                           vartype = c("none", "se", "ci"),
                           level = 0.95, q_method = "linear", f = 1,
                           interval_type = c("Wald", "score",
-                                            "betaWald"),
+                                            "betaWald", "probability",
+                                            "quantile"),
                           ties = c("discrete", "rounded"), df = Inf,
                           ...) {
 
@@ -513,7 +519,8 @@ survey_median <- function(x, na.rm = FALSE,
   .svy <- args[[".svy"]]
   if (missing(vartype)) vartype <- "none"
   vartype <- match.arg(vartype, several.ok = TRUE)
-  if (missing(interval_type)) interval_type <- "Wald"
+  if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "Wald"
+  if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "probability"
   interval_type <- match.arg(interval_type, several.ok = TRUE)
   if (missing(ties)) ties <- "discrete"
   ties <- match.arg(ties, several.ok = TRUE)

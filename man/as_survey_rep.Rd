@@ -5,6 +5,7 @@
 \alias{as_survey_rep.data.frame}
 \alias{as_survey_rep.survey.design2}
 \alias{as_survey_rep.svyrep.design}
+\alias{as_survey_rep.tbl_sql}
 \alias{as_survey_rep.tbl_svy}
 \alias{as_survey_rep_}
 \title{Create a tbl_svy survey object using replicate weights}
@@ -19,6 +20,12 @@ as_survey_rep(.data, ...)
   mse = getOption("survey.replicates.mse"), ...)
 
 \method{as_survey_rep}{svyrep.design}(.data, ...)
+
+\method{as_survey_rep}{tbl_sql}(.data, variables = NULL, repweights = NULL,
+  weights = NULL, type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
+  "other"), combined_weights = TRUE, rho = NULL, bootstrap_average = NULL,
+  scale = NULL, rscales = NULL, fpc = NULL, fpctype = c("fraction",
+  "correction"), mse = getOption("survey.replicates.mse"), ...)
 
 \method{as_survey_rep}{survey.design2}(.data, type = c("auto", "JK1", "JKn",
   "BRR", "bootstrap", "subbootstrap", "mrbbootstrap", "Fay"), rho = 0,

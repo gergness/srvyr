@@ -83,14 +83,20 @@ as_tbl_svy <- function(x, var_names = list()) {
   }
 
   if (inherits(x, "twophase2")) {
-    x$phase1$full$variables <- dplyr::tbl_df(x$phase1$full$variables)
-    x$phase1$sample$variables <- dplyr::tbl_df(x$phase1$sample$variables)
+    # Convert to tbls if not already (expect them to be one of data.frame, tbl_df or tbl_sqls)
+    # data.frames will be converted, others should inherit "tbl".
+    if (!inherits(x$phase1$full$variables, "tbl")) {
+      x$phase1$full$variables <- dplyr::tbl_df(x$phase1$full$variables)
+    }
+    if (!inherits(x$phase1$sample$variables, "tbl")) {
+      x$phase1$sample$variables <- dplyr::tbl_df(x$phase1$sample$variables)
+    }
 
     # To make twophase behave similarly to the other survey objects, add sample
     # variables from phase1 to the first level of the object.
     x$variables <- x$phase1$sample$variables
-  } else {
-    x$variables <- dplyr::tbl_df(x$variables)
+  } else if (!inherits(x$variables, "tbl")) {
+      x$variables <- dplyr::tbl_df(x$variables)
   }
 
   survey_vars(x) <- var_names

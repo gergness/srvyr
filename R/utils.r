@@ -59,7 +59,7 @@ helper_list <- function(x, .data) {
 
 # Need to turn bare variable to variable names (when not in list)
 helper <- function(x, .data) {
-  unname(dplyr::select_vars_(names(.data), x))
+  unname(dplyr::select_vars_(dplyr::tbl_vars(.data), x))
 }
 
 # From http://stackoverflow.com/questions/7963898

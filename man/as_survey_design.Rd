@@ -4,12 +4,18 @@
 \alias{as_survey_design}
 \alias{as_survey_design.data.frame}
 \alias{as_survey_design.survey.design2}
+\alias{as_survey_design.tbl_sql}
 \alias{as_survey_design_}
 \title{Create a tbl_svy survey object using sampling design}
 \usage{
 as_survey_design(.data, ...)
 
 \method{as_survey_design}{data.frame}(.data, ids = NULL, probs = NULL,
+  strata = NULL, variables = NULL, fpc = NULL, nest = FALSE,
+  check_strata = !nest, weights = NULL, pps = FALSE, variance = c("HT",
+  "YG"), ...)
+
+\method{as_survey_design}{tbl_sql}(.data, ids = NULL, probs = NULL,
   strata = NULL, variables = NULL, fpc = NULL, nest = FALSE,
   check_strata = !nest, weights = NULL, pps = FALSE, variance = c("HT",
   "YG"), ...)

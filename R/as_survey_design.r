@@ -103,6 +103,9 @@ as_survey_design.data.frame <-
                     variance = variance)
 }
 
+#' @export
+#' @rdname as_survey_design
+as_survey_design.tbl_sql <- as_survey_design.data.frame
 
 #' @export
 #' @rdname as_survey_design

@@ -5,13 +5,13 @@ library(RSQLite)
 
 data(api)
 my_db <- src_sqlite("my_db.sqlite3", create = T)
-api_sqlite <- copy_to(my_db, apistrat, temporary = FALSE)
+# api_sqlite <- copy_to(my_db, apistrat, temporary = FALSE)
 api_sqlite <- tbl(my_db, sql("SELECT * FROM apistrat"))
 
 
 # Works
 dstrata <- api_sqlite %>%
-  design_survey(strata = stype, weights = pw)
+  as_survey_design(strata = stype, weights = pw)
 
 # Works
 dstrata <- dstrata %>%

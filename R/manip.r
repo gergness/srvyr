@@ -24,7 +24,7 @@ select_.tbl_svy <- function(.data, ..., .dots) {
 #' @export
 rename_.tbl_svy <- function(.data, ..., .dots) {
   dots <- lazyeval::all_dots(.dots, ...)
-  vars <- dplyr::rename_vars_(names(.data$variables), dots)
+  vars <- dplyr::rename_vars_(dplyr::tbl_vars(.data$variables), dots)
   .data$variables <- rename_(.data$variables, .dots = vars)
 
   .data

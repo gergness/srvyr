@@ -40,6 +40,9 @@ mysvy %>%
 # Works
 mysvy %>% select(api99)
 
+# Works
+mysvy %>% rename(test = api99)
+
 # Doesn't work
 mysvy %>%
   group_by(stype) %>%
@@ -72,7 +75,7 @@ mysvy <- mysvy %>%
 # Works
 mysvy %>%
   summarize(x = survey_mean(arrests),
-            # y = survey_median(arrests), # Unrelated problem with medians of replicate weights
+            y = survey_median(arrests),
             z = survey_ratio(arrests, alive))
 
 
@@ -87,6 +90,9 @@ mysvy %>%
 
 # Works
 mysvy %>% select(arrests)
+
+# Works
+mysvy %>% rename(test = arrests)
 
 
 # Doesn't work

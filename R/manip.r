@@ -18,9 +18,6 @@ select_.tbl_svy <- function(.data, ..., .dots) {
 
   .data$variables <- select_(.data$variables, .dots = vars)
 
-  # Also rename survey_vars, group_vars, and the structures in the
-  # svydesign2 object
-  .data <- rename_special_vars(.data, vars)
   .data
 }
 
@@ -29,10 +26,6 @@ rename_.tbl_svy <- function(.data, ..., .dots) {
   dots <- lazyeval::all_dots(.dots, ...)
   vars <- dplyr::rename_vars_(names(.data$variables), dots)
   .data$variables <- rename_(.data$variables, .dots = vars)
-
-  # Also rename survey_vars, group_vars, and the structures in the
-  # svydesign2 object
-  .data <- rename_special_vars(.data, vars)
 
   .data
 }
@@ -54,35 +47,6 @@ filter_.tbl_svy <- function(.data, ..., .dots) {
   row_numbers <- row_numbers$`___row_nums`
 
   .data[row_numbers, ]
-}
-
-# Helper to rename variables stored in survey_vars and svydesign2 stucture
-rename_special_vars <- function(svy, var_list) {
-  renamed_vars <- var_list[var_list != names(var_list)]
-  svars <- as.character(survey_vars(svy))
-
-  for (iii in seq_along(renamed_vars)) {
-    this_var <- renamed_vars[iii]
-
-    # Make changes in the survey_vars structure
-    svars <- lapply(svars, function(x) {
-      x[x == this_var] <- names(this_var)
-      x
-    })
-
-    # Make changes in actual sydesign2 object's structures
-    names(svy$cluster)[names(svy$cluster) == this_var] <- names(this_var)
-    if(svy$has.strata) {
-      names(svy$strata)[names(svy$strata) == this_var] <- names(this_var)
-    }
-    names(svy$allprob)[names(svy$allprob) == this_var] <- names(this_var)
-    attr(svy$fpc$popsize, "dimnames")[[2]][
-      attr(svy$fpc$popsize, "dimnames")[[2]] == this_var
-      ] <- names(this_var)
-  }
-
-  survey_vars(svy) <- svars
-  svy
 }
 
 

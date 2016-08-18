@@ -47,15 +47,22 @@ print.tbl_svy <- function (x, varnames = TRUE, ...) {
   if (length(survey_vars(x)) > 0) {
     print(survey_vars(x))
   }
-  if(!is.null(groups(x))) {
+  if(length(groups(x)) != 0) {
     cat("Grouping variables: ")
     cat(paste0(deparse_all(groups(x)), collapse = ", "))
     cat("\n")
   }
 
   if (varnames) {
-    vars <- colnames(x$variables)
-    types <- vapply(x$variables, dplyr::type_sum, character(1))
+    vars <- dplyr::tbl_vars(x$variables)
+
+    # Force calculation for lazy tables (eg tbl_sql) so that
+    # we know what types the variables are.
+    if (inherits(x$variables, "tbl_lazy")) {
+      types <- vapply(dplyr::collect(slice(x$variables), 1), dplyr::type_sum, character(1))
+    } else {
+      types <- vapply(x$variables, dplyr::type_sum, character(1))
+    }
 
     var_types <- paste0(vars, " (", types, ")", collapse = ", ")
     cat(wrap("Data variables: ", var_types), "\n", sep = "")

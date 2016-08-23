@@ -10,7 +10,7 @@ svyby_fixed<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
                         multicore=getOption("survey.multicore")){
 
   if (inherits(by, "formula"))
-    byfactors<-model.frame(by, model.frame(design), na.action=na.pass)
+    byfactors<-stats::model.frame(by, stats::model.frame(design), na.action=stats::na.pass)
   else
     byfactors<-as.data.frame(by)
 
@@ -38,14 +38,14 @@ svyby_fixed<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
 
   ## all combinations that actually occur in this design
   byfactor<-do.call("interaction", byfactors)
-  dropped<- weights(design,"sampling")==0
+  dropped<- stats::weights(design,"sampling")==0
   if (na.rm.by) dropped<-dropped | apply(byfactors, 1, function(x) any(is.na(x)))
   if (na.rm.all){
     if (inherits(formula,"formula"))
-      allx<-model.frame(formula,model.frame(design),na.action=na.pass)
+      allx<-stats::model.frame(formula,stats::model.frame(design),na.action=stats::na.pass)
     else
       allx<-formula
-    dropped <- dropped | (!complete.cases(allx))
+    dropped <- dropped | (!stats::complete.cases(allx))
   }
   uniquelevels<-sort(unique(byfactor[!dropped]))
   uniques <- match(uniquelevels, byfactor)
@@ -58,14 +58,14 @@ svyby_fixed<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
 
   if (keep.var){
     unwrap <-function(x){
-      rval<-c(coef(x))
+      rval<-c(stats::coef(x))
       nvar<-length(rval)
-      rval<-c(rval,c(se=SE(x),
-                     ci_l=confint(x)[,1],
-                     ci_u=confint(x)[,2],
-                     cv=cv(x,warn=FALSE),
-                     `cv%`=cv(x,warn=FALSE)*100,
-                     var=SE(x)^2)[rep((nvartype-1)*(nvar),each=nvar)+(1:nvar)])
+      rval<-c(rval,c(se=survey::SE(x),
+                     ci_l=stats::confint(x)[,1],
+                     ci_u=stats::confint(x)[,2],
+                     cv=survey::cv(x,warn=FALSE),
+                     `cv%`=survey::cv(x,warn=FALSE)*100,
+                     var=survey::SE(x)^2)[rep((nvartype-1)*(nvar),each=nvar)+(1:nvar)])
       if(!is.null(attr(x,"deff")))
         rval<-c(rval,DEff=deff(x))
       rval
@@ -94,9 +94,9 @@ svyby_fixed<-function(formula, by, design, FUN,..., deff=FALSE, keep.var=TRUE,
     if (covmat || return.replicates) {
       replicates<-do.call(cbind,lapply(results,"[[","replicates"))
       colnames(replicates)<-rep(as.character(uniquelevels), each=NCOL(replicates)/length(uniquelevels))
-      covmat.mat<-svrVar(replicates,design$scale,design$rscales, mse=design$mse,coef=as.vector(sapply(results,coef)))
+      covmat.mat<-survey::svrVar(replicates,design$scale,design$rscales, mse=design$mse,coef=as.vector(sapply(results,stats::coef)))
     } else{
-      covmats<-lapply(results,vcov)
+      covmats<-lapply(results,stats::vcov)
       ncovmat<-sum(sapply(covmats,ncol))
       covmat.mat<-matrix(0,ncol=ncovmat,nrow=ncovmat)
       j<-0

@@ -592,6 +592,46 @@ survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype, level, deff, df
 
 survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level,
                                 deff, df, prop_method = NULL) {
+  UseMethod("survey_stat_grouped")
+}
+
+survey_stat_grouped.default <- function(.svy, func, x, na.rm, vartype, level,
+                                deff, df, prop_method = NULL) {
+  grps <- survey::make.formula(groups(.svy))
+
+  if (class(x) == "factor") {
+    stop(paste0("Factor not allowed in survey functions, should ",
+                "be used as a grouping variable"))
+  }
+  if (class(x) == "logical") x <- as.integer(x)
+  # svyby breaks when you feed it raw vector to be measured... Add it to
+  # the data.frame with mutate and then pass in the name
+  .svy$variables[["___arg"]] <- x
+
+  # Slight hack for twophase -- move the created variables to where survey
+  # expects them
+  if (inherits(.svy, "twophase2")) {
+    .svy$phase1$sample$variables <- .svy$variables
+  }
+  vartype <- c("grps", "coef", vartype)
+  if (deff) vartype = c(vartype, "deff")
+
+  if (is.null(prop_method)) {
+    stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm, se = TRUE, deff = deff)
+  } else {
+    vartype[vartype == "ci"] <- "ci-prop"
+    stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm,
+                          se = TRUE, vartype = c("ci", "se"),
+                          method = prop_method)
+  }
+
+  out <- get_var_est(stat, vartype, grps = as.character(groups(.svy)),
+                     level = level, df = df)
+  dplyr::bind_cols(out)
+}
+
+survey_stat_grouped.twophase2 <- function(.svy, func, x, na.rm, vartype, level,
+                                        deff, df, prop_method = NULL) {
   grps <- survey::make.formula(groups(.svy))
 
   if (class(x) == "factor") {

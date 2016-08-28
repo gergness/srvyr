@@ -30,7 +30,6 @@ out_survey <- svyby(~awards == "Yes", ~stype, dstrata, svyciprop,
                     vartype = "ci", method = "likelihood")
 out_survey <- dplyr::tbl_df(data.frame(out_survey))
 names(out_survey) <- c("stype", "x", "x_low", "x_upp")
-row.names(out_survey) <- 1:nrow(out_survey)
 
 test_that("grouped proportion works correctly",
           expect_equal(out_srvyr, out_survey))

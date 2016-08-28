@@ -597,7 +597,7 @@ survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level,
 
 survey_stat_grouped.default <- function(.svy, func, x, na.rm, vartype, level,
                                         deff, df, prop_method = NULL) {
-  grps <- survey::make.formula(groups(.svy))
+  grps <- select_(.svy$variables, .dots = groups(.svy))
 
   if (class(x) == "factor") {
     stop(paste0("Factor not allowed in survey functions, should ",

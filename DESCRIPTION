@@ -24,6 +24,7 @@ Suggests:
     Matrix,
     rmarkdown,
     pander,
+    RSQLite,
     survival,
     testthat
 VignetteBuilder: knitr

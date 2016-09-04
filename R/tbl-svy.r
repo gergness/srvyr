@@ -110,7 +110,8 @@ as_tbl_svy <- function(x, var_names = list()) {
   survey_vars(x) <- var_names
 
   # To make printing better, change call
-  x$call <- "called via srvyr"
+  x$call <- "Called via srvyr"
+  class(x$call) <- "quoteless_text"
   x
 }
 
@@ -131,4 +132,9 @@ as_tibble.tbl_svy <- function(x, ...) {
 #' @export
 #' @importFrom tibble as_tibble
 NULL
+
+#' @export
+print.quoteless_text <- function(x, ...) {
+  cat(paste0(x, "\n"))
+}
 

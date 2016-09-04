@@ -12,6 +12,11 @@
 #' If provided a \code{survey.design2} object from the survey package,
 #' it will turn it into a srvyr object, so that srvyr functions will work with it
 #'
+#' There is also limited support for databases using dplyr's \code{tbl_sql}
+#' objects. Not all operations are available for these objects, in particular
+#' grouped quantiles and ratios. See \code{vignette("databases", package = "dplyr")}
+#' for more information on setting up databases in dplyr.
+#'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
 #' @param ids Variables specifying cluster ids from largest level to smallest level

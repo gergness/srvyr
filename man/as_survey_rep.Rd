@@ -94,6 +94,11 @@ it will turn it into a srvyr object, so that srvyr functions will work with it
 If provided a survey design (\code{survey.design2} or \code{tbl_svy}), it is a wrapper
 around \code{\link[survey]{as.svrepdesign}}, and will convert from a survey design to
 replicate weights.
+
+There is also limited support for databases using dplyr's \code{tbl_sql}
+objects. Not all operations are available for these objects, in particular
+grouped quantiles and ratios. See \code{vignette("databases", package = "dplyr")}
+for more information on setting up databases in dplyr.
 }
 \examples{
 # Examples from ?survey::svrepdesign()

@@ -56,6 +56,9 @@ column names, or convenience functions described in
 \code{\link[dplyr]{select}}. \code{as_survey_twophase_} is the standard
 evaluation counterpart to \code{as_survey_twophase}.
 }
+\details{
+Database objects are not supported for twophase designs.
+}
 \examples{
 # Examples from ?survey::twophase
 # two-phase simple random sampling.

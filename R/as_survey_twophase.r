@@ -7,6 +7,8 @@
 #' \code{\link[dplyr]{select}}. \code{as_survey_twophase_} is the standard
 #' evaluation counterpart to \code{as_survey_twophase}.
 #'
+#' Database objects are not supported for twophase designs.
+#'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
 #' @param id list of two sets of variable names for sampling unit identifers

@@ -38,6 +38,14 @@ a tbl_svy
 or a two phase design (\code{\link{as_survey_twophase}}), or an object created by the
 survey package. \code{as_survey_} is its standard evaluation counterpart.
 }
+\details{
+There is also limited support for databases using dplyr's \code{tbl_sql}
+objects for survey designs and replicate weight surveys.
+Not all operations are available for these objects, in particular
+grouped quantiles and ratios, nor are two phase designs.
+See \code{vignette("databases", package = "dplyr")}
+for more information on setting up databases in dplyr.
+}
 \examples{
 # Examples from ?survey::svydesign
 library(survey)

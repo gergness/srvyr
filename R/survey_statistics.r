@@ -280,6 +280,9 @@ survey_ratio <- function(numerator, denominator, na.rm = FALSE,
   if (is.null(df)) df <- survey::degf(.svy)
 
   if (inherits(.svy, "grouped_svy")) {
+    if (inherits(.svy$variables, "tbl_lazy")) {
+      stop("Cannot perform ratio on grouped database backed survey")
+    }
     survey_ratio_grouped_svy(.svy, numerator, denominator, na.rm, vartype, level, deff, df)
   } else if (inherits(.svy, "tbl_svy")) {
     survey_ratio_tbl_svy(.svy, numerator, denominator, na.rm, vartype, level, deff, df)
@@ -401,6 +404,9 @@ survey_quantile <- function(x, quantiles, na.rm = FALSE,
   }
 
   if (inherits(.svy, "grouped_svy")) {
+    if (inherits(.svy$variables, "tbl_lazy")) {
+      stop("Cannot perform quantile on grouped database backed survey")
+    }
     survey_quantile_grouped_svy(.svy, x, quantiles, na.rm, vartype, level, q_method, f,
                                 interval_type, ties, df)
   } else if (inherits(.svy, "tbl_svy")) {

@@ -22,6 +22,18 @@ if (identical(Sys.getenv("NOT_CRAN"), "true")) {
                local = apistrat %>%
                  as_survey_design(strata = stype, weights = pw)
   )
+
+  # Twophase
+  data(mu284)
+  mu284_1 <- mu284 %>%
+    dplyr::slice(c(1:15, rep(1:5, n2[1:5] - 3))) %>%
+    mutate(id = row_number(),
+           sub = rep(c(TRUE, FALSE), c(15, 34-15)))
+
+  mu284_1_db <- copy_to(my_db, mu284_1, temporary = FALSE)
+
+  mu284_1_db <- tbl(my_db, sql("SELECT * FROM mu284_1"))
+
 }
 
 test_that("Mutate works",
@@ -65,3 +77,21 @@ test_that("grouped survey_mean and survey_total work",
                        skip_on_cran()
           )
 )
+
+test_that("grouped quantiles have reasonable error",
+          expect_error(svys$db %>%
+                         group_by(stype) %>%
+                         summarize(api99 = survey_median(api99)),
+                       "quantile(.+)database"))
+
+test_that("grouped ratios have reasonable error",
+          expect_error(svys$db %>%
+                         group_by(stype) %>%
+                         summarize(api = survey_ratio(api99, api00)),
+                       "ratio(.+)database"))
+
+test_that("twophase has error for dbs",
+          expect_error(mu284_1_db %>%
+                         as_survey_twophase(id = list(id1, id), strata = list(NULL, id1),
+                                            fpc = list(n1, NULL), subset = sub),
+                       "Twophase(.+)database"))

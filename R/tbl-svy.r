@@ -81,7 +81,7 @@ NULL
 
 #' @export
 tbl_vars.tbl_svy <- function(x) {
-  names(x[["variables"]])
+  dplyr::tbl_vars(x[["variables"]])
 }
 
 
@@ -113,3 +113,22 @@ as_tbl_svy <- function(x, var_names = list()) {
   x$call <- "called via srvyr"
   x
 }
+
+
+#' @export
+as.data.frame.tbl_svy <- function(x, ...) {
+  as.data.frame(x$variables, ...)
+}
+
+#' @export
+as_tibble.tbl_svy <- function(x, ...) {
+  as_tibble(x$variables, ...)
+}
+
+#' Coerce survey variables to a data frame (tibble)
+#' @param x A \code{tbl_svy} object
+#' @name as_tibble
+#' @export
+#' @importFrom tibble as_tibble
+NULL
+

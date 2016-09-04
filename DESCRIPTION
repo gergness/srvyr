@@ -15,7 +15,8 @@ Imports:
     dplyr,
     lazyeval,
     magrittr,
-    survey
+    survey,
+    tibble
 License: GPL-2 | GPL-3
 LazyData: TRUE
 Suggests:

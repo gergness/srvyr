@@ -597,12 +597,22 @@ survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level,
 
 survey_stat_grouped.default <- function(.svy, func, x, na.rm, vartype, level,
                                         deff, df, prop_method = NULL) {
-  grps <- select_(.svy$variables, .dots = groups(.svy))
-
+  if (inherits(x, "tbl_sql")) {
+    # Since we're grouped, dplyr conveniently gives us groups and x.
+    x <- dplyr::collect(x)
+    grp_names <- as.character(groups(.svy))
+    grps <- select(x, dplyr::one_of(grp_names))
+    x <- ungroup(x) # need to ungroup to drop the groups
+    x <- select(x, -dplyr::one_of(grp_names))
+    x <- x[[1]] # Get the column as a vector instead of as a tbl_df
+  } else {
+    grps <- select_(.svy$variables, .dots = groups(.svy))
+  }
   if (class(x) == "factor") {
     stop(paste0("Factor not allowed in survey functions, should ",
                 "be used as a grouping variable"))
   }
+
   if (class(x) == "logical") x <- as.integer(x)
 
   vartype <- c("grps", "coef", vartype)

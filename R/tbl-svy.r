@@ -59,7 +59,7 @@ print.tbl_svy <- function (x, varnames = TRUE, ...) {
     # Force calculation for lazy tables (eg tbl_sql) so that
     # we know what types the variables are.
     if (inherits(x$variables, "tbl_lazy")) {
-      types <- vapply(dplyr::collect(head(x$variables, 1)),
+      types <- vapply(dplyr::collect(utils::head(x$variables, 1)),
                                      dplyr::type_sum, character(1))
     } else {
       types <- vapply(x$variables, dplyr::type_sum, character(1))

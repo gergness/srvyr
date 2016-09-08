@@ -12,7 +12,7 @@
 #' If provided a \code{survey.design2} object from the survey package,
 #' it will turn it into a srvyr object, so that srvyr functions will work with it
 #'
-#' There is also limited support for databases using dplyr's \code{tbl_sql}
+#' There is also limited and support for databases using dplyr's \code{tbl_sql}
 #' objects. Not all operations are available for these objects, in particular
 #' grouped quantiles and ratios. See \code{vignette("databases", package = "dplyr")}
 #' for more information on setting up databases in dplyr.
@@ -35,6 +35,8 @@
 #' approximation. An object of class ppsmat to use the Horvitz-Thompson estimator.
 #' @param variance For pps without replacement, use variance="YG" for the Yates-Grundy estimator
 #' instead of the Horvitz-Thompson estimator
+#' @param uid For databases only, a one or more variables that uniquely identify the
+#' observations of your survey.
 #' @param ... ignored
 #' @return An object of class \code{tbl_svy}
 #' @examples
@@ -89,8 +91,8 @@ as_survey_design <- function(.data, ...) {
 as_survey_design.data.frame <-
   function(.data, ids = NULL, probs = NULL, strata = NULL,
            variables = NULL, fpc = NULL, nest = FALSE,
-           check_strata = !nest,weights = NULL, pps = FALSE,
-           variance = c("HT", "YG"), ...) {
+           check_strata = !nest, weights = NULL, pps = FALSE,
+           variance = c("HT", "YG"), uid = NULL, ...) {
 
   if (!missing(ids)) {
     ids <- lazy_parent(ids)
@@ -101,11 +103,12 @@ as_survey_design.data.frame <-
   if (!missing(fpc)) fpc <- helper(lazy_parent(fpc), .data)
   if (!missing(weights)) weights <- helper(lazy_parent(weights), .data)
   if (!missing(variables)) variables <- helper(lazy_parent(variables), .data)
+  if (!missing(uid)) uid <- helper(lazy_parent(uid), .data)
 
   as_survey_design_(.data, ids, probs = probs, strata = strata,
                     variables = variables, fpc = fpc, nest = nest,
                     check_strata = check_strata, weights = weights, pps = pps,
-                    variance = variance)
+                    variance = variance, uid = uid)
 }
 
 #' @export
@@ -124,7 +127,7 @@ as_survey_design.survey.design2 <- function(.data, ...) {
 as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
                               variables = NULL, fpc = NULL, nest = FALSE,
                               check_strata = !nest,weights = NULL, pps = FALSE,
-                              variance = c("HT", "YG")) {
+                              variance = c("HT", "YG"), uid = NULL) {
 
 
   # svydesign expects ~0 instead of NULL if no ids are included
@@ -134,6 +137,12 @@ as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
   } else {
     ids_call <- dplyr::select_(.data, .dots = ids)
   }
+
+  # Databases require uid
+  if (inherits(.data, "tbl_lazy") && (missing(uid) || is.null(uid))) {
+    stop("database backed surveys require a uid.")
+  }
+
   # Need to convert to data.frame to appease survey package and also not
   # send NULL to dplyr::select
   survey_selector <- function(x) {
@@ -151,5 +160,5 @@ as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
                            variance = variance)
 
   as_tbl_svy(out, list(ids = ids, probs = probs, strata = strata, fpc = fpc,
-                       weights = weights))
+                       weights = weights), uid = survey_selector(uid))
 }

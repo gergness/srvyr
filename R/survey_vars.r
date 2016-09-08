@@ -37,3 +37,4 @@ print.survey_vars <- function(x, ...) {
     })
   invisible(x)
 }
+

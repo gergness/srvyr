@@ -85,7 +85,7 @@ tbl_vars.tbl_svy <- function(x) {
 }
 
 
-as_tbl_svy <- function(x, var_names = list()) {
+as_tbl_svy <- function(x, var_names = list(), uid = NULL) {
   if (!inherits(x, "tbl_svy")) {
     class(x) <- c("tbl_svy", class(x))
   }
@@ -108,6 +108,7 @@ as_tbl_svy <- function(x, var_names = list()) {
   }
 
   survey_vars(x) <- var_names
+  uid(x) <- uid
 
   # To make printing better, change call
   x$call <- "Called via srvyr"

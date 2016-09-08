@@ -18,7 +18,8 @@ if (identical(Sys.getenv("NOT_CRAN"), "true")) {
   api_db <- tbl(my_db, sql("SELECT * FROM apistrat"))
 
   svys <- list(db = api_db %>%
-                 as_survey_design(strata = stype, weights = pw),
+                 as_survey_design(strata = stype, weights = pw,
+                                  uid = cds),
                local = apistrat %>%
                  as_survey_design(strata = stype, weights = pw)
   )

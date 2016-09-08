@@ -80,3 +80,18 @@ substr_right <- function(x, n){
 #' @importFrom magrittr %>%
 #' @usage lhs \%>\% rhs
 NULL
+
+# Need to convert to data.frame to appease survey package and also not
+# send NULL to dplyr::select
+survey_selector <- function(.data, x) {
+  if (!is.null(x)) data.frame(dplyr::select_(.data, .dots = x)) else NULL
+}
+
+# survey::twophase doesn't work with values, needs to be formula of
+# variable names
+# Change list of variable names to formulas
+list_to_formula <- function(x) {
+  if (!is.null(x)) {
+    lapply(x, function(y) nullable(survey::make.formula, y))
+  } else NULL
+}

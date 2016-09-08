@@ -143,24 +143,18 @@ as_survey_rep_ <-
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
            mse = getOption("survey.replicates.mse")) {
 
-
-    # Need to convert to data.frame to appease survey package and also not
-    # send NULL to dplyr::select
-    survey_selector <- function(x) {
-      if (!is.null(x)) data.frame(dplyr::select_(.data, .dots = x)) else NULL
-    }
     out <- survey::svrepdesign(
       data = .data,
-      variables = survey_selector(variables),
-      repweights = survey_selector(repweights),
-      weights = nullable(as.matrix, survey_selector(weights)[[1]]),
+      variables = survey_selector(.data, variables),
+      repweights = survey_selector(.data, repweights),
+      weights = nullable(as.matrix, survey_selector(.data, weights)[[1]]),
       type = match.arg(type),
       combined.weights = combined_weights,
       rho = rho,
       bootstrap.average = bootstrap_average,
       scale = scale,
       rscales = rscales,
-      fpc = survey_selector(fpc),
+      fpc = survey_selector(.data, fpc),
       fpctype = fpctype,
       mse = mse)
 

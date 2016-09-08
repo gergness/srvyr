@@ -101,14 +101,6 @@ as_survey_twophase.twophase2 <- function(.data, ...) {
 as_survey_twophase_ <- function(.data, id, strata = NULL, probs = NULL,
                              weights = NULL, fpc = NULL, subset,
                              method = c("full", "approx", "simple")) {
-  # survey::twophase doesn't work with values, needs to be formula of
-  # variable names
-  # Change list of variable names to formulas
-  list_to_formula <- function(x) {
-    if (!is.null(x)) {
-      lapply(x, function(y) nullable(survey::make.formula, y))
-    } else NULL
-  }
 
   out <- survey::twophase(data = .data,
                           id = list_to_formula(id),

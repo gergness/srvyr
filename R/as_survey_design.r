@@ -143,22 +143,16 @@ as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
     stop("database backed surveys require a uid.")
   }
 
-  # Need to convert to data.frame to appease survey package and also not
-  # send NULL to dplyr::select
-  survey_selector <- function(x) {
-    if (!is.null(x)) data.frame(dplyr::select_(.data, .dots = x)) else NULL
-  }
-
   out <- survey::svydesign(data = .data,
                            ids = ids_call,
-                           probs = survey_selector(probs),
-                           strata = survey_selector(strata),
-                           variables = survey_selector(variables),
-                           fpc = survey_selector(fpc),
-                           weights = survey_selector(weights),
+                           probs = survey_selector(.data, probs),
+                           strata = survey_selector(.data, strata),
+                           variables = survey_selector(.data, variables),
+                           fpc = survey_selector(.data, fpc),
+                           weights = survey_selector(.data, weights),
                            nest = nest, check.strata = check_strata, pps = pps,
                            variance = variance)
 
   as_tbl_svy(out, list(ids = ids, probs = probs, strata = strata, fpc = fpc,
-                       weights = weights), uid = survey_selector(uid))
+                       weights = weights), uid = survey_selector(.data, uid))
 }

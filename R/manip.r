@@ -15,7 +15,7 @@ select_.tbl_svy <- function(.data, ..., .dots) {
   dots <- lazyeval::all_dots(.dots, ...)
   vars <- dplyr::select_vars_(dplyr::tbl_vars(.data$variables), dots,
                        include = c(attr(.data, "group_vars"),
-                                   attr(.data, "order_var")))
+                                   attr(.data$variables, "order_var")))
 
   .data$variables <- select_(.data$variables, .dots = vars)
 

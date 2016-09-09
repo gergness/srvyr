@@ -42,7 +42,8 @@ test_that("Mutate works",
                          mutate(apidiff = api00 - api99) %>%
                          select(apidiff) %>%
                          .$variables %>%
-                         collect(),
+                         collect() %>%
+                         select(-SRVYR_ORDER),
                        svys$local %>%
                          mutate(apidiff = api00 - api99) %>%
                          select(apidiff) %>%

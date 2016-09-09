@@ -145,7 +145,7 @@ as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
       stop("Database backed surveys require a uid.")
     } else {
       .data <- mutate_(.data, `___SRVYR_ORDER` = uid)
-      attr(.data, "order_var") <- "___SRVYR_ORDER"
+      attr(.data, "order_var") <- "`___SRVYR_ORDER`"
     }
   }
 

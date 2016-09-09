@@ -48,7 +48,11 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
   groups <- as.character(groups(.data))
 
   if (inherits(.data$variables, "tbl_sql")) {
-    sql_vars <- lapply(tbl_vars(.data$variables), function(x) { select_(.data$variables, x)})
+    sql_vars <- lapply(tbl_vars(.data$variables), function(x) {
+      out <- arrange_(.data$variables, attr(.data$variables, "order_var"))
+      out <- select_(out, x)
+      out
+    })
     names(sql_vars) <- tbl_vars(.data$variables)
 
     out <- lazyeval::lazy_eval(.dots, c(survey_funs, sql_vars))

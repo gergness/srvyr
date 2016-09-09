@@ -74,12 +74,17 @@ test_that("grouped survey_mean and survey_total work", {
   expect_equal(svys$db %>%
                  group_by(stype) %>%
                  summarize(x = survey_mean(api99),
-                           y = survey_total(api99)),
+                           y = survey_total(api99)) %>%
+                 select(-stype) %>%
+                 as.matrix(),
                svys$local %>%
                  group_by(stype) %>%
                  summarize(x = survey_mean(api99),
                            y = survey_total(api99)) %>%
-                 mutate(stype = as.character(stype)) # dbs aren't careful about factor vs char
+                 mutate(stype = as.character(stype)) %>%
+                 select(-stype) %>%
+                 as.matrix(),  # tolerance not supported for all.equal.tbl_svy
+               tolerance = 0.00001 # dbs aren't careful about factor vs char
   )
 })
 

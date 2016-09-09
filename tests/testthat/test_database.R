@@ -37,63 +37,72 @@ if (identical(Sys.getenv("NOT_CRAN"), "true")) {
 
 }
 
-test_that("Mutate works",
-          expect_equal(svys$db %>%
-                         mutate(apidiff = api00 - api99) %>%
-                         select(apidiff) %>%
-                         .$variables %>%
-                         collect() %>%
-                         select(-SRVYR_ORDER),
-                       svys$local %>%
-                         mutate(apidiff = api00 - api99) %>%
-                         select(apidiff) %>%
-                         .$variables,
-                       skip_on_cran()
-          )
-)
+test_that("Mutate works", {
+  skip_on_cran()
+  expect_equal(svys$db %>%
+                 mutate(apidiff = api00 - api99) %>%
+                 select(apidiff) %>%
+                 .$variables %>%
+                 collect() %>%
+                 select(-SRVYR_ORDER),
+               svys$local %>%
+                 mutate(apidiff = api00 - api99) %>%
+                 select(apidiff) %>%
+                 .$variables
+  )
+})
 
 
-test_that("Ungrouped summaries work",
-          expect_equal(svys$db %>%
-                         summarize(x = survey_mean(api99),
-                                   y = survey_median(api99),
-                                   z = survey_ratio(api99, api00)),
-                       svys$local %>%
-                         summarize(x = survey_mean(api99),
-                                   y = survey_median(api99),
-                                   z = survey_ratio(api99, api00)),
-                       skip_on_cran()
-          )
-)
+test_that("Ungrouped summaries work", {
+  skip_on_cran()
+  expect_equal(svys$db %>%
+                 summarize(x = survey_mean(api99),
+                           y = survey_median(api99),
+                           z = survey_ratio(api99, api00)) %>%
+                 as.matrix(),
+               svys$local %>%
+                 summarize(x = survey_mean(api99),
+                           y = survey_median(api99),
+                           z = survey_ratio(api99, api00)) %>%
+                 as.matrix(),
+               tolerance = 0.00001 # tolerance not supported for all.equal.tbl_svy
+  )
+})
 
-test_that("grouped survey_mean and survey_total work",
-          expect_equal(svys$db %>%
-                         group_by(stype) %>%
-                         summarize(x = survey_mean(api99),
-                                   y = survey_total(api99)),
-                       svys$local %>%
-                         group_by(stype) %>%
-                         summarize(x = survey_mean(api99),
-                                   y = survey_total(api99)) %>%
-                         mutate(stype = as.character(stype)), # dbs aren't careful about factor vs char
-                       skip_on_cran()
-          )
-)
+test_that("grouped survey_mean and survey_total work", {
+  skip_on_cran()
+  expect_equal(svys$db %>%
+                 group_by(stype) %>%
+                 summarize(x = survey_mean(api99),
+                           y = survey_total(api99)),
+               svys$local %>%
+                 group_by(stype) %>%
+                 summarize(x = survey_mean(api99),
+                           y = survey_total(api99)) %>%
+                 mutate(stype = as.character(stype)) # dbs aren't careful about factor vs char
+  )
+})
 
-test_that("grouped quantiles have reasonable error",
-          expect_error(svys$db %>%
-                         group_by(stype) %>%
-                         summarize(api99 = survey_median(api99)),
-                       "quantile(.+)database"))
+test_that("grouped quantiles have reasonable error", {
+  skip_on_cran()
+  expect_error(svys$db %>%
+                 group_by(stype) %>%
+                 summarize(api99 = survey_median(api99)),
+               "quantile(.+)database")
+})
 
-test_that("grouped ratios have reasonable error",
-          expect_error(svys$db %>%
-                         group_by(stype) %>%
-                         summarize(api = survey_ratio(api99, api00)),
-                       "ratio(.+)database"))
+test_that("grouped ratios have reasonable error", {
+  skip_on_cran()
+  expect_error(svys$db %>%
+                 group_by(stype) %>%
+                 summarize(api = survey_ratio(api99, api00)),
+               "ratio(.+)database")
+})
 
-test_that("twophase has error for dbs",
-          expect_error(mu284_1_db %>%
-                         as_survey_twophase(id = list(id1, id), strata = list(NULL, id1),
-                                            fpc = list(n1, NULL), subset = sub),
-                       "Twophase(.+)database"))
+test_that("twophase has error for dbs", {
+  skip_on_cran()
+  expect_error(mu284_1_db %>%
+                 as_survey_twophase(id = list(id1, id), strata = list(NULL, id1),
+                                    fpc = list(n1, NULL), subset = sub),
+               "Twophase(.+)database")
+})

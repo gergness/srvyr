@@ -84,7 +84,19 @@ NULL
 # Need to convert to data.frame to appease survey package and also not
 # send NULL to dplyr::select
 survey_selector <- function(.data, x) {
-  if (!is.null(x)) data.frame(dplyr::select_(.data, .dots = x)) else NULL
+  if (!is.null(x)) {
+
+    if (inherits(.data, "tbl_lazy")) {
+      out <- dplyr::select_(.data, "`___SRVYR_ORDER`", .dots = x)
+      out <- ordered_collect(out)
+    } else {
+      out <- dplyr::select_(.data, .dots = x)
+    }
+    out <- data.frame(out)
+  } else {
+    out <- NULL
+  }
+  out
 }
 
 # survey::twophase doesn't work with values, needs to be formula of

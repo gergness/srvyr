@@ -139,8 +139,14 @@ as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
   }
 
   # Databases require uid
-  if (inherits(.data, "tbl_lazy") && (missing(uid) || is.null(uid))) {
-    stop("database backed surveys require a uid.")
+  if (inherits(.data, "tbl_lazy")) {
+    # Databases require uid
+    if (missing(uid) || is.null(uid)) {
+      stop("Database backed surveys require a uid.")
+    } else {
+      .data <- mutate_(.data, `___SRVYR_ORDER` = uid)
+      attr(.data, "order_var") <- "___SRVYR_ORDER"
+    }
   }
 
   out <- survey::svydesign(data = .data,

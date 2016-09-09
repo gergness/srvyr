@@ -24,6 +24,31 @@ if (identical(Sys.getenv("NOT_CRAN"), "true")) {
                  as_survey_design(strata = stype, weights = pw)
   )
 
+  # Rep weights
+  data(scd)
+  # use BRR replicate weights from Levy and Lemeshow
+  scd <- scd %>%
+    mutate(rep1 = 2 * c(1, 0, 1, 0, 1, 0),
+           rep2 = 2 * c(1, 0, 0, 1, 0, 1),
+           rep3 = 2 * c(0, 1, 1, 0, 0, 1),
+           rep4 = 2 * c(0, 1, 0, 1, 1, 0),
+           uidxxx = row_number())
+
+  scd_db <- copy_to(my_db, scd, temporary = FALSE)
+
+  scd_db <- tbl(my_db, sql("SELECT * FROM scd"))
+
+  suppressWarnings(
+    svysrep <- list(
+      db = scd_db %>%
+        as_survey_rep(type = "BRR", repweights = starts_with("rep"),
+                      combined_weights = FALSE, uid = uidxxx),
+      local = scd %>%
+        as_survey_rep(type = "BRR", repweights = starts_with("rep"),
+                      combined_weights = FALSE)
+    )
+  )
+
   # Twophase
   data(mu284)
   mu284_1 <- mu284 %>%
@@ -111,3 +136,21 @@ test_that("twophase has error for dbs", {
                                     fpc = list(n1, NULL), subset = sub),
                "Twophase(.+)database")
 })
+
+
+test_that("Ungrouped summaries work - replicates", {
+  skip_on_cran()
+  expect_equal(svysrep$db %>%
+                 summarize(x = survey_mean(arrests),
+                           y = survey_median(arrests),
+                           z = survey_ratio(arrests, alive)) %>%
+                 as.matrix(),
+               svysrep$local %>%
+                 summarize(x = survey_mean(arrests),
+                           y = survey_median(arrests),
+                           z = survey_ratio(arrests, alive)) %>%
+                 as.matrix(),
+               tolerance = 0.00001 # tolerance not supported for all.equal.tbl_svy
+  )
+})
+

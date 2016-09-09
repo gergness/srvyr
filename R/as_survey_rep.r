@@ -15,7 +15,7 @@
 #' around \code{\link[survey]{as.svrepdesign}}, and will convert from a survey design to
 #' replicate weights.
 #'
-#' There is also limited support for databases using dplyr's \code{tbl_sql}
+#' There is also limited and experimental support for databases using dplyr's \code{tbl_sql}
 #' objects. Not all operations are available for these objects, in particular
 #' grouped quantiles and ratios. See \code{vignette("databases", package = "dplyr")}
 #' for more information on setting up databases in dplyr.
@@ -36,6 +36,8 @@
 #' @param fpc,fpctype Finite population correction information
 #' @param mse if \code{TRUE}, compute varainces based on sum of squares
 #' around the point estimate, rather than the mean of the replicates
+#' @param uid Required for databases only, a variable that uniquely identifies the
+#' observations of your survey.
 #' @param ... ignored
 #' @param compress if \code{TRUE}, store replicate weights in compressed form
 #' (if converting from design)
@@ -75,16 +77,17 @@ as_survey_rep.data.frame <-
                     "other"), combined_weights = TRUE,
            rho = NULL, bootstrap_average = NULL, scale = NULL,
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
-           mse = getOption("survey.replicates.mse"), ...) {
+           mse = getOption("survey.replicates.mse"), uid = NULL, ...) {
     if (!missing(variables)) variables <- helper(lazy_parent(variables), .data)
     if (!missing(repweights)) repweights <- helper(lazy_parent(repweights), .data)
     if (!missing(weights)) weights <- helper(lazy_parent(weights), .data)
     if (!missing(fpc)) fpc <- helper(lazy_parent(fpc), .data)
+    if (!missing(uid)) uid <- helper(lazy_parent(uid), .data)
 
     as_survey_rep_(.data, variables, repweights,
                    weights, type, combined_weights,
                    rho, bootstrap_average, scale, rscales,
-                   fpc, fpctype, mse)
+                   fpc, fpctype, mse, uid)
   }
 
 #' @export
@@ -141,7 +144,18 @@ as_survey_rep_ <-
                     "other"), combined_weights = TRUE,
            rho = NULL, bootstrap_average = NULL, scale = NULL,
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
-           mse = getOption("survey.replicates.mse")) {
+           mse = getOption("survey.replicates.mse"), uid = NULL) {
+
+    # Databases require uid
+    if (inherits(.data, "tbl_lazy")) {
+      # Databases require uid
+      if (missing(uid) || is.null(uid)) {
+        stop("Database backed surveys require a uid.")
+      } else {
+        .data <- mutate_(.data, SRVYR_ORDER = uid)
+        attr(.data, "order_var") <- "SRVYR_ORDER"
+      }
+    }
 
     out <- survey::svrepdesign(
       data = .data,
@@ -159,5 +173,5 @@ as_survey_rep_ <-
       mse = mse)
 
     as_tbl_svy(out, list(repweights = repweights,  weights = weights,
-                         fpc = fpc))
+                         fpc = fpc), uid = survey_selector(.data, uid))
   }

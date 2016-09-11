@@ -1,39 +1,40 @@
 # Adapted from survey:::"[.survey.design2"
-subset_svy_vars_design <- function(x, i, ..., drop = TRUE) {
-  if (!missing(i)){
-    if (is.calibrated(x) || is.pps(x) || !drop){
-      ## Set weights to zero: no memory saving possible
-      ## There should be an easier way to complement a subscript..
-      if (is.logical(i))
-        x$prob[!i]<-Inf
-      else if (is.numeric(i) && length(i))
-        x$prob[-i]<-Inf
-      else {
-        tmp<-x$prob[i,]
-        x$prob<-rep(Inf, length(x$prob))
-        x$prob[i,]<-tmp
-      }
-      index<-is.finite(x$prob)
-      psu<-!duplicated(x$cluster[index,1])
-      tt<-table(x$strata[index,1][psu])
-      if(any(tt==1) && getOption("survey.adjust.domain.lonely")){
-        warning(sum(tt==1)," strata have only one PSU in this subset.")
-      }
+subset_svy_vars_design <- function(x, dots) {
+    filtered_vars <- x$variables
+
+    if (!inherits(x$variables, "tbl_lazy")) {
+      filtered_vars <- dplyr::mutate_(filtered_vars, SRVYR_ORDER = "row_number()")
+      filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
+      row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")[[1]]
+      filtered_vars <- dplyr::select_(filtered_vars, "-SRVYR_ORDER")
     } else {
-      ## subset everything.
-      if (!is.null(x$variables)) ## phase 2 of twophase design
-        x$variables<-"[.data.frame"(x$variables,i,..1,drop=FALSE)
-      x$cluster<-x$cluster[i,,drop=FALSE]
-      x$prob<-x$prob[i]
-      x$allprob<-x$allprob[i,,drop=FALSE]
-      x$strata<-x$strata[i,,drop=FALSE]
-      x$fpc$sampsize<-x$fpc$sampsize[i,,drop=FALSE]
-      x$fpc$popsize<-x$fpc$popsize[i,,drop=FALSE]
+      filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
+      row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")
+      row_numbers <- dplyr::collect(row_numbers)
+      row_numbers <- match(row_numbers[[1]], uid(x)[[1]])
     }
 
+  if (is.calibrated(x) || is.pps(x)){
+    ## Set weights to zero: no memory saving possible
+    ## Will always be numeric because srvyr's construction
+    x$prob[-row_numbers] <- Inf
+
+    index <- is.finite(x$prob)
+    psu <- !duplicated(x$cluster[index, 1])
+    tt <- table(x$strata[index, 1][psu])
+    if(any(tt == 1) && getOption("survey.adjust.domain.lonely")){
+      warning(sum(tt == 1)," strata have only one PSU in this subset.")
+    }
   } else {
-    if(!is.null(x$variables))
-      x$variables<-x$variables[,..1,drop=FALSE]
+    ## subset everything.
+    if (!is.null(x$variables)) ## phase 2 of twophase design
+      x$variables <- filtered_vars
+    x$cluster <- x$cluster[row_numbers, , drop=FALSE]
+    x$prob <- x$prob[row_numbers]
+    x$allprob <- x$allprob[row_numbers, , drop=FALSE]
+    x$strata <- x$strata[row_numbers, , drop=FALSE]
+    x$fpc$sampsize <- x$fpc$sampsize[row_numbers, , drop=FALSE]
+    x$fpc$popsize <- x$fpc$popsize[row_numbers, , drop=FALSE]
   }
 
   x
@@ -53,7 +54,7 @@ subset_svy_vars_rep <- function(x, i, j, drop = FALSE){
     else
       x$variables<-x$variables[i,,drop=FALSE]
     x$degf<-NULL
-    x$degf<-degf(x)
+    x$degf<-survey::degf(x)
   } else {
     x$variables<-x$variables[,j,drop=FALSE]
   }
@@ -83,7 +84,7 @@ subset_svy_vars_twophase <- function(x, i, ..., drop = TRUE) {
       tmp<-x$phase2$prob[i,]
       x$phase2$prob<-rep(Inf, length(x$phase2$prob))
       x$phase2$prob[i,]<-tmp
-      x$dcheck<-lapply(x$dcheck, function(m) {n<-Matrix(ncol(m),ncol(m)); n[i,i]<-m[i,i]})
+      x$dcheck<-lapply(x$dcheck, function(m) {n<-Matrix::Matrix(ncol(m),ncol(m)); n[i,i]<-m[i,i]})
     }
     index<-is.finite(x$prob)
     psu<-!duplicated(x$phase2$cluster[index,1])

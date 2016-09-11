@@ -107,3 +107,14 @@ list_to_formula <- function(x) {
     lapply(x, function(y) nullable(survey::make.formula, y))
   } else NULL
 }
+
+# From survey:::is.calibrated()
+is.calibrated <- function(design)
+{
+  !is.null(design$postStrata)
+}
+
+# From survey:::is.pps()
+is.pps <- function(x) {
+  if (is.null(x$pps)) FALSE else (x$pps != FALSE)
+}

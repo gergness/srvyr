@@ -13,7 +13,7 @@ uid <- function(svy) {
 
 # Collect after ordering on uid
 ordered_collect <- function(x) {
-  x <- arrange_(x, "SRVYR_ORDER")
-  x <- select_(x, "-SRVYR_ORDER")
+  x <- dplyr::arrange_(x, "SRVYR_ORDER")
+  x <- dplyr::select_(x, "-SRVYR_ORDER")
   dplyr::collect(x)
 }

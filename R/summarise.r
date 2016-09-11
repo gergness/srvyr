@@ -13,8 +13,8 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
 
   if (inherits(.data$variables, "tbl_sql")) {
     sql_vars <- lapply(tbl_vars(.data$variables), function(x) {
-      out <- arrange_(.data$variables, attr(.data$variables, "order_var"))
-      out <- select_(out, x)
+      out <- dplyr::arrange_(.data$variables, attr(.data$variables, "order_var"))
+      out <- dplyr::select_(out, x)
       out
       })
     names(sql_vars) <- tbl_vars(.data$variables)
@@ -49,8 +49,8 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 
   if (inherits(.data$variables, "tbl_sql")) {
     sql_vars <- lapply(tbl_vars(.data$variables), function(x) {
-      out <- arrange_(.data$variables, attr(.data$variables, "order_var"))
-      out <- select_(out, x)
+      out <- dplyr::arrange_(.data$variables, attr(.data$variables, "order_var"))
+      out <- dplyr::select_(out, x)
       out
     })
     names(sql_vars) <- tbl_vars(.data$variables)

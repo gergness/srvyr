@@ -113,7 +113,7 @@ test_that("grouped survey_mean and survey_total work", {
   )
 })
 
-test_that("Filter works", {
+test_that("Filter works - design", {
   skip_on_cran()
   expect_equal(svys$db %>%
                  filter(stype == "H") %>%
@@ -122,6 +122,20 @@ test_that("Filter works", {
                svys$local %>%
                  filter(stype == "H") %>%
                  summarize(y = survey_median(api99, vartype = "se")) %>%
+                 as.matrix(),
+               tolerance = 0.00001 # tolerance not supported for all.equal.tbl_svy
+  )
+})
+
+test_that("Filter works - rep", {
+  skip_on_cran()
+  expect_equal(svysrep$db %>%
+                 filter(alive > 40) %>%
+                 summarize(y = survey_median(arrests, vartype = "se")) %>%
+                 as.matrix(),
+               svysrep$local %>%
+                 filter(alive > 40) %>%
+                 summarize(y = survey_median(arrests, vartype = "se")) %>%
                  as.matrix(),
                tolerance = 0.00001 # tolerance not supported for all.equal.tbl_svy
   )

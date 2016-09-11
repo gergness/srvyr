@@ -37,8 +37,9 @@ filter_.tbl_svy <- function(.data, ..., .dots) {
 
   if (inherits(.data, "survey.design2")) {
     subset_svy_vars_design(.data, dots)
+  } else if (inherits(.data, "svyrep.design")) {
+    subset_svy_vars_rep(.data, dots)
   } else {
-
     # There's probably a better way to do this... But I need to use
     # survey::subset because I want to make sure that I recalculate the
     # survey_vars correctly. Create a variable with the row numbers, run dplyr

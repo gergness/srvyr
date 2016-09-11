@@ -41,23 +41,34 @@ subset_svy_vars_design <- function(x, dots) {
 }
 
 # Adapted from survey:::"[.survey.rep"
-subset_svy_vars_rep <- function(x, i, j, drop = FALSE){
-  if (!missing(i)){
-    pwt<-x$pweights
-    if (is.data.frame(pwt)) pwt<-pwt[[1]]
-    x$pweights<-pwt[i]
-    x$repweights<-x$repweights[i,,drop=FALSE]
-    if(!is.null(x$selfrep))
-      x$selfrep<-x$selfrep[i]
-    if (!missing(j))
-      x$variables<-x$variables[i,j, drop=FALSE]
-    else
-      x$variables<-x$variables[i,,drop=FALSE]
-    x$degf<-NULL
-    x$degf<-survey::degf(x)
+subset_svy_vars_rep <- function(x, dots){
+  filtered_vars <- x$variables
+
+  if (!inherits(x$variables, "tbl_lazy")) {
+    filtered_vars <- dplyr::mutate_(filtered_vars, SRVYR_ORDER = "row_number()")
+    filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
+    row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")[[1]]
+    filtered_vars <- dplyr::select_(filtered_vars, "-SRVYR_ORDER")
   } else {
-    x$variables<-x$variables[,j,drop=FALSE]
+    filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
+    row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")
+    row_numbers <- dplyr::collect(row_numbers)
+    row_numbers <- match(row_numbers[[1]], uid(x)[[1]])
   }
+
+  pwt <- x$pweights
+
+  if (is.data.frame(pwt)) pwt <- pwt[[1]]
+  x$pweights <- pwt[row_numbers]
+  x$repweights <- x$repweights[row_numbers, , drop=FALSE]
+  if (!is.null(x$selfrep))
+    x$selfrep<-x$selfrep[row_numbers]
+
+  x$variables <- filtered_vars
+
+  x$degf<-NULL
+  x$degf<-survey::degf(x)
+
   x
 }
 

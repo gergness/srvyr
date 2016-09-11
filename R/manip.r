@@ -39,20 +39,8 @@ filter_.tbl_svy <- function(.data, ..., .dots) {
     subset_svy_vars_design(.data, dots)
   } else if (inherits(.data, "svyrep.design")) {
     subset_svy_vars_rep(.data, dots)
-  } else {
-    # There's probably a better way to do this... But I need to use
-    # survey::subset because I want to make sure that I recalculate the
-    # survey_vars correctly. Create a variable with the row numbers, run dplyr
-    # on the variables data.frame and then pass the row_numbers that are kept
-    # into survey::svydesign2 `[`
-    row_numbers <- .data$variables
-    total_num_rows <- nrow(row_numbers)
-    row_numbers <-
-      dplyr::mutate(row_numbers, `___row_nums` = seq(1, total_num_rows))
-    row_numbers <- dplyr::filter_(row_numbers, .dots = dots)
-    row_numbers <- row_numbers$`___row_nums`
-
-    .data[row_numbers, ]
+  } else if (inherits(.data, "svyrep.design")) {
+    subset_svy_vars_twophase(.data, dots)
   }
 }
 

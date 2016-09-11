@@ -73,40 +73,33 @@ subset_svy_vars_rep <- function(x, dots){
 }
 
 # Adapted from survey:::"[.twophase2"
-subset_svy_vars_twophase <- function(x, i, ..., drop = TRUE) {
-  if (!missing(i)){
-    ## Set weights to zero:  don't try to save memory
-    ## There should be an easier way to complement a subscript..
-    if (is.logical(i) && any(!i)){
-      ## logical indexing: use !
-      x$prob[!i]<-Inf
-      x$phase2$prob[!i]<-Inf
-      x$dcheck<-lapply(x$dcheck, function(m) {m[!i,!i]<-0; m})
-    } else if (is.numeric(i) && length(i)){
-      ## numeric indexing: use -
-      x$prob[-i]<-Inf
-      x$phase2$prob[-i]<-Inf
-      x$dcheck<-lapply(x$dcheck, function(m) {m[-i,-i]<-0;m})
-    } else if (is.character(i)){
-      ##character indexing: use brute force and ignorance
-      tmp<-x$prob[i,]
-      x$prob<-rep(Inf, length(x$prob))
-      x$prob[i,]<-tmp
-      tmp<-x$phase2$prob[i,]
-      x$phase2$prob<-rep(Inf, length(x$phase2$prob))
-      x$phase2$prob[i,]<-tmp
-      x$dcheck<-lapply(x$dcheck, function(m) {n<-Matrix::Matrix(ncol(m),ncol(m)); n[i,i]<-m[i,i]})
-    }
-    index<-is.finite(x$prob)
-    psu<-!duplicated(x$phase2$cluster[index,1])
-    tt<-table(x$phase2$strata[index,1][psu])
-    if(any(tt==1)){
-      warning(sum(tt==1)," strata have only one PSU in this subset.")
-    }
+subset_svy_vars_twophase <- function(x, dots) {
+  filtered_vars <- x$variables
+
+  if (!inherits(x$variables, "tbl_lazy")) {
+    filtered_vars <- dplyr::mutate_(filtered_vars, SRVYR_ORDER = "row_number()")
+    filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
+    row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")[[1]]
+    filtered_vars <- dplyr::select_(filtered_vars, "-SRVYR_ORDER")
   } else {
-    x$phase1$full<-x$phase1$full[,...]
-    x$phase1$sample<-x$phase1$sample[,...]
-    x$phase2<-x$phase2[,...]
+    filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
+    row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")
+    row_numbers <- dplyr::collect(row_numbers)
+    row_numbers <- match(row_numbers[[1]], uid(x)[[1]])
   }
+
+  ## Set weights to zero:  don't try to save memory
+  ## Will always have numeric because of srvyr's structure
+  x$prob[-row_numbers] <- Inf
+  x$phase2$prob[-row_numbers] <- Inf
+  x$dcheck <- lapply(x$dcheck, function(m) {m[-row_numbers, -row_numbers] <- 0; m})
+
+  index <- is.finite(x$prob)
+  psu <- !duplicated(x$phase2$cluster[index, 1])
+  tt <- table(x$phase2$strata[index, 1][psu])
+  if(any(tt == 1)){
+    warning(sum(tt == 1), " strata have only one PSU in this subset.")
+  }
+
   x
 }

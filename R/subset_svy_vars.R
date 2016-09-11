@@ -1,5 +1,9 @@
+subset_svy_vars <- function(x, dots) {
+  UseMethod("subset_svy_vars")
+}
+
 # Adapted from survey:::"[.survey.design2"
-subset_svy_vars_design <- function(x, dots) {
+subset_svy_vars.survey.design2 <- function(x, dots) {
     filtered_vars <- x$variables
 
     if (!inherits(x$variables, "tbl_lazy")) {
@@ -40,8 +44,8 @@ subset_svy_vars_design <- function(x, dots) {
   x
 }
 
-# Adapted from survey:::"[.survey.rep"
-subset_svy_vars_rep <- function(x, dots){
+# Adapted from survey:::"[.svyrep.design"
+subset_svy_vars.svyrep.design <- function(x, dots){
   filtered_vars <- x$variables
 
   if (!inherits(x$variables, "tbl_lazy")) {
@@ -73,7 +77,7 @@ subset_svy_vars_rep <- function(x, dots){
 }
 
 # Adapted from survey:::"[.twophase2"
-subset_svy_vars_twophase <- function(x, dots) {
+subset_svy_vars.twophase2 <- function(x, dots) {
   filtered_vars <- x$variables
 
   if (!inherits(x$variables, "tbl_lazy")) {

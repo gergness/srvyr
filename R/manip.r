@@ -34,14 +34,7 @@ rename_.tbl_svy <- function(.data, ..., .dots) {
 #' @export
 filter_.tbl_svy <- function(.data, ..., .dots) {
   dots <- lazyeval::all_dots(.dots, ...)
-
-  if (inherits(.data, "survey.design2")) {
-    subset_svy_vars_design(.data, dots)
-  } else if (inherits(.data, "svyrep.design")) {
-    subset_svy_vars_rep(.data, dots)
-  } else if (inherits(.data, "svyrep.design")) {
-    subset_svy_vars_twophase(.data, dots)
-  }
+  subset_svy_vars(.data, dots)
 }
 
 

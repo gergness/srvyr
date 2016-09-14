@@ -85,6 +85,25 @@ tbl_vars.tbl_svy <- function(x) {
 }
 
 
+#' @export
+"[.tbl_svy" <- function(x, i, ...) {
+  # Need to use the uid because i isn't available on databases
+  if (inherits(x$variables, "tbl_lazy")) {
+    uid_i <- uid(x)[i, 1]
+    # Workaround for https://github.com/hadley/dplyr/issues/511
+    if (length(uid_i) > 1) {
+      dots <- lazyeval::lazy_dots(SRVYR_ORDER %in% uid_i)
+    } else {
+      dots <- lazyeval::lazy_dots(SRVYR_ORDER == uid_i)
+    }
+
+    subset_svy_vars(x, dots)
+  }
+  else {
+    NextMethod()
+  }
+}
+
 as_tbl_svy <- function(x, var_names = list(), uid = NULL) {
   if (!inherits(x, "tbl_svy")) {
     class(x) <- c("tbl_svy", class(x))

@@ -609,16 +609,17 @@ survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level,
 
 survey_stat_grouped.default <- function(.svy, func, x, na.rm, vartype, level,
                                         deff, df, prop_method = NULL) {
+  grp_names <- as.character(groups(.svy))
   if (inherits(x, "tbl_sql")) {
     # Since we're grouped, dplyr conveniently gives us groups and x.
     x <- dplyr::collect(x)
-    grp_names <- as.character(groups(.svy))
+
     grps <- select(x, dplyr::one_of(grp_names))
     x <- ungroup(x) # need to ungroup to drop the groups
     x <- select(x, -dplyr::one_of(grp_names))
     x <- x[[1]] # Get the column as a vector instead of as a tbl_df
   } else {
-    grps <- select_(.svy$variables, .dots = groups(.svy))
+    grps <- select_(.svy$variables, .dots = grp_names)
   }
   if (class(x) == "factor") {
     stop(paste0("Factor not allowed in survey functions, should ",
@@ -630,20 +631,20 @@ survey_stat_grouped.default <- function(.svy, func, x, na.rm, vartype, level,
   vartype <- c("grps", "coef", vartype)
   if (deff) vartype = c(vartype, "deff")
 
+  .svy$variables <- data.frame(dplyr::bind_cols(grps, data.frame(SRVYR_VAR = x)))
+
   if (is.null(prop_method)) {
-    stat <- svyby_fixed(x, grps, .svy, func, na.rm = na.rm, se = TRUE, deff = deff)
+    stat <- survey::svyby(~SRVYR_VAR, survey::make.formula(grp_names), .svy,
+                          deff = deff, func, na.rm = na.rm)
   } else {
     vartype[vartype == "ci"] <- "ci-prop"
-    # svyby breaks when you feed it raw vector for proportions...
-    # So do the variable adding trick (similar to twophase)
-    .svy$variables[["___arg"]] <- x
-
-    stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm,
+    stat <- survey::svyby(~SRVYR_VAR, survey::make.formula(grp_names),
+                          .svy, func, na.rm = na.rm,
                           se = TRUE, vartype = c("ci", "se"),
                           method = prop_method)
   }
 
-  out <- get_var_est(stat, vartype, grps = as.character(groups(.svy)),
+  out <- get_var_est(stat, vartype, grps = grp_names,
                      level = level, df = df)
   dplyr::bind_cols(out)
 }

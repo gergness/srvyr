@@ -113,6 +113,40 @@ test_that("grouped survey_mean and survey_total work", {
   )
 })
 
+test_that("grouped factor (single) work", {
+  skip_on_cran()
+  expect_equal(svys$db %>%
+                 group_by(stype) %>%
+                 summarize(x = survey_mean()) %>%
+                 select(-stype) %>%
+                 as.matrix(),
+               svys$local %>%
+                 group_by(stype) %>%
+                 summarize(x = survey_mean()) %>%
+                 mutate(stype = as.character(stype)) %>%
+                 select(-stype) %>%
+                 as.matrix(),  # tolerance not supported for all.equal.tbl_svy
+               tolerance = 0.00001 # dbs aren't careful about factor vs char
+  )
+})
+
+test_that("grouped factor (multiple) work", {
+  skip_on_cran()
+  expect_equal(svys$db %>%
+                 group_by(stype, awards) %>%
+                 summarize(x = survey_mean()) %>%
+                 select(-stype) %>%
+                 as.matrix(),
+               svys$local %>%
+                 group_by(stype, awards) %>%
+                 summarize(x = survey_mean()) %>%
+                 mutate(stype = as.character(stype)) %>%
+                 select(-stype) %>%
+                 as.matrix(),  # tolerance not supported for all.equal.tbl_svy
+               tolerance = 0.00001 # dbs aren't careful about factor vs char
+  )
+})
+
 test_that("na.rm works", {
   skip_on_cran()
   expect_equal(svys$db %>%

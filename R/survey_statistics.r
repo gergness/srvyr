@@ -701,9 +701,9 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
   peel_name <- grps_names[length(grps_names)]
   grps_names <- setdiff(grps_names, peel_name)
 
-  if (inherits(.svy, "tbl_lazy")) {
-    grps_vars <- select_(.svy$variables, .dots = as.character(groups(.svy)))
-    grps_vars <- ordered_collect(grps_vars)
+  if (inherits(.svy$variables, "tbl_lazy")) {
+    grps_vars <- select_(.svy, .dots = as.character(groups(.svy)))
+    grps_vars <- ordered_collect(grps_vars$variables)
     .svy$variables <- grps_vars
   }
 

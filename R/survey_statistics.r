@@ -697,9 +697,15 @@ survey_stat_grouped.twophase2 <- function(.svy, func, x, na.rm, vartype, level,
 }
 
 survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
-  grps <- as.character(groups(.svy))
-  peel <- grps[length(grps)]
-  grps <- setdiff(grps, peel)
+  grps_names <- as.character(groups(.svy))
+  peel_name <- grps_names[length(grps_names)]
+  grps_names <- setdiff(grps_names, peel_name)
+
+  if (inherits(.svy, "tbl_lazy")) {
+    grps_vars <- select_(.svy$variables, .dots = as.character(groups(.svy)))
+    grps_vars <- ordered_collect(grps_vars)
+    .svy$variables <- grps_vars
+  }
 
   vartype <- c("coef", vartype)
   if (deff) vartype <- c(vartype, "deff")
@@ -709,32 +715,32 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
     level <- level[1]
   }
 
-  if (length(grps) > 0) {
-    stat <- survey::svyby(survey::make.formula(peel),
-                          survey::make.formula(grps),
+  if (length(grps_names) > 0) {
+    stat <- survey::svyby(survey::make.formula(peel_name),
+                          survey::make.formula(grps_names),
                           .svy, func, na.rm = na.rm, se = TRUE, deff = deff)
 
     var_names <- attr(stat, "svyby")[["variables"]]
     var_names <- unlist(lapply(var_names,
-                               function(x) substring(x, nchar(peel) + 1)))
+                               function(x) substring(x, nchar(peel_name) + 1)))
 
     vartype <- c("grps", vartype)
 
-    out <- get_var_est(stat, vartype, var_names = var_names, grps = grps,
+    out <- get_var_est(stat, vartype, var_names = var_names, grps = grps_names,
                        level = level, df = df)
     # out <- dplyr::bind_cols(out)
     names(out) <- vartype
-    peel_levels <- levels(.svy[["variables"]][[peel]])
-    out <- factor_stat_reshape(out, peel, var_names, peel_levels)
+    peel_levels <- levels(.svy[["variables"]][[peel_name]])
+    out <- factor_stat_reshape(out, peel_name, var_names, peel_levels)
 
     out
   } else {
     # Needed because grouped don't usually have "coef"
     vartype <- c("lvls", vartype)
-    stat <- func(survey::make.formula(peel), .svy, na.rm = na.rm, deff = deff)
+    stat <- func(survey::make.formula(peel_name), .svy, na.rm = na.rm, deff = deff)
 
-    out <- get_var_est(stat, vartype, peel = peel,
-                       peel_levels = levels(.svy[["variables"]][[peel]]),
+    out <- get_var_est(stat, vartype, peel = peel_name,
+                       peel_levels = levels(.svy[["variables"]][[peel_name]]),
                        df = df)
 
     dplyr::bind_cols(out)

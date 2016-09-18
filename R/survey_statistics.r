@@ -310,7 +310,6 @@ survey_ratio_tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE,
                                  SRVYR_VAR_DEN = denominator)
   }
 
-
   stat <- survey::svyratio(~SRVYR_VAR_NUM, ~SRVYR_VAR_DEN,
                            .svy, na.rm = na.rm, deff = deff, df = df)
 
@@ -324,27 +323,26 @@ survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
                                      level = 0.95, deff = FALSE,
                                      df = survey::degf(.svy)) {
 
-  grps <- survey::make.formula(groups(.svy))
-
-  # svyby breaks when you feed it raw vector to be measured... Add it to
-  # the data.frame with mutate and then pass in the name
-  .svy$variables[["___numerator"]] <- numerator
-  .svy$variables[["___denominator"]] <- denominator
-
-  # Slight hack for twophase -- move the created variables to where survey
-  # expects them
+  grp_names <- as.character(groups(.svy))
+  grps <- select_(.svy$variables, .dots = grp_names)
+  new_vars <- data.frame(dplyr::bind_cols(grps,
+                                          data.frame(SRVYR_VAR_NUM = numerator,
+                                                     SRVYR_VAR_DEN = denominator)))
   if (inherits(.svy, "twophase2")) {
-    .svy$phase1$sample$variables <- .svy$variables
+    .svy$phase1$sample$variables <- new_vars
+  } else {
+    .svy$variables <- new_vars
   }
 
-  stat <- survey::svyby(~`___numerator`, grps, .svy, survey::svyratio,
-                        denominator = ~`___denominator`,
+  stat <- survey::svyby(~SRVYR_VAR_NUM, survey::make.formula(grp_names),
+                        .svy, survey::svyratio,
+                        denominator = ~SRVYR_VAR_DEN,
                         na.rm = na.rm, ci = TRUE, deff = deff)
 
   vartype <- c("grps", "coef", vartype)
   if (deff) vartype <- c(vartype, "deff")
 
-  out <- get_var_est(stat, vartype, grps = as.character(groups(.svy)),
+  out <- get_var_est(stat, vartype, grps = grp_names,
                      level = level, df = df)
 
   dplyr::bind_cols(out)

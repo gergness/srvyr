@@ -587,7 +587,13 @@ survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype, level, deff, df
                 "be used as a grouping variable"))
   }
   if (class(x) == "logical") x <- as.integer(x)
-  stat <- func(data.frame(x), .svy, na.rm = na.rm, deff = deff)
+
+  if (inherits(.svy, "twophase2")) {
+    .svy$phase1$sample$variables <- data.frame(SRVYR_VAR = x)
+  } else {
+  .svy$variables <- data.frame(SRVYR_VAR = x)
+  }
+  stat <- func(~SRVYR_VAR, .svy, na.rm = na.rm, deff = deff)
 
   vartype <- c("coef", vartype)
   if (deff) vartype <- c(vartype, "deff")

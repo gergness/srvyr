@@ -437,7 +437,13 @@ survey_quantile_tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE,
 
   if (inherits(x, "tbl_sql")) x <- dplyr::collect(x)[[1]]
 
-  stat <- survey::svyquantile(data.frame(x), .svy,
+  if (inherits(.svy, "twophase2")) {
+    .svy$phase1$sample$variables <- data.frame(SRVYR_VAR = x)
+  } else {
+    .svy$variables <- data.frame(SRVYR_VAR = x)
+  }
+
+  stat <- survey::svyquantile(~SRVYR_VAR, .svy,
                               quantiles = quantiles, na.rm = na.rm,
                               ci = TRUE, alpha = alpha, method = q_method, f = f,
                               interval.type = interval_type, ties = ties, df = df)

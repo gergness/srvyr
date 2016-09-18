@@ -8,7 +8,7 @@ suppressPackageStartupMessages({
 
 
 if (identical(Sys.getenv("NOT_CRAN"), "true")) {
-  context("Database objects work as expected - designs.")
+  context("Database objects work as expected")
   data(api)
   db_file <- tempfile()
   my_db <- src_sqlite(db_file, create = T)
@@ -112,6 +112,22 @@ test_that("grouped survey_mean and survey_total work", {
                tolerance = 0.00001 # dbs aren't careful about factor vs char
   )
 })
+
+test_that("na.rm works", {
+  skip_on_cran()
+  expect_equal(svys$db %>%
+                 mutate(api99_cap = ifelse(api99 > 800, NA, api99)) %>%
+                 summarize(x = survey_mean(api99_cap, na.rm = TRUE)) %>%
+                 as.matrix(),
+               svys$local %>%
+                 mutate(api99_cap = ifelse(api99 > 800, NA, api99)) %>%
+                 summarize(x = survey_mean(api99_cap, na.rm = TRUE)) %>%
+                 as.matrix(),
+               tolerance = 0.00001 # tolerance not supported for all.equal.tbl_svy
+  )
+})
+
+
 
 test_that("Filter works - design", {
   skip_on_cran()

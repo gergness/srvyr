@@ -157,7 +157,19 @@ test_that("Filter works - rep", {
   )
 })
 
-
+test_that("na.rm works - rep", {
+  skip_on_cran()
+  expect_equal(svysrep$db %>%
+                 mutate(alive2 = ifelse(alive > 40, NA, alive)) %>%
+                 summarize(y = survey_mean(alive2, vartype = "se", na.rm = TRUE)) %>%
+                 as.matrix(),
+               svysrep$local %>%
+                 mutate(alive2 = ifelse(alive > 40, NA, alive)) %>%
+                 summarize(y = survey_mean(alive2, vartype = "se", na.rm = TRUE)) %>%
+                 as.matrix(),
+               tolerance = 0.00001 # tolerance not supported for all.equal.tbl_svy
+  )
+})
 
 test_that("grouped quantiles have reasonable error", {
   skip_on_cran()

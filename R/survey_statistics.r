@@ -476,15 +476,13 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
     remove_se <- FALSE
   }
 
+  grp_names <- as.character(groups(.svy))
+  grps <- select_(.svy$variables, .dots = grp_names)
 
-  grps <- survey::make.formula(groups(.svy))
-
-  .svy$variables[["___arg"]] <- x
-
-  # Slight hack for twophase -- move the created variables to where survey
-  # expects them
   if (inherits(.svy, "twophase2")) {
-    .svy$phase1$sample$variables <- .svy$variables
+    .svy$phase1$sample$variables <- data.frame(dplyr::bind_cols(grps, data.frame(SRVYR_VAR = x)))
+  } else {
+    .svy$variables <- data.frame(dplyr::bind_cols(grps, data.frame(SRVYR_VAR = x)))
   }
 
   # Because of machine precision issues, 1 - 0.95 != 0.05...
@@ -493,7 +491,8 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   # we could go higher, but I worry about 32bit vs 64bit systems)
   alpha = round(1 - level, 7)
 
-  stat <- survey::svyby(formula = ~`___arg`, grps, .svy, survey::svyquantile,
+  stat <- survey::svyby(formula = ~SRVYR_VAR, survey::make.formula(grp_names),
+                        .svy, survey::svyquantile,
                         quantiles = quantiles, na.rm = na.rm,
                         ci = TRUE, alpha = alpha, method = q_method,
                         f = f, interval.type = interval_type, ties = ties,
@@ -505,7 +504,7 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   vartype[vartype == "ci"] <- "ci-prop"
 
   out <- get_var_est(stat, vartype, var_names = q_text,
-                     grps = as.character(groups(.svy)), level = level,
+                     grps = grp_names, level = level,
                      quantile = TRUE)
 
   dplyr::bind_cols(out)

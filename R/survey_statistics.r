@@ -302,7 +302,16 @@ survey_ratio_tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE,
   if (inherits(numerator, "tbl_sql")) numerator <- dplyr::collect(numerator)[[1]]
   if (inherits(denominator, "tbl_sql")) denominator <- dplyr::collect(denominator)[[1]]
 
-  stat <- survey::svyratio(data.frame(numerator), data.frame(denominator),
+  if (inherits(.svy, "twophase2")) {
+    .svy$phase1$sample$variables <- data.frame(SRVYR_VAR_NUM = numerator,
+                                               SRVYR_VAR_DEN = denominator)
+  } else {
+    .svy$variables <- data.frame(SRVYR_VAR_NUM = numerator,
+                                 SRVYR_VAR_DEN = denominator)
+  }
+
+
+  stat <- survey::svyratio(~SRVYR_VAR_NUM, ~SRVYR_VAR_DEN,
                            .svy, na.rm = na.rm, deff = deff, df = df)
 
   out <- get_var_est(stat, vartype, level = level, df = df)

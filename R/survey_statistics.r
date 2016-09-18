@@ -280,9 +280,6 @@ survey_ratio <- function(numerator, denominator, na.rm = FALSE,
   if (is.null(df)) df <- survey::degf(.svy)
 
   if (inherits(.svy, "grouped_svy")) {
-    if (inherits(.svy$variables, "tbl_lazy")) {
-      stop("Cannot perform ratio on grouped database backed survey")
-    }
     survey_ratio_grouped_svy(.svy, numerator, denominator, na.rm, vartype, level, deff, df)
   } else if (inherits(.svy, "tbl_svy")) {
     survey_ratio_tbl_svy(.svy, numerator, denominator, na.rm, vartype, level, deff, df)
@@ -324,7 +321,25 @@ survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
                                      df = survey::degf(.svy)) {
 
   grp_names <- as.character(groups(.svy))
-  grps <- select_(.svy$variables, .dots = grp_names)
+
+  if (inherits(numerator, "tbl_sql")) {
+    # Since we're grouped, dplyr conveniently gives us groups and x.
+    numerator <- dplyr::collect(numerator)
+    denominator <- dplyr::collect(denominator)
+
+    grps <- select(numerator, dplyr::one_of(grp_names))
+
+    numerator <- ungroup(numerator) # need to ungroup to drop the groups
+    numerator <- select(numerator, -dplyr::one_of(grp_names))
+    numerator <- numerator[[1]] # Get the column as a vector instead of as a tbl_df
+
+    denominator <- ungroup(denominator) # need to ungroup to drop the groups
+    denominator <- select(denominator, -dplyr::one_of(grp_names))
+    denominator <- denominator[[1]] # Get the column as a vector instead of as a tbl_df
+  } else {
+    grps <- select_(.svy$variables, .dots = grp_names)
+  }
+
   new_vars <- data.frame(dplyr::bind_cols(grps,
                                           data.frame(SRVYR_VAR_NUM = numerator,
                                                      SRVYR_VAR_DEN = denominator)))

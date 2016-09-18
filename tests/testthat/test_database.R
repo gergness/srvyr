@@ -161,8 +161,6 @@ test_that("na.rm works", {
   )
 })
 
-
-
 test_that("Filter works - design", {
   skip_on_cran()
   expect_equal(svys$db %>%
@@ -221,12 +219,20 @@ test_that("grouped survey_mean and survey_total work", {
   )
 })
 
-test_that("grouped ratios have reasonable error", {
+test_that("grouped survey_mean and survey_total work", {
   skip_on_cran()
-  expect_error(svys$db %>%
-                 group_by(stype) %>%
-                 summarize(api = survey_ratio(api99, api00)),
-               "ratio(.+)database")
+  expect_equal(suppressWarnings(svys$db %>%
+                                  group_by(stype) %>%
+                                  summarize(x = survey_ratio(api99, api00, vartype = "se")) %>%
+                                  select(-stype) %>%
+                                  as.matrix()),
+               suppressWarnings(svys$local %>%
+                                  group_by(stype) %>%
+                                  summarize(x = survey_ratio(api99, api00, vartype = "se")) %>%
+                                  select(-stype) %>%
+                                  as.matrix()),  # tolerance not supported for all.equal.tbl_svy
+               tolerance = 0.00001 # dbs aren't careful about factor vs char
+  )
 })
 
 test_that("twophase has error for dbs", {
@@ -236,7 +242,6 @@ test_that("twophase has error for dbs", {
                                     fpc = list(n1, NULL), subset = sub),
                "Twophase(.+)database")
 })
-
 
 test_that("Ungrouped summaries work - replicates", {
   skip_on_cran()

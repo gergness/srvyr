@@ -13,9 +13,9 @@
 #' it will turn it into a srvyr object, so that srvyr functions will work with it
 #'
 #' There is also limited and experimental support for databases using dplyr's \code{tbl_sql}
-#' objects. Not all operations are available for these objects, in particular
-#' grouped quantiles and ratios. See \code{vignette("databases", package = "dplyr")}
-#' for more information on setting up databases in dplyr.
+#' objects. Not all operations are available for these objects. See
+#' \code{vignette("databases", package = "dplyr")} for more information on setting
+#' up databases in dplyr.
 #'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)

@@ -205,12 +205,20 @@ test_that("na.rm works - rep", {
   )
 })
 
-test_that("grouped quantiles have reasonable error", {
+test_that("grouped survey_mean and survey_total work", {
   skip_on_cran()
-  expect_error(svys$db %>%
+  expect_equal(suppressWarnings(svys$db %>%
                  group_by(stype) %>%
-                 summarize(api99 = survey_median(api99)),
-               "quantile(.+)database")
+                 summarize(x = survey_median(api99, vartype = "se")) %>%
+                 select(-stype) %>%
+                 as.matrix()),
+               suppressWarnings(svys$local %>%
+                 group_by(stype) %>%
+                 summarize(x = survey_median(api99, vartype = "se")) %>%
+                 select(-stype) %>%
+                 as.matrix()),  # tolerance not supported for all.equal.tbl_svy
+               tolerance = 0.00001 # dbs aren't careful about factor vs char
+  )
 })
 
 test_that("grouped ratios have reasonable error", {

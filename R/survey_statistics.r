@@ -411,9 +411,6 @@ survey_quantile <- function(x, quantiles, na.rm = FALSE,
   }
 
   if (inherits(.svy, "grouped_svy")) {
-    if (inherits(.svy$variables, "tbl_lazy")) {
-      stop("Cannot perform quantile on grouped database backed survey")
-    }
     survey_quantile_grouped_svy(.svy, x, quantiles, na.rm, vartype, level, q_method, f,
                                 interval_type, ties, df)
   } else if (inherits(.svy, "tbl_svy")) {
@@ -484,7 +481,17 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   }
 
   grp_names <- as.character(groups(.svy))
-  grps <- select_(.svy$variables, .dots = grp_names)
+  if (inherits(x, "tbl_sql")) {
+    # Since we're grouped, dplyr conveniently gives us groups and x.
+    x <- dplyr::collect(x)
+
+    grps <- select(x, dplyr::one_of(grp_names))
+    x <- ungroup(x) # need to ungroup to drop the groups
+    x <- select(x, -dplyr::one_of(grp_names))
+    x <- x[[1]] # Get the column as a vector instead of as a tbl_df
+  } else {
+    grps <- select_(.svy$variables, .dots = grp_names)
+  }
 
   if (inherits(.svy, "twophase2")) {
     .svy$phase1$sample$variables <- data.frame(dplyr::bind_cols(grps, data.frame(SRVYR_VAR = x)))

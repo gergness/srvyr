@@ -42,7 +42,7 @@ survey package. \code{as_survey_} is its standard evaluation counterpart.
 There is also limited support for databases using dplyr's \code{tbl_sql}
 objects for survey designs and replicate weight surveys.
 Not all operations are available for these objects, in particular
-grouped quantiles and ratios, nor are two phase designs.
+two phase designs do not work.
 See \code{vignette("databases", package = "dplyr")}
 for more information on setting up databases in dplyr.
 }

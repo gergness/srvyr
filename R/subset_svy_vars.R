@@ -14,7 +14,7 @@ subset_svy_vars.survey.design2 <- function(x, dots) {
     } else {
       filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
       row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")
-      row_numbers <- dplyr::collect(row_numbers)
+      row_numbers <- dplyr::collect(row_numbers, n = Inf)
       row_numbers <- match(row_numbers[[1]], uid(x)[[1]])
     }
 
@@ -56,7 +56,7 @@ subset_svy_vars.svyrep.design <- function(x, dots){
   } else {
     filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
     row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")
-    row_numbers <- dplyr::collect(row_numbers)
+    row_numbers <- dplyr::collect(row_numbers, n = Inf)
     row_numbers <- match(row_numbers[[1]], uid(x)[[1]])
   }
 
@@ -88,7 +88,7 @@ subset_svy_vars.twophase2 <- function(x, dots) {
   } else {
     filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
     row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")
-    row_numbers <- dplyr::collect(row_numbers)
+    row_numbers <- dplyr::collect(row_numbers, n = Inf)
     row_numbers <- match(row_numbers[[1]], uid(x)[[1]])
   }
 

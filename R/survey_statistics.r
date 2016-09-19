@@ -296,8 +296,8 @@ survey_ratio_tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE,
 
   vartype <- c("coef", vartype)
   if (deff) vartype <- c(vartype, "deff")
-  if (inherits(numerator, "tbl_sql")) numerator <- dplyr::collect(numerator)[[1]]
-  if (inherits(denominator, "tbl_sql")) denominator <- dplyr::collect(denominator)[[1]]
+  if (inherits(numerator, "tbl_sql")) numerator <- ordered_collect(numerator)[[1]]
+  if (inherits(denominator, "tbl_sql")) denominator <- ordered_collect(denominator)[[1]]
 
   if (inherits(.svy, "twophase2")) {
     .svy$phase1$sample$variables <- data.frame(SRVYR_VAR_NUM = numerator,
@@ -324,8 +324,8 @@ survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
 
   if (inherits(numerator, "tbl_sql")) {
     # Since we're grouped, dplyr conveniently gives us groups and x.
-    numerator <- dplyr::collect(numerator)
-    denominator <- dplyr::collect(denominator)
+    numerator <- ordered_collect(numerator)
+    denominator <- ordered_collect(denominator)
 
     grps <- select(numerator, dplyr::one_of(grp_names))
 
@@ -454,7 +454,7 @@ survey_quantile_tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   # we could go higher, but I worry about 32bit vs 64bit systems)
   alpha = round(1 - level, 7)
 
-  if (inherits(x, "tbl_sql")) x <- dplyr::collect(x)[[1]]
+  if (inherits(x, "tbl_sql")) x <- ordered_collect(x)[[1]]
 
   if (inherits(.svy, "twophase2")) {
     .svy$phase1$sample$variables <- data.frame(SRVYR_VAR = x)
@@ -498,7 +498,7 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   grp_names <- as.character(groups(.svy))
   if (inherits(x, "tbl_sql")) {
     # Since we're grouped, dplyr conveniently gives us groups and x.
-    x <- dplyr::collect(x)
+    x <- ordered_collect(x)
 
     grps <- select(x, dplyr::one_of(grp_names))
     x <- ungroup(x) # need to ungroup to drop the groups
@@ -615,7 +615,7 @@ unweighted <- function(x, ...) {
 
 
 survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype, level, deff, df) {
-  if (inherits(x, "tbl_sql")) x <- dplyr::collect(x)[[1]]
+  if (inherits(x, "tbl_sql")) x <- ordered_collect(x)[[1]]
   if (class(x) == "factor") {
     stop(paste0("Factor not allowed in survey functions, should ",
                 "be used as a grouping variable"))
@@ -646,7 +646,7 @@ survey_stat_grouped.default <- function(.svy, func, x, na.rm, vartype, level,
   grp_names <- as.character(groups(.svy))
   if (inherits(x, "tbl_sql")) {
     # Since we're grouped, dplyr conveniently gives us groups and x.
-    x <- dplyr::collect(x)
+    x <- ordered_collect(x)
 
     grps <- select(x, dplyr::one_of(grp_names))
     x <- ungroup(x) # need to ungroup to drop the groups

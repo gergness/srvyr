@@ -14,6 +14,18 @@ uid <- function(svy) {
 # Collect after ordering on uid
 ordered_collect <- function(x) {
   x <- dplyr::arrange_(x, "SRVYR_ORDER")
+  x <- dplyr::collect(x)
   x <- dplyr::select_(x, "-SRVYR_ORDER")
-  dplyr::collect(x)
+  x
 }
+
+# Current belief -> a final arrange could be created
+# that behaves similarly to arrange_, but is translated slightly different
+# so that it is valid MonetDB
+# final_arrange_ <- function(x, dots) {
+#
+# }
+#
+# sql_build.op_final_arrange <- function(op, con, ...) {
+#
+# }

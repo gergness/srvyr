@@ -26,6 +26,7 @@ Suggests:
     rmarkdown,
     pander,
     RSQLite,
+    MonetDBLite,
     survival,
     testthat
 VignetteBuilder: knitr

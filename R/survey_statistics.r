@@ -729,6 +729,11 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
     .svy$variables <- grps_vars
   }
 
+  if (is.numeric(.svy$variables[[peel_name]])) {
+    warning("Coercing ", peel_name, " to character in survey_mean().", call. = FALSE)
+    .svy$variables[[peel_name]] <- as.character(.svy$variables[[peel_name]])
+  }
+
   vartype <- c("coef", vartype)
   if (deff) vartype <- c(vartype, "deff")
 

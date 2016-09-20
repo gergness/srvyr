@@ -1,0 +1,358 @@
+---
+title: "Databases in srvyr"
+author: "Greg Freedman Ellis"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{databases-srvyr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+TKTKTK
+Introduction to srvyr's database, 
+  uses dplyr objects as backend, 
+  requires slightly different setup, but after is the same as always
+  Experimental, tested with sqlite and monetdb
+TKTKTK
+
+This vignette is based on analysis from the wonderful resource asdfree 
+([website](http://asdfree.com/) and [github](https://github.com/ajdamico/asdfree)). 
+Many thanks to [@ajdamico](http://github.com/ajdamico) and collaborators. 
+Specifically, I have adpated code from [American Community Survey - 2011 single year analysis](https://github.com/ajdamico/asdfree/blob/d0b965e9672161da086e30471760d08281b74343/American%20Community%20Survey/2011%20single-year%20-%20analysis%20examples.R) and the associated data preparation scripts. 
+
+TKTKTK
+Code below is long and mostly unrelated to srvyr
+  Main thrust
+    downloads data from acs website (currently only alaska, but easy to adapt)
+    uploads it to database
+    merges the household and person datasets
+  For more info on the specifics of databases with dplyr, see dplyr vignette
+  For more info about the ACS setup see asdfree stuff
+  Advanced topics on dbs (mostly discussed later) 
+    make indexes
+    read only (?)
+TKTKTK
+
+```{r, eval = FALSE}
+library(MonetDBLite)
+library(DBI)
+library(survey)
+library(srvyr)
+library(dplyr)
+library(readr)
+library(RSQLite)
+
+# A priori variable types (may not be 100% correct)
+{ 
+var_types <- list()
+var_types$h <- c("character", "integer", "integer", "character", "integer", 
+"character", "integer", "integer", "integer", "character", 
+"integer", "integer", "integer", "integer", "character", "character", 
+"integer", "character", "character", "integer", "character", 
+"character", "integer", "character", "character", "integer", 
+"character", "integer", "integer", "integer", "character", "integer", 
+"character", "integer", "integer", "character", "integer", "integer", 
+"integer", "integer", "integer", "character", "integer", "character", 
+"integer", "integer", "integer", "integer", "integer", "character", 
+"integer", "integer", "character", "character", "integer", "integer", 
+"character", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "character", "character", "integer", 
+"integer", "character", "character", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "character", "integer", 
+"integer", "integer", "character", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", rep("integer", 80))
+
+names(var_types$h) <- c("rt", "serialno", 
+"division", "puma", "region", "st", "adjhsg", "adjinc", "wgtp", 
+"np", "type", "acr", "ags", "bath", "bdsp", "bld", "bus", "conp", 
+"elep", "fs", "fulp", "gasp", "hfl", "insp", "mhp", "mrgi", "mrgp", 
+"mrgt", "mrgx", "refr", "rmsp", "rntm", "rntp", "rwat", "sink", 
+"smp", "stov", "tel", "ten", "toil", "vacs", "valp", "veh", "watp", 
+"ybl", "fes", "ffincp", "fgrntp", "fhincp", "fincp", "fparc", 
+"fsmocp", "grntp", "grpip", "hhl", "hht", "hincp", "hugcl", "hupac", 
+"hupaoc", "huparc", "kit", "lngi", "multg", "mv", "noc", "npf", 
+"npp", "nr", "nrc", "ocpip", "partner", "plm", "psf", "r18", 
+"r60", "r65", "resmode", "smocp", "smx", "srnt", "sval", "taxp", 
+"wif", "wkexrel", "workstat", "facrp", "fagsp", "fbathp", "fbdsp", 
+"fbldp", "fbusp", "fconp", "felep", "ffsp", "ffulp", "fgasp", 
+"fhflp", "finsp", "fkitp", "fmhp", "fmrgip", "fmrgp", "fmrgtp", 
+"fmrgxp", "fmvp", "fplmp", "frefrp", "frmsp", "frntmp", "frntp", 
+"frwatp", "fsinkp", "fsmp", "fsmxhp", "fsmxsp", "fstovp", "ftaxp", 
+"ftelp", "ftenp", "ftoilp", "fvacsp", "fvalp", "fvehp", "fwatp", 
+"fyblp", paste0("wgtp", 1:80))
+
+var_types$p <- c("character", "integer", "character", "character", 
+"character", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "character", "character", 
+"character", "character", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "character", "character", "character", 
+"character", "integer", "character", "character", "character", 
+"integer", "character", "character", "character", "character", 
+"integer", "integer", "integer", "integer", "integer", "character", 
+"character", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "character", "character", "character", 
+"character", "integer", "character", "character", "integer", 
+"character", "integer", "integer", "integer", "character", "integer", 
+"character", "character", "character", "character", "character", 
+"character", "integer", "integer", "integer", "integer", "character", 
+"character", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "character", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", "integer", "integer", "integer", "integer", "integer", 
+"integer", rep("integer", 80))
+
+names(var_types$p) <- c("rt", "serialno", "sporder", "puma", 
+"st", "adjinc", "pwgtp", "agep", "cit", "citwp", "cow", "ddrs", 
+"dear", "deye", "dout", "dphy", "drat", "dratx", "drem", "eng", 
+"fer", "gcl", "gcm", "gcr", "hins1", "hins2", "hins3", "hins4", 
+"hins5", "hins6", "hins7", "intp", "jwmnp", "jwrip", "jwtr", 
+"lanx", "mar", "marhd", "marhm", "marht", "marhw", "marhyp", 
+"mig", "mil", "mlpa", "mlpb", "mlpc", "mlpd", "mlpe", "mlpf", 
+"mlpg", "mlph", "mlpi", "mlpj", "mlpk", "nwab", "nwav", "nwla", 
+"nwlk", "nwre", "oip", "pap", "relp", "retp", "sch", "schg", 
+"schl", "semp", "sex", "ssip", "ssp", "wagp", "wkhp", "wkl", 
+"wkw", "wrk", "yoep", "anc", "anc1p", "anc2p", "decade", "dis", 
+"drivesp", "esp", "esr", "fod1p", "fod2p", "hicov", "hisp", "indp", 
+"jwap", "jwdp", "lanp", "migpuma", "migsp", "msp", "naicsp", 
+"nativity", "nop", "oc", "occp", "paoc", "pernp", "pincp", "pobp", 
+"povpip", "powpuma", "powsp", "privcov", "pubcov", "qtrbir", 
+"rac1p", "rac2p", "rac3p", "racaian", "racasn", "racblk", "racnhpi", 
+"racnum", "racsor", "racwht", "rc", "sciengp", "sciengrlp", "sfn", 
+"sfr", "socp", "vps", "waob", "fagep", "fancp", "fcitp", "fcitwp", 
+"fcowp", "fddrsp", "fdearp", "fdeyep", "fdisp", "fdoutp", "fdphyp", 
+"fdratp", "fdratxp", "fdremp", "fengp", "fesrp", "fferp", "ffodp", 
+"fgclp", "fgcmp", "fgcrp", "fhins1p", "fhins2p", "fhins3c", "fhins3p", 
+"fhins4c", "fhins4p", "fhins5c", "fhins5p", "fhins6p", "fhins7p", 
+"fhisp", "findp", "fintp", "fjwdp", "fjwmnp", "fjwrip", "fjwtrp", 
+"flanp", "flanxp", "fmarhdp", "fmarhmp", "fmarhtp", "fmarhwp", 
+"fmarhyp", "fmarp", "fmigp", "fmigsp", "fmilpp", "fmilsp", "foccp", 
+"foip", "fpap", "fpernp", "fpincp", "fpobp", "fpowsp", "fprivcovp", 
+"fpubcovp", "fracp", "frelp", "fretp", "fschgp", "fschlp", "fschp", 
+"fsemp", "fsexp", "fssip", "fssp", "fwagp", "fwkhp", "fwklp", 
+"fwkwp", "fwrkp", "fyoep", paste0("pwgtp", 1:80))
+
+var_types_readr <- lapply(var_types, function(x) {
+  out <- list(col_integer(), col_character())[match(x, c("integer", "character"))]
+  out
+})
+
+var_types_sql <- lapply(var_types, function(x) {
+  out <- lapply(x, function(y) {
+    if (y == "character") "1"
+    else if (y == "integer") 1L
+  })
+  as.data.frame(out, stringsAsFactors = FALSE)
+})
+}
+
+# Helper functions
+# Downloads, unzips and loads acs file, saves an intermediate file at out_file
+acs_file_loader <- function(url, data_file, db, table, vtypes, out_file = tempfile()) {
+  download.file(url, destfile = out_file, quiet = TRUE)
+  data_conn <- unz(out_file, data_file) # makes a file connection to an internal file
+  read_csv(data_conn, col_types = vtypes, progress = FALSE)
+}
+
+# For each state in states argument, downloads the data from the web and uploads it into
+# the dataabse db
+prepare_acs2011_single <- function(db, states = "ak") {
+  file_types <- c("h", "p")
+  file_types_full <- list(h = "household", p = "person")
+  
+  out <- list()
+  for (ttt in file_types) {
+    cat("\n")
+    success <- logical(length(states))
+    for (iii in seq_along(states)) {
+      sss <- states[iii]
+      this_data <- acs_file_loader(
+        url = sprintf("http://www2.census.gov/acs2011_1yr/pums/csv_%s%s.zip", ttt, sss),
+        data_file = sprintf("ss11%s%s.csv", ttt, sss), 
+        db = db, 
+        vtypes = var_types_readr[[ttt]]
+      )
+      names(this_data) <- tolower(names(this_data))
+      success[iii] <- db_insert_into(db$con, file_types_full[[ttt]], this_data)
+      
+      if (!success[iii]) {
+        warning(sprintf("Problem with state %s and type %s.", sss, ttt))
+      }
+      if (iii %% 20 == 1) {
+        cat(sprintf("%s", sss))
+      } else if (iii %% 5 == 1) {
+        cat(".")
+      }
+    }
+    out[[ttt]] <- success
+  }
+  cat("\n")
+  out 
+}
+
+# Set up database and tables
+db <- src_monetdblite()
+dbSendQuery(db$con, sqlCreateTable(db$con, "person", var_types_sql$p, temporary = FALSE))
+dbSendQuery(db$con, sqlCreateTable(db$con, "household", var_types_sql$h, temporary = FALSE))
+
+# dbRemoveTable(db$con, "person")
+# dbRemoveTable(db$con, "household")
+
+
+# acs_status <- prepare_acs2011_single(db, states = tolower(state.abb))
+acs_status <- prepare_acs2011_single(db)
+
+# Merge the datasets together, could use dplyr joins, but that would remake the table every time.
+# By doing it with DBI commands, we are doing the complicated join only once.
+h_fields <- paste0('a.', setdiff(names(var_types$h), "rt"))
+p_fields <- paste0('b.', setdiff(names(var_types$p), names(var_types$h)))
+
+merge_query <- sql(paste0(
+  "CREATE TABLE merged AS", 
+  "  SELECT 'M' as rt, ", paste0(h_fields, collapse = ", "), ", ", paste0(p_fields, collapse = ", "), 
+  "  FROM household AS a INNER JOIN person AS b ON a.serialno = b.serialno"
+  ))
+
+merge_status <- dbSendQuery(db$con, merge_query)
+
+
+```
+
+TKTKTK
+So now data is stored in database
+We can access it with a simple sql command, and the tbl command allows dplyr (and srvyr) to treat as if
+it were local
+But it's not (show memory size)
+TKTKTK
+
+```{r, eval = FALSE}
+# Creates dplyr objects that reference the database 
+acs_h_data <- tbl(db, sql("SELECT * FROM household"))
+
+Sys.sleep(0.5) # R frequently crahses if we call on db too rapidly.
+
+acs_m_data <- tbl(db, sql("SELECT * FROM merged"))
+
+```
+
+TKTKTK
+srvyr commands are nearly identical to old 
+  only difference for setup is that you need a uid
+uses more data relatively than the dplyr equivalent
+TKTKTK
+
+```{r, eval = FALSE}
+acs_m <- acs_m_data %>% 
+  mutate(uid = serialno * 100L + sporder) %>% 
+  as_survey_rep(
+    weight = pwgtp,
+    repweights = matches("pwgtp[0-9]+") ,
+    scale = 4 / 80,
+    rscales = rep(1 , 80),
+    mse = TRUE,
+    type = "JK1", 
+    uid = uid
+  )
+```
+
+TKTKTK
+Analysis commands are similar to local ones
+  Also often need to be more explicit about creating variables than with local data
+  Some, but not all, R functions have been translated to databases
+TKTKTK
+
+```{r, eval = FALSE}
+# You can calculate the population of the united states #
+# by state
+acs_m %>%
+  mutate(one = 1L) %>% # Note that because of weird behavior of MonetDB, need to use 1L not just 1
+  group_by(st) %>% 
+  summarize(count = survey_total(one))
+
+# Or the average age of downloaded states
+acs_m %>%
+  summarize(agep = survey_mean(agep, na.rm = TRUE))
+
+# Average age by state
+acs_m %>%
+  group_by(st) %>% 
+  summarize(agep = survey_mean(agep, na.rm = TRUE))
+
+# percent uninsured - nationwide (of downloaded states)
+acs_m %>%
+  mutate(hicov = as.character(hicov)) %>% 
+  group_by(hicov) %>% 
+  summarize(pct = survey_mean(na.rm = TRUE))
+
+# by state
+acs_m %>%
+  mutate(hicov = as.character(hicov)) %>% 
+  group_by(st, hicov) %>% 
+  summarize(pct = survey_mean(na.rm = TRUE))
+
+
+# 25th, median, and 75th percentile of age of residents of the united states (downloaded states)
+acs_m %>%
+  summarize(agep = survey_quantile(agep, c(0.25, 0.5, 0.75), na.rm = TRUE))
+
+
+# Filter works, so we can restrict the acs_m object to females only
+acs_m_female <- acs_m %>%
+  filter(sex == 2)
+
+# Now any of the above commands can be re-run using the acs_m_female object
+# instead of the acs_m object in order to analyze females only
+
+# This is equivalent to using acs_m, and applying the filter every time.
+
+# average age - nationwide (of downloaded states), restricted to females
+acs_m_female %>%
+  summarize(agep = survey_mean(agep, na.rm = TRUE))
+
+# median age - nationwide (of downloaded states), restricted to females
+acs_m_female %>%
+  summarize(agep = survey_median(agep, na.rm = TRUE))
+
+
+# Note that though some R functions are translated by dplyr into SQL, not
+# all of them are. For example, when constructing a new age category 
+# variable in the dataset neither findIntervals nor cut work on databases, 
+# so we have to spell out groups with ifelse()
+acs_m %>% 
+  mutate(agecat = ifelse(agep < 19, "0-18", 
+                         ifelse(agep >= 19 & agep < 35, "19-34", 
+                                ifelse(agep >= 35 & agep < 50, "35-49", 
+                                       ifelse(agep >= 50 & agep < 65, "50-64", 
+                                              ifelse(agep >= 65, "65+", NA)))))) %>%
+  group_by(agecat) %>% 
+  summarize(pct = survey_mean(na.rm = TRUE))
+```
+
+TKTKTK
+Advanced topics
+  Read only
+  Index importance
+Closing db?
+TKTKTK

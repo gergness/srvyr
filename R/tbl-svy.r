@@ -64,6 +64,11 @@ print.tbl_svy <- function (x, varnames = TRUE, ...) {
     } else {
       types <- vapply(x$variables, dplyr::type_sum, character(1))
     }
+    order_vars <- which(vars %in% attr(x$variables, "order_var"))
+    if (length(order_vars) > 0) {
+      vars <- vars[-order_vars]
+      types <- types[-order_vars]
+    }
 
     var_types <- paste0(vars, " (", types, ")", collapse = ", ")
     cat(wrap("Data variables: ", var_types), "\n", sep = "")

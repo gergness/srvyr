@@ -61,7 +61,7 @@ suppressMessages({
 load("acs_m.Rdata") # acs_m data
 
 # Set up database and table
-db <- src_sqlite("srvyr-db-file", create = TRUE)
+db <- src_sqlite(":memory:", create = TRUE)
 acs_m_db <- copy_to(db, acs_m, "acs_m", temporary = FALSE)
 
 # Make table read only to reflect real world usage (see advanced topics below).
@@ -257,8 +257,6 @@ acs_m_db_svy %>%
                                               ifelse(agep >= 65, "65+", NA)))))) %>%
   group_by(agecat) %>% 
   summarize(pct = survey_mean(na.rm = TRUE))
-
-file.remove("srvyr-db-file")
 ```
 
 ## Advanced Topics ##

@@ -9,6 +9,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
 Srvyr now has experimental support of database backed surveys. It uses dplyr databases 
 as the backend, not the survey package's database support, which allows for nearly identical 
 consistent syntax when working with database or local data.frame backed surveys. 
@@ -61,11 +65,11 @@ suppressMessages({
 load("acs_m.Rdata") # acs_m data
 
 # Set up database and table
-db <- src_sqlite(":memory:", create = TRUE)
+db <- src_monetdblite()
 acs_m_db <- copy_to(db, acs_m, "acs_m", temporary = FALSE)
 
 # Make table read only to reflect real world usage (see advanced topics below).
-# db_status <- dbSendQuery(acs_m_db$src$con, "ALTER TABLE acs_m SET READ ONLY")
+db_status <- dbSendQuery(acs_m_db$src$con, "ALTER TABLE acs_m SET READ ONLY")
 
 # Or, if the data was already stored in the database, you could do this
 # acs_m_data <- tbl(db, sql("SELECT * FROM acs_m")) 

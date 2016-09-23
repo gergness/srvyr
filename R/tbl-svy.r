@@ -112,6 +112,8 @@ as_tbl_svy <- function(x, var_names = list(), uid = NULL) {
   }
 
   survey_vars(x) <- var_names
+
+  if (!is.null(uid)) names(uid) <- "SRVYR_ORDER"
   uid(x) <- uid
 
   # To make printing better, change call

@@ -84,15 +84,21 @@ filtered_row_numbers <- function(.svy, dots) {
   filtered_vars <- .svy$variables
 
   if (!inherits(.svy$variables, "tbl_lazy")) {
-    filtered_vars <- dplyr::mutate_(filtered_vars, SRVYR_ORDER = "row_number()")
+    filtered_vars <- dplyr::mutate_(filtered_vars, `___row_number` = "row_number()")
     filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
-    row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")[[1]]
-    filtered_vars <- dplyr::select_(filtered_vars, "-SRVYR_ORDER")
+    row_numbers <- dplyr::select_(filtered_vars, "`___row_number`")[[1]]
+    filtered_vars <- dplyr::select_(filtered_vars, "-`___row_number`")
   } else {
+    order_var_names <- attr(.svy$variables, "order_var")
     filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
-    row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")
-    row_numbers <- dplyr::collect(row_numbers, n = Inf)
-    row_numbers <- match(row_numbers[[1]], uid(.svy)[[1]])
+    order_vars <- dplyr::select_(filtered_vars, order_var_names)
+    order_vars <- dplyr::collect(order_vars, n = Inf)
+
+    uid <- uid(.svy)
+    uid <- mutate(uid, `___row_number` = row_number())
+
+    row_numbers <- dplyr::inner_join(uid, order_vars, by = order_var_names)
+    row_numbers <- select(row_numbers, `___row_number`)[[1]]
   }
 
   list(row_numbers = row_numbers, filtered_vars = filtered_vars)

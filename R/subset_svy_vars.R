@@ -4,19 +4,9 @@ subset_svy_vars <- function(x, dots) {
 
 # Adapted from survey:::"[.survey.design2"
 subset_svy_vars.survey.design2 <- function(x, dots) {
-    filtered_vars <- x$variables
-
-    if (!inherits(x$variables, "tbl_lazy")) {
-      filtered_vars <- dplyr::mutate_(filtered_vars, SRVYR_ORDER = "row_number()")
-      filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
-      row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")[[1]]
-      filtered_vars <- dplyr::select_(filtered_vars, "-SRVYR_ORDER")
-    } else {
-      filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
-      row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")
-      row_numbers <- dplyr::collect(row_numbers, n = Inf)
-      row_numbers <- match(row_numbers[[1]], uid(x)[[1]])
-    }
+  filtered <- filtered_row_numbers(x, dots)
+  filtered_vars <- filtered[["filtered_vars"]]
+  row_numbers <- filtered[["row_numbers"]]
 
   if (is.calibrated(x) || is.pps(x)){
     ## Set weights to zero: no memory saving possible
@@ -46,19 +36,10 @@ subset_svy_vars.survey.design2 <- function(x, dots) {
 
 # Adapted from survey:::"[.svyrep.design"
 subset_svy_vars.svyrep.design <- function(x, dots){
-  filtered_vars <- x$variables
+  filtered <- filtered_row_numbers(x, dots)
+  filtered_vars <- filtered[["filtered_vars"]]
+  row_numbers <- filtered[["row_numbers"]]
 
-  if (!inherits(x$variables, "tbl_lazy")) {
-    filtered_vars <- dplyr::mutate_(filtered_vars, SRVYR_ORDER = "row_number()")
-    filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
-    row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")[[1]]
-    filtered_vars <- dplyr::select_(filtered_vars, "-SRVYR_ORDER")
-  } else {
-    filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
-    row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")
-    row_numbers <- dplyr::collect(row_numbers, n = Inf)
-    row_numbers <- match(row_numbers[[1]], uid(x)[[1]])
-  }
 
   pwt <- x$pweights
 
@@ -78,19 +59,9 @@ subset_svy_vars.svyrep.design <- function(x, dots){
 
 # Adapted from survey:::"[.twophase2"
 subset_svy_vars.twophase2 <- function(x, dots) {
-  filtered_vars <- x$variables
-
-  if (!inherits(x$variables, "tbl_lazy")) {
-    filtered_vars <- dplyr::mutate_(filtered_vars, SRVYR_ORDER = "row_number()")
-    filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
-    row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")[[1]]
-    filtered_vars <- dplyr::select_(filtered_vars, "-SRVYR_ORDER")
-  } else {
-    filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
-    row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")
-    row_numbers <- dplyr::collect(row_numbers, n = Inf)
-    row_numbers <- match(row_numbers[[1]], uid(x)[[1]])
-  }
+  filtered <- filtered_row_numbers(x, dots)
+  filtered_vars <- filtered[["filtered_vars"]]
+  row_numbers <- filtered[["row_numbers"]]
 
   ## Set weights to zero:  don't try to save memory
   ## Will always have numeric because of srvyr's structure
@@ -106,4 +77,24 @@ subset_svy_vars.twophase2 <- function(x, dots) {
   }
 
   x
+}
+
+
+filtered_row_numbers <- function(.svy, dots) {
+  filtered_vars <- .svy$variables
+
+  if (!inherits(.svy$variables, "tbl_lazy")) {
+    filtered_vars <- dplyr::mutate_(filtered_vars, SRVYR_ORDER = "row_number()")
+    filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
+    row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")[[1]]
+    filtered_vars <- dplyr::select_(filtered_vars, "-SRVYR_ORDER")
+  } else {
+    filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
+    row_numbers <- dplyr::select_(filtered_vars, "SRVYR_ORDER")
+    row_numbers <- dplyr::collect(row_numbers, n = Inf)
+    row_numbers <- match(row_numbers[[1]], uid(.svy)[[1]])
+  }
+
+  list(row_numbers = row_numbers, filtered_vars = filtered_vars)
+
 }

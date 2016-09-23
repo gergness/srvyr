@@ -8,263 +8,157 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-TKTKTK
-Introduction to srvyr's database, 
-  uses dplyr objects as backend, 
-  requires slightly different setup, but after is the same as always
-  Experimental, tested with sqlite and monetdb
-TKTKTK
 
-This vignette is based on analysis from the wonderful resource asdfree 
-([website](http://asdfree.com/) and [github](https://github.com/ajdamico/asdfree)). 
-Many thanks to [@ajdamico](http://github.com/ajdamico) and collaborators. 
+Srvyr now has experimental support of database backed surveys. It uses dplyr databases 
+as the backend, not the survey package's database support, which allows for nearly identical 
+consistent syntax when working with database or local data.frame backed surveys. 
+The actual implementation is similar to the survey package's in that it stores the 
+survey variables (such as weighting, stratum, etc.) in local memory and so will provide the most
+benefit when dealing with surveys with a large number of variables, rather than surveys
+with a large number of observations. It is slower than the survey package's support, because it is
+more careful about the sorting order when pulling data from the database, in my testing 
+it is about 2X slower than survey. 
+
+During development, I have tested using SQLite and MonetDBLite database, but in theory 
+other database backends should work as well.
+
+This vignette shows the basics of how to use srvyr with databases. 
+It is based on analysis from the wonderful resource asdfree 
+( [website](http://asdfree.com/) and [github](https://github.com/ajdamico/asdfree) ). 
+Many thanks to [ajdamico](http://github.com/ajdamico) and collaborators. 
 Specifically, I have adpated code from [American Community Survey - 2011 single year analysis](https://github.com/ajdamico/asdfree/blob/d0b965e9672161da086e30471760d08281b74343/American%20Community%20Survey/2011%20single-year%20-%20analysis%20examples.R) and the associated data preparation scripts. 
 
-TKTKTK
-Code below is long and mostly unrelated to srvyr
-  Main thrust
-    downloads data from acs website (currently only alaska, but easy to adapt)
-    uploads it to database
-    merges the household and person datasets
-  For more info on the specifics of databases with dplyr, see dplyr vignette
-  For more info about the ACS setup see asdfree stuff
-  Advanced topics on dbs (mostly discussed later) 
-    make indexes
-    read only (?)
-TKTKTK
+## Database Setup ##
+In order to focus on srvyr and databases, we start with a prepared dataset. The full code 
+is avaliable on Github TKTKTKT, and the high level description of what it does is:
 
-```{r, eval = FALSE}
-library(MonetDBLite)
-library(DBI)
-library(survey)
-library(srvyr)
-library(dplyr)
-library(readr)
-library(RSQLite)
+- Download data from acs website (currently only Alaska and Hawaii to save time, 
+though it would be easy to adapt to download to all 50 states and Puerto Rico). 
 
-# A priori variable types (may not be 100% correct)
-{ 
-var_types <- list()
-var_types$h <- c("character", "integer", "integer", "character", "integer", 
-"character", "integer", "integer", "integer", "character", 
-"integer", "integer", "integer", "integer", "character", "character", 
-"integer", "character", "character", "integer", "character", 
-"character", "integer", "character", "character", "integer", 
-"character", "integer", "integer", "integer", "character", "integer", 
-"character", "integer", "integer", "character", "integer", "integer", 
-"integer", "integer", "integer", "character", "integer", "character", 
-"integer", "integer", "integer", "integer", "integer", "character", 
-"integer", "integer", "character", "character", "integer", "integer", 
-"character", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "character", "character", "integer", 
-"integer", "character", "character", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "character", "integer", 
-"integer", "integer", "character", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", rep("integer", 80))
+- Merges the household and person datasets so that we can look at the variables
+related to each person including those at the household level
 
-names(var_types$h) <- c("rt", "serialno", 
-"division", "puma", "region", "st", "adjhsg", "adjinc", "wgtp", 
-"np", "type", "acr", "ags", "bath", "bdsp", "bld", "bus", "conp", 
-"elep", "fs", "fulp", "gasp", "hfl", "insp", "mhp", "mrgi", "mrgp", 
-"mrgt", "mrgx", "refr", "rmsp", "rntm", "rntp", "rwat", "sink", 
-"smp", "stov", "tel", "ten", "toil", "vacs", "valp", "veh", "watp", 
-"ybl", "fes", "ffincp", "fgrntp", "fhincp", "fincp", "fparc", 
-"fsmocp", "grntp", "grpip", "hhl", "hht", "hincp", "hugcl", "hupac", 
-"hupaoc", "huparc", "kit", "lngi", "multg", "mv", "noc", "npf", 
-"npp", "nr", "nrc", "ocpip", "partner", "plm", "psf", "r18", 
-"r60", "r65", "resmode", "smocp", "smx", "srnt", "sval", "taxp", 
-"wif", "wkexrel", "workstat", "facrp", "fagsp", "fbathp", "fbdsp", 
-"fbldp", "fbusp", "fconp", "felep", "ffsp", "ffulp", "fgasp", 
-"fhflp", "finsp", "fkitp", "fmhp", "fmrgip", "fmrgp", "fmrgtp", 
-"fmrgxp", "fmvp", "fplmp", "frefrp", "frmsp", "frntmp", "frntp", 
-"frwatp", "fsinkp", "fsmp", "fsmxhp", "fsmxsp", "fstovp", "ftaxp", 
-"ftelp", "ftenp", "ftoilp", "fvacsp", "fvalp", "fvehp", "fwatp", 
-"fyblp", paste0("wgtp", 1:80))
+- Selects only a few variables that will be used in this analysis to save space, but
+again it could easily be adapted to keep all of the variables. 
 
-var_types$p <- c("character", "integer", "character", "character", 
-"character", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "character", "character", 
-"character", "character", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "character", "character", "character", 
-"character", "integer", "character", "character", "character", 
-"integer", "character", "character", "character", "character", 
-"integer", "integer", "integer", "integer", "integer", "character", 
-"character", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "character", "character", "character", 
-"character", "integer", "character", "character", "integer", 
-"character", "integer", "integer", "integer", "character", "integer", 
-"character", "character", "character", "character", "character", 
-"character", "integer", "integer", "integer", "integer", "character", 
-"character", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "character", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", "integer", "integer", "integer", "integer", "integer", 
-"integer", rep("integer", 80))
 
-names(var_types$p) <- c("rt", "serialno", "sporder", "puma", 
-"st", "adjinc", "pwgtp", "agep", "cit", "citwp", "cow", "ddrs", 
-"dear", "deye", "dout", "dphy", "drat", "dratx", "drem", "eng", 
-"fer", "gcl", "gcm", "gcr", "hins1", "hins2", "hins3", "hins4", 
-"hins5", "hins6", "hins7", "intp", "jwmnp", "jwrip", "jwtr", 
-"lanx", "mar", "marhd", "marhm", "marht", "marhw", "marhyp", 
-"mig", "mil", "mlpa", "mlpb", "mlpc", "mlpd", "mlpe", "mlpf", 
-"mlpg", "mlph", "mlpi", "mlpj", "mlpk", "nwab", "nwav", "nwla", 
-"nwlk", "nwre", "oip", "pap", "relp", "retp", "sch", "schg", 
-"schl", "semp", "sex", "ssip", "ssp", "wagp", "wkhp", "wkl", 
-"wkw", "wrk", "yoep", "anc", "anc1p", "anc2p", "decade", "dis", 
-"drivesp", "esp", "esr", "fod1p", "fod2p", "hicov", "hisp", "indp", 
-"jwap", "jwdp", "lanp", "migpuma", "migsp", "msp", "naicsp", 
-"nativity", "nop", "oc", "occp", "paoc", "pernp", "pincp", "pobp", 
-"povpip", "powpuma", "powsp", "privcov", "pubcov", "qtrbir", 
-"rac1p", "rac2p", "rac3p", "racaian", "racasn", "racblk", "racnhpi", 
-"racnum", "racsor", "racwht", "rc", "sciengp", "sciengrlp", "sfn", 
-"sfr", "socp", "vps", "waob", "fagep", "fancp", "fcitp", "fcitwp", 
-"fcowp", "fddrsp", "fdearp", "fdeyep", "fdisp", "fdoutp", "fdphyp", 
-"fdratp", "fdratxp", "fdremp", "fengp", "fesrp", "fferp", "ffodp", 
-"fgclp", "fgcmp", "fgcrp", "fhins1p", "fhins2p", "fhins3c", "fhins3p", 
-"fhins4c", "fhins4p", "fhins5c", "fhins5p", "fhins6p", "fhins7p", 
-"fhisp", "findp", "fintp", "fjwdp", "fjwmnp", "fjwrip", "fjwtrp", 
-"flanp", "flanxp", "fmarhdp", "fmarhmp", "fmarhtp", "fmarhwp", 
-"fmarhyp", "fmarp", "fmigp", "fmigsp", "fmilpp", "fmilsp", "foccp", 
-"foip", "fpap", "fpernp", "fpincp", "fpobp", "fpowsp", "fprivcovp", 
-"fpubcovp", "fracp", "frelp", "fretp", "fschgp", "fschlp", "fschp", 
-"fsemp", "fsexp", "fssip", "fssp", "fwagp", "fwkhp", "fwklp", 
-"fwkwp", "fwrkp", "fyoep", paste0("pwgtp", 1:80))
+For more information on the specifics of the American Community Survey, see 
+the asdfree site. Now, our code loads this prepared dataset, initiates a MonetDB database, and 
+puts the data into the dataset.
 
-var_types_readr <- lapply(var_types, function(x) {
-  out <- list(col_integer(), col_character())[match(x, c("integer", "character"))]
-  out
+```{r}
+suppressMessages({
+  library(MonetDBLite)
+  library(survey)
+  library(srvyr)
+  library(dplyr)
+  library(RSQLite)
 })
 
-var_types_sql <- lapply(var_types, function(x) {
-  out <- lapply(x, function(y) {
-    if (y == "character") "1"
-    else if (y == "integer") 1L
-  })
-  as.data.frame(out, stringsAsFactors = FALSE)
-})
-}
+# Load data (Currently only Alaska and Hawaii to keep file size small and with 
+# limited variables, butcode that downloaded the files is available here TKTKTKT,
+# and could easily be adapted to download all states.)
+load("acs_m.Rdata") # acs_m data
 
-# Helper functions
-# Downloads, unzips and loads acs file, saves an intermediate file at out_file
-acs_file_loader <- function(url, data_file, db, table, vtypes, out_file = tempfile()) {
-  download.file(url, destfile = out_file, quiet = TRUE)
-  data_conn <- unz(out_file, data_file) # makes a file connection to an internal file
-  read_csv(data_conn, col_types = vtypes, progress = FALSE)
-}
-
-# For each state in states argument, downloads the data from the web and uploads it into
-# the dataabse db
-prepare_acs2011_single <- function(db, states = "ak") {
-  file_types <- c("h", "p")
-  file_types_full <- list(h = "household", p = "person")
-  
-  out <- list()
-  for (ttt in file_types) {
-    cat("\n")
-    success <- logical(length(states))
-    for (iii in seq_along(states)) {
-      sss <- states[iii]
-      this_data <- acs_file_loader(
-        url = sprintf("http://www2.census.gov/acs2011_1yr/pums/csv_%s%s.zip", ttt, sss),
-        data_file = sprintf("ss11%s%s.csv", ttt, sss), 
-        db = db, 
-        vtypes = var_types_readr[[ttt]]
-      )
-      names(this_data) <- tolower(names(this_data))
-      success[iii] <- db_insert_into(db$con, file_types_full[[ttt]], this_data)
-      
-      if (!success[iii]) {
-        warning(sprintf("Problem with state %s and type %s.", sss, ttt))
-      }
-      if (iii %% 20 == 1) {
-        cat(sprintf("%s", sss))
-      } else if (iii %% 5 == 1) {
-        cat(".")
-      }
-    }
-    out[[ttt]] <- success
-  }
-  cat("\n")
-  out 
-}
-
-# Set up database and tables
+# Set up database and table
 db <- src_monetdblite()
-dbSendQuery(db$con, sqlCreateTable(db$con, "person", var_types_sql$p, temporary = FALSE))
-dbSendQuery(db$con, sqlCreateTable(db$con, "household", var_types_sql$h, temporary = FALSE))
+acs_m_db <- copy_to(db, acs_m, "acs_m", temporary = FALSE)
 
-# dbRemoveTable(db$con, "person")
-# dbRemoveTable(db$con, "household")
+# Make table read only to reflect real world usage (see advanced topics below).
+db_status <- dbSendQuery(acs_m_db$src$con, "ALTER TABLE acs_m SET READ ONLY")
 
+# Or, if the data was already stored in the database, you could do this
+# acs_m_data <- tbl(db, sql("SELECT * FROM acs_m")) 
+```
 
-# acs_status <- prepare_acs2011_single(db, states = tolower(state.abb))
-acs_status <- prepare_acs2011_single(db)
+Now that we have the data in the database, we can interact with the database directly using sql 
+commands, or we can use dplyr's functionality to treat it mostly the same as a local `data.frame`.
+However, the data is not stored in memory, so we could work with much larger datasets (though
+in this case, the data is too small for this to be a problem).
 
-# Merge the datasets together, could use dplyr joins, but that would remake the table every time.
-# By doing it with DBI commands, we are doing the complicated join only once.
-h_fields <- paste0('a.', setdiff(names(var_types$h), "rt"))
-p_fields <- paste0('b.', setdiff(names(var_types$p), names(var_types$h)))
+```{r}
+# Same results
+acs_m %>% 
+  group_by(sex) %>%
+  summarize(hicov = mean(hicov))
 
-merge_query <- sql(paste0(
-  "CREATE TABLE merged AS", 
-  "  SELECT 'M' as rt, ", paste0(h_fields, collapse = ", "), ", ", paste0(p_fields, collapse = ", "), 
-  "  FROM household AS a INNER JOIN person AS b ON a.serialno = b.serialno"
-  ))
+acs_m_db %>% 
+  group_by(sex) %>%
+  summarize(hicov = mean(hicov))
 
-merge_status <- dbSendQuery(db$con, merge_query)
-
+# But smaller object size
+object.size(acs_m)
+object.size(acs_m_db)
 
 ```
 
-TKTKTK
-So now data is stored in database
-We can access it with a simple sql command, and the tbl command allows dplyr (and srvyr) to treat as if
-it were local
-But it's not (show memory size)
-TKTKTK
+Note that though many commands behave exactly the same whether on a local data.frame or
+database, sometimes more advanced / complicated syntax around variable modification allowed 
+in dplyr does not work on a particular database and so it is better to be more explicit. For
+example, creating a variable inside of a summarize call does not work (at least with MonetDB).
+.
 
-```{r, eval = FALSE}
-# Creates dplyr objects that reference the database 
-acs_h_data <- tbl(db, sql("SELECT * FROM household"))
+```{r}
+acs_m %>% 
+  group_by(sex) %>%
+  summarize(hicov = mean(hicov == 1))
 
-Sys.sleep(0.5) # R frequently crahses if we call on db too rapidly.
+# acs_m_db %>% 
+#   group_by(sex) %>%
+#   summarize(hicov = mean(hicov == 1))
+#
+# > Error in .local(conn, statement, ...) :
+# > Unable to execute statement....
+# > ....
 
-acs_m_data <- tbl(db, sql("SELECT * FROM merged"))
-
+# Creating the variable separately works as an integer works though
+acs_m_db %>% 
+  group_by(sex) %>%
+  mutate(hicov = ifelse(hicov == 1, 1L, 0L)) %>%
+  summarize(hicov = mean(hicov))
 ```
 
-TKTKTK
-srvyr commands are nearly identical to old 
-  only difference for setup is that you need a uid
-uses more data relatively than the dplyr equivalent
-TKTKTK
+Further, sometimes working with variable types can get difficult if you are used to working in
+R. Notice how in the above, instead of `hicov = (hicov == 1)`, I wrote out the ifelse statement. 
+If I hadn't MonetDB would be unable to calculate the mean of the boolean variable created.
 
-```{r, eval = FALSE}
-acs_m <- acs_m_data %>% 
+Finally, a major difference when transitioning from dplyr on local data.frames is that not 
+all R functions are translated to SQL. For example, `cut()` isn't implemented in SQL, 
+so you can't create a new variable in the data.frame using it. 
+
+```{r}
+acs_m %>% 
+  group_by(agecat = cut(agep, c(0, 19, 35, 50, 65, 200))) %>%
+  summarize(hicov = mean(hicov == 1))
+
+# acs_m_db %>% 
+#   group_by(agecat = cut(agep, c(0, 19, 35, 50, 65, 200))) %>%
+#   summarize(hicov = mean(hicov == 1))
+#
+# > Error in .local(conn, statement, ...) :
+# > Unable to execute statement....
+# > ...
+
+acs_m_db %>% 
+  mutate(agecat = ifelse(agep < 19, "0-18", 
+                         ifelse(agep >= 19 & agep < 35, "19-34", 
+                                ifelse(agep >= 35 & agep < 50, "35-49", 
+                                       ifelse(agep >= 50 & agep < 65, "50-64", 
+                                              ifelse(agep >= 65, "65+", NA)))))) %>%
+  group_by(agecat) %>% 
+  summarize(hicov = mean(hicov))
+```
+
+For more information on the specifics of databases
+with dplyr, see `vignette("database", package = dplyr)`, the `DBI` package or the 
+specific database packages, like `MonetDBLite` or `RSQLite`.
+
+## Srvyr Setup ##
+Srvyr commands are nearly identical to old. The only difference for setup is that you 
+need a variable that uniquely identifieds each row in the database (uid). 
+
+```{r}
+acs_m_db_svy <- acs_m_db %>% 
   mutate(uid = serialno * 100L + sporder) %>% 
   as_survey_rep(
     weight = pwgtp,
@@ -273,53 +167,68 @@ acs_m <- acs_m_data %>%
     rscales = rep(1 , 80),
     mse = TRUE,
     type = "JK1", 
+    variables = -c(matches("^pwgtp")),
     uid = uid
   )
+
+acs_m_db_svy
 ```
 
-TKTKTK
-Analysis commands are similar to local ones
-  Also often need to be more explicit about creating variables than with local data
-  Some, but not all, R functions have been translated to databases
-TKTKTK
+Because srvyr stores the survey variables locally, the srvyr object takes up
+much more memory than the dplyr one. However, this object would not grow in size
+if you added more data variables to your survey, so if your survey is very wide,
+it will save a lot space.
 
-```{r, eval = FALSE}
+```{r}
+object.size(acs_m_db_svy)
+```
+
+# Analysis # 
+
+Analysis commands from srvyr are also similar to ones that work on local data.frames. 
+The main differences come from the issues discussed above about explicitly creating variables
+difficulties in translating R commands, and variable types. 
+
+The following anlaysis is based on the asdfree analysis and shows some basi analysis on
+the total populaiton, insurance coverage, age and sex. 
+
+```{r}
 # You can calculate the population of the united states #
 # by state
-acs_m %>%
+acs_m_db_svy %>%
   mutate(one = 1L) %>% # Note that because of weird behavior of MonetDB, need to use 1L not just 1
   group_by(st) %>% 
   summarize(count = survey_total(one))
 
 # Or the average age of downloaded states
-acs_m %>%
+acs_m_db_svy %>%
   summarize(agep = survey_mean(agep, na.rm = TRUE))
 
 # Average age by state
-acs_m %>%
+acs_m_db_svy %>%
   group_by(st) %>% 
   summarize(agep = survey_mean(agep, na.rm = TRUE))
 
 # percent uninsured - nationwide (of downloaded states)
-acs_m %>%
+acs_m_db_svy %>%
   mutate(hicov = as.character(hicov)) %>% 
   group_by(hicov) %>% 
   summarize(pct = survey_mean(na.rm = TRUE))
 
 # by state
-acs_m %>%
+acs_m_db_svy %>%
   mutate(hicov = as.character(hicov)) %>% 
   group_by(st, hicov) %>% 
   summarize(pct = survey_mean(na.rm = TRUE))
 
 
 # 25th, median, and 75th percentile of age of residents of the united states (downloaded states)
-acs_m %>%
+acs_m_db_svy %>%
   summarize(agep = survey_quantile(agep, c(0.25, 0.5, 0.75), na.rm = TRUE))
 
 
 # Filter works, so we can restrict the acs_m object to females only
-acs_m_female <- acs_m %>%
+acs_m_db_svy_female <- acs_m_db_svy %>%
   filter(sex == 2)
 
 # Now any of the above commands can be re-run using the acs_m_female object
@@ -328,11 +237,11 @@ acs_m_female <- acs_m %>%
 # This is equivalent to using acs_m, and applying the filter every time.
 
 # average age - nationwide (of downloaded states), restricted to females
-acs_m_female %>%
+acs_m_db_svy_female %>%
   summarize(agep = survey_mean(agep, na.rm = TRUE))
 
 # median age - nationwide (of downloaded states), restricted to females
-acs_m_female %>%
+acs_m_db_svy_female %>%
   summarize(agep = survey_median(agep, na.rm = TRUE))
 
 
@@ -340,7 +249,7 @@ acs_m_female %>%
 # all of them are. For example, when constructing a new age category 
 # variable in the dataset neither findIntervals nor cut work on databases, 
 # so we have to spell out groups with ifelse()
-acs_m %>% 
+acs_m_db_svy %>% 
   mutate(agecat = ifelse(agep < 19, "0-18", 
                          ifelse(agep >= 19 & agep < 35, "19-34", 
                                 ifelse(agep >= 35 & agep < 50, "35-49", 
@@ -350,9 +259,16 @@ acs_m %>%
   summarize(pct = survey_mean(na.rm = TRUE))
 ```
 
-TKTKTK
-Advanced topics
-  Read only
-  Index importance
-Closing db?
-TKTKTK
+## Advanced Topics ##
+### Write Access ###
+Note that srvyr does not require write access to perform calculations, 
+the database created in this vignette was set to read-only at the beginning. 
+This can be important when you want to make sure that your original data is
+not altered accidentally, or if you don't have write access to a database.
+
+### Speed ###
+Srvyr using a database is significantly slower than using the survey package's
+database support, which is in turn slower than using local data.frames. The real
+advantages of databases are for working with sureys that are very wide (many variables). 
+Srvyr's advantage over the survey package comes down to the syntax, if you prefer the
+consistent style of srvyr you'll need to be willing to stomach the performance loss.

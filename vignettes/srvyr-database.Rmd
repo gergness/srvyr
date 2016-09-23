@@ -61,11 +61,11 @@ suppressMessages({
 load("acs_m.Rdata") # acs_m data
 
 # Set up database and table
-db <- src_monetdblite()
+db <- src_sqlite("srvyr-db-file", create = TRUE)
 acs_m_db <- copy_to(db, acs_m, "acs_m", temporary = FALSE)
 
 # Make table read only to reflect real world usage (see advanced topics below).
-db_status <- dbSendQuery(acs_m_db$src$con, "ALTER TABLE acs_m SET READ ONLY")
+# db_status <- dbSendQuery(acs_m_db$src$con, "ALTER TABLE acs_m SET READ ONLY")
 
 # Or, if the data was already stored in the database, you could do this
 # acs_m_data <- tbl(db, sql("SELECT * FROM acs_m")) 
@@ -257,6 +257,8 @@ acs_m_db_svy %>%
                                               ifelse(agep >= 65, "65+", NA)))))) %>%
   group_by(agecat) %>% 
   summarize(pct = survey_mean(na.rm = TRUE))
+
+file.remove("srvyr-db-file")
 ```
 
 ## Advanced Topics ##

@@ -27,14 +27,21 @@ as.character.survey_vars <- function(x, ...) {
 }
 
 #' @export
-print.survey_vars <- function(x, ...) {
+print.survey_vars <- function(x, all = FALSE, ...) {
   cat("Sampling variables:\n")
   lapply(seq_along(x), function(y) {
     if (!is.null(x[[y]])) {
-      cat(paste0(" - ", names(x[y]), ": ", paste(x[[y]], collapse = ", "),
-                 "\n"))
+      if (length(x[[y]]) > 7 & !all) {
+        num_vars <- length(x[[y]])
+        print_vars <- x[[y]][1:5]
+        cat(paste0(" - ", names(x[y]), ": ", paste(print_vars, collapse = ", "),
+                   ", ... (", num_vars - 5, " more)\n"))
+      } else {
+        cat(paste0(" - ", names(x[y]), ": ", paste(x[[y]], collapse = ", "),
+                   "\n"))
+      }
     }
-    })
+  })
   invisible(x)
 }
 

@@ -41,11 +41,11 @@ NULL
 
 # Mostly mimics survey:::print.survey.design2
 #' @export
-print.tbl_svy <- function (x, varnames = TRUE, ...) {
+print.tbl_svy <- function (x, varnames = TRUE, all_survey_vars = FALSE, ...) {
   NextMethod()
 
   if (length(survey_vars(x)) > 0) {
-    print(survey_vars(x))
+    print(survey_vars(x), all_survey_vars)
   }
   if(length(groups(x)) != 0) {
     cat("Grouping variables: ")

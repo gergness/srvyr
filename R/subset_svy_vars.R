@@ -95,10 +95,10 @@ filtered_row_numbers <- function(.svy, dots) {
     order_vars <- dplyr::collect(order_vars, n = Inf)
 
     uid <- uid(.svy)
-    uid <- mutate(uid, `___row_number` = row_number())
+    uid <- mutate_(uid, `___row_number` = "row_number()")
 
     row_numbers <- dplyr::inner_join(uid, order_vars, by = order_var_names)
-    row_numbers <- select(row_numbers, `___row_number`)[[1]]
+    row_numbers <- select_(row_numbers, "`___row_number`")[[1]]
   }
 
   list(row_numbers = row_numbers, filtered_vars = filtered_vars)

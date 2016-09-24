@@ -26,6 +26,6 @@ ordered_collect <- function(x) {
   order_vars <-  attr(x, "order_var")
   x <- dplyr::arrange_(x, .dots = order_vars)
   x <- dplyr::collect(x, n = Inf)
-  x <- dplyr::select(x, -one_of(order_vars))
+  x <- dplyr::select(x, -dplyr::one_of(order_vars))
   x
 }

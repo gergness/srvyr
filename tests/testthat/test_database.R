@@ -262,6 +262,14 @@ for (db_type in c("RSQLite", "MonetDBLite")) {
                  "Twophase(.+)database")
   })
 
+  test_that("non-unique uid has error", {
+    skip_on_cran()
+    expect_error(api_db %>%
+                   as_survey_design(strata = stype, weights = pw,
+                                    uid = stype),
+                 "unique")
+  })
+
   test_that("Ungrouped summaries work - replicates", {
     skip_on_cran()
     expect_equal(svysrep$db %>%

@@ -113,7 +113,12 @@ as_tbl_svy <- function(x, var_names = list(), uid = NULL) {
 
   survey_vars(x) <- var_names
 
-  if (!is.null(uid)) names(uid) <- get_uid_names(length(uid))
+  if (!is.null(uid)) {
+    if (any(duplicated(uid))) {
+      stop("uid columns not unique.")
+    }
+    names(uid) <- get_uid_names(length(uid))
+  }
   uid(x) <- uid
 
   # To make printing better, change call

@@ -29,14 +29,3 @@ ordered_collect <- function(x) {
   x <- dplyr::select(x, -one_of(order_vars))
   x
 }
-
-# Current belief -> a final arrange could be created
-# that behaves similarly to arrange_, but is translated slightly different
-# so that it is valid MonetDB
-# final_arrange_ <- function(x, dots) {
-#
-# }
-#
-# sql_build.op_final_arrange <- function(op, con, ...) {
-#
-# }

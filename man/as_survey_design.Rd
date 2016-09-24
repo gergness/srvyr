@@ -57,7 +57,7 @@ approximation. An object of class ppsmat to use the Horvitz-Thompson estimator.}
 \item{variance}{For pps without replacement, use variance="YG" for the Yates-Grundy estimator
 instead of the Horvitz-Thompson estimator}
 
-\item{uid}{Required for databases only, a variable that uniquely identifies the
+\item{uid}{Required for databases only, variables that uniquely identify the
 observations of your survey.}
 }
 \value{

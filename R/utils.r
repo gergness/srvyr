@@ -87,7 +87,7 @@ survey_selector <- function(.data, x) {
   if (!is.null(x)) {
 
     if (inherits(.data, "tbl_lazy")) {
-      out <- dplyr::select_(.data, "SRVYR_ORDER", .dots = x)
+      out <- dplyr::select_(.data, .dots = c(attr(.data, "order_var"), x))
       out <- ordered_collect(out)
     } else {
       out <- dplyr::select_(.data, .dots = x)

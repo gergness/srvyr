@@ -72,7 +72,7 @@ weights have been averaged, gives the number of iterations averaged over.}
 \item{mse}{if \code{TRUE}, compute varainces based on sum of squares
 around the point estimate, rather than the mean of the replicates}
 
-\item{uid}{Required for databases only, a variable that uniquely identifies the
+\item{uid}{Required for databases only, variables that uniquely identify the
 observations of your survey.}
 
 \item{compress}{if \code{TRUE}, store replicate weights in compressed form

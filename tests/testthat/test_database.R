@@ -76,7 +76,7 @@ for (db_type in c("RSQLite", "MonetDBLite")) {
                    select(apidiff) %>%
                    .$variables %>%
                    collect() %>%
-                   select(-SRVYR_ORDER) %>%
+                   select(-matches("SRVYR_ORDER")) %>%
                    mutate(apidiff = as.integer(apidiff)),
                  svys$local %>%
                    mutate(apidiff = api00 - api99) %>%
@@ -85,6 +85,17 @@ for (db_type in c("RSQLite", "MonetDBLite")) {
     )
   })
 
+
+  test_that("multiple uid works", {
+    skip_on_cran()
+    expect_equal(api_db %>%
+                   as_survey_design(strata = stype, weights = pw,
+                                    uid = c(stype, cds)) %>%
+                   .$uid %>%
+                   names(),
+                 srvyr:::get_uid_names(2)
+    )
+  })
 
   test_that("Ungrouped summaries work", {
     skip_on_cran()

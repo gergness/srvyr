@@ -35,7 +35,7 @@
 #' approximation. An object of class ppsmat to use the Horvitz-Thompson estimator.
 #' @param variance For pps without replacement, use variance="YG" for the Yates-Grundy estimator
 #' instead of the Horvitz-Thompson estimator
-#' @param uid Required for databases only, a variable that uniquely identifies the
+#' @param uid Required for databases only, variables that uniquely identify the
 #' observations of your survey.
 #' @param ... ignored
 #' @return An object of class \code{tbl_svy}
@@ -144,8 +144,9 @@ as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
     if (missing(uid) || is.null(uid)) {
       stop("Database backed surveys require a uid.")
     } else {
-      .data <- mutate_(.data, SRVYR_ORDER = uid)
-      attr(.data, "order_var") <- "SRVYR_ORDER"
+      uid_names <- get_uid_names(length(uid))
+      .data <- uid_rename(.data, uid, uid_names)
+      attr(.data, "order_var") <- uid_names
     }
   }
 

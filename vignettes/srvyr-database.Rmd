@@ -163,7 +163,6 @@ need a variable that uniquely identifieds each row in the database (uid).
 
 ```{r}
 acs_m_db_svy <- acs_m_db %>% 
-  mutate(uid = serialno * 100L + sporder) %>% 
   as_survey_rep(
     weight = pwgtp,
     repweights = matches("pwgtp[0-9]+") ,
@@ -172,7 +171,7 @@ acs_m_db_svy <- acs_m_db %>%
     mse = TRUE,
     type = "JK1", 
     variables = -c(matches("^pwgtp")),
-    uid = uid
+    uid = c(serialno, sporder)
   )
 
 acs_m_db_svy

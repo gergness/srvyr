@@ -36,7 +36,7 @@
 #' @param fpc,fpctype Finite population correction information
 #' @param mse if \code{TRUE}, compute varainces based on sum of squares
 #' around the point estimate, rather than the mean of the replicates
-#' @param uid Required for databases only, a variable that uniquely identifies the
+#' @param uid Required for databases only, variables that uniquely identify the
 #' observations of your survey.
 #' @param ... ignored
 #' @param compress if \code{TRUE}, store replicate weights in compressed form
@@ -152,8 +152,9 @@ as_survey_rep_ <-
       if (missing(uid) || is.null(uid)) {
         stop("Database backed surveys require a uid.")
       } else {
-        .data <- mutate_(.data, SRVYR_ORDER = uid)
-        attr(.data, "order_var") <- "SRVYR_ORDER"
+        uid_names <- get_uid_names(length(uid))
+        .data <- uid_rename(.data, uid, uid_names)
+        attr(.data, "order_var") <- uid_names
       }
     }
 

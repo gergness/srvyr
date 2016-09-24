@@ -11,11 +11,22 @@ uid <- function(svy) {
   svy
 }
 
+get_uid_names <- function(num_vars) {
+  paste0("SRVYR_ORDER", seq_len(num_vars))
+}
+
+uid_rename <- function(df, uid_vars, uid_names) {
+  rename_text <- uid_vars
+  names(rename_text) <- uid_names
+  mutate_(df, .dots = rename_text)
+}
+
 # Collect after ordering on uid
 ordered_collect <- function(x) {
-  x <- dplyr::arrange_(x, "SRVYR_ORDER")
+  order_vars <-  attr(x, "order_var")
+  x <- dplyr::arrange_(x, .dots = order_vars)
   x <- dplyr::collect(x, n = Inf)
-  x <- dplyr::select_(x, "-SRVYR_ORDER")
+  x <- dplyr::select(x, -one_of(order_vars))
   x
 }
 

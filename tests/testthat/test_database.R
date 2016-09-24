@@ -3,7 +3,7 @@ suppressPackageStartupMessages({
   library(survey)
   library(srvyr)
   library(RSQLite)
-  library(MonetDBLite)
+  require(MonetDBLite) # MonetDBLite not on all CRAN systems
 })
 
 data(api)

@@ -34,7 +34,7 @@ Specifically, I have adpated code from [American Community Survey - 2011 single 
 
 ## Database Setup ##
 In order to focus on srvyr and databases, we start with a prepared dataset. The full code 
-is avaliable on Github TKTKTKT, and the high level description of what it does is:
+is avaliable [on Github](https://github.com/gergness/srvyr/blob/master/vignettes/save_acs_data.R), and the high level description of what it does is:
 
 - Download data from acs website (currently only Alaska and Hawaii to save time, 
 though it would be easy to adapt to download to all 50 states and Puerto Rico). 
@@ -60,7 +60,8 @@ suppressMessages({
 })
 
 # Load data (Currently only Alaska and Hawaii to keep file size small and with 
-# limited variables, butcode that downloaded the files is available here TKTKTKT,
+# limited variables, butcode that downloaded the files is available here
+# https://github.com/gergness/srvyr/blob/master/vignettes/save_acs_data.R
 # and could easily be adapted to download all states.)
 load("acs_m.Rdata") # acs_m data
 

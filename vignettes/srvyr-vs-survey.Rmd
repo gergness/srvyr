@@ -137,7 +137,7 @@ confint(out)
 
 ## By group
 
-`srvyr` also allows you to calculate statistics on numeric variablesby group, 
+`srvyr` also allows you to calculate statistics on numeric variables by group, 
 using `group_by()`.
 ```{r, message = FALSE}
 # Using srvyr

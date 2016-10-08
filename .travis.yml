@@ -3,6 +3,10 @@
 language: r
 cache: packages
 warnings_are_errors: true
+r:
+  - devel
+  - release
+  - 3.1.2
 r_packages:
   - covr
 after_success:

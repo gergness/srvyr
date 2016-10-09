@@ -2,13 +2,17 @@ suppressPackageStartupMessages({
   library(dplyr)
   library(survey)
   library(srvyr)
-  library(RSQLite)
-  require(MonetDBLite) # MonetDBLite not on all CRAN systems
 })
 
 data(api)
 
-for (db_type in c("RSQLite", "MonetDBLite")) {
+# Dbs not always available
+db_types <- c()
+if (suppressPackageStartupMessages(require(RSQLite))) db_types <- c(db_types, "RSQLite")
+if (suppressPackageStartupMessages(require(MonetDBLite))) db_types <- c(db_types, "MonetDBLite")
+
+
+for (db_type in db_types) {
 
   if (identical(Sys.getenv("NOT_CRAN"), "true")) {
     context(paste0("Database objects work as expected - ", db_type))

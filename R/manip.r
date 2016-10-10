@@ -121,54 +121,110 @@ NULL
 #' @rdname dplyr_single
 NULL
 
+
 #' Summarise and mutate multiple columns.
 #'
-#' See \code{\link[dplyr]{mutate_each}} for more details.
+#' See \code{\link[dplyr]{summarize_all}} for more details. *_each functions will be depracated
+#' in favor of *_all/*_if/*_at functions, but the latter do not yet work on database backed tables.
 #'
+#' @name summarise_all
+#' @export
+#' @importFrom dplyr summarise_all
+NULL
+
+#' @name summarize_all
+#' @export
+#' @importFrom dplyr summarize_all
+#' @rdname summarise_all
+NULL
+
+#' @name summarise_if
+#' @export
+#' @importFrom dplyr summarise_if
+#' @rdname summarise_all
+NULL
+
+#' @name summarize_if
+#' @export
+#' @importFrom dplyr summarize_if
+#' @rdname summarise_all
+NULL
+
+#' @name summarise_at
+#' @export
+#' @importFrom dplyr summarise_at
+#' @rdname summarise_all
+NULL
+
+#' @name summarize_at
+#' @export
+#' @importFrom dplyr summarize_at
+#' @rdname summarise_all
+NULL
+
+#' @name mutate_all
+#' @export
+#' @importFrom dplyr mutate_all
+#' @rdname summarise_all
+NULL
+
+#' @name mutate_if
+#' @export
+#' @importFrom dplyr mutate_if
+#' @rdname summarise_all
+NULL
+
+#' @name mutate_at
+#' @export
+#' @importFrom dplyr mutate_at
+#' @rdname summarise_all
+NULL
+
 #' @name mutate_each
 #' @export
 #' @importFrom dplyr mutate_each
+#' @rdname summarise_all
 NULL
 
 #' @name mutate_each_
 #' @export
 #' @importFrom dplyr mutate_each_
-#' @rdname mutate_each
+#' @rdname summarise_all
 NULL
 
 #' @name summarise_each
 #' @export
 #' @importFrom dplyr summarise_each
-#' @rdname mutate_each
+#' @rdname summarise_all
 NULL
 
 #' @name summarise_each_
 #' @export
 #' @importFrom dplyr summarise_each_
-#' @rdname mutate_each
+#' @rdname summarise_all
 ?NULL
 
 #' @name summarize_each
 #' @export
 #' @importFrom dplyr summarize_each
-#' @rdname mutate_each
+#' @rdname summarise_all
 NULL
 
 #' @name summarize_each_
 #' @export
 #' @importFrom dplyr summarize_each_
-#' @rdname mutate_each
+#' @rdname summarise_all
 NULL
 
 #' @name funs
 #' @export
 #' @importFrom dplyr funs
-#' @rdname mutate_each
+#' @rdname summarise_all
 NULL
 
 
 #' @name funs_
 #' @export
 #' @importFrom dplyr funs_
-#' @rdname mutate_each
+#' @rdname summarise_all
 NULL

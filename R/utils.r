@@ -6,6 +6,43 @@ lazy_parent <- function(expr) {
   lazyeval::lazy_(e2, parent.frame(2))
 }
 
+
+# For functions that use select style syntax, gets the variable names
+# from the user's input and data, and then returns a formula that
+# can be used in a survey package function. If NULL, return NULL.
+#
+# Note that the formulas returned by this function  don't have the right
+# environment by design. This is because we are only interested
+# in names that resolve to variables in a dataframe. See
+# https://github.com/hadley/rlang/issues/73 for some details about how
+# the env isn't used properly within survey's use of stats::model.frame.
+#
+# Argument check_ids checks for 0, and 1, which supposed to be
+# returned as is for functions like svydesign. Usually they would return
+# an error and the first column, respectively (because select works on ints).
+# I want to make this programmable, but still return the right thing, so
+# the logic is a little complicated:
+# 1) If `vars` evaluates to a single column name, it will use the column
+# 2) If it is not a column name and it evaluates to 0 or 1 then return ~0/~1
+# 3) If it is anything else, use dplyr::select_vars to find columns
+srvyr_select_vars <- function(vars, data, check_ids = FALSE) {
+  vars <- vars
+  var_names <- dplyr::tbl_vars(data)
+  if (check_ids) {
+    var_rhs <- as.character(rlang::f_rhs(vars))
+    if (!(length(var_rhs) == 1 && var_rhs %in% var_names)) {
+      var_eval <- try(rlang::eval_tidy(vars), silent = TRUE)
+      if (identical(var_eval, 0) || identical(var_eval, 1)) {
+        return(survey::make.formula(var_eval))
+      }
+    }
+  }
+  if (is.null(rlang::f_rhs(vars))) return(NULL)
+
+  out_vars <- rlang::eval_tidy(dplyr::select_vars(var_names, rlang::UQS(vars)))
+  survey::make.formula(out_vars)
+}
+
 nullable <- function(f, x) {
   if (is.null(x)) NULL
   else f(x)

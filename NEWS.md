@@ -1,4 +1,10 @@
-# srvyr 0.1.2.999
+# srvyr 0.2.0.9000
+* Add support for mutate/summarize _at/_all/_if functions
+
+* ids are now a required argument for as_survey_design to match survey's behavior.
+  Use 0/1 to indicate that each row is a cluster.
+
+# srvyr 0.2
 * Added support for database backed surveys, using dplyr's handling of
 DBI. Because of problems interacting with the survey package twophase designs 
 do not work. 

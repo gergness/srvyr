@@ -89,26 +89,27 @@ as_survey_design <- function(.data, ...) {
 #' @export
 #' @rdname as_survey_design
 as_survey_design.data.frame <-
-  function(.data, ids = NULL, probs = NULL, strata = NULL,
+  function(.data, ids, probs = NULL, strata = NULL,
            variables = NULL, fpc = NULL, nest = FALSE,
            check_strata = !nest, weights = NULL, pps = FALSE,
            variance = c("HT", "YG"), uid = NULL, ...) {
+  ids <- srvyr_select_vars(rlang::enquo(ids), .data, check_ids = TRUE)
+  probs <- srvyr_select_vars(rlang::enquo(probs), .data)
+  strata <- srvyr_select_vars(rlang::enquo(strata), .data)
+  fpc <- srvyr_select_vars(rlang::enquo(fpc), .data)
+  weights <- srvyr_select_vars(rlang::enquo(weights), .data)
+  variables <- srvyr_select_vars(rlang::enquo(variables), .data)
+  # uid <- srvyr_select_vars(rlang::enquo(uid), .data)
 
-  if (!missing(ids)) {
-    ids <- lazy_parent(ids)
-    ids <- if (ids$expr == 1 || ids$expr == 0) NULL else helper(ids, .data)
-  }
-  if (!missing(probs)) probs <- helper(lazy_parent(probs), .data)
-  if (!missing(strata)) strata <- helper(lazy_parent(strata), .data)
-  if (!missing(fpc)) fpc <- helper(lazy_parent(fpc), .data)
-  if (!missing(weights)) weights <- helper(lazy_parent(weights), .data)
-  if (!missing(variables)) variables <- helper(lazy_parent(variables), .data)
-  if (!missing(uid)) uid <- helper(lazy_parent(uid), .data)
+  out <- survey::svydesign(
+    ids, probs, strata, variables, fpc, .data, nest, check_strata, weights, pps
+  )
 
-  as_survey_design_(.data, ids, probs = probs, strata = strata,
-                    variables = variables, fpc = fpc, nest = nest,
-                    check_strata = check_strata, weights = weights, pps = pps,
-                    variance = variance, uid = uid)
+  as_tbl_svy(
+    out,
+    list(ids = ids, probs = probs, strata = strata, fpc = fpc, weights = weights) #,
+    #uid = survey_selector(.data, uid)
+  )
 }
 
 #' @export

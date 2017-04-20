@@ -24,7 +24,10 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
   }
   # use the argument names to name the output
   out <- lapply(seq_along(out), function(x) {
-    stats::setNames(out[[x]], paste0(names(out[x]), names(out[[x]])))
+    var_names <- names(out[[x]])
+    vname_is_V1 <- var_names == "V1" # Bandaid for dplyr 0.6 behavior
+    if (any(vname_is_V1)) var_names[vname_is_V1] <- ""
+    stats::setNames(out[[x]], paste0(names(out[x]), var_names))
   })
 
   out <- dplyr::bind_cols(out)
@@ -61,6 +64,8 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
   out <- lapply(seq_along(out), function(x) {
     unchanged_names <- groups
     changed_names <- setdiff(names(out[[x]]), groups)
+    changed_names_is_v1 <- changed_names == "V1"
+    if (any(changed_names_is_v1)) changed_names[changed_names_is_v1] <- ""
     results <- stats::setNames(out[[x]], c(unchanged_names, paste0(names(out[x]),
                                                             changed_names)))
     results <- dplyr::arrange_(results, unchanged_names)

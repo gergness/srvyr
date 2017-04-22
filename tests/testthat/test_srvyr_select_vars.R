@@ -68,3 +68,11 @@ test_that(
     expect_rhs_equal_to(single_col, ~cyl)
   }
 )
+
+test_that(
+  "ssv works with c()", {
+    cyl <- 0
+    multi_var <- srvyr_select_vars(rlang::quo(c(cyl, mpg)), mtcars, check_ids = TRUE)
+    expect_rhs_equal_to(multi_var, ~cyl + mpg)
+  }
+)

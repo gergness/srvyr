@@ -111,7 +111,7 @@ as_tbl_svy <- function(x, var_names = list(), uid = NULL) {
       x$variables <- dplyr::tbl_df(x$variables)
   }
 
-  survey_vars(x) <- var_names
+  survey_vars(x) <- strip_varlist_formula(var_names)
 
   if (!is.null(uid)) {
     if (any(duplicated(uid))) {
@@ -150,3 +150,9 @@ print.quoteless_text <- function(x, ...) {
   cat(paste0(x, "\n"))
 }
 
+strip_varlist_formula <- function(vars) {
+  lapply(vars, function(x) {
+    if (length(x) == 0) return(x)
+    as.character(x)[-1] # First pos is either ~ or +
+  })
+}

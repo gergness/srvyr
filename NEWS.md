@@ -1,4 +1,12 @@
-# srvyr 0.1.2.999
+# srvyr 0.2.1
+* Added support for dplyr mutate_at/_if/_all and summarize_at/_if/_all for 
+srvyr surveys.
+
+* Fixed a few bugs introduced with dplyr 0.6. This version of srvyr will work
+with both old versions of dplyr and 0.6, but may be full of warnings if you
+update dplyr. Full support for the new dplyr is coming soon.
+
+# srvyr 0.2.0
 * Added support for database backed surveys, using dplyr's handling of
 DBI. Because of problems interacting with the survey package twophase designs 
 do not work. 

@@ -19,4 +19,3 @@
 \description{
 Chisquared tests of association for survey data.
 }
-

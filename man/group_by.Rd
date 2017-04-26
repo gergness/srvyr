@@ -43,4 +43,3 @@ dstrata <- apistrat \%>\%
 \seealso{
 \code{\link[dplyr]{group_by}} for information about group_by on normal data tables.
 }
-

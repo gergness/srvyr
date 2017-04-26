@@ -3,8 +3,8 @@
 \name{as_survey_design}
 \alias{as_survey_design}
 \alias{as_survey_design.data.frame}
-\alias{as_survey_design.survey.design2}
 \alias{as_survey_design.tbl_sql}
+\alias{as_survey_design.survey.design2}
 \alias{as_survey_design_}
 \title{Create a tbl_svy survey object using sampling design}
 \usage{
@@ -126,4 +126,3 @@ dstrata2 <- apistrat \%>\%
   as_survey_design_(strata = strata_var, weights = weights_var)
 
 }
-

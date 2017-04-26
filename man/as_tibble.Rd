@@ -9,4 +9,3 @@
 \description{
 Coerce survey variables to a data frame (tibble)
 }
-

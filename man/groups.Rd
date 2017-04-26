@@ -16,4 +16,3 @@ grouping.
 \seealso{
 \code{\link[dplyr]{groups}} for information.
 }
-

@@ -5,7 +5,7 @@
 \alias{as_survey.data.frame}
 \alias{as_survey.tbl_sql}
 \alias{as_survey.survey.design2}
-\alias{as_survey.svyrepdesign}
+\alias{as_survey.svyrep.design}
 \alias{as_survey.twophase2}
 \alias{as_survey_}
 \title{Create a tbl_svy from a data.frame}
@@ -18,7 +18,7 @@ as_survey(.data, ...)
 
 \method{as_survey}{survey.design2}(.data, ...)
 
-\method{as_survey}{svyrepdesign}(.data, ...)
+\method{as_survey}{svyrep.design}(.data, ...)
 
 \method{as_survey}{twophase2}(.data, ...)
 

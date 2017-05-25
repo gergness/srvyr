@@ -90,7 +90,7 @@ as_survey.survey.design2 <- function(.data, ...) {
 
 #' @export
 #' @rdname as_survey
-as_survey.svyrepdesign <- function(.data, ...) {
+as_survey.svyrep.design <- function(.data, ...) {
   as_tbl_svy(.data)
 }
 

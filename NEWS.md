@@ -1,4 +1,5 @@
-# srvyr 0.2.1.900
+# srvyr 0.2.2
+* Remove test blocking survey update
 
 # srvyr 0.2.1
 * Added support for dplyr mutate_at/_if/_all and summarize_at/_if/_all for 

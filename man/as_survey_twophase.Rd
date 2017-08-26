@@ -3,9 +3,9 @@
 \name{as_survey_twophase}
 \alias{as_survey_twophase}
 \alias{as_survey_twophase.data.frame}
-\alias{as_survey_twophase.tbl_sql}
 \alias{as_survey_twophase.twophase2}
 \alias{as_survey_twophase_}
+\alias{as_survey_twophase.tbl_sql}
 \title{Create a tbl_svy survey object using two phase design}
 \usage{
 as_survey_twophase(.data, ...)
@@ -101,4 +101,3 @@ d2pbc <- pbc \%>\%
   as_survey_twophase_(id = list(id1, id2), subset = "randomized")
 
 }
-

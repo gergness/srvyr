@@ -22,6 +22,7 @@ dplyr single-table verbs like \code{mutate}, \code{group_by} and
  Get descriptive statistics from survey.}
 }
 }
+
 \examples{
 library(survey)
 library(dplyr)
@@ -42,4 +43,3 @@ svy_group <- group_by(svy, dname)
 summarise(svy, col.grad = survey_mean(col.grad),
           api00 = survey_mean(api00, vartype = "ci"))
 }
-

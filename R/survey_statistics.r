@@ -674,7 +674,7 @@ survey_stat_grouped.default <- function(.svy, func, x, na.rm, vartype, level,
     vartype[vartype == "ci"] <- "ci-prop"
     stat <- survey::svyby(~SRVYR_VAR, survey::make.formula(grp_names),
                           .svy, func, na.rm = na.rm,
-                          se = TRUE, vartype = c("ci", "se"),
+                          se = TRUE, vartype = c("se", "ci"),
                           method = prop_method)
   }
 

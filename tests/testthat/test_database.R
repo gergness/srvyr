@@ -9,7 +9,13 @@ data(api)
 # Dbs not always available
 db_types <- c()
 if (suppressPackageStartupMessages(require(RSQLite))) db_types <- c(db_types, "RSQLite")
-if (suppressPackageStartupMessages(require(MonetDBLite))) db_types <- c(db_types, "MonetDBLite")
+
+# As of 4/22/2017 MonetDBLite does not work with dplyr 0.6
+# Check for updates to: https://github.com/hannesmuehleisen/MonetDBLite
+if (suppressPackageStartupMessages(require(MonetDBLite)) &&
+    class(try(src_monetdblite(), silent = TRUE)) != "try-error") {
+  db_types <- c(db_types, "MonetDBLite")
+}
 
 
 for (db_type in db_types) {

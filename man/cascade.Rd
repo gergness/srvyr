@@ -39,4 +39,3 @@ dstrata_grp \%>\%
             api_diff = survey_mean(api00 - api99))
 
 }
-

@@ -82,4 +82,3 @@ confint(comparison) # survey's default
 confint(comparison, df = survey::degf(dstrata)) # srvyr's default
 
 }
-

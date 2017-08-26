@@ -2,16 +2,16 @@
 % Please edit documentation in R/manip.r
 \name{dplyr_single}
 \alias{dplyr_single}
-\alias{filter}
-\alias{filter_}
 \alias{mutate}
 \alias{mutate_}
-\alias{rename}
-\alias{rename_}
-\alias{select}
-\alias{select_}
 \alias{transmute}
 \alias{transmute_}
+\alias{select}
+\alias{select_}
+\alias{rename}
+\alias{rename_}
+\alias{filter}
+\alias{filter_}
 \title{Single table verbs from dplyr}
 \description{
 These are data manipulation functions designed to work on \code{tbl_svy} objects.
@@ -33,4 +33,3 @@ may require modifications to the survey variable specifications and so
 cannot be done automatically. Instead, use dplyr to perform them while the
 data is still stored in data.frames.
 }
-

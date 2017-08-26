@@ -3,9 +3,9 @@
 \name{as_survey_rep}
 \alias{as_survey_rep}
 \alias{as_survey_rep.data.frame}
-\alias{as_survey_rep.survey.design2}
 \alias{as_survey_rep.svyrep.design}
 \alias{as_survey_rep.tbl_sql}
+\alias{as_survey_rep.survey.design2}
 \alias{as_survey_rep.tbl_svy}
 \alias{as_survey_rep_}
 \title{Create a tbl_svy survey object using replicate weights}
@@ -126,4 +126,3 @@ scdrep <- scd \%>\%
                 combined_weights = FALSE)
 
 }
-

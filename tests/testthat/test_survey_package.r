@@ -22,5 +22,3 @@ srvyr_chisq <- svychisq(~sch.wide + stype, dclus1_srvyr)[["p.value"]]
 test_that("srvyr and survey get same chisq",
           expect_equal(survey_chisq, srvyr_chisq))
 
-test_that("custom method is still needed for svychisq because of issue with tibbles [#23]",
-          expect_error(svychisq(~sch.wide + stype, dclus1_survey_tibble)))

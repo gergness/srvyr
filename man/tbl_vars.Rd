@@ -9,4 +9,3 @@
 \description{
 List variables produced by a tbl.
 }
-

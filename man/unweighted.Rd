@@ -31,4 +31,3 @@ dstrata \%>\%
   summarise(api_diff_unw = unweighted(mean(api00 - api99)))
 
 }
-

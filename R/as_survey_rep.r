@@ -78,16 +78,33 @@ as_survey_rep.data.frame <-
            rho = NULL, bootstrap_average = NULL, scale = NULL,
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
            mse = getOption("survey.replicates.mse"), uid = NULL, ...) {
-    if (!missing(variables)) variables <- helper(lazy_parent(variables), .data)
-    if (!missing(repweights)) repweights <- helper(lazy_parent(repweights), .data)
-    if (!missing(weights)) weights <- helper(lazy_parent(weights), .data)
-    if (!missing(fpc)) fpc <- helper(lazy_parent(fpc), .data)
-    if (!missing(uid)) uid <- helper(lazy_parent(uid), .data)
+    variables <- srvyr_select_vars(rlang::enquo(variables), .data)
+    repweights <- srvyr_select_vars(rlang::enquo(repweights), .data)
+    weights <- srvyr_select_vars(rlang::enquo(weights), .data)
+    fpc <- srvyr_select_vars(rlang::enquo(fpc), .data)
+    # if (!missing(uid)) uid <- helper(lazy_parent(uid), .data)
 
-    as_survey_rep_(.data, variables, repweights,
-                   weights, type, combined_weights,
-                   rho, bootstrap_average, scale, rscales,
-                   fpc, fpctype, mse, uid)
+    out <- survey::svrepdesign(
+      variables = variables,
+      repweights = repweights,
+      weights = weights,
+      data = .data,
+      type = match.arg(type),
+      combined.weights = combined_weights,
+      rho = rho,
+      bootstrap.average = bootstrap_average,
+      scale = scale,
+      rscales = rscales,
+      fpc = fpc,
+      fpctype = fpctype,
+      mse = mse
+    )
+
+    as_tbl_svy(
+      out,
+      list(repweights = repweights,  weights = weights, fpc = fpc)
+      #, uid = survey_selector(.data, uid))
+    )
   }
 
 #' @export

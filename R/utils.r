@@ -39,7 +39,7 @@ srvyr_select_vars <- function(vars, data, check_ids = FALSE) {
   }
   if (is.null(rlang::f_rhs(vars))) return(NULL)
 
-  out_vars <- rlang::eval_tidy(dplyr::select_vars(var_names, !!vars))
+  out_vars <- dplyr::select_vars(var_names, !!vars)
   survey::make.formula(out_vars)
 }
 

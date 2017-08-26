@@ -89,10 +89,11 @@ as_survey_design <- function(.data, ...) {
 #' @export
 #' @rdname as_survey_design
 as_survey_design.data.frame <-
-  function(.data, ids, probs = NULL, strata = NULL,
+  function(.data, ids = NULL, probs = NULL, strata = NULL,
            variables = NULL, fpc = NULL, nest = FALSE,
            check_strata = !nest, weights = NULL, pps = FALSE,
            variance = c("HT", "YG"), uid = NULL, ...) {
+
   ids <- srvyr_select_vars(rlang::enquo(ids), .data, check_ids = TRUE)
   probs <- srvyr_select_vars(rlang::enquo(probs), .data)
   strata <- srvyr_select_vars(rlang::enquo(strata), .data)
@@ -101,6 +102,7 @@ as_survey_design.data.frame <-
   variables <- srvyr_select_vars(rlang::enquo(variables), .data)
   # uid <- srvyr_select_vars(rlang::enquo(uid), .data)
 
+  if (is.null(ids)) ids <- ~1
   out <- survey::svydesign(
     ids, probs, strata, variables, fpc, .data, nest, check_strata, weights, pps
   )

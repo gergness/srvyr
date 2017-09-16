@@ -1,16 +1,4 @@
 #' @export
-mutate_.tbl_svy <- function(.data, ..., .dots) {
-  dots <- lazyeval::all_dots(.dots, ..., all_named = TRUE)
-
-  if (any(names2(dots) %in% as.character(survey_vars(.data)))) {
-    stop("Cannot modify survey variable")
-  }
-
-  .data$variables <- mutate_(.data$variables, .dots = dots)
-  .data
-}
-
-#' @export
 mutate.tbl_svy <- function(.data, ...) {
   dots <- rlang::quos(...)
 
@@ -23,6 +11,12 @@ mutate.tbl_svy <- function(.data, ...) {
 }
 
 #' @export
+mutate_.tbl_svy <- function(.data, ..., .dots) {
+  dots <- compat_lazy_dots(.dots, caller_env(), ...)
+  mutate(.data, !!!dots)
+}
+
+#' @export
 select.tbl_svy <- function(.data, ...) {
   dots <- rlang::quos(...)
   .data$variables <- select(.data$variables, !!!dots)
@@ -30,17 +24,10 @@ select.tbl_svy <- function(.data, ...) {
   .data
 }
 
-
 #' @export
 select_.tbl_svy <- function(.data, ..., .dots) {
-  dots <- lazyeval::all_dots(.dots, ...)
-  vars <- dplyr::select_vars_(dplyr::tbl_vars(.data$variables), dots,
-                              include = c(attr(.data, "group_vars"),
-                                          attr(.data$variables, "order_var")))
-
-  .data$variables <- select_(.data$variables, .dots = vars)
-
-  .data
+  dots <- compat_lazy_dots(.dots, caller_env(), ...)
+  select(.data, !!!dots)
 }
 
 #' @export
@@ -53,12 +40,8 @@ rename.tbl_svy <- function(.data, ...) {
 
 #' @export
 rename_.tbl_svy <- function(.data, ..., .dots) {
-  dots <- lazyeval::all_dots(.dots, ...)
-  vars <- dplyr::rename_vars_(dplyr::tbl_vars(.data$variables), dots)
-  .data$variables <- rename_(.data$variables, .dots = vars)
-
-  .data
-}
+  dots <- compat_lazy_dots(.dots, caller_env(), ...)
+  rename(.data, !!!dots)}
 
 #' @export
 filter.tbl_svy <- function(.data, ...) {

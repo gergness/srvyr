@@ -1,17 +1,15 @@
 #' @export
-group_by_.tbl_svy <- function(.data, ..., .dots, add = FALSE) {
-  .data$variables <- group_by_(.data$variables, ..., .dots = .dots, add = add)
-  class(.data) <- c("grouped_svy", class(.data))
-  .data
-}
-
-#' @export
 group_by.tbl_svy <- function(.data, ..., add = FALSE) {
   .data$variables <- group_by(.data$variables, ..., add = add)
   class(.data) <- c("grouped_svy", class(.data))
   .data
 }
 
+#' @export
+group_by_.tbl_svy <- function(.data, ..., .dots, add = FALSE) {
+  dots <- compat_lazy_dots(.dots, caller_env(), ...)
+  group_by(.data, !!!dots, add = add)
+}
 
 #' @export
 ungroup.tbl_svy <- function(x, ...) {

@@ -1,40 +1,4 @@
 #' @export
-summarise_.tbl_svy <- function(.data, ..., .dots) {
-  .dots <- lazyeval::all_dots(.dots, ..., all_named = TRUE)
-
-  survey_funs <- list(
-    survey_mean = function(...) survey_mean(..., .svy = .data),
-    survey_total = function(...) survey_total(..., .svy = .data),
-    survey_ratio = function(...) survey_ratio(..., .svy = .data),
-    survey_quantile = function(...) survey_quantile(..., .svy = .data),
-    survey_median = function(...) survey_median(..., .svy = .data),
-    unweighted = function(...) unweighted(..., .svy = .data)
-  )
-
-  if (inherits(.data$variables, "tbl_sql")) {
-    sql_vars <- lapply(tbl_vars(.data$variables), function(x) {
-      out <- dplyr::select_(.data$variables, x, attr(.data$variables, "order_var"))
-      out
-      })
-    names(sql_vars) <- tbl_vars(.data$variables)
-
-    out <- lazyeval::lazy_eval(.dots, c(survey_funs, sql_vars))
-  } else {
-    out <- lazyeval::lazy_eval(.dots, c(survey_funs, .data$variables))
-  }
-  # use the argument names to name the output
-  out <- lapply(seq_along(out), function(x) {
-    var_names <- names(out[[x]])
-    vname_is_V1 <- var_names == "V1" # Bandaid for dplyr 0.6 behavior
-    if (any(vname_is_V1)) var_names[vname_is_V1] <- ""
-    stats::setNames(out[[x]], paste0(names(out[x]), var_names))
-  })
-
-  out <- dplyr::bind_cols(out)
-  dplyr::tbl_df(out)
-}
-
-#' @export
 summarise.tbl_svy <- function(.data, ...) {
   .dots <- rlang::quos(...)
 
@@ -62,48 +26,9 @@ summarise.tbl_svy <- function(.data, ...) {
 }
 
 #' @export
-summarise_.grouped_svy <- function(.data, ..., .dots) {
-  .dots <- lazyeval::all_dots(.dots, ..., all_named = TRUE)
-
-  survey_funs <- list(
-    survey_mean = function(...) survey_mean(..., .svy = .data),
-    survey_total = function(...) survey_total(..., .svy = .data),
-    survey_ratio = function(...) survey_ratio(..., .svy = .data),
-    survey_quantile = function(...) survey_quantile(..., .svy = .data),
-    survey_median = function(...) survey_median(..., .svy = .data),
-    unweighted = function(...) unweighted(..., .svy = .data)
-  )
-
-  groups <- as.character(groups(.data))
-
-  if (inherits(.data$variables, "tbl_sql")) {
-    sql_vars <- lapply(tbl_vars(.data$variables), function(x) {
-      out <- dplyr::select_(.data$variables, x, attr(.data$variables, "order_var"))
-      out
-    })
-    names(sql_vars) <- tbl_vars(.data$variables)
-
-    out <- lazyeval::lazy_eval(.dots, c(survey_funs, sql_vars))
-  } else {
-    out <- lazyeval::lazy_eval(.dots, c(survey_funs, .data$variables))
-  }
-  # use the argument names to name the output
-  out <- lapply(seq_along(out), function(x) {
-    unchanged_names <- groups
-    changed_names <- setdiff(names(out[[x]]), groups)
-    changed_names_is_v1 <- changed_names == "V1"
-    if (any(changed_names_is_v1)) changed_names[changed_names_is_v1] <- ""
-    results <- stats::setNames(out[[x]], c(unchanged_names, paste0(names(out[x]),
-                                                            changed_names)))
-    results <- dplyr::arrange_(results, unchanged_names)
-
-    # Only keep stratifying vars in first calculation so they're not repeated
-    if (x > 1) results <- results[, !(names(results) %in% groups)]
-    results
-  })
-
-  out <- dplyr::bind_cols(out)
-  dplyr::tbl_df(out)
+summarise_.tbl_svy <- function(.data, ..., .dots) {
+  dots <- compat_lazy_dots(.dots, caller_env(), ...)
+  summarise(.data, !!!dots)
 }
 
 #' @export
@@ -140,6 +65,12 @@ summarise.grouped_svy <- function(.data, ...) {
 
   out <- dplyr::bind_cols(out)
   dplyr::tbl_df(out)
+}
+
+#' @export
+summarise_.grouped_svy <- function(.data, ..., .dots) {
+  dots <- compat_lazy_dots(.dots, caller_env(), ...)
+  summarise(.data, !!!dots)
 }
 
 #' Summarise multiple values to a single value.

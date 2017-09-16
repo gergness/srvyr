@@ -3,8 +3,9 @@ subset_svy_vars <- function(x, dots) {
 }
 
 # Adapted from survey:::"[.survey.design2"
-subset_svy_vars.survey.design2 <- function(x, dots) {
-  filtered <- filtered_row_numbers(x, dots)
+subset_svy_vars.survey.design2 <- function(x, ...) {
+  dots <- rlang::quos(...)
+  filtered <- filtered_row_numbers(x, !!!dots)
   filtered_vars <- filtered[["filtered_vars"]]
   row_numbers <- filtered[["row_numbers"]]
 
@@ -35,8 +36,9 @@ subset_svy_vars.survey.design2 <- function(x, dots) {
 }
 
 # Adapted from survey:::"[.svyrep.design"
-subset_svy_vars.svyrep.design <- function(x, dots){
-  filtered <- filtered_row_numbers(x, dots)
+subset_svy_vars.svyrep.design <- function(x, ...){
+  dots <- rlang::quos(...)
+  filtered <- filtered_row_numbers(x, !!!dots)
   filtered_vars <- filtered[["filtered_vars"]]
   row_numbers <- filtered[["row_numbers"]]
 
@@ -58,8 +60,9 @@ subset_svy_vars.svyrep.design <- function(x, dots){
 }
 
 # Adapted from survey:::"[.twophase2"
-subset_svy_vars.twophase2 <- function(x, dots) {
-  filtered <- filtered_row_numbers(x, dots)
+subset_svy_vars.twophase2 <- function(x, ...) {
+  dots <- rlang::quos(...)
+  filtered <- filtered_row_numbers(x, !!!dots)
   filtered_vars <- filtered[["filtered_vars"]]
   row_numbers <- filtered[["row_numbers"]]
 
@@ -80,26 +83,14 @@ subset_svy_vars.twophase2 <- function(x, dots) {
 }
 
 
-filtered_row_numbers <- function(.svy, dots) {
+filtered_row_numbers <- function(.svy, ...) {
+  dots <- rlang::quos(...)
   filtered_vars <- .svy$variables
 
-  if (!inherits(.svy$variables, "tbl_lazy")) {
-    filtered_vars <- dplyr::mutate_(filtered_vars, `___row_number` = "row_number()")
-    filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
-    row_numbers <- dplyr::select_(filtered_vars, "`___row_number`")[[1]]
-    filtered_vars <- dplyr::select_(filtered_vars, "-`___row_number`")
-  } else {
-    order_var_names <- attr(.svy$variables, "order_var")
-    filtered_vars <- dplyr::filter_(filtered_vars, .dots = dots)
-    order_vars <- dplyr::select_(filtered_vars, order_var_names)
-    order_vars <- dplyr::collect(order_vars, n = Inf)
-
-    uid <- uid(.svy)
-    uid <- mutate_(uid, `___row_number` = "row_number()")
-
-    row_numbers <- dplyr::inner_join(uid, order_vars, by = order_var_names)
-    row_numbers <- select_(row_numbers, "`___row_number`")[[1]]
-  }
+  filtered_vars$`___row_number` <- seq_len(nrow(filtered_vars))
+  filtered_vars <- dplyr::filter(filtered_vars, !!!dots)
+  row_numbers <- dplyr::select(filtered_vars, .data$`___row_number`)[[1]]
+  filtered_vars <- dplyr::select(filtered_vars, -.data$`___row_number`)
 
   list(row_numbers = row_numbers, filtered_vars = filtered_vars)
 

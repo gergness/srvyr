@@ -12,9 +12,10 @@ BugReports: https://github.com/gergness/srvyr/issues
 Depends:
     R (>= 3.1.2)
 Imports:
-    dplyr (>= 0.5),
+    dplyr (>= 0.7),
     lazyeval,
     magrittr,
+    rlang,
     survey,
     tibble
 License: GPL-2 | GPL-3

@@ -1,3 +1,8 @@
+# Import all of rlang so we can use pronouns and compat files
+# In general, though, I'm still trying to use namespace declarations
+#'@import rlang
+NULL
+
 lazy_parent <- function(expr) {
   # Need to go up twice, because lazy_parent creates an environment for itself
   e1 <- substitute(expr)

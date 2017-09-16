@@ -6,6 +6,14 @@ group_by_.tbl_svy <- function(.data, ..., .dots, add = FALSE) {
 }
 
 #' @export
+group_by.tbl_svy <- function(.data, ..., add = FALSE) {
+  .data$variables <- group_by(.data$variables, ..., add = add)
+  class(.data) <- c("grouped_svy", class(.data))
+  .data
+}
+
+
+#' @export
 ungroup.tbl_svy <- function(x, ...) {
   x
 }
@@ -22,6 +30,10 @@ groups.tbl_svy <- function(x) {
   groups(x$variables)
 }
 
+#' @export
+group_vars.tbl_svy <- function(x) {
+  group_vars(x$variables)
+}
 
 
 #' Group a (survey) dataset by one or more variables.
@@ -85,4 +97,10 @@ NULL
 #' @name ungroup
 #' @export
 #' @importFrom dplyr ungroup
+NULL
+
+#' @rdname groups
+#' @name group_vars
+#' @export
+#' @importFrom dplyr group_vars
 NULL

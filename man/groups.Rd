@@ -3,6 +3,7 @@
 \name{groups}
 \alias{groups}
 \alias{ungroup}
+\alias{group_vars}
 \title{Get/set the grouping variables for tbl.}
 \arguments{
 \item{x}{data \code{\link[dplyr]{tbl_df}} or \code{\link{tbl_svy}} object.}

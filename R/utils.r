@@ -43,6 +43,26 @@ srvyr_select_vars <- function(vars, data, check_ids = FALSE) {
   survey::make.formula(out_vars)
 }
 
+# Need to turn bare variable to variable names inside list (for 2phase)
+# NULLS are allowed in the list and should be carried forward.
+srvyr_select_vars_list <- function(x, .data) {
+  if (rlang::quo_is_null(x)) return(NULL)
+  rhs <- rlang::f_rhs(x)
+
+  if (rhs[[1]] != "list" || length(rhs) != 3) {
+    stop("as_survey_twophase requies a list of 2 sets of variables")
+  }
+  name1 <- srvyr_select_vars(split_list_quosure(x, 2), .data)
+  name1 <- if (length(name1) == 0) NULL else name1
+  name2 <- srvyr_select_vars(split_list_quosure(x, 3), .data)
+  name2 <- if (length(name2) == 0) NULL else name2
+  list(name1, name2)
+}
+
+split_list_quosure <- function(q, index) {
+  rlang::new_quosure(rlang::UQ(rlang::f_rhs(q)[[index]]), rlang::f_env(q))
+}
+
 nullable <- function(f, x) {
   if (is.null(x)) NULL
   else f(x)

@@ -76,16 +76,26 @@ as_survey_twophase.data.frame <-
            weights = NULL, fpc = NULL, subset,
            method = c("full", "approx", "simple"), ...) {
 
-  id <- helper_list(lazy_parent(id), .data)
-  if (!missing(strata)) strata <- helper_list(lazy_parent(strata), .data)
-  if (!missing(probs)) probs <- helper_list(lazy_parent(probs), .data)
-  if (!missing(weights)) weights <- helper_list(lazy_parent(weights), .data)
-  if (!missing(fpc)) fpc <- helper_list(lazy_parent(fpc), .data)
-  subset <- helper(lazy_parent(subset), .data)
+  id <- srvyr_select_vars_list(rlang::enquo(id), .data)
+  strata <- srvyr_select_vars_list(rlang::enquo(strata), .data)
+  probs <- srvyr_select_vars_list(rlang::enquo(probs), .data)
+  weights <- srvyr_select_vars_list(rlang::enquo(weights), .data)
+  fpc <- srvyr_select_vars_list(rlang::enquo(fpc), .data)
+  subset <- srvyr_select_vars(rlang::enquo(subset), .data)
 
-  as_survey_twophase_(.data, id, strata = strata, probs = probs,
-                 weights = weights, fpc = fpc, subset = subset,
-                 method = method)
+  out <- survey::twophase(
+    data = .data,
+    id = id,
+    strata = strata,
+    probs = probs,
+    weights = weights,
+    fpc = fpc,
+    subset = subset,
+    method = method
+  )
+
+  as_tbl_svy(out, list(ids = id, strata = strata, probs = probs,
+                       weights = weights, fpc = fpc, subset = subset))
 }
 
 

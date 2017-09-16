@@ -606,9 +606,9 @@ unweighted <- function(x, ...) {
   }
 
   .svy <- args[[".svy"]]
-  dots <- lazyeval::lazy(x)
+  dots <- rlang::quos(...)
 
-  out <- summarize_(.svy[["variables"]], .dots = dots)
+  out <- summarize(.svy[["variables"]], !!!dots)
   names(out)[length(names(out))] <- ""
   out
 }

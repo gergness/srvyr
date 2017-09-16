@@ -35,6 +35,33 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
 }
 
 #' @export
+summarise.tbl_svy <- function(.data, ...) {
+  .dots <- rlang::quos(...)
+
+  survey_funs <- list(
+    survey_mean = function(...) survey_mean(..., .svy = .data),
+    survey_total = function(...) survey_total(..., .svy = .data),
+    survey_ratio = function(...) survey_ratio(..., .svy = .data),
+    survey_quantile = function(...) survey_quantile(..., .svy = .data),
+    survey_median = function(...) survey_median(..., .svy = .data),
+    unweighted = function(...) unweighted(..., .svy = .data)
+  )
+
+  out <- rlang::eval_tidy(.dots, c(survey_funs, .data$variables))
+
+  # use the argument names to name the output
+  out <- lapply(seq_along(out), function(x) {
+    var_names <- names(out[[x]])
+    vname_is_V1 <- var_names == "V1" # Bandaid for dplyr 0.6 behavior
+    if (any(vname_is_V1)) var_names[vname_is_V1] <- ""
+    stats::setNames(out[[x]], paste0(names(out[x]), var_names))
+  })
+
+  out <- dplyr::bind_cols(out)
+  dplyr::tbl_df(out)
+}
+
+#' @export
 summarise_.grouped_svy <- function(.data, ..., .dots) {
   .dots <- lazyeval::all_dots(.dots, ..., all_named = TRUE)
 
@@ -68,6 +95,42 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
     if (any(changed_names_is_v1)) changed_names[changed_names_is_v1] <- ""
     results <- stats::setNames(out[[x]], c(unchanged_names, paste0(names(out[x]),
                                                             changed_names)))
+    results <- dplyr::arrange_(results, unchanged_names)
+
+    # Only keep stratifying vars in first calculation so they're not repeated
+    if (x > 1) results <- results[, !(names(results) %in% groups)]
+    results
+  })
+
+  out <- dplyr::bind_cols(out)
+  dplyr::tbl_df(out)
+}
+
+#' @export
+summarise.grouped_svy <- function(.data, ...) {
+  .dots <- rlang::quos(...)
+
+  survey_funs <- list(
+    survey_mean = function(...) survey_mean(..., .svy = .data),
+    survey_total = function(...) survey_total(..., .svy = .data),
+    survey_ratio = function(...) survey_ratio(..., .svy = .data),
+    survey_quantile = function(...) survey_quantile(..., .svy = .data),
+    survey_median = function(...) survey_median(..., .svy = .data),
+    unweighted = function(...) unweighted(..., .svy = .data)
+  )
+
+  groups <- as.character(groups(.data))
+
+  out <- rlang::eval_tidy(.dots, c(survey_funs, .data$variables))
+
+  # use the argument names to name the output
+  out <- lapply(seq_along(out), function(x) {
+    unchanged_names <- groups
+    changed_names <- setdiff(names(out[[x]]), groups)
+    changed_names_is_v1 <- changed_names == "V1"
+    if (any(changed_names_is_v1)) changed_names[changed_names_is_v1] <- ""
+    results <- stats::setNames(out[[x]], c(unchanged_names, paste0(names(out[x]),
+                                                                   changed_names)))
     results <- dplyr::arrange_(results, unchanged_names)
 
     # Only keep stratifying vars in first calculation so they're not repeated

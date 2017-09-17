@@ -320,7 +320,7 @@ survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
                                      level = 0.95, deff = FALSE,
                                      df = survey::degf(.svy)) {
 
-  grp_names <- as.character(groups(.svy))
+  grp_names <- group_vars(.svy)
 
   if (inherits(numerator, "tbl_sql")) {
     # Since we're grouped, dplyr conveniently gives us groups and x.
@@ -495,7 +495,7 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
     remove_se <- FALSE
   }
 
-  grp_names <- as.character(groups(.svy))
+  grp_names <- group_vars(.svy)
   if (inherits(x, "tbl_sql")) {
     # Since we're grouped, dplyr conveniently gives us groups and x.
     x <- ordered_collect(x)
@@ -643,7 +643,7 @@ survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level,
 
 survey_stat_grouped.default <- function(.svy, func, x, na.rm, vartype, level,
                                         deff, df, prop_method = NULL) {
-  grp_names <- as.character(groups(.svy))
+  grp_names <- group_vars(.svy)
   if (inherits(x, "tbl_sql")) {
     # Since we're grouped, dplyr conveniently gives us groups and x.
     x <- ordered_collect(x)
@@ -713,18 +713,18 @@ survey_stat_grouped.twophase2 <- function(.svy, func, x, na.rm, vartype, level,
                           method = prop_method)
   }
 
-  out <- get_var_est(stat, vartype, grps = as.character(groups(.svy)),
+  out <- get_var_est(stat, vartype, grps = group_vars(.svy),
                      level = level, df = df)
   dplyr::bind_cols(out)
 }
 
 survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
-  grps_names <- as.character(groups(.svy))
+  grps_names <- group_vars(.svy)
   peel_name <- grps_names[length(grps_names)]
   grps_names <- setdiff(grps_names, peel_name)
 
   if (inherits(.svy$variables, "tbl_lazy")) {
-    grps_vars <- select_(.svy, .dots = as.character(groups(.svy)))
+    grps_vars <- select_(.svy, .dots = group_vars(.svy))
     grps_vars <- ordered_collect(grps_vars$variables)
     .svy$variables <- grps_vars
   }

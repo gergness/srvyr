@@ -44,7 +44,7 @@ summarise.grouped_svy <- function(.data, ...) {
     unweighted = function(...) unweighted(..., .svy = .data)
   )
 
-  groups <- as.character(groups(.data))
+  groups <- group_vars(.data)
 
   out <- rlang::eval_tidy(.dots, c(survey_funs, .data$variables))
 

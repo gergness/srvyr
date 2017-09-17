@@ -3,14 +3,6 @@
 #'@import rlang
 NULL
 
-lazy_parent <- function(expr) {
-  # Need to go up twice, because lazy_parent creates an environment for itself
-  e1 <- substitute(expr)
-  e2 <- do.call("substitute", list(e1), envir = parent.frame(1))
-
-  lazyeval::lazy_(e2, parent.frame(2))
-}
-
 
 # For functions that use select style syntax, gets the variable names
 # from the user's input and data, and then returns a formula that
@@ -101,11 +93,6 @@ wrap <- function(..., indent = 0) {
 # from dplyr (utils.r)
 dots <- function(...) {
   eval(substitute(alist(...)))
-}
-
-# from dplyr (utils.r)
-named_dots <- function(...) {
-  lazyeval::auto_name(dots(...))
 }
 
 # from dplyr (utils.r)

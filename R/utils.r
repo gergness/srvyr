@@ -101,25 +101,6 @@ deparse_all <- function(x) {
   vapply(x, deparse2, FUN.VALUE = character(1))
 }
 
-# Need to turn bare variable to variable names inside list (for 2phase)
-# NULLS are allowed in the list and should be carried forward.
-helper_list <- function(x, .data) {
-  x <- x[["expr"]]
-  if(x[[1]] != "list" || length(x) > 3) {
-    stop("as_survey_twophase requies a list of 2 sets of variables")
-  }
-  name1 <- unname(dplyr::select_vars_(dplyr::tbl_vars(.data), x[[2]]))
-  name1 <- if (length(name1) == 0) NULL else name1
-  name2 <- unname(dplyr::select_vars_(dplyr::tbl_vars(.data), x[[3]]))
-  name2 <- if (length(name2) == 0) NULL else name2
-  list(name1, name2)
-}
-
-# Need to turn bare variable to variable names (when not in list)
-helper <- function(x, .data) {
-  unname(dplyr::select_vars_(dplyr::tbl_vars(.data), x))
-}
-
 # From http://stackoverflow.com/questions/7963898
 # Not very safe, so only use with known strings
 substr_right <- function(x, n){

@@ -5,7 +5,7 @@
 \alias{cascade_}
 \title{Summarise multiple values into cascading groups}
 \usage{
-cascade(.data, ..., .fill = NA)
+cascade(.data, ..., .dots, .fill = NA)
 
 cascade_(.data, ..., .dots, .fill = NA)
 }
@@ -14,10 +14,10 @@ cascade_(.data, ..., .dots, .fill = NA)
 
 \item{...}{Name-value pairs of summary functions}
 
-\item{.fill}{Value to fill in for group summaries}
-
 \item{.dots}{Used to work around non-standard evaluation. See
 \code{vignette("nse", package = "dplyr")} for details.}
+
+\item{.fill}{Value to fill in for group summaries}
 }
 \description{
 \code{cascade} is similar to \code{\link{summarise}}, but calculates

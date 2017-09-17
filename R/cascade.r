@@ -1,44 +1,13 @@
 #' @export
 cascade_.tbl_svy <- function(.data, ..., .dots, .fill = NA) {
-  summarise_.tbl_svy(.data, ..., .dots, all_named = TRUE)
+  dots <- compat_lazy_dots(.dots, caller_env(), ...)
+  cascade.tbl_svy(.data, !!!dots, .fill = .fill)
 }
 
 #' @export
 cascade_.grouped_svy <- function(.data, ..., .dots, .fill = NA) {
-  .dots <- lazyeval::all_dots(.dots, ..., all_named = TRUE)
-
-  groups <- as.character(groups(.data))
-  group_cascade <- lapply(rev(seq_along(groups)), function(x) groups[seq_len(x)])
-  group_cascade[length(group_cascade) + 1] <- ""
-
-  out <- lapply(group_cascade,
-                function(ggg) {
-                  if (ggg[1] != "") {
-                    casc <- summarise_(group_by_(.data, .dots = ggg), .dots = .dots)
-                  } else {
-                    casc <- summarise_(ungroup(.data), .dots = .dots)
-                  }
-
-                  missing_vars <- setdiff(groups, ggg)
-                  if (length(missing_vars) > 0) casc[missing_vars] <- .fill
-
-                  casc
-                })
-
-  # Add .fill to factor level where necessary
-  for (ggg in groups) {
-    if (class(.data$variables[[ggg]]) == "factor" & !is.na(.fill)) {
-      for (iii in seq_along(out)) {
-        out[[iii]][[ggg]] <- factor(out[[iii]][[ggg]],
-                                    levels = c(levels(.data$variables[[ggg]]), .fill))
-      }
-    }
-  }
-
-  out <- dplyr::bind_rows(out)
-
-  out <- dplyr::arrange_(out, groups)
-  out
+  dots <- compat_lazy_dots(.dots, caller_env(), ...)
+  cascade.grouped_svy(.data, !!!dots, .fill = .fill)
 }
 
 #' Summarise multiple values into cascading groups
@@ -68,9 +37,54 @@ cascade_.grouped_svy <- function(.data, ..., .dots, .fill = NA) {
 #'             api_diff = survey_mean(api00 - api99))
 #'
 #' @export
-cascade <- function(.data, ..., .fill = NA) {
-  cascade_(.data, .dots = lazyeval::lazy_dots(...), .fill = .fill)
+cascade <- function(.data, ..., .dots, .fill = NA) {
+  UseMethod("cascade")
 }
+
+#' @export
+cascade.tbl_svy <- function(.data, ..., .fill = NA) {
+  summarise.tbl_svy(.data, !!!quos(...))
+}
+
+
+#' @export
+cascade.grouped_svy <- function(.data, ..., .dots, .fill = NA) {
+  dots <- rlang::quos(...)
+
+  groups <- as.character(groups(.data))
+  group_cascade <- lapply(rev(seq_along(groups)), function(x) groups[seq_len(x)])
+  group_cascade[length(group_cascade) + 1] <- ""
+
+  out <- lapply(group_cascade,
+                function(ggg) {
+                  if (!identical(ggg, "")) {
+                    casc <- summarise(group_by(.data, !!!rlang::syms(ggg)), !!!dots)
+                  } else {
+                    casc <- summarise(ungroup(.data), !!!dots)
+                  }
+
+                  missing_vars <- setdiff(groups, ggg)
+                  if (length(missing_vars) > 0) casc[missing_vars] <- .fill
+
+                  casc
+                })
+
+  # Add .fill to factor level where necessary
+  for (ggg in groups) {
+    if (class(.data$variables[[ggg]]) == "factor" & !is.na(.fill)) {
+      for (iii in seq_along(out)) {
+        out[[iii]][[ggg]] <- factor(out[[iii]][[ggg]],
+                                    levels = c(levels(.data$variables[[ggg]]), .fill))
+      }
+    }
+  }
+
+  out <- dplyr::bind_rows(out)
+
+  out <- dplyr::arrange(out, !!!rlang::syms(groups))
+  out
+}
+
 
 #' @export
 #' @rdname cascade

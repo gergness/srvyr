@@ -56,7 +56,7 @@ summarise.grouped_svy <- function(.data, ...) {
     if (any(changed_names_is_v1)) changed_names[changed_names_is_v1] <- ""
     results <- stats::setNames(out[[x]], c(unchanged_names, paste0(names(out[x]),
                                                                    changed_names)))
-    results <- dplyr::arrange_(results, unchanged_names)
+    results <- dplyr::arrange(results, !!!rlang::syms(unchanged_names))
 
     # Only keep stratifying vars in first calculation so they're not repeated
     if (x > 1) results <- results[, !(names(results) %in% groups)]

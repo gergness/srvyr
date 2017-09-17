@@ -103,6 +103,7 @@ as_survey.twophase2 <- function(.data, ...) {
 #' @export
 #' @rdname as_survey
 as_survey_ <- function(.data, ...) {
+  warn_underscored()
   dots <- rlang::quos(...)
   if ("repweights" %in% names(dots)) {
     as_survey_rep_(.data, ...)

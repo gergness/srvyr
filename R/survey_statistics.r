@@ -337,7 +337,7 @@ survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
     denominator <- select(denominator, -dplyr::one_of(grp_names))
     denominator <- denominator[[1]] # Get the column as a vector instead of as a tbl_df
   } else {
-    grps <- select_(.svy$variables, .dots = grp_names)
+    grps <- select(.svy$variables, !!!rlang::syms(grp_names))
   }
 
   new_vars <- data.frame(dplyr::bind_cols(grps,
@@ -505,7 +505,7 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
     x <- select(x, -dplyr::one_of(grp_names))
     x <- x[[1]] # Get the column as a vector instead of as a tbl_df
   } else {
-    grps <- select_(.svy$variables, .dots = grp_names)
+    grps <- select(.svy$variables, !!!rlang::syms(grp_names))
   }
 
   if (inherits(.svy, "twophase2")) {
@@ -653,7 +653,7 @@ survey_stat_grouped.default <- function(.svy, func, x, na.rm, vartype, level,
     x <- select(x, -dplyr::one_of(grp_names))
     x <- x[[1]] # Get the column as a vector instead of as a tbl_df
   } else {
-    grps <- select_(.svy$variables, .dots = grp_names)
+    grps <- select(.svy$variables, !!!rlang::syms(grp_names))
   }
   if (class(x) == "factor") {
     stop(paste0("Factor not allowed in survey functions, should ",
@@ -724,7 +724,7 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
   grps_names <- setdiff(grps_names, peel_name)
 
   if (inherits(.svy$variables, "tbl_lazy")) {
-    grps_vars <- select_(.svy, .dots = group_vars(.svy))
+    grps_vars <- select(.svy, !!!rlang::syms(group_vars(.svy)))
     grps_vars <- ordered_collect(grps_vars$variables)
     .svy$variables <- grps_vars
   }
@@ -875,7 +875,7 @@ factor_stat_reshape <- function(stat, peel, var_names, peel_levels) {
       out[, c(2, 1)]
     } else {
       out <- utils::stack(stat_df)
-      out <- select_(out, "-ind")
+      out <- select(out, -.data$ind)
       names(out) <- paste0("_", stat_name)
       out
     }

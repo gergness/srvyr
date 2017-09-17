@@ -60,10 +60,9 @@
 #'             mean = survey_mean(y1))
 #'
 #' ## as_survey_twophase_ uses standard evaluation
-#' id1 <- "id"
-#' id2 <- "id"
+#' ids <- "list(id, id)"
 #' d2pbc <- pbc %>%
-#'   as_survey_twophase_(id = list(id1, id2), subset = "randomized")
+#'   as_survey_twophase_(id = ids, subset = "randomized")
 #'
 as_survey_twophase <- function(.data, ...) {
   UseMethod("as_survey_twophase")
@@ -111,18 +110,17 @@ as_survey_twophase.twophase2 <- function(.data, ...) {
 as_survey_twophase_ <- function(.data, id, strata = NULL, probs = NULL,
                              weights = NULL, fpc = NULL, subset,
                              method = c("full", "approx", "simple")) {
+  as_survey_twophase(
+    .data,
+    id = !!n_compat_lazy(id),
+    strata = !!n_compat_lazy(strata),
+    probs = !!n_compat_lazy(probs),
+    weights = !!n_compat_lazy(weights),
+    fpc = !!n_compat_lazy(fpc),
+    subset = !!n_compat_lazy(subset),
+    method = method
+  )
 
-  out <- survey::twophase(data = .data,
-                          id = list_to_formula(id),
-                          strata = list_to_formula(strata),
-                          probs = list_to_formula(probs),
-                          weights = list_to_formula(weights),
-                          fpc = list_to_formula(fpc),
-                          subset = survey::make.formula(subset),
-                          method = method)
-
-  as_tbl_svy(out, list(ids = id, strata = strata, probs = probs,
-                       weights = weights, fpc = fpc, subset = subset))
 }
 
 #' @rdname as_survey_twophase

@@ -163,33 +163,20 @@ as_survey_rep_ <-
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
            mse = getOption("survey.replicates.mse"), uid = NULL) {
 
-    # Databases require uid
-    if (inherits(.data, "tbl_lazy")) {
-      # Databases require uid
-      if (missing(uid) || is.null(uid)) {
-        stop("Database backed surveys require a uid.")
-      } else {
-        uid_names <- get_uid_names(length(uid))
-        .data <- uid_rename(.data, uid, uid_names)
-        attr(.data, "order_var") <- uid_names
-      }
-    }
-
-    out <- survey::svrepdesign(
-      data = .data,
-      variables = survey_selector(.data, variables),
-      repweights = survey_selector(.data, repweights),
-      weights = nullable(as.matrix, survey_selector(.data, weights)[[1]]),
-      type = match.arg(type),
-      combined.weights = combined_weights,
+    as_survey_rep(
+      .data,
+      variables = !!n_compat_lazy(variables),
+      repweights = !!n_compat_lazy(repweights),
+      weights = !!n_compat_lazy(weights),
+      type = type,
+      combined_weights = combined_weights,
       rho = rho,
-      bootstrap.average = bootstrap_average,
+      bootstrap_average = bootstrap_average,
       scale = scale,
       rscales = rscales,
-      fpc = survey_selector(.data, fpc),
+      fpc = !!n_compat_lazy(fpc),
       fpctype = fpctype,
-      mse = mse)
-
-    as_tbl_svy(out, list(repweights = repweights,  weights = weights,
-                         fpc = fpc), uid = survey_selector(.data, uid))
+      mse = mse,
+      uid = !!n_compat_lazy(uid)
+    )
   }

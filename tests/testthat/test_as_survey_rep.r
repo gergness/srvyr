@@ -132,3 +132,47 @@ out_srvyr <- scd2brr1_srvyr %>%
 test_that("as_survey_rep works when using JKn method of replicate weights",
           expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
                        c(out_srvyr[[1]][[1]], out_srvyr[[2]][[1]])))
+
+context("as_survey_rep_ SE still works")
+data(scd)
+scdnofpc <- svydesign(data = scd, prob = ~1, id = ~ambulance, strata = ~ESA,
+                      nest = TRUE)
+scd2brr <- as.svrepdesign(scdnofpc, type="BRR", compress = FALSE)
+
+scd2brr_base <- scd2brr$repweights %>%
+  unclass() %>% as.data.frame() %>%
+  setNames(paste0("rep", 1:4)) %>%
+  dplyr::bind_cols(scd) %>%
+  mutate(weights = 1)
+
+test_that("works with character", {
+  expect_equal(
+    scd2brr_base %>%
+      as_survey_rep(repweights = starts_with("rep"),
+                    type = "BRR", rho = scd2brr$rho,
+                    scale = scd2brr$scale, rscales = scd2brr$rscales,
+                    mse = scd2brr$mse, weights = weights),
+
+    scd2brr_base %>%
+      as_survey_rep_(repweights = 'starts_with("rep")',
+                     type = "BRR", rho = scd2brr$rho,
+                     scale = scd2brr$scale, rscales = scd2brr$rscales,
+                     mse = scd2brr$mse, weights = "weights")
+  )
+})
+
+test_that("works with formula", {
+  expect_equal(
+    scd2brr_base %>%
+      as_survey_rep(repweights = starts_with("rep"),
+                    type = "BRR", rho = scd2brr$rho,
+                    scale = scd2brr$scale, rscales = scd2brr$rscales,
+                    mse = scd2brr$mse, weights = weights),
+
+    scd2brr_base %>%
+      as_survey_rep_(repweights = ~starts_with("rep"),
+                     type = "BRR", rho = scd2brr$rho,
+                     scale = scd2brr$scale, rscales = scd2brr$rscales,
+                     mse = scd2brr$mse, weights = ~weights)
+  )
+})

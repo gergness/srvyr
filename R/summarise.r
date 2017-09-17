@@ -165,3 +165,4 @@ NULL
 #' @importFrom dplyr summarize_
 #' @rdname summarise
 NULL
+

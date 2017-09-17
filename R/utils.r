@@ -68,10 +68,19 @@ split_list_quosure <- function(q, index) {
   rlang::new_quosure(rlang::UQ(rlang::f_rhs(q)[[index]]), rlang::f_env(q))
 }
 
-nullable <- function(f, x) {
+nullable <- function(f, x, ...) {
   if (is.null(x)) NULL
-  else f(x)
+  else f(x, ...)
 }
+
+n_compat_lazy <- function(x) {
+  nullable(compat_lazy, x, env = caller_env(2))
+}
+
+unquote_with_default <- function(x, default) {
+  if (is.null(x)) default else rlang::UQ(x)
+}
+
 
 # From dplyr (utils.r)
 "%||%" <- function(x, y) if(is.null(x)) y else x

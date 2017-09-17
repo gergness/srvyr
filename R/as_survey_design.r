@@ -129,40 +129,20 @@ as_survey_design.survey.design2 <- function(.data, ...) {
 #' @rdname as_survey_design
 as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
                               variables = NULL, fpc = NULL, nest = FALSE,
-                              check_strata = !nest,weights = NULL, pps = FALSE,
+                              check_strata = !nest, weights = NULL, pps = FALSE,
                               variance = c("HT", "YG"), uid = NULL) {
-
-
-  # svydesign expects ~0 instead of NULL if no ids are included
-  if (missing(ids) || is.null(ids) || ids == 1 || ids == 0) {
-    ids_call <- ~0
-    ids <- NULL
-  } else {
-    ids_call <- dplyr::select_(.data, .dots = ids)
-  }
-
-  # Databases require uid
-  if (inherits(.data, "tbl_lazy")) {
-    # Databases require uid
-    if (missing(uid) || is.null(uid)) {
-      stop("Database backed surveys require a uid.")
-    } else {
-      uid_names <- get_uid_names(length(uid))
-      .data <- uid_rename(.data, uid, uid_names)
-      attr(.data, "order_var") <- uid_names
-    }
-  }
-
-  out <- survey::svydesign(data = .data,
-                           ids = ids_call,
-                           probs = survey_selector(.data, probs),
-                           strata = survey_selector(.data, strata),
-                           variables = survey_selector(.data, variables),
-                           fpc = survey_selector(.data, fpc),
-                           weights = survey_selector(.data, weights),
-                           nest = nest, check.strata = check_strata, pps = pps,
-                           variance = variance)
-
-  as_tbl_svy(out, list(ids = ids, probs = probs, strata = strata, fpc = fpc,
-                       weights = weights), uid = survey_selector(.data, uid))
+  as_survey_design(
+    .data,
+    ids = !!n_compat_lazy(ids),
+    probs = !!n_compat_lazy(probs),
+    strata = !!n_compat_lazy(strata),
+    variables = !!n_compat_lazy(variables),
+    fpc = !!n_compat_lazy(fpc),
+    nest = nest,
+    check_strata = check_strata,
+    weights = !!n_compat_lazy(weights),
+    pps = pps,
+    variance = variance,
+    uid = !!n_compat_lazy(uid)
+  )
 }

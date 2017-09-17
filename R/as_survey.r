@@ -110,6 +110,7 @@ as_survey_ <- function(.data, ...) {
     # twophase has a list of 2 groups for id, while regular id is
     # just a set of variables
     id_expr <- rlang::f_rhs(dots$id)
+    if(is.character(id_expr)) id_expr <- rlang::parse_expr(id_expr)
     if (length(id_expr) == 3 && id_expr[[1]] == "list") {
       as_survey_twophase_(.data, ...)
     } else {

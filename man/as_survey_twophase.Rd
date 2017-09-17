@@ -95,9 +95,8 @@ d2mu284 \%>\%
             mean = survey_mean(y1))
 
 ## as_survey_twophase_ uses standard evaluation
-id1 <- "id"
-id2 <- "id"
+ids <- "list(id, id)"
 d2pbc <- pbc \%>\%
-  as_survey_twophase_(id = list(id1, id2), subset = "randomized")
+  as_survey_twophase_(id = ids, subset = "randomized")
 
 }

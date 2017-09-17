@@ -52,9 +52,9 @@ test_that("as_survey correctly uses twophase's arguments",
 test_that("as_survey correctly uses twophase's arguments",
           expect_equal(
             mu284_1 %>%
-              as_survey_(id = list("id1", "id"), strata = list(NULL, "id1"),
-                         fpc = list("n1", NULL), subset = "sub"),
+              as_survey_(id = "list(id1, id)", strata = "list(NULL, id1)",
+                         fpc = "list(n1, NULL)", subset = "sub"),
             mu284_1 %>%
-              as_survey_twophase_(id = list("id1", "id"),
-                                  strata = list(NULL, "id1"),
-                                  fpc = list("n1", NULL), subset = "sub")))
+              as_survey_twophase_(id = "list(id1, id)",
+                                  strata = "list(NULL, id1)",
+                                  fpc = "list(n1, NULL)", subset = "sub")))

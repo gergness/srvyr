@@ -2,23 +2,16 @@
 % Please edit documentation in R/summarise.r
 \name{summarise}
 \alias{summarise}
-\alias{summarise_}
 \alias{summarize}
-\alias{summarize_}
 \title{Summarise multiple values to a single value.}
 \usage{
 summarise(.data, ...)
 summarize(.data, ...)
-summarise_(.data, ..., .dots)
-summarize_(.data, ..., .dots)
 }
 \arguments{
 \item{.data, }{tbl A \code{tbl_svy} object}
 
 \item{...}{Name-value pairs of summary functions}
-
-\item{.dots}{Used to work around non-standard evaluation. See
-\code{vignette("nse", package = "dplyr")} for details.}
 }
 \description{
 Summarise multiple values to a single value.

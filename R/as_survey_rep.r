@@ -5,8 +5,7 @@
 #' If provided a data.frame, it is a wrapper around \code{\link[survey]{svrepdesign}}.
 #' All survey variables must be included in the data.frame itself. Variables are
 #' selected by using bare column names, or convenience functions described in
-#' \code{\link[dplyr]{select}}. \code{as_survey_rep_} is the standard evaluation
-#' counterpart to \code{as_survey_rep}.
+#' \code{\link[dplyr]{select}}.
 #'
 #' If provided a \code{svyrep.design} object from the survey package,
 #' it will turn it into a srvyr object, so that srvyr functions will work with it
@@ -59,10 +58,11 @@
 #'   as_survey_rep(type = "BRR", repweights = starts_with("rep"),
 #'                 combined_weights = FALSE)
 #'
-#' # as_survey_rep_ uses standard evaluation
-#' repwts <- names(scd)[grep("^rep", names(scd))]
+#' # dplyr 0.7 introduced new style of NSE called quosures
+#' # See `vignette("programming", package = "dplyr")` for details
+#' repwts <- quo(starts_with("rep"))
 #' scdrep <- scd %>%
-#'   as_survey_rep_(type = "BRR", repweights = repwts,
+#'   as_survey_rep(type = "BRR", repweights = !!repwts,
 #'                 combined_weights = FALSE)
 #'
 as_survey_rep <- function(.data, ...) {
@@ -154,7 +154,8 @@ as_survey_rep.tbl_svy <-
 
 
 #' @export
-#' @rdname as_survey_rep
+#' @rdname srvyr-se-deprecated
+#' @inheritParams as_survey_rep
 as_survey_rep_ <-
   function(.data, variables = NULL, repweights = NULL, weights = NULL,
            type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",

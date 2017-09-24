@@ -5,7 +5,6 @@
 \alias{as_survey_twophase.data.frame}
 \alias{as_survey_twophase.twophase2}
 \alias{as_survey_twophase_}
-\alias{as_survey_twophase.tbl_sql}
 \title{Create a tbl_svy survey object using two phase design}
 \usage{
 as_survey_twophase(.data, ...)
@@ -19,8 +18,6 @@ as_survey_twophase(.data, ...)
 as_survey_twophase_(.data, id, strata = NULL, probs = NULL,
   weights = NULL, fpc = NULL, subset, method = c("full", "approx",
   "simple"))
-
-\method{as_survey_twophase}{tbl_sql}(...)
 }
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}
@@ -94,9 +91,10 @@ d2mu284 \%>\%
   summarize(total = survey_total(y1),
             mean = survey_mean(y1))
 
-## as_survey_twophase_ uses standard evaluation
-ids <- "list(id, id)"
+# dplyr 0.7 introduced new style of NSE called quosures
+# See `vignette("programming", package = "dplyr")` for details
+ids <- quo(list(id, id))
 d2pbc <- pbc \%>\%
-  as_survey_twophase_(id = ids, subset = "randomized")
+  as_survey_twophase(id = !!ids, subset = "randomized")
 
 }

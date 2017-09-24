@@ -7,7 +7,6 @@
 \alias{as_survey.survey.design2}
 \alias{as_survey.svyrep.design}
 \alias{as_survey.twophase2}
-\alias{as_survey_}
 \title{Create a tbl_svy from a data.frame}
 \usage{
 as_survey(.data, ...)
@@ -21,8 +20,6 @@ as_survey(.data, ...)
 \method{as_survey}{svyrep.design}(.data, ...)
 
 \method{as_survey}{twophase2}(.data, ...)
-
-as_survey_(.data, ...)
 }
 \arguments{
 \item{.data}{a data.frame or an object from the survey package}
@@ -78,8 +75,10 @@ pbc <- pbc \%>\%
 d2pbc <- pbc \%>\%
   as_survey(id = list(id, id), subset = randomized)
 
-# as_survey_ uses standard evaluation
+# dplyr 0.7 introduced new style of NSE called quosures
+# See `vignette("programming", package = "dplyr")` for details
+st <- quo(stype)
+wt <- quo(pw)
 dstrata <- apistrat \%>\%
-  as_survey_(strata = "stype", weights = "pw")
-
+  as_survey(strata = !!st, weights = !!wt)
 }

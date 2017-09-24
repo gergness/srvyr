@@ -3,7 +3,7 @@
 #' \code{as_survey} can be used to create a \code{tbl_svy} using design information
 #' (\code{\link{as_survey_design}}), replicate weights (\code{\link{as_survey_rep}}),
 #' or a two phase design (\code{\link{as_survey_twophase}}), or an object created by the
-#' survey package. \code{as_survey_} is its standard evaluation counterpart.
+#' survey package.
 #'
 #' There is also limited support for databases using dplyr's \code{tbl_sql}
 #' objects for survey designs and replicate weight surveys.
@@ -49,10 +49,12 @@
 #' d2pbc <- pbc %>%
 #'   as_survey(id = list(id, id), subset = randomized)
 #'
-#' # as_survey_ uses standard evaluation
+#' # dplyr 0.7 introduced new style of NSE called quosures
+#' # See `vignette("programming", package = "dplyr")` for details
+#' st <- quo(stype)
+#' wt <- quo(pw)
 #' dstrata <- apistrat %>%
-#'   as_survey_(strata = "stype", weights = "pw")
-#'
+#'   as_survey(strata = !!st, weights = !!wt)
 as_survey <- function(.data, ...) {
   UseMethod("as_survey")
 }
@@ -88,8 +90,8 @@ as_survey.survey.design2 <- function(.data, ...) {
 }
 
 
-#' @export
 #' @rdname as_survey
+#' @export
 as_survey.svyrep.design <- function(.data, ...) {
   as_tbl_svy(.data)
 }
@@ -100,8 +102,16 @@ as_survey.twophase2 <- function(.data, ...) {
   as_tbl_svy(.data)
 }
 
+#' Deprecated SE versions of main srvyr verbs
+#'
+#' srvyr has updated it's standard evaluation semantics to match dplyr 0.7, so
+#' these underscore functions are no longer required (but are still supported
+#' for backward compatbility reasons). See \code{\link[dplyr]{se-deprecated}} or the
+#' dplyr vignette on programming (\code{vignette("programming", package =
+#' "dplyr")}) for more details.
+#' @name srvyr-se-deprecated
+#' @inheritParams as_survey
 #' @export
-#' @rdname as_survey
 as_survey_ <- function(.data, ...) {
   warn_underscored()
   dots <- rlang::quos(...)

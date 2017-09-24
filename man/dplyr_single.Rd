@@ -3,15 +3,10 @@
 \name{dplyr_single}
 \alias{dplyr_single}
 \alias{mutate}
-\alias{mutate_}
 \alias{transmute}
-\alias{transmute_}
 \alias{select}
-\alias{select_}
 \alias{rename}
-\alias{rename_}
 \alias{filter}
-\alias{filter_}
 \title{Single table verbs from dplyr}
 \description{
 These are data manipulation functions designed to work on \code{tbl_svy} objects.

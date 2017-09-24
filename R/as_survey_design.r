@@ -6,8 +6,6 @@
 #' around \code{\link[survey]{svydesign}}. All survey variables must be included
 #' in the data.frame itself. Variables are selected by using bare column names, or
 #' convenience functions described in \code{\link[dplyr]{select}}.
-#' \code{as_survey_design_} is the standard evaluation counterpart to
-#' \code{as_survey_design}.
 #'
 #' If provided a \code{survey.design2} object from the survey package,
 #' it will turn it into a srvyr object, so that srvyr functions will work with it
@@ -76,11 +74,12 @@
 #' dpps <- election_pps %>%
 #'   as_survey_design(fpc = p, pps = "brewer")
 #'
-#' ## as_survey_design_ uses standard evaluation
-#' strata_var <- "stype"
-#' weights_var <- "pw"
-#' dstrata2 <- apistrat %>%
-#'   as_survey_design_(strata = strata_var, weights = weights_var)
+#' # dplyr 0.7 introduced new style of NSE called quosures
+#' # See `vignette("programming", package = "dplyr")` for details
+#' st <- quo(stype)
+#' wt <- quo(pw)
+#' dstrata <- apistrat %>%
+#'   as_survey_design(strata = !!st, weights = !!wt)
 #'
 as_survey_design <- function(.data, ...) {
   UseMethod("as_survey_design")
@@ -126,7 +125,8 @@ as_survey_design.survey.design2 <- function(.data, ...) {
 
 
 #' @export
-#' @rdname as_survey_design
+#' @rdname srvyr-se-deprecated
+#' @inheritParams as_survey_design
 as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
                               variables = NULL, fpc = NULL, nest = FALSE,
                               check_strata = !nest, weights = NULL, pps = FALSE,

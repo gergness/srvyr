@@ -4,8 +4,7 @@
 #' wrapper around \code{\link[survey]{twophase}}. All survey variables must be
 #' included in the data.frame itself. Variables are selected by using bare
 #' column names, or convenience functions described in
-#' \code{\link[dplyr]{select}}. \code{as_survey_twophase_} is the standard
-#' evaluation counterpart to \code{as_survey_twophase}.
+#' \code{\link[dplyr]{select}}.
 #'
 #' Database objects are not supported for twophase designs.
 #'
@@ -59,10 +58,11 @@
 #'   summarize(total = survey_total(y1),
 #'             mean = survey_mean(y1))
 #'
-#' ## as_survey_twophase_ uses standard evaluation
-#' ids <- "list(id, id)"
+#' # dplyr 0.7 introduced new style of NSE called quosures
+#' # See `vignette("programming", package = "dplyr")` for details
+#' ids <- quo(list(id, id))
 #' d2pbc <- pbc %>%
-#'   as_survey_twophase_(id = ids, subset = "randomized")
+#'   as_survey_twophase(id = !!ids, subset = "randomized")
 #'
 as_survey_twophase <- function(.data, ...) {
   UseMethod("as_survey_twophase")
@@ -123,7 +123,8 @@ as_survey_twophase_ <- function(.data, id, strata = NULL, probs = NULL,
 
 }
 
-#' @rdname as_survey_twophase
+#' @rdname srvyr-se-deprecated
+#' @inheritParams as_survey_twophase
 as_survey_twophase.tbl_sql <- function(...) {
   stop("Twophase surveys don't support databases")
 }

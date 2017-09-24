@@ -11,13 +11,9 @@
 \alias{mutate_if}
 \alias{mutate_at}
 \alias{mutate_each}
-\alias{mutate_each_}
 \alias{summarise_each}
-\alias{summarise_each_}
 \alias{summarize_each}
-\alias{summarize_each_}
 \alias{funs}
-\alias{funs_}
 \title{Summarise and mutate multiple columns.}
 \description{
 See \code{\link[dplyr]{summarize_all}} for more details. *_each functions will be depracated

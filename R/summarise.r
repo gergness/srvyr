@@ -79,13 +79,9 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'
 #' @usage summarise(.data, ...)
 #' summarize(.data, ...)
-#' summarise_(.data, ..., .dots)
-#' summarize_(.data, ..., .dots)
 #'
 #' @param .data, tbl A \code{tbl_svy} object
 #' @param ... Name-value pairs of summary functions
-#' @param .dots Used to work around non-standard evaluation. See
-#' \code{vignette("nse", package = "dplyr")} for details.
 #'
 #' @details
 #' Summarise for \code{tbl_svy} objects accepts several specialized functions.
@@ -151,7 +147,8 @@ NULL
 #' @name summarise_
 #' @export
 #' @importFrom dplyr summarise_
-#' @rdname summarise
+#' @rdname srvyr-se-deprecated
+#' @inheritParams summarise
 NULL
 
 #' @name summarize
@@ -163,6 +160,7 @@ NULL
 #' @name summarize_
 #' @export
 #' @importFrom dplyr summarize_
-#' @rdname summarise
+#' @rdname srvyr-se-deprecated
+#' @inheritParams summarize
 NULL
 

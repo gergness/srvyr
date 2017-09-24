@@ -7,7 +7,6 @@
 \alias{as_survey_rep.tbl_sql}
 \alias{as_survey_rep.survey.design2}
 \alias{as_survey_rep.tbl_svy}
-\alias{as_survey_rep_}
 \title{Create a tbl_svy survey object using replicate weights}
 \usage{
 as_survey_rep(.data, ...)
@@ -36,12 +35,6 @@ as_survey_rep(.data, ...)
   "bootstrap", "subbootstrap", "mrbbootstrap", "Fay"), rho = 0, fpc = NULL,
   fpctype = NULL, ..., compress = TRUE,
   mse = getOption("survey.replicates.mse"))
-
-as_survey_rep_(.data, variables = NULL, repweights = NULL, weights = NULL,
-  type = c("BRR", "Fay", "JK1", "JKn", "bootstrap", "other"),
-  combined_weights = TRUE, rho = NULL, bootstrap_average = NULL,
-  scale = NULL, rscales = NULL, fpc = NULL, fpctype = c("fraction",
-  "correction"), mse = getOption("survey.replicates.mse"), uid = NULL)
 }
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}
@@ -88,8 +81,7 @@ Create a survey object with replicate weights.
 If provided a data.frame, it is a wrapper around \code{\link[survey]{svrepdesign}}.
 All survey variables must be included in the data.frame itself. Variables are
 selected by using bare column names, or convenience functions described in
-\code{\link[dplyr]{select}}. \code{as_survey_rep_} is the standard evaluation
-counterpart to \code{as_survey_rep}.
+\code{\link[dplyr]{select}}.
 
 If provided a \code{svyrep.design} object from the survey package,
 it will turn it into a srvyr object, so that srvyr functions will work with it
@@ -119,10 +111,11 @@ scdrep <- scd \%>\%
   as_survey_rep(type = "BRR", repweights = starts_with("rep"),
                 combined_weights = FALSE)
 
-# as_survey_rep_ uses standard evaluation
-repwts <- names(scd)[grep("^rep", names(scd))]
+# dplyr 0.7 introduced new style of NSE called quosures
+# See `vignette("programming", package = "dplyr")` for details
+repwts <- quo(starts_with("rep"))
 scdrep <- scd \%>\%
-  as_survey_rep_(type = "BRR", repweights = repwts,
+  as_survey_rep(type = "BRR", repweights = !!repwts,
                 combined_weights = FALSE)
 
 }

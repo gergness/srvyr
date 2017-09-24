@@ -88,7 +88,7 @@ NULL
 #' @name mutate_
 #' @export
 #' @importFrom dplyr mutate_
-#' @rdname dplyr_single
+#' @rdname srvyr-se-deprecated
 NULL
 
 #' @name transmute
@@ -100,7 +100,7 @@ NULL
 #' @name transmute_
 #' @export
 #' @importFrom dplyr transmute_
-#' @rdname dplyr_single
+#' @rdname srvyr-se-deprecated
 NULL
 
 #' @name select
@@ -112,7 +112,7 @@ NULL
 #' @name select_
 #' @export
 #' @importFrom dplyr select_
-#' @rdname dplyr_single
+#' @rdname srvyr-se-deprecated
 NULL
 
 #' @name rename
@@ -124,7 +124,7 @@ NULL
 #' @name rename_
 #' @export
 #' @importFrom dplyr rename_
-#' @rdname dplyr_single
+#' @rdname srvyr-se-deprecated
 NULL
 
 #' @name filter
@@ -136,7 +136,7 @@ NULL
 #' @name filter_
 #' @export
 #' @importFrom dplyr filter_
-#' @rdname dplyr_single
+#' @rdname srvyr-se-deprecated
 NULL
 
 
@@ -207,7 +207,7 @@ NULL
 #' @name mutate_each_
 #' @export
 #' @importFrom dplyr mutate_each_
-#' @rdname summarise_all
+#' @rdname srvyr-se-deprecated
 NULL
 
 #' @name summarise_each
@@ -219,7 +219,7 @@ NULL
 #' @name summarise_each_
 #' @export
 #' @importFrom dplyr summarise_each_
-#' @rdname summarise_all
+#' @rdname srvyr-se-deprecated
 ?NULL
 
 #' @name summarize_each
@@ -231,7 +231,7 @@ NULL
 #' @name summarize_each_
 #' @export
 #' @importFrom dplyr summarize_each_
-#' @rdname summarise_all
+#' @rdname srvyr-se-deprecated
 NULL
 
 #' @name funs
@@ -244,5 +244,5 @@ NULL
 #' @name funs_
 #' @export
 #' @importFrom dplyr funs_
-#' @rdname summarise_all
+#' @rdname srvyr-se-deprecated
 NULL

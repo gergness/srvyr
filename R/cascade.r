@@ -87,7 +87,8 @@ cascade.grouped_svy <- function(.data, ..., .dots, .fill = NA) {
 
 
 #' @export
-#' @rdname cascade
+#' @rdname srvyr-se-deprecated
+#' @inheritParams cascade
 cascade_ <- function(.data, ..., .dots, .fill = NA) {
   UseMethod("cascade_")
 }

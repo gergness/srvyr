@@ -2,12 +2,9 @@
 % Please edit documentation in R/cascade.r
 \name{cascade}
 \alias{cascade}
-\alias{cascade_}
 \title{Summarise multiple values into cascading groups}
 \usage{
 cascade(.data, ..., .dots, .fill = NA)
-
-cascade_(.data, ..., .dots, .fill = NA)
 }
 \arguments{
 \item{.data, }{tbl A \code{tbl_svy} object}

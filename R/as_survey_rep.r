@@ -106,11 +106,6 @@ as_survey_rep.svyrep.design <- function(.data, ...) {
 
 #' @export
 #' @rdname as_survey_rep
-as_survey_rep.tbl_sql <- as_survey_rep.data.frame
-
-
-#' @export
-#' @rdname as_survey_rep
 as_survey_rep.survey.design2 <-
   function(.data, type=c("auto", "JK1", "JKn", "BRR", "bootstrap",
                          "subbootstrap","mrbbootstrap","Fay"),

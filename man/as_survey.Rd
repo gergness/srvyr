@@ -3,7 +3,6 @@
 \name{as_survey}
 \alias{as_survey}
 \alias{as_survey.data.frame}
-\alias{as_survey.tbl_sql}
 \alias{as_survey.survey.design2}
 \alias{as_survey.svyrep.design}
 \alias{as_survey.twophase2}
@@ -12,8 +11,6 @@
 as_survey(.data, ...)
 
 \method{as_survey}{data.frame}(.data, ...)
-
-\method{as_survey}{tbl_sql}(.data, ...)
 
 \method{as_survey}{survey.design2}(.data, ...)
 

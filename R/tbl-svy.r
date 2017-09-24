@@ -56,14 +56,7 @@ print.tbl_svy <- function (x, varnames = TRUE, all_survey_vars = FALSE, ...) {
   if (varnames) {
     vars <- dplyr::tbl_vars(x$variables)
 
-    # Force calculation for lazy tables (eg tbl_sql) so that
-    # we know what types the variables are.
-    if (inherits(x$variables, "tbl_lazy")) {
-      types <- vapply(dplyr::collect(utils::head(x$variables, 1)),
-                                     dplyr::type_sum, character(1))
-    } else {
-      types <- vapply(x$variables, dplyr::type_sum, character(1))
-    }
+    types <- vapply(x$variables, dplyr::type_sum, character(1))
     order_vars <- which(vars %in% attr(x$variables, "order_var"))
     if (length(order_vars) > 0) {
       vars <- vars[-order_vars]
@@ -95,7 +88,7 @@ as_tbl_svy <- function(x, var_names = list()) {
   }
 
   if (inherits(x, "twophase2")) {
-    # Convert to tbls if not already (expect them to be one of data.frame, tbl_df or tbl_sqls)
+    # Convert to tbls if not already (expect them to be one of data.frame or tbl_df)
     # data.frames will be converted, others should inherit "tbl".
     if (!inherits(x$phase1$full$variables, "tbl")) {
       x$phase1$full$variables <- dplyr::tbl_df(x$phase1$full$variables)

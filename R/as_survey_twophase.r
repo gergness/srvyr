@@ -121,10 +121,4 @@ as_survey_twophase_ <- function(.data, id, strata = NULL, probs = NULL,
 
 }
 
-#' @rdname srvyr-se-deprecated
-#' @inheritParams as_survey_twophase
-as_survey_twophase.tbl_sql <- function(...) {
-  stop("Twophase surveys don't support databases")
-}
-
 

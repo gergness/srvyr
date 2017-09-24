@@ -77,10 +77,6 @@ as_survey.data.frame <- function(.data, ...) {
 
 #' @export
 #' @rdname as_survey
-as_survey.tbl_sql <- as_survey.data.frame
-
-#' @export
-#' @rdname as_survey
 as_survey.survey.design2 <- function(.data, ...) {
   as_tbl_svy(.data)
 }

@@ -26,13 +26,13 @@ as_survey_(.data, ...)
 
 as_survey_design_(.data, ids = NULL, probs = NULL, strata = NULL,
   variables = NULL, fpc = NULL, nest = FALSE, check_strata = !nest,
-  weights = NULL, pps = FALSE, variance = c("HT", "YG"), uid = NULL)
+  weights = NULL, pps = FALSE, variance = c("HT", "YG"))
 
 as_survey_rep_(.data, variables = NULL, repweights = NULL, weights = NULL,
   type = c("BRR", "Fay", "JK1", "JKn", "bootstrap", "other"),
   combined_weights = TRUE, rho = NULL, bootstrap_average = NULL,
   scale = NULL, rscales = NULL, fpc = NULL, fpctype = c("fraction",
-  "correction"), mse = getOption("survey.replicates.mse"), uid = NULL)
+  "correction"), mse = getOption("survey.replicates.mse"))
 
 \method{as_survey_twophase}{tbl_sql}(...)
 
@@ -68,9 +68,6 @@ approximation. An object of class ppsmat to use the Horvitz-Thompson estimator.}
 
 \item{variance}{For pps without replacement, use variance="YG" for the Yates-Grundy estimator
 instead of the Horvitz-Thompson estimator}
-
-\item{uid}{Required for databases only, variables that uniquely identify the
-observations of your survey.}
 
 \item{repweights}{Variables specifying the replication weight varibles}
 

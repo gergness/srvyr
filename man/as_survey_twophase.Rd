@@ -50,11 +50,7 @@ Create a survey object by specifying the survey's two phase design. It is a
 wrapper around \code{\link[survey]{twophase}}. All survey variables must be
 included in the data.frame itself. Variables are selected by using bare
 column names, or convenience functions described in
-\code{\link[dplyr]{select}}. \code{as_survey_twophase_} is the standard
-evaluation counterpart to \code{as_survey_twophase}.
-}
-\details{
-Database objects are not supported for twophase designs.
+\code{\link[dplyr]{select}}.
 }
 \examples{
 # Examples from ?survey::twophase

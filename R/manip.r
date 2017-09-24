@@ -143,7 +143,7 @@ NULL
 #' Summarise and mutate multiple columns.
 #'
 #' See \code{\link[dplyr]{summarize_all}} for more details. *_each functions will be depracated
-#' in favor of *_all/*_if/*_at functions, but the latter do not yet work on database backed tables.
+#' in favor of *_all/*_if/*_at functions.
 #'
 #' @name summarise_all
 #' @export

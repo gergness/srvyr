@@ -16,9 +16,6 @@ svychisq.tbl_svy <- function(formula, design,
                                            "adjWald", "lincom",
                                            "saddlepoint"),
                              na.rm = TRUE, ...) {
-  if (inherits(design$variables, "tbl_lazy")) {
-    stop("survey functions not implemented on database backed srvyr objects")
-  }
   design$variables <- as.data.frame(design$variables)
   NextMethod()
 }

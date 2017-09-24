@@ -10,11 +10,6 @@
 #' If provided a \code{survey.design2} object from the survey package,
 #' it will turn it into a srvyr object, so that srvyr functions will work with it
 #'
-#' There is also limited and experimental support for databases using dplyr's \code{tbl_sql}
-#' objects. Not all operations are available for these objects. See
-#' \code{vignette("databases", package = "dplyr")} for more information on setting
-#' up databases in dplyr.
-#'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
 #' @param ids Variables specifying cluster ids from largest level to smallest level
@@ -33,8 +28,6 @@
 #' approximation. An object of class ppsmat to use the Horvitz-Thompson estimator.
 #' @param variance For pps without replacement, use variance="YG" for the Yates-Grundy estimator
 #' instead of the Horvitz-Thompson estimator
-#' @param uid Required for databases only, variables that uniquely identify the
-#' observations of your survey.
 #' @param ... ignored
 #' @return An object of class \code{tbl_svy}
 #' @examples
@@ -91,7 +84,7 @@ as_survey_design.data.frame <-
   function(.data, ids = NULL, probs = NULL, strata = NULL,
            variables = NULL, fpc = NULL, nest = FALSE,
            check_strata = !nest, weights = NULL, pps = FALSE,
-           variance = c("HT", "YG"), uid = NULL, ...) {
+           variance = c("HT", "YG"), ...) {
 
   ids <- srvyr_select_vars(rlang::enquo(ids), .data, check_ids = TRUE)
   probs <- srvyr_select_vars(rlang::enquo(probs), .data)
@@ -99,7 +92,6 @@ as_survey_design.data.frame <-
   fpc <- srvyr_select_vars(rlang::enquo(fpc), .data)
   weights <- srvyr_select_vars(rlang::enquo(weights), .data)
   variables <- srvyr_select_vars(rlang::enquo(variables), .data)
-  # uid <- srvyr_select_vars(rlang::enquo(uid), .data)
 
   if (is.null(ids)) ids <- ~1
   out <- survey::svydesign(
@@ -108,8 +100,7 @@ as_survey_design.data.frame <-
 
   as_tbl_svy(
     out,
-    list(ids = ids, probs = probs, strata = strata, fpc = fpc, weights = weights) #,
-    #uid = survey_selector(.data, uid)
+    list(ids = ids, probs = probs, strata = strata, fpc = fpc, weights = weights)
   )
 }
 
@@ -130,7 +121,7 @@ as_survey_design.survey.design2 <- function(.data, ...) {
 as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
                               variables = NULL, fpc = NULL, nest = FALSE,
                               check_strata = !nest, weights = NULL, pps = FALSE,
-                              variance = c("HT", "YG"), uid = NULL) {
+                              variance = c("HT", "YG")) {
   as_survey_design(
     .data,
     ids = !!n_compat_lazy(ids),
@@ -142,7 +133,6 @@ as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
     check_strata = check_strata,
     weights = !!n_compat_lazy(weights),
     pps = pps,
-    variance = variance,
-    uid = !!n_compat_lazy(uid)
+    variance = variance
   )
 }

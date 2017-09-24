@@ -6,8 +6,6 @@
 #' column names, or convenience functions described in
 #' \code{\link[dplyr]{select}}.
 #'
-#' Database objects are not supported for twophase designs.
-#'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
 #' @param id list of two sets of variable names for sampling unit identifers

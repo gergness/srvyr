@@ -89,7 +89,7 @@ tbl_vars.tbl_svy <- function(x) {
   dplyr::tbl_vars(x[["variables"]])
 }
 
-as_tbl_svy <- function(x, var_names = list(), uid = NULL) {
+as_tbl_svy <- function(x, var_names = list()) {
   if (!inherits(x, "tbl_svy")) {
     class(x) <- c("tbl_svy", class(x))
   }
@@ -112,14 +112,6 @@ as_tbl_svy <- function(x, var_names = list(), uid = NULL) {
   }
 
   survey_vars(x) <- strip_varlist_formula(var_names)
-
-  if (!is.null(uid)) {
-    if (any(duplicated(uid))) {
-      stop("uid columns not unique.")
-    }
-    names(uid) <- get_uid_names(length(uid))
-  }
-  uid(x) <- uid
 
   # To make printing better, change call
   x$call <- "Called via srvyr"

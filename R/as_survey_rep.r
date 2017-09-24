@@ -14,11 +14,6 @@
 #' around \code{\link[survey]{as.svrepdesign}}, and will convert from a survey design to
 #' replicate weights.
 #'
-#' There is also limited and experimental support for databases using dplyr's \code{tbl_sql}
-#' objects. Not all operations are available for these objects. See
-#' \code{vignette("databases", package = "dplyr")} for more information on setting up
-#' databases in dplyr.
-#'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
 #' @param variables Variables to include in the design (default is all)
@@ -35,8 +30,6 @@
 #' @param fpc,fpctype Finite population correction information
 #' @param mse if \code{TRUE}, compute varainces based on sum of squares
 #' around the point estimate, rather than the mean of the replicates
-#' @param uid Required for databases only, variables that uniquely identify the
-#' observations of your survey.
 #' @param ... ignored
 #' @param compress if \code{TRUE}, store replicate weights in compressed form
 #' (if converting from design)
@@ -77,12 +70,11 @@ as_survey_rep.data.frame <-
                     "other"), combined_weights = TRUE,
            rho = NULL, bootstrap_average = NULL, scale = NULL,
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
-           mse = getOption("survey.replicates.mse"), uid = NULL, ...) {
+           mse = getOption("survey.replicates.mse"), ...) {
     variables <- srvyr_select_vars(rlang::enquo(variables), .data)
     repweights <- srvyr_select_vars(rlang::enquo(repweights), .data)
     weights <- srvyr_select_vars(rlang::enquo(weights), .data)
     fpc <- srvyr_select_vars(rlang::enquo(fpc), .data)
-    # if (!missing(uid)) uid <- helper(lazy_parent(uid), .data)
 
     out <- survey::svrepdesign(
       variables = variables,
@@ -103,7 +95,6 @@ as_survey_rep.data.frame <-
     as_tbl_svy(
       out,
       list(repweights = repweights,  weights = weights, fpc = fpc)
-      #, uid = survey_selector(.data, uid))
     )
   }
 
@@ -162,7 +153,7 @@ as_survey_rep_ <-
                     "other"), combined_weights = TRUE,
            rho = NULL, bootstrap_average = NULL, scale = NULL,
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
-           mse = getOption("survey.replicates.mse"), uid = NULL) {
+           mse = getOption("survey.replicates.mse")) {
 
     as_survey_rep(
       .data,
@@ -177,7 +168,6 @@ as_survey_rep_ <-
       rscales = rscales,
       fpc = !!n_compat_lazy(fpc),
       fpctype = fpctype,
-      mse = mse,
-      uid = !!n_compat_lazy(uid)
+      mse = mse
     )
   }

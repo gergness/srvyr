@@ -30,7 +30,7 @@ specifies the level for the confidence interval.
 The other arguments correspond to the analagous function arguments from the
 survey package.
 
-The available functions are:
+The available functions from srvyr are:
 
 \describe{
 \item{\code{\link{survey_mean}}}{

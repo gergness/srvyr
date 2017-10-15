@@ -2,16 +2,11 @@
 summarise.tbl_svy <- function(.data, ...) {
   .dots <- rlang::quos(...)
 
-  survey_funs <- list(
-    survey_mean = function(...) survey_mean(..., .svy = .data),
-    survey_total = function(...) survey_total(..., .svy = .data),
-    survey_ratio = function(...) survey_ratio(..., .svy = .data),
-    survey_quantile = function(...) survey_quantile(..., .svy = .data),
-    survey_median = function(...) survey_median(..., .svy = .data),
-    unweighted = function(...) unweighted(..., .svy = .data)
-  )
+  # Set current_svy so available to svy stat functions
+  old <- set_current_svy(.data)
+  on.exit(set_current_svy(old), add = TRUE)
 
-  out <- rlang::eval_tidy(.dots, c(survey_funs, .data$variables))
+  out <- rlang::eval_tidy(.dots, .data$variables)
 
   # use the argument names to name the output
   out <- lapply(seq_along(out), function(x) {
@@ -35,18 +30,13 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
 summarise.grouped_svy <- function(.data, ...) {
   .dots <- rlang::quos(...)
 
-  survey_funs <- list(
-    survey_mean = function(...) survey_mean(..., .svy = .data),
-    survey_total = function(...) survey_total(..., .svy = .data),
-    survey_ratio = function(...) survey_ratio(..., .svy = .data),
-    survey_quantile = function(...) survey_quantile(..., .svy = .data),
-    survey_median = function(...) survey_median(..., .svy = .data),
-    unweighted = function(...) unweighted(..., .svy = .data)
-  )
+  # Set current_svy so available to svy stat functions
+  old <- set_current_svy(.data)
+  on.exit(set_current_svy(old), add = TRUE)
 
   groups <- group_vars(.data)
 
-  out <- rlang::eval_tidy(.dots, c(survey_funs, .data$variables))
+  out <- rlang::eval_tidy(.dots, .data$variables)
 
   # use the argument names to name the output
   out <- lapply(seq_along(out), function(x) {
@@ -97,7 +87,7 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #' The other arguments correspond to the analagous function arguments from the
 #' survey package.
 #'
-#' The available functions are:
+#' The available functions from srvyr are:
 #'
 #'\describe{
 #' \item{\code{\link{survey_mean}}}{

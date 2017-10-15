@@ -1,7 +1,3 @@
-# Want the argument .svy to be in the ..., so that we can not document .svy,
-# and still please the checks. Therefore, we can't use S3 method dispatch, because
-# .svy isn't a named arguemnt.
-
 #' Calculate the mean and its variation using survey methods
 #'
 #' Calculate means and proportions from complex survey data. A wrapper
@@ -26,6 +22,8 @@
 #'           for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
 #'           but Inf is the usual survey package's default (except in
 #'           \code{\link[survey]{svyciprop}}.
+#' @param .svy A \code{tbl_svy} object. When called from inside a summarize function
+#'   the default automatically sets the survey to the current survey.
 #' @param ... Ignored
 #' @examples
 #' library(survey)
@@ -67,38 +65,26 @@
 #' confint(comparison, df = survey::degf(dstrata)) # srvyr's default
 #'
 #' @export
-survey_mean <- function(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
-                        level = 0.95, proportion = FALSE,
-                        prop_method = c("logit", "likelihood", "asin", "beta",
-                                        "mean"), deff = FALSE, df = NULL, ...) {
-  args <- list(...)
-  if (!".svy" %in% names(args)) {
-    stop_direct_call("survey_mean")
-  }
+survey_mean <- function(
+  x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
+  proportion = FALSE, prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  deff = FALSE, df = NULL, .svy = current_svy(), ...
+) {
+  UseMethod("survey_mean", .svy)
+}
 
-  .svy <- args[[".svy"]]
+#' @export
+survey_mean.tbl_svy <- function(
+  x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
+  proportion = FALSE, prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  deff = FALSE, df = NULL, .svy = current_svy(), ...
+) {
   if (missing(vartype)) vartype <- "se"
   vartype <- match.arg(vartype, several.ok = TRUE)
   if (missing(prop_method)) prop_method <- "logit"
   prop_method <- match.arg(prop_method, several.ok = TRUE)
 
   if (is.null(df)) df <- survey::degf(.svy)
-
-  if (inherits(.svy, "grouped_svy")) {
-    survey_mean_grouped_svy(.svy, x, na.rm, vartype, level, deff, df, proportion, prop_method)
-  } else if (inherits(.svy, "tbl_svy")) {
-    survey_mean_tbl_svy(.svy, x, na.rm, vartype, level, deff, df, proportion, prop_method)
-  } else {
-    stop_fake_method("survey_mean", class(.svy))
-  }
-}
-
-survey_mean_tbl_svy <- function(.svy, x, na.rm = FALSE,
-                                vartype = c("se", "ci", "var", "cv"),
-                                level = 0.95, deff = FALSE, df = survey::degf(.svy),
-                                proportion = FALSE,
-                                prop_method = c("logit", "likelihood", "asin",
-                                                "beta", "mean")) {
 
   if (!proportion) {
     survey_stat_ungrouped(.svy, survey::svymean, x, na.rm, vartype, level, deff, df)
@@ -108,12 +94,19 @@ survey_mean_tbl_svy <- function(.svy, x, na.rm = FALSE,
   }
 }
 
-survey_mean_grouped_svy <- function(.svy, x, na.rm = FALSE,
-                                    vartype = c("se", "ci", "var", "cv"),
-                                    level = 0.95, deff = FALSE, df = survey::degf(.svy),
-                                    proportion = FALSE,
-                                    prop_method = c("logit", "likelihood",
-                                                    "asin", "beta", "mean")) {
+#' @export
+survey_mean.grouped_svy <- function(
+  x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
+  proportion = FALSE, prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  deff = FALSE, df = NULL, .svy = current_svy(), ...
+) {
+  if (missing(vartype)) vartype <- "se"
+  vartype <- match.arg(vartype, several.ok = TRUE)
+  if (missing(prop_method)) prop_method <- "logit"
+  prop_method <- match.arg(prop_method, several.ok = TRUE)
+
+  if (is.null(df)) df <- survey::degf(.svy)
+
   if (missing(x)) {
     if (proportion) stop("proportion does not work with factors.")
     survey_stat_factor(.svy, survey::svymean, na.rm, vartype, level, deff, df)
@@ -140,6 +133,8 @@ survey_mean_grouped_svy <- function(.svy, x, na.rm = FALSE,
 #' @param df (For vartype = "ci" only) A numeric value indicating the degrees of freedom
 #'           for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
 #'           but Inf is the usual survey package's default.
+#' @param .svy A \code{tbl_svy} object. When called from inside a summarize function
+#'   the default automatically sets the survey to the current survey.
 #' @param ... Ignored
 #' @examples
 #' library(survey)
@@ -177,40 +172,37 @@ survey_mean_grouped_svy <- function(.svy, x, na.rm = FALSE,
 #' confint(comparison, df = survey::degf(dstrata)) # srvyr's default
 #'
 #' @export
-survey_total <- function(x = NULL, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
-                         level = 0.95, deff = FALSE, df = NULL, ...) {
-  args <- list(...)
-  if (!".svy" %in% names(args)) {
-    stop_direct_call("survey_total")
-  }
+survey_total <- function(
+  x = NULL, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
+  deff = FALSE, df = NULL, .svy = current_svy(), ...
+) {
+  UseMethod("survey_total", .svy)
+}
 
-  .svy <- args[[".svy"]]
+#' @export
+survey_total.tbl_svy <- function(
+  x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
+  deff = FALSE, df = NULL, .svy = current_svy(), ...
+) {
   if (missing(vartype)) vartype <- "se"
   vartype <- match.arg(vartype, several.ok = TRUE)
 
   if (is.null(df)) df <- survey::degf(.svy)
 
-  if (inherits(.svy, "grouped_svy")) {
-    survey_total_grouped_svy(.svy, x, na.rm, vartype, level, deff, df)
-  } else if (inherits(.svy, "tbl_svy")) {
-    survey_total_tbl_svy(.svy, x, na.rm, vartype, level, deff, df)
-  } else {
-    stop_fake_method("survey_total", class(.svy))
-  }
-}
-
-survey_total_tbl_svy <- function(.svy, x, na.rm = FALSE,
-                                 vartype = c("se", "ci", "var", "cv"),
-                                 level = 0.95, deff = FALSE,
-                                 df = survey::degf(.svy)) {
   survey_stat_ungrouped(.svy, survey::svytotal, x, na.rm, vartype, level, deff, df)
 }
 
-survey_total_grouped_svy <- function(.svy, x, na.rm = FALSE,
-                                     vartype = c("se", "ci", "var", "cv"),
-                                     level = 0.95, deff = FALSE,
-                                     df = survey::degf(.svy)) {
-  if (!is.null(x)) survey_stat_grouped(.svy, survey::svytotal, x, na.rm,
+#' @export
+survey_total.grouped_svy <- function(
+  x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
+  deff = FALSE, df = NULL, .svy = current_svy(), ...
+) {
+  if (missing(vartype)) vartype <- "se"
+  vartype <- match.arg(vartype, several.ok = TRUE)
+
+  if (is.null(df)) df <- survey::degf(.svy)
+
+  if (!missing(x)) survey_stat_grouped(.svy, survey::svytotal, x, na.rm,
                                        vartype, level, deff, df)
   else survey_stat_factor(.svy, survey::svytotal, na.rm, vartype, level, deff, df)
 }
@@ -234,6 +226,8 @@ survey_total_grouped_svy <- function(.svy, x, na.rm = FALSE,
 #'           for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
 #'           but Inf is the usual survey package's default (except in
 #'           \code{\link[survey]{svyciprop}}.
+#' @param .svy A \code{tbl_svy} object. When called from inside a summarize function
+#'   the default automatically sets the survey to the current survey.
 #' @param ... Ignored
 #' @examples
 #' library(survey)
@@ -265,34 +259,22 @@ survey_total_grouped_svy <- function(.svy, x, na.rm = FALSE,
 #' confint(comparison, df = survey::degf(dstrata)) # srvyr's default
 #'
 #' @export
-survey_ratio <- function(numerator, denominator, na.rm = FALSE,
-                         vartype = c("se", "ci", "var", "cv"),
-                         level = 0.95, deff = FALSE, df = NULL, ...) {
-  args <- list(...)
-  if (!".svy" %in% names(args)) {
-    stop_direct_call("survey_ratio")
-  }
+survey_ratio <- function(
+  numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
+  level = 0.95, deff = FALSE, df = NULL, .svy  = current_svy(), ...
+) {
+  UseMethod("survey_ratio", .svy)
+}
 
-  .svy <- args[[".svy"]]
+#' @export
+survey_ratio.tbl_svy <- function(
+  numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
+  level = 0.95, deff = FALSE, df = NULL, .svy = current_svy(), ...
+) {
   if (missing(vartype)) vartype <- "se"
   vartype <- match.arg(vartype, several.ok = TRUE)
 
   if (is.null(df)) df <- survey::degf(.svy)
-
-  if (inherits(.svy, "grouped_svy")) {
-    survey_ratio_grouped_svy(.svy, numerator, denominator, na.rm, vartype, level, deff, df)
-  } else if (inherits(.svy, "tbl_svy")) {
-    survey_ratio_tbl_svy(.svy, numerator, denominator, na.rm, vartype, level, deff, df)
-  } else {
-    stop_fake_method("survey_ratio", class(.svy))
-  }
-
-}
-
-survey_ratio_tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE,
-                                 vartype = c("se", "ci", "var", "cv"),
-                                 level = 0.95, deff = FALSE,
-                                 df = survey::degf(.svy)) {
 
   vartype <- c("coef", vartype)
   if (deff) vartype <- c(vartype, "deff")
@@ -312,11 +294,15 @@ survey_ratio_tbl_svy <- function(.svy, numerator, denominator, na.rm = FALSE,
   dplyr::bind_cols(out)
 }
 
-survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
-                                     na.rm = FALSE,
-                                     vartype = c("se", "ci", "var", "cv"),
-                                     level = 0.95, deff = FALSE,
-                                     df = survey::degf(.svy)) {
+#' @export
+survey_ratio.grouped_svy <- function(
+  numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
+  level = 0.95, deff = FALSE, df = NULL, .svy = current_svy(), ...
+) {
+  if (missing(vartype)) vartype <- "se"
+  vartype <- match.arg(vartype, several.ok = TRUE)
+
+  if (is.null(df)) df <- survey::degf(.svy)
 
   grp_names <- group_vars(.svy)
 
@@ -365,6 +351,8 @@ survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
 #' @param df A number indicating the degrees of freedom for t-distribution. The
 #'           default, Inf uses the normal distribution (matches the survey package).
 #'           Also, has no effect for \code{type = "betaWald"}.
+#' @param .svy A \code{tbl_svy} object. When called from inside a summarize function
+#'   the default automatically sets the survey to the current survey.
 #' @param ... Ignored
 #' @examples
 #' library(survey)
@@ -382,20 +370,27 @@ survey_ratio_grouped_svy <- function(.svy, numerator, denominator,
 #'   summarise(api00 = survey_median(api00))
 #'
 #' @export
-survey_quantile <- function(x, quantiles, na.rm = FALSE,
-                            vartype = c("none", "se", "ci"),
-                            level = 0.95, q_method = "linear", f = 1,
-                            interval_type = c("Wald", "score", "betaWald",
-                                              "probability", "quantile"),
-                            ties = c("discrete", "rounded"), df = Inf, ...) {
-  args <- list(...)
-  if (!".svy" %in% names(args)) {
-    stop_direct_call("survey_quantile")
-  }
+survey_quantile <- function(
+  x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci"),
+  level = 0.95, q_method = "linear", f = 1,
+  interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
+  ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...
+) {
+  UseMethod("survey_quantile", .svy)
+}
 
-  .svy <- args[[".svy"]]
+#' @export
+survey_quantile.tbl_svy <- function(
+  x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci"),
+  level = 0.95, q_method = "linear", f = 1,
+  interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
+  ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...
+) {
   if (missing(vartype)) vartype <- "none"
   vartype <- match.arg(vartype, several.ok = TRUE)
+  vartype <- setdiff(vartype, "none")
+  vartype <- c("coef", vartype)
+
   if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "Wald"
   if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "probability"
   interval_type <- match.arg(interval_type, several.ok = TRUE)
@@ -406,29 +401,6 @@ survey_quantile <- function(x, quantiles, na.rm = FALSE,
     warning("Only the first confidence level will be used")
     level <- level[1]
   }
-
-  if (inherits(.svy, "grouped_svy")) {
-    survey_quantile_grouped_svy(.svy, x, quantiles, na.rm, vartype, level, q_method, f,
-                                interval_type, ties, df)
-  } else if (inherits(.svy, "tbl_svy")) {
-    survey_quantile_tbl_svy(.svy, x, quantiles, na.rm, vartype, level, q_method, f,
-                            interval_type, ties, df)
-  } else {
-    stop_fake_method("survey_quantile", class(.svy))
-  }
-}
-
-survey_quantile_tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE,
-                                    vartype = c("none", "se", "ci"),
-                                    level = 0.95, q_method = "linear", f = 1,
-                                    interval_type = c("Wald", "score",
-                                                      "betaWald", "probability",
-                                                      "quantile"),
-                                    ties = c("discrete", "rounded"),
-                                    df = Inf) {
-  if(missing(vartype)) vartype <- "none"
-  vartype <- setdiff(vartype, "none")
-  vartype <- c("coef", vartype)
 
   # Because of machine precision issues, 1 - 0.95 != 0.05...
   # Here's a hacky way to force it, though it technically limits
@@ -455,24 +427,30 @@ survey_quantile_tbl_svy <- function(.svy, x, quantiles, na.rm = FALSE,
   dplyr::bind_cols(out)
 }
 
-survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
-                                        vartype = c("none", "se", "ci"),
-                                        level = 0.95, q_method = "linear",
-                                        f = 1,
-                                        interval_type = c("Wald", "score",
-                                                          "betaWald",
-                                                          "probability",
-                                                          "quantile"),
-                                        ties = c("discrete", "rounded"),
-                                        df = Inf) {
-
-
+#' @export
+survey_quantile.grouped_svy <- function(
+  x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci"),
+  level = 0.95, q_method = "linear", f = 1,
+  interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
+  ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...
+) {
   if (vartype == "none") {
     vartype <- "se"
     remove_se <- TRUE
   } else {
     vartype <- setdiff(vartype, "none")
     remove_se <- FALSE
+  }
+
+  if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "Wald"
+  if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "probability"
+  interval_type <- match.arg(interval_type, several.ok = TRUE)
+  if (missing(ties)) ties <- "discrete"
+  ties <- match.arg(ties, several.ok = TRUE)
+
+  if (length(level) > 1) {
+    warning("Only the first confidence level will be used")
+    level <- level[1]
   }
 
   grp_names <- group_vars(.svy)
@@ -513,21 +491,12 @@ survey_quantile_grouped_svy <- function(.svy, x, quantiles, na.rm = FALSE,
 
 #' @export
 #' @rdname survey_quantile
-survey_median <- function(x, na.rm = FALSE,
-                          vartype = c("none", "se", "ci"),
-                          level = 0.95, q_method = "linear", f = 1,
-                          interval_type = c("Wald", "score",
-                                            "betaWald", "probability",
-                                            "quantile"),
-                          ties = c("discrete", "rounded"), df = Inf,
-                          ...) {
-
-  args <- list(...)
-  if (!".svy" %in% names(args)) {
-    stop_direct_call("survey_median")
-  }
-
-  .svy <- args[[".svy"]]
+survey_median <- function(
+  x, na.rm = FALSE, vartype = c("none", "se", "ci"),
+  level = 0.95, q_method = "linear", f = 1,
+  interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
+  ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...
+) {
   if (missing(vartype)) vartype <- "none"
   vartype <- match.arg(vartype, several.ok = TRUE)
   if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "Wald"
@@ -541,10 +510,10 @@ survey_median <- function(x, na.rm = FALSE,
     level <- level[1]
   }
 
-  survey_quantile(x, quantiles = 0.5, na.rm = na.rm, vartype = vartype,
-                  level = level, q_method = q_method, f = f,
-                  interval_type = interval_type, ties = ties,
-                  df = df, .svy = .svy)
+  survey_quantile(
+    x, quantiles = 0.5, na.rm = na.rm, vartype = vartype, level = level, q_method = q_method,
+    f = f, interval_type = interval_type, ties = ties, df = df, .svy = .svy
+  )
 }
 
 #' Calculate the an unweighted summary statistic from a survey
@@ -553,6 +522,8 @@ survey_median <- function(x, na.rm = FALSE,
 #' a normal data.frame with \code{\link[dplyr]{summarise}}.
 #'
 #' @param x A variable or expression
+#' @param .svy A \code{tbl_svy} object. When called from inside a summarize function
+#'   the default automatically sets the survey to the current survey.
 #' @param ... Ignored
 #' @examples
 #' library(survey)
@@ -570,13 +541,7 @@ survey_median <- function(x, na.rm = FALSE,
 #'   summarise(api_diff_unw = unweighted(mean(api00 - api99)))
 #'
 #' @export
-unweighted <- function(x, ...) {
-  args <- list(...)
-  if (!".svy" %in% names(args)) {
-    stop_direct_call("unweighted")
-  }
-
-  .svy <- args[[".svy"]]
+unweighted <- function(x, .svy = current_svy(), ...) {
   dots <- rlang::enquo(x)
 
   out <- summarize(.svy[["variables"]], !!!dots)
@@ -843,15 +808,4 @@ factor_stat_reshape <- function(stat, peel, var_names, peel_levels) {
   }
 
   out
-}
-
-
-stop_direct_call <- function(func, call. = FALSE) {
-  stop(func, " should not be called directly", call. = call.)
-}
-
-stop_fake_method <- function(func, class, call. = FALSE) {
-  stop("no applicable method for '", func,
-       "' applied to an object of class ", class,
-       call. = call.)
 }

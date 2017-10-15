@@ -8,12 +8,12 @@
 survey_quantile(x, quantiles, na.rm = FALSE, vartype = c("none", "se",
   "ci"), level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"), df = Inf, ...)
+  ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...)
 
 survey_median(x, na.rm = FALSE, vartype = c("none", "se", "ci"),
   level = 0.95, q_method = "linear", f = 1, interval_type = c("Wald",
   "score", "betaWald", "probability", "quantile"), ties = c("discrete",
-  "rounded"), df = Inf, ...)
+  "rounded"), df = Inf, .svy = current_svy(), ...)
 }
 \arguments{
 \item{x}{A variable or expression}
@@ -39,6 +39,9 @@ available).}
 \item{df}{A number indicating the degrees of freedom for t-distribution. The
 default, Inf uses the normal distribution (matches the survey package).
 Also, has no effect for \code{type = "betaWald"}.}
+
+\item{.svy}{A \code{tbl_svy} object. When called from inside a summarize function
+the default automatically sets the survey to the current survey.}
 
 \item{...}{Ignored}
 }

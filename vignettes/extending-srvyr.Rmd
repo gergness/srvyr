@@ -1,0 +1,20 @@
+---
+title: "Extending srvyr"
+author: "Greg Freedman Ellis"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{extending-srvyr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+More details coming soon!
+
+- How current_svy() works
+- Ungrouped vs grouped
+- What summarize expects
+  - data.frame!
+  - One row per group (1 row total if ungrouped)
+  - How it handles names
+- Example (?)

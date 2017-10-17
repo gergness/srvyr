@@ -14,7 +14,21 @@ More details coming soon!
 - How current_svy() works
 - Ungrouped vs grouped
 - What summarize expects
-  - data.frame!
-  - One row per group (1 row total if ungrouped)
-  - How it handles names
-- Example (?)
+  - Input is:
+    - vector not formula
+    - variance specified at calcluation (not on return object)
+  - return is:
+    - data.frame with one row per group (1 row total if ungrouped)
+      - Can be problem for logical/factor
+    - Columns for vartypes
+    - How it handles names
+- Common problems and how to deal with them
+  - Converting vector to formula
+    - srvyr_replace_vars is exported
+  - Getting variance estimates
+    - Export get_var_est?
+  - Double dispatch of methods (grouped vs ungrouped AND design vs rep weights)
+    - Deal with by helper functions within function
+  - customized matched.args behavior (multiple.ok and default to first)
+- Example
+  - convey::svygini

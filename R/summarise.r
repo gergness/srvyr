@@ -11,8 +11,8 @@ summarise.tbl_svy <- function(.data, ...) {
   # use the argument names to name the output
   out <- lapply(seq_along(out), function(x) {
     var_names <- names(out[[x]])
-    vname_is_V1 <- var_names == "V1" # Bandaid for dplyr 0.6 behavior
-    if (any(vname_is_V1)) var_names[vname_is_V1] <- ""
+    vname_is_coef <- var_names == "__SRVYR_COEF__"
+    if (any(vname_is_coef)) var_names[vname_is_coef] <- ""
     stats::setNames(out[[x]], paste0(names(out[x]), var_names))
   })
 
@@ -42,8 +42,8 @@ summarise.grouped_svy <- function(.data, ...) {
   out <- lapply(seq_along(out), function(x) {
     unchanged_names <- groups
     changed_names <- setdiff(names(out[[x]]), groups)
-    changed_names_is_v1 <- changed_names == "V1"
-    if (any(changed_names_is_v1)) changed_names[changed_names_is_v1] <- ""
+    changed_names_is_coef <- changed_names == "__SRVYR_COEF__"
+    if (any(changed_names_is_coef)) changed_names[changed_names_is_coef] <- ""
     results <- stats::setNames(out[[x]], c(unchanged_names, paste0(names(out[x]),
                                                                    changed_names)))
     results <- dplyr::arrange(results, !!!rlang::syms(unchanged_names))

@@ -58,7 +58,7 @@ get_var_est <- function(
   })
 
   coef <- data.frame(matrix(coef(stat), ncol = out_width))
-  names(coef) <- ""
+  names(coef) <- "__SRVYR_COEF__"
   out <- c(list(coef), out)
 
   if (!identical(grps, "")) {
@@ -205,7 +205,7 @@ factor_stat_reshape <- function(stat, peel, var_names, peel_levels) {
       )
     } else if(stat_name == "coef") {
       out <- utils::stack(stat_df)
-      names(out) <- c("", peel)
+      names(out) <- c("__SRVYR_COEF__", peel)
       out[, c(2, 1)]
     } else {
       out <- utils::stack(stat_df)

@@ -5,15 +5,15 @@
 \alias{survey_median}
 \title{Calculate the quantile and its variation using survey methods}
 \usage{
-survey_quantile(x, quantiles, na.rm = FALSE, vartype = c("none", "se",
-  "ci"), level = 0.95, q_method = "linear", f = 1,
-  interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...)
+survey_quantile(x, quantiles, na.rm = FALSE, vartype = NULL, level = 0.95,
+  q_method = "linear", f = 1, interval_type = c("Wald", "score",
+  "betaWald", "probability", "quantile"), ties = c("discrete", "rounded"),
+  df = Inf, .svy = current_svy(), ...)
 
-survey_median(x, na.rm = FALSE, vartype = c("none", "se", "ci"),
-  level = 0.95, q_method = "linear", f = 1, interval_type = c("Wald",
-  "score", "betaWald", "probability", "quantile"), ties = c("discrete",
-  "rounded"), df = Inf, .svy = current_svy(), ...)
+survey_median(x, na.rm = FALSE, vartype = NULL, level = 0.95,
+  q_method = "linear", f = 1, interval_type = c("Wald", "score",
+  "betaWald", "probability", "quantile"), ties = c("discrete", "rounded"),
+  df = Inf, .svy = current_svy(), ...)
 }
 \arguments{
 \item{x}{A variable or expression}
@@ -22,9 +22,9 @@ survey_median(x, na.rm = FALSE, vartype = c("none", "se", "ci"),
 
 \item{na.rm}{A logical value to indicate whether missing values should be dropped}
 
-\item{vartype}{Report variability as one or more of: standard error ("se", default),
-confidence interval ("ci") (variance and coefficient of variation not
-available).}
+\item{vartype}{NULL to report no variability (default), otherwise one or more of:
+standard error ("se) confidence interval ("ci") (variance and coefficient
+of variation not available).}
 
 \item{level}{A single number indicating the confidence level (only one level allowed)}
 

@@ -276,9 +276,6 @@ survey_ratio.tbl_svy <- function(
 
   if (is.null(df)) df <- survey::degf(.svy)
 
-  vartype <- c("coef", vartype)
-  if (deff) vartype <- c(vartype, "deff")
-
   if (inherits(.svy, "twophase2")) {
     .svy$phase1$sample$variables <- data.frame(SRVYR_VAR_NUM = numerator,
                                                SRVYR_VAR_DEN = denominator)
@@ -287,11 +284,12 @@ survey_ratio.tbl_svy <- function(
                                  SRVYR_VAR_DEN = denominator)
   }
 
-  stat <- survey::svyratio(~SRVYR_VAR_NUM, ~SRVYR_VAR_DEN,
-                           .svy, na.rm = na.rm, deff = deff, df = df)
+  stat <- survey::svyratio(
+    ~SRVYR_VAR_NUM, ~SRVYR_VAR_DEN, .svy, na.rm = na.rm, deff = deff, df = df
+    )
 
-  out <- get_var_est(stat, vartype, level = level, df = df)
-  dplyr::bind_cols(out)
+  out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
+  out
 }
 
 #' @export
@@ -305,30 +303,26 @@ survey_ratio.grouped_svy <- function(
   if (is.null(df)) df <- survey::degf(.svy)
 
   grp_names <- group_vars(.svy)
-
   grps <- select(.svy$variables, !!!rlang::syms(grp_names))
 
-  new_vars <- data.frame(dplyr::bind_cols(grps,
-                                          data.frame(SRVYR_VAR_NUM = numerator,
-                                                     SRVYR_VAR_DEN = denominator)))
+  new_vars <- data.frame(dplyr::bind_cols(
+    grps,
+    data.frame(SRVYR_VAR_NUM = numerator, SRVYR_VAR_DEN = denominator)
+  ))
   if (inherits(.svy, "twophase2")) {
     .svy$phase1$sample$variables <- new_vars
   } else {
     .svy$variables <- new_vars
   }
 
-  stat <- survey::svyby(~SRVYR_VAR_NUM, survey::make.formula(grp_names),
-                        .svy, survey::svyratio,
-                        denominator = ~SRVYR_VAR_DEN,
-                        na.rm = na.rm, ci = TRUE, deff = deff)
+  stat <- survey::svyby(
+    ~SRVYR_VAR_NUM, survey::make.formula(grp_names), .svy,
+    survey::svyratio, denominator = ~SRVYR_VAR_DEN,
+    na.rm = na.rm, ci = TRUE, deff = deff
+  )
 
-  vartype <- c("grps", "coef", vartype)
-  if (deff) vartype <- c(vartype, "deff")
-
-  out <- get_var_est(stat, vartype, grps = grp_names,
-                     level = level, df = df)
-
-  dplyr::bind_cols(out)
+  out <- get_var_est(stat, vartype, grps = grp_names, level = level, df = df, deff = deff)
+  out
 }
 
 #' Calculate the quantile and its variation using survey methods
@@ -340,9 +334,9 @@ survey_ratio.grouped_svy <- function(
 #' @param x A variable or expression
 #' @param na.rm A logical value to indicate whether missing values should be dropped
 #' @param quantiles A vector of quantiles to calculate
-#' @param vartype Report variability as one or more of: standard error ("se", default),
-#'                confidence interval ("ci") (variance and coefficient of variation not
-#'                available).
+#' @param vartype NULL to report no variability (default), otherwise one or more of:
+#'                standard error ("se) confidence interval ("ci") (variance and coefficient
+#'                of variation not available).
 #' @param level A single number indicating the confidence level (only one level allowed)
 #' @param q_method See "method" in \code{\link[stats]{approxfun}}
 #' @param f See \code{\link[stats]{approxfun}}
@@ -371,7 +365,7 @@ survey_ratio.grouped_svy <- function(
 #'
 #' @export
 survey_quantile <- function(
-  x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci"),
+  x, quantiles, na.rm = FALSE, vartype = NULL,
   level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
   ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...
@@ -381,15 +375,12 @@ survey_quantile <- function(
 
 #' @export
 survey_quantile.tbl_svy <- function(
-  x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci"),
+  x, quantiles, na.rm = FALSE, vartype = NULL,
   level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
   ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...
 ) {
-  if (missing(vartype)) vartype <- "none"
-  vartype <- match.arg(vartype, several.ok = TRUE)
-  vartype <- setdiff(vartype, "none")
-  vartype <- c("coef", vartype)
+  if (!is.null(vartype)) vartype <- match.arg(vartype, c("se", "ci"), several.ok = TRUE)
 
   if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "Wald"
   if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "probability"
@@ -414,33 +405,24 @@ survey_quantile.tbl_svy <- function(
     .svy$variables <- data.frame(SRVYR_VAR = x)
   }
 
-  stat <- survey::svyquantile(~SRVYR_VAR, .svy,
-                              quantiles = quantiles, na.rm = na.rm,
-                              ci = TRUE, alpha = alpha, method = q_method, f = f,
-                              interval.type = interval_type, ties = ties, df = df)
+  stat <- survey::svyquantile(
+    ~SRVYR_VAR, .svy, quantiles = quantiles, na.rm = na.rm,
+    ci = TRUE, alpha = alpha, method = q_method, f = f,
+    interval.type = interval_type, ties = ties, df = df
+  )
 
-  q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2,
-                                                 flag = "0")))
-
-  out <- get_var_est(stat, vartype, var_names = q_text, level = level,
-                     quantile = TRUE)
-  dplyr::bind_cols(out)
+  out <- get_var_est_quantile(stat, vartype, q = quantiles, level = level)
+  out
 }
 
 #' @export
 survey_quantile.grouped_svy <- function(
-  x, quantiles, na.rm = FALSE, vartype = c("none", "se", "ci"),
+  x, quantiles, na.rm = FALSE, vartype = c("se", "ci"),
   level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
   ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...
 ) {
-  if (vartype == "none") {
-    vartype <- "se"
-    remove_se <- TRUE
-  } else {
-    vartype <- setdiff(vartype, "none")
-    remove_se <- FALSE
-  }
+  if (!is.null(vartype)) vartype <- match.arg(vartype, c("se", "ci"), several.ok = TRUE)
 
   if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "Wald"
   if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "probability"
@@ -469,36 +451,29 @@ survey_quantile.grouped_svy <- function(
   # we could go higher, but I worry about 32bit vs 64bit systems)
   alpha = round(1 - level, 7)
 
-  stat <- survey::svyby(formula = ~SRVYR_VAR, survey::make.formula(grp_names),
-                        .svy, survey::svyquantile,
-                        quantiles = quantiles, na.rm = na.rm,
-                        ci = TRUE, alpha = alpha, method = q_method,
-                        f = f, interval.type = interval_type, ties = ties,
-                        df = df, vartype = vartype)
+  stat <- survey::svyby(
+    formula = ~SRVYR_VAR, survey::make.formula(grp_names), .svy,
+    survey::svyquantile, quantiles = quantiles, na.rm = na.rm,
+    ci = TRUE, alpha = alpha, method = q_method,
+    f = f, interval.type = interval_type, ties = ties,
+    df = df, vartype = vartype
+  )
 
-  q_text <- paste0("_q", gsub("\\.", "", formatC(quantiles * 100, width = 2,
-                                                 flag = "0")))
-  vartype <- c("grps", "coef", vartype)
-  vartype[vartype == "ci"] <- "ci-prop"
+  out <- get_var_est_quantile(stat, vartype, q = quantiles, grps = grp_names, level = level)
 
-  out <- get_var_est(stat, vartype, var_names = q_text,
-                     grps = grp_names, level = level,
-                     quantile = TRUE)
-
-  dplyr::bind_cols(out)
+  out
 }
 
 
 #' @export
 #' @rdname survey_quantile
 survey_median <- function(
-  x, na.rm = FALSE, vartype = c("none", "se", "ci"),
+  x, na.rm = FALSE, vartype = NULL,
   level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
   ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...
 ) {
-  if (missing(vartype)) vartype <- "none"
-  vartype <- match.arg(vartype, several.ok = TRUE)
+  if (!is.null(vartype)) vartype <- match.arg(vartype, c("se", "ci"), several.ok = TRUE)
   if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "Wald"
   if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "probability"
   interval_type <- match.arg(interval_type, several.ok = TRUE)
@@ -564,11 +539,8 @@ survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype, level, deff, df
   }
   stat <- func(~SRVYR_VAR, .svy, na.rm = na.rm, deff = deff)
 
-  vartype <- c("coef", vartype)
-  if (deff) vartype <- c(vartype, "deff")
-  out <- get_var_est(stat, vartype, level = level, df = df)
-
-  dplyr::bind_cols(out)
+  out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
+  out
 }
 
 survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level,
@@ -587,24 +559,22 @@ survey_stat_grouped.default <- function(.svy, func, x, na.rm, vartype, level,
 
   if (class(x) == "logical") x <- as.integer(x)
 
-  vartype <- c("grps", "coef", vartype)
-  if (deff) vartype = c(vartype, "deff")
-
   .svy$variables <- data.frame(dplyr::bind_cols(grps, data.frame(SRVYR_VAR = x)))
 
   if (is.null(prop_method)) {
     stat <- survey::svyby(~SRVYR_VAR, survey::make.formula(grp_names), .svy,
                           deff = deff, func, na.rm = na.rm)
   } else {
-    vartype[vartype == "ci"] <- "ci-prop"
     stat <- survey::svyby(~SRVYR_VAR, survey::make.formula(grp_names),
                           .svy, func, na.rm = na.rm,
                           se = TRUE, vartype = c("se", "ci"),
                           method = prop_method)
   }
 
-  out <- get_var_est(stat, vartype, grps = grp_names,
-                     level = level, df = df)
+  out <- get_var_est(
+    stat, vartype, grps = grp_names, level = level, df = df,
+    pre_calc_ci = !is.null(prop_method), deff = deff
+  )
   dplyr::bind_cols(out)
 }
 
@@ -626,21 +596,19 @@ survey_stat_grouped.twophase2 <- function(.svy, func, x, na.rm, vartype, level,
   if (inherits(.svy, "twophase2")) {
     .svy$phase1$sample$variables <- .svy$variables
   }
-  vartype <- c("grps", "coef", vartype)
-  if (deff) vartype = c(vartype, "deff")
 
   if (is.null(prop_method)) {
     stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm, se = TRUE, deff = deff)
   } else {
-    vartype[vartype == "ci"] <- "ci-prop"
     stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm,
                           se = TRUE, vartype = c("ci", "se"),
                           method = prop_method)
   }
 
-  out <- get_var_est(stat, vartype, grps = group_vars(.svy),
-                     level = level, df = df)
-  dplyr::bind_cols(out)
+  out <- get_var_est(
+    stat, vartype, grps = group_vars(.svy), level = level, df = df, pre_calc_ci = TRUE, deff = deff
+  )
+  out
 }
 
 survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
@@ -653,43 +621,41 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
     .svy$variables[[peel_name]] <- as.character(.svy$variables[[peel_name]])
   }
 
-  vartype <- c("coef", vartype)
-  if (deff) vartype <- c(vartype, "deff")
-
   if (length(level) > 1) {
     warning("Only the first confidence level will be used")
     level <- level[1]
   }
 
+  peel_is_factor <- is.factor(.svy[["variables"]][[peel_name]])
+  if (peel_is_factor) {
+    peel_levels <- levels(.svy[["variables"]][[peel_name]])
+  } else {
+    peel_levels <- sort(unique(.svy[["variables"]][[peel_name]]))
+  }
   if (length(grps_names) > 0) {
     stat <- survey::svyby(survey::make.formula(peel_name),
                           survey::make.formula(grps_names),
                           .svy, func, na.rm = na.rm, se = TRUE, deff = deff)
 
     var_names <- attr(stat, "svyby")[["variables"]]
-    var_names <- unlist(lapply(var_names,
-                               function(x) substring(x, nchar(peel_name) + 1)))
+    var_names <- unlist(lapply(var_names, function(x) substring(x, nchar(peel_name) + 1)))
 
-    vartype <- c("grps", vartype)
 
-    out <- get_var_est(stat, vartype, var_names = var_names, grps = grps_names,
-                       level = level, df = df)
-    # out <- dplyr::bind_cols(out)
-    names(out) <- vartype
-    peel_levels <- levels(.svy[["variables"]][[peel_name]])
-    out <- factor_stat_reshape(out, peel_name, var_names, peel_levels)
+    out <- get_var_est_factor(
+      stat, vartype, grps = grps_names, peel = peel_name,
+      peel_is_factor = peel_is_factor, peel_levels = peel_levels,
+      level = level, df = df, deff = deff
+    )
 
     out
   } else {
-    # Needed because grouped don't usually have "coef"
-    vartype <- c("lvls", vartype)
     stat <- func(survey::make.formula(peel_name), .svy, na.rm = na.rm, deff = deff)
 
-    out <- get_var_est(stat, vartype, peel = peel_name,
-                       peel_levels = levels(.svy[["variables"]][[peel_name]]),
-                       df = df)
-
-    dplyr::bind_cols(out)
+    out <- get_var_est_factor(
+      stat, vartype, grps = "", peel = peel_name, peel_levels = peel_levels,
+       peel_is_factor = peel_is_factor, df = df, deff = deff
+    )
+    out
   }
 }
 
@@ -699,113 +665,7 @@ survey_stat_proportion <- function(.svy, x, na.rm, vartype, level,
   stat <- survey::svyciprop(~`___arg`, .svy, na.rm = na.rm, level = level,
                             method = prop_method)
 
-  vartype <- c("coef", vartype)
-
-  out <- get_var_est(stat, vartype, quantile = TRUE, df = df)
-  dplyr::bind_cols(out)
-}
-
-get_var_est <- function(stat, vartype, var_names = "", grps = "",
-                        peel = "", peel_levels = NULL, level = 0.95,
-                        quantile = FALSE, df = Inf) {
-  out_width <- length(var_names)
-  out <- lapply(vartype, function(vvv) {
-    if (vvv == "coef") {
-      coef <- data.frame(matrix(coef(stat), ncol = out_width))
-      names(coef) <- var_names
-      coef
-    } else if (vvv == "se") {
-      se <- survey::SE(stat)
-      # Needed for grouped quantile
-      if (!inherits(se, "data.frame")) {
-        se <- data.frame(matrix(se, ncol = out_width))
-      }
-      names(se) <- paste0(var_names, "_se")
-      se
-    } else if (vvv == "ci") {
-      if (!quantile) {
-        if (length(level)==1) {
-          ci <- data.frame(matrix(stats::confint(stat, level = level, df = df),
-                                  ncol = 2 * out_width))
-          names(ci) <- c(paste0(var_names, "_low"), paste0(var_names, "_upp"))
-        } else {
-          lci <- lapply(level, function(x) {as.data.frame(stats::confint(stat,level = x, df = df))})
-          ci <- dplyr::bind_cols(lci)
-          names(ci) <- paste0(var_names,"_", c("low","upp"),rep(level,each=2)*100)
-        }
-      } else {
-        ci <- data.frame(matrix(stats::confint(stat), ncol = 2 * out_width))
-        names(ci) <- c(paste0(var_names, "_low"), paste0(var_names, "_upp"))
-      }
-
-      ci
-    } else if (vvv == "ci-prop") {
-      ci <- data.frame(stat[c("ci_l", "ci_u")])
-      names(ci) <- c(paste0(var_names, "_low"), paste0(var_names, "_upp"))
-      ci
-    } else if (vvv == "var") {
-      var <- data.frame(matrix(survey::SE(stat) ^ 2, ncol = out_width))
-      names(var) <- paste0(var_names, "_var")
-      var
-    } else if (vvv == "cv") {
-      cv <- data.frame((matrix(survey::cv(stat), ncol = out_width)))
-      names(cv) <- paste0(var_names, "_cv")
-      cv
-    } else if (vvv == "deff") {
-      deff <- data.frame(matrix(survey::deff(stat), ncol = out_width))
-      names(deff) <- paste0(var_names, "_deff")
-      deff
-    } else if (vvv == "grps") {
-      stat[grps]
-    } else if (vvv == "lvls") {
-      # Only for survey_stat_factor with only one groups
-      # Add on level variable -- survey leaves it in an ugly state, with the
-      # varname pasted in, so we have to remove it. Also, check if it was
-      # originally a character and convert if it was.
-      lvls <- data.frame(names(coef(stat)), stringsAsFactors = FALSE)
-      lvls[[1]] <- gsub(paste0("^", peel), "", lvls[[1]])
-      if (!is.null(peel_levels)) {
-        lvls[[1]] <- factor(lvls[[1]], peel_levels)
-      }
-      names(lvls) <- peel
-      lvls
-    }
-  })
-}
-
-
-factor_stat_reshape <- function(stat, peel, var_names, peel_levels) {
-  out <- lapply(seq_along(stat), function(iii) {
-    stat_name <- names(stat)[iii]
-    stat_df <- stat[[iii]]
-    if (stat_name == "grps") {
-      stat_df <- dplyr::tbl_df(stat_df)
-      stat_df[rep(seq_len(nrow(stat_df)), length(var_names)), ]
-    } else if(stat_name == "ci") {
-      out <- utils::stack(stat_df)
-      out <- data.frame(
-        `_low` = out[substr_right(out$ind, 4) == "_low", "values"],
-        `_upp` = out[substr_right(out$ind, 4) == "_upp", "values"],
-        check.names = FALSE, stringsAsFactors = FALSE
-      )
-    } else if(stat_name == "coef") {
-      out <- utils::stack(stat_df)
-      names(out) <- c("", peel)
-      out[, c(2, 1)]
-    } else {
-      out <- utils::stack(stat_df)
-      out <- select(out, -.data$ind)
-      names(out) <- paste0("_", stat_name)
-      out
-    }
-  })
-  out <- dplyr::bind_cols(out)
-
-  # peel's factor was created by stack, but is just alphabetic
-  out[[peel]] <- as.character(out[[peel]])
-  if (!is.null(peel_levels)) {
-    out[[peel]] <- factor(out[[peel]], peel_levels)
-  }
-
+  out <- get_var_est(stat, vartype, pre_calc_ci = TRUE, df = df)
   out
 }
+

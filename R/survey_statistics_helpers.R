@@ -4,12 +4,12 @@ set_survey_vars <- function(
   out <- .svy
   if (inherits(.svy, "twophase2")) {
     if (!add) {
-      out$phase1$sample$variables <- select(out$phase1$sample$variables, one_of(group_vars(out)))
+      out$phase1$sample$variables <- select(out$phase1$sample$variables, dplyr::one_of(group_vars(out)))
     }
     out$phase1$sample$variables[[name]] <- x
   } else {
     if (!add) {
-      out$variables <- select(out$variables, one_of(group_vars(out)))
+      out$variables <- select(out$variables, dplyr::one_of(group_vars(out)))
     }
     out$variables[[name]] <- x
   }

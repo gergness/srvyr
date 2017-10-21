@@ -79,18 +79,32 @@ survey_mean.tbl_svy <- function(
   proportion = FALSE, prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
   deff = FALSE, df = NULL, .svy = current_svy(), ...
 ) {
-  if (missing(vartype)) vartype <- "se"
-  vartype <- match.arg(vartype, several.ok = TRUE)
-  if (missing(prop_method)) prop_method <- "logit"
-  prop_method <- match.arg(prop_method, several.ok = TRUE)
+  vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
+  prop_method <- match.arg(prop_method)
 
   if (is.null(df)) df <- survey::degf(.svy)
 
   if (!proportion) {
-    survey_stat_ungrouped(.svy, survey::svymean, x, na.rm, vartype, level, deff, df)
+    if (class(x) == "factor") {
+      stop(paste0(
+        "Factor not allowed in survey functions, they should be used as a ",
+        "grouping variable."
+      ))
+    }
+    if (class(x) == "logical") x <- as.integer(x)
+
+    .svy <- set_survey_vars(.svy, x)
+    stat <- survey::svymean(~`__SRVYR_TEMP_VAR__`, .svy, na.rm = na.rm, deff = deff)
+    out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
+    out
+
   } else {
-    # survey::ciprop only accepts formulas so can't use main function
-    survey_stat_proportion(.svy, x, na.rm, vartype, level, prop_method, df)
+    .svy <- set_survey_vars(.svy, x)
+    stat <- survey::svyciprop(
+      ~`__SRVYR_TEMP_VAR__`, .svy, na.rm = na.rm, level = level, method = prop_method
+    )
+    out <- get_var_est(stat, vartype, pre_calc_ci = TRUE, df = df)
+    out
   }
 }
 
@@ -189,7 +203,18 @@ survey_total.tbl_svy <- function(
 
   if (is.null(df)) df <- survey::degf(.svy)
 
-  survey_stat_ungrouped(.svy, survey::svytotal, x, na.rm, vartype, level, deff, df)
+  if (class(x) == "factor") {
+    stop(paste0(
+      "Factor not allowed in survey functions, they should be used as a grouping variable"
+    ))
+  }
+  if (class(x) == "logical") x <- as.integer(x)
+
+  .svy <- set_survey_vars(.svy, x)
+  stat <- survey::svytotal(~`__SRVYR_TEMP_VAR__`, .svy, na.rm = na.rm, deff = deff)
+
+  out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
+  out
 }
 
 #' @export
@@ -524,25 +549,6 @@ unweighted <- function(x, .svy = current_svy(), ...) {
   out
 }
 
-
-survey_stat_ungrouped <- function(.svy, func, x, na.rm, vartype, level, deff, df) {
-  if (class(x) == "factor") {
-    stop(paste0("Factor not allowed in survey functions, should ",
-                "be used as a grouping variable"))
-  }
-  if (class(x) == "logical") x <- as.integer(x)
-
-  if (inherits(.svy, "twophase2")) {
-    .svy$phase1$sample$variables <- data.frame(SRVYR_VAR = x)
-  } else {
-  .svy$variables <- data.frame(SRVYR_VAR = x)
-  }
-  stat <- func(~SRVYR_VAR, .svy, na.rm = na.rm, deff = deff)
-
-  out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
-  out
-}
-
 survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level,
                                 deff, df, prop_method = NULL) {
   UseMethod("survey_stat_grouped")
@@ -658,14 +664,3 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
     out
   }
 }
-
-survey_stat_proportion <- function(.svy, x, na.rm, vartype, level,
-                                   prop_method, df) {
-  .svy$variables["___arg"] <- x
-  stat <- survey::svyciprop(~`___arg`, .svy, na.rm = na.rm, level = level,
-                            method = prop_method)
-
-  out <- get_var_est(stat, vartype, pre_calc_ci = TRUE, df = df)
-  out
-}
-

@@ -1,8 +1,16 @@
-set_survey_vars <- function(.svy, x, name = "SRVYR_TEMP_VAR", add = FALSE) {
+set_survey_vars <- function(
+  .svy, x, name = "__SRVYR_TEMP_VAR__", add = FALSE
+) {
   out <- .svy
-  if (!add) {
-    out$variables <- dplyr::data_frame(!!name := x)
+  if (inherits(.svy, "twophase2")) {
+    if (!add) {
+      out$phase1$sample$variables <- select(out$phase1$sample$variables, one_of(group_vars(out)))
+    }
+    out$phase1$sample$variables[[name]] <- x
   } else {
+    if (!add) {
+      out$variables <- select(out$variables, one_of(group_vars(out)))
+    }
     out$variables[[name]] <- x
   }
   out

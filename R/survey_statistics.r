@@ -81,23 +81,15 @@ survey_mean.tbl_svy <- function(
 ) {
   vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   prop_method <- match.arg(prop_method)
-
   if (is.null(df)) df <- survey::degf(.svy)
+  stop_for_factor(x)
 
   if (!proportion) {
-    if (class(x) == "factor") {
-      stop(paste0(
-        "Factor not allowed in survey functions, they should be used as a ",
-        "grouping variable."
-      ))
-    }
     if (class(x) == "logical") x <- as.integer(x)
-
     .svy <- set_survey_vars(.svy, x)
     stat <- survey::svymean(~`__SRVYR_TEMP_VAR__`, .svy, na.rm = na.rm, deff = deff)
     out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
     out
-
   } else {
     .svy <- set_survey_vars(.svy, x)
     stat <- survey::svyciprop(
@@ -116,18 +108,38 @@ survey_mean.grouped_svy <- function(
 ) {
   if (missing(vartype)) vartype <- "se"
   vartype <- match.arg(vartype, several.ok = TRUE)
+  if (is.null(df)) df <- survey::degf(.svy)
+
   if (missing(prop_method)) prop_method <- "logit"
   prop_method <- match.arg(prop_method, several.ok = TRUE)
 
-  if (is.null(df)) df <- survey::degf(.svy)
-
-  if (missing(x)) {
-    if (proportion) stop("proportion does not work with factors.")
+  if (missing(x) & proportion) {
+    stop("proportion does not work with factors.")
+  } else if (missing(x)) {
     survey_stat_factor(.svy, survey::svymean, na.rm, vartype, level, deff, df)
-  } else if (proportion) {
-    survey_stat_grouped(.svy, survey::svyciprop, x, na.rm, vartype, level,
-                        deff = FALSE, df, prop_method)
-  } else survey_stat_grouped(.svy, survey::svymean, x, na.rm, vartype, level, deff, df)
+  } else {
+    stop_for_factor(x)
+    if (class(x) == "logical") x <- as.integer(x)
+    .svy <- set_survey_vars(.svy, x)
+    grps_formula <- survey::make.formula(group_vars(.svy))
+
+    if (proportion) {
+      stat <- survey::svyby(
+        ~`__SRVYR_TEMP_VAR__`, grps_formula, .svy, survey::svyciprop, na.rm = na.rm,
+        se = TRUE, vartype = c("se", "ci"), method = prop_method
+      )
+    } else {
+      stat <- survey::svyby(
+        ~`__SRVYR_TEMP_VAR__`, grps_formula, .svy, survey::svymean,
+        deff = deff, na.rm = na.rm
+      )
+    }
+    out <- get_var_est(
+      stat, vartype, grps = group_vars(.svy), level = level, df = df,
+      pre_calc_ci = proportion, deff = deff
+    )
+    out
+  }
 }
 
 
@@ -224,12 +236,25 @@ survey_total.grouped_svy <- function(
 ) {
   if (missing(vartype)) vartype <- "se"
   vartype <- match.arg(vartype, several.ok = TRUE)
-
   if (is.null(df)) df <- survey::degf(.svy)
 
-  if (!missing(x)) survey_stat_grouped(.svy, survey::svytotal, x, na.rm,
-                                       vartype, level, deff, df)
-  else survey_stat_factor(.svy, survey::svytotal, na.rm, vartype, level, deff, df)
+  if (missing(x)) {
+    survey_stat_factor(.svy, survey::svytotal, na.rm, vartype, level, deff, df)
+  } else {
+    stop_for_factor(x)
+    if (class(x) == "logical") x <- as.integer(x)
+    .svy <- set_survey_vars(.svy, x)
+    grps_formula <- survey::make.formula(group_vars(.svy))
+
+    stat <- survey::svyby(
+      ~`__SRVYR_TEMP_VAR__`, grps_formula, .svy, survey::svytotal,
+      deff = deff, na.rm = na.rm
+    )
+    out <- get_var_est(
+      stat, vartype, grps = group_vars(.svy), level = level, df = df, deff = deff
+    )
+    out
+  }
 }
 
 
@@ -549,73 +574,6 @@ unweighted <- function(x, .svy = current_svy(), ...) {
   out
 }
 
-survey_stat_grouped <- function(.svy, func, x, na.rm, vartype, level,
-                                deff, df, prop_method = NULL) {
-  UseMethod("survey_stat_grouped")
-}
-
-survey_stat_grouped.default <- function(.svy, func, x, na.rm, vartype, level,
-                                        deff, df, prop_method = NULL) {
-  grp_names <- group_vars(.svy)
-  grps <- select(.svy$variables, !!!rlang::syms(grp_names))
-  if (class(x) == "factor") {
-    stop(paste0("Factor not allowed in survey functions, should ",
-                "be used as a grouping variable"))
-  }
-
-  if (class(x) == "logical") x <- as.integer(x)
-
-  .svy$variables <- data.frame(dplyr::bind_cols(grps, data.frame(SRVYR_VAR = x)))
-
-  if (is.null(prop_method)) {
-    stat <- survey::svyby(~SRVYR_VAR, survey::make.formula(grp_names), .svy,
-                          deff = deff, func, na.rm = na.rm)
-  } else {
-    stat <- survey::svyby(~SRVYR_VAR, survey::make.formula(grp_names),
-                          .svy, func, na.rm = na.rm,
-                          se = TRUE, vartype = c("se", "ci"),
-                          method = prop_method)
-  }
-
-  out <- get_var_est(
-    stat, vartype, grps = grp_names, level = level, df = df,
-    pre_calc_ci = !is.null(prop_method), deff = deff
-  )
-  dplyr::bind_cols(out)
-}
-
-survey_stat_grouped.twophase2 <- function(.svy, func, x, na.rm, vartype, level,
-                                          deff, df, prop_method = NULL) {
-  grps <- survey::make.formula(groups(.svy))
-
-  if (class(x) == "factor") {
-    stop(paste0("Factor not allowed in survey functions, should ",
-                "be used as a grouping variable"))
-  }
-  if (class(x) == "logical") x <- as.integer(x)
-  # svyby breaks when you feed it raw vector to be measured... Add it to
-  # the data.frame with mutate and then pass in the name
-  .svy$variables[["___arg"]] <- x
-
-  # Slight hack for twophase -- move the created variables to where survey
-  # expects them
-  if (inherits(.svy, "twophase2")) {
-    .svy$phase1$sample$variables <- .svy$variables
-  }
-
-  if (is.null(prop_method)) {
-    stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm, se = TRUE, deff = deff)
-  } else {
-    stat <- survey::svyby(~`___arg`, grps, .svy, func, na.rm = na.rm,
-                          se = TRUE, vartype = c("ci", "se"),
-                          method = prop_method)
-  }
-
-  out <- get_var_est(
-    stat, vartype, grps = group_vars(.svy), level = level, df = df, pre_calc_ci = TRUE, deff = deff
-  )
-  out
-}
 
 survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
   grps_names <- group_vars(.svy)

@@ -195,8 +195,6 @@ get_var_est_factor <- function(
   out
 }
 
-
-
 factor_stat_reshape <- function(stat, peel, var_names, peel_levels) {
   out <- lapply(seq_along(stat), function(iii) {
     stat_name <- names(stat)[iii]
@@ -231,4 +229,13 @@ factor_stat_reshape <- function(stat, peel, var_names, peel_levels) {
   }
 
   out
+}
+
+stop_for_factor <- function(x) {
+  if (class(x) == "factor") {
+    stop(paste0(
+      "Factor not allowed in survey functions, should be used as a grouping variable"
+    ), call. = FALSE)
+  }
+
 }

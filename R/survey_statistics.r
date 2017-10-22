@@ -323,20 +323,15 @@ survey_ratio.tbl_svy <- function(
 ) {
   if (missing(vartype)) vartype <- "se"
   vartype <- match.arg(vartype, several.ok = TRUE)
-
   if (is.null(df)) df <- survey::degf(.svy)
 
-  if (inherits(.svy, "twophase2")) {
-    .svy$phase1$sample$variables <- data.frame(SRVYR_VAR_NUM = numerator,
-                                               SRVYR_VAR_DEN = denominator)
-  } else {
-    .svy$variables <- data.frame(SRVYR_VAR_NUM = numerator,
-                                 SRVYR_VAR_DEN = denominator)
-  }
+  .svy <- set_survey_vars(.svy, numerator, "__SRVYR_TEMP_NUM__")
+  .svy <- set_survey_vars(.svy, denominator, "__SRVYR_TEMP_DEN__", add = TRUE)
 
   stat <- survey::svyratio(
-    ~SRVYR_VAR_NUM, ~SRVYR_VAR_DEN, .svy, na.rm = na.rm, deff = deff, df = df
-    )
+    ~`__SRVYR_TEMP_NUM__`, ~`__SRVYR_TEMP_DEN__`, .svy, na.rm = na.rm,
+    deff = deff, df = df
+  )
 
   out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
   out
@@ -353,21 +348,13 @@ survey_ratio.grouped_svy <- function(
   if (is.null(df)) df <- survey::degf(.svy)
 
   grp_names <- group_vars(.svy)
-  grps <- select(.svy$variables, !!!rlang::syms(grp_names))
 
-  new_vars <- data.frame(dplyr::bind_cols(
-    grps,
-    data.frame(SRVYR_VAR_NUM = numerator, SRVYR_VAR_DEN = denominator)
-  ))
-  if (inherits(.svy, "twophase2")) {
-    .svy$phase1$sample$variables <- new_vars
-  } else {
-    .svy$variables <- new_vars
-  }
+  .svy <- set_survey_vars(.svy, numerator, "__SRVYR_TEMP_NUM__")
+  .svy <- set_survey_vars(.svy, denominator, "__SRVYR_TEMP_DEN__", add = TRUE)
 
   stat <- survey::svyby(
-    ~SRVYR_VAR_NUM, survey::make.formula(grp_names), .svy,
-    survey::svyratio, denominator = ~SRVYR_VAR_DEN,
+    ~`__SRVYR_TEMP_NUM__`, survey::make.formula(grp_names), .svy,
+    survey::svyratio, denominator = ~`__SRVYR_TEMP_DEN__`,
     na.rm = na.rm, ci = TRUE, deff = deff
   )
 
@@ -449,14 +436,10 @@ survey_quantile.tbl_svy <- function(
   # we could go higher, but I worry about 32bit vs 64bit systems)
   alpha = round(1 - level, 7)
 
-  if (inherits(.svy, "twophase2")) {
-    .svy$phase1$sample$variables <- data.frame(SRVYR_VAR = x)
-  } else {
-    .svy$variables <- data.frame(SRVYR_VAR = x)
-  }
+  .svy <- set_survey_vars(.svy, x)
 
   stat <- survey::svyquantile(
-    ~SRVYR_VAR, .svy, quantiles = quantiles, na.rm = na.rm,
+    ~`__SRVYR_TEMP_VAR__`, .svy, quantiles = quantiles, na.rm = na.rm,
     ci = TRUE, alpha = alpha, method = q_method, f = f,
     interval.type = interval_type, ties = ties, df = df
   )
@@ -485,24 +468,17 @@ survey_quantile.grouped_svy <- function(
     level <- level[1]
   }
 
-  grp_names <- group_vars(.svy)
-  grps <- select(.svy$variables, !!!rlang::syms(grp_names))
-
-
-  if (inherits(.svy, "twophase2")) {
-    .svy$phase1$sample$variables <- data.frame(dplyr::bind_cols(grps, data.frame(SRVYR_VAR = x)))
-  } else {
-    .svy$variables <- data.frame(dplyr::bind_cols(grps, data.frame(SRVYR_VAR = x)))
-  }
-
   # Because of machine precision issues, 1 - 0.95 != 0.05...
   # Here's a hacky way to force it, though it technically limits
   # us to 7 digits of precision in alpha (seems like enough,
   # we could go higher, but I worry about 32bit vs 64bit systems)
   alpha = round(1 - level, 7)
 
+  grp_names <- group_vars(.svy)
+  .svy <- set_survey_vars(.svy, x)
+
   stat <- survey::svyby(
-    formula = ~SRVYR_VAR, survey::make.formula(grp_names), .svy,
+    formula = ~`__SRVYR_TEMP_VAR__`, survey::make.formula(grp_names), .svy,
     survey::svyquantile, quantiles = quantiles, na.rm = na.rm,
     ci = TRUE, alpha = alpha, method = q_method,
     f = f, interval.type = interval_type, ties = ties,
@@ -577,11 +553,12 @@ unweighted <- function(x, .svy = current_svy(), ...) {
 
 survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
   grps_names <- group_vars(.svy)
+  .svy <- set_survey_vars(.svy, NULL)
   peel_name <- grps_names[length(grps_names)]
   grps_names <- setdiff(grps_names, peel_name)
 
   if (is.numeric(.svy$variables[[peel_name]])) {
-    warning("Coercing ", peel_name, " to character in survey_mean().", call. = FALSE)
+    warning("Coercing ", peel_name, " to character.", call. = FALSE)
     .svy$variables[[peel_name]] <- as.character(.svy$variables[[peel_name]])
   }
 

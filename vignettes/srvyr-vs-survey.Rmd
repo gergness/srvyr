@@ -43,7 +43,7 @@ out <- apistrat %>%
 
 ggplot(data = out, aes(x = stype, y = api_diff, group = hs_grad_pct, fill = hs_grad_pct)) +
   geom_bar(stat = "identity", position = "dodge") +
-  geom_text(aes(y = 0, ymax = api_diff, label = n), position = position_dodge(width = 0.9), vjust = -1)
+  geom_text(aes(y = 0, label = n), position = position_dodge(width = 0.9), vjust = -1)
 ```
 
 However, if we wanted to add error bars to the graph to capture the uncertainty due to sampling

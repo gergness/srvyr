@@ -16,4 +16,3 @@ will not have to worry about getting (or setting) the current conext's survey,
 unless they are trying to extend srvyr. See \code{vignette("extending-srvyr")}
 for more details.
 }
-\keyword{internal}

@@ -23,7 +23,6 @@ set_current_svy <- function(x) {
 #' for more details.
 #'
 #' @return a tbl_svy (or error if called with no survey context)
-#' @keywords internal
 #' @export
 current_svy <- function() {
   cur_svy_env$selected %||% rlang::abort("Survey context not set")

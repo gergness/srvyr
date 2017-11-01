@@ -1,3 +1,21 @@
+#' Set the variables for the current survey variable
+#'
+#' This is a helper to allow srvyr's syntactic style. In general, users
+#' will not have to worry about setting variables in a survey object
+#' unless they are trying to extend srvyr. This function helps convert a vector
+#' to a variable in the correct part of a survey object's structure so that
+#' functions can refer to it using the survey package's formula notation.
+#' See \code{vignette("extending-srvyr")} for more details.
+#'
+#' @param .svy A survey object
+#' @param x A vector to be included in the variables portion of the survey object
+#' @param name The name of the variable once it is added. Defaults to `__SRVYR_TEMP_VAR__`
+#'   which is formatted weirdly to avoid name collisions.
+#' @param add FALSE, the default, overwrite all current variables. If TRUE, will add
+#'   this variable instead.
+#'
+#' @return a tbl_svy with the variables modified
+#' @export
 set_survey_vars <- function(
   .svy, x, name = "__SRVYR_TEMP_VAR__", add = FALSE
 ) {
@@ -16,7 +34,30 @@ set_survey_vars <- function(
   out
 }
 
-
+#' Get the variance estimates for a survey estimate
+#'
+#' This is a helper to allow srvyr's syntactic style. In general, users
+#' will not have to worry about getting survey variance estimates directly
+#' unless they are trying to extend srvyr. This function helps convert from
+#' the result of a survey function into a data.frame with an estimate and
+#' measures of variance around it in a way that summarize expects.
+#' See \code{vignette("extending-srvyr")} for more details.
+#'
+#' @param stat A survey statistic object, usually the result of a function from the survey
+#'   package or svyby.
+#' @param vartype A vector indicating which variance estimates to calculate (options are
+#'   se for standard error, ci for confidence interval, var for variance or cv for
+#'   coefficient of variation). Multiples are allowed.
+#' @param grps A vector indicating the names of the grouping variables for grouped
+#'   surveys ("" indicates no groups).
+#' @param level One or more levels to calculate a confidence interval.
+#' @param df Degrees of freedom, many survey functions default to Inf, but srvyr functions
+#'   generally default to the result of calling degf on the survey object.
+#' @param pre_calc_ci Whether the confidence interval is pre-calculated (as in svyciprop)
+#' @param deff Whether to return the design effect (calculated using survey::deff)
+#'
+#' @return a tbl_svy with the variables modified
+#' @export
 get_var_est <- function(
   stat, vartype, grps = "", level = 0.95, df = Inf, pre_calc_ci = FALSE, deff = FALSE
 ) {

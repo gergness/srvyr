@@ -20,6 +20,7 @@ Imports:
 License: GPL-2 | GPL-3
 LazyData: TRUE
 Suggests:
+    convey,
     dbplyr,
     ggplot2,
     knitr,
@@ -29,6 +30,7 @@ Suggests:
     RSQLite,
     MonetDBLite,
     survival,
-    testthat
+    testthat,
+    vardpoor
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1

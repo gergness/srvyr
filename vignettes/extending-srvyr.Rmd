@@ -13,6 +13,11 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+if (!require(convey) | !require(vardpoor)) {
+  knitr::opts_chunk$set(eval = FALSE)
+  message("Missing convey and vardpoor packages. Install them to run vignette.")
+}
 ```
 An exciting new feature that is easier now that I have reworked srvyr's
 non-standard evaluation to match dplyr 0.7+ is that it is now possible for

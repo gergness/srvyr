@@ -22,13 +22,13 @@ get_lazy_vars <- function(data, id, ...) {
 
 lazy_subset_svy_vars <- function(svy, ...) {
   dots <- rlang::quos(...)
-  if (!"__SRYVR_SUBSET_VAR__" %in% tbl_vars(svy$variables)) {
-    svy$variables <- dplyr::mutate(svy$variables, `__SRYVR_SUBSET_VAR__` = TRUE)
+  if (!"__SRVYR_SUBSET_VAR__" %in% tbl_vars(svy$variables)) {
+    svy$variables <- dplyr::mutate(svy$variables, `__SRVYR_SUBSET_VAR__` = TRUE)
   }
 
   svy$variables <- dplyr::mutate(
     svy$variables,
-    `__SRVYR_SUBSET_VAR__` = !!!dots & .data$`__SRYVR_SUBSET_VAR__`
+    `__SRVYR_SUBSET_VAR__` = !!!dots & !!rlang::sym("__SRVYR_SUBSET_VAR__")
   )
 
   svy
@@ -43,9 +43,9 @@ is_lazy_svy <- function(x) {
 localize_lazy_svy <- function(svy, dots) {
   vars_to_collect <- find_vars_to_collect_in_dots(svy$variables, dots)
 
-  needs_subset <- "__SRYVR_SUBSET_VAR__" %in% dplyr::tbl_vars(svy$variables)
+  needs_subset <- "__SRVYR_SUBSET_VAR__" %in% dplyr::tbl_vars(svy$variables)
   if (needs_subset) {
-    vars_to_collect <- c(vars_to_collect, "__SRYVR_SUBSET_VAR__")
+    vars_to_collect <- c(vars_to_collect, "__SRVYR_SUBSET_VAR__")
   }
 
   svy$variables <- dplyr::collect(
@@ -53,7 +53,7 @@ localize_lazy_svy <- function(svy, dots) {
   )
 
   if (needs_subset) {
-    svy <- subset_svy_vars(svy, .data$`__SRYVR_SUBSET_VAR__`)
+    svy <- subset_svy_vars(svy, as.logical(svy$variables$`__SRVYR_SUBSET_VAR__`))
   }
   svy
 }

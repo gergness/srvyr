@@ -2,6 +2,8 @@
 summarise.tbl_svy <- function(.data, ...) {
   .dots <- rlang::quos(...)
 
+  if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
+
   # Set current_svy so available to svy stat functions
   old <- set_current_svy(.data)
   on.exit(set_current_svy(old), add = TRUE)

@@ -26,18 +26,28 @@ srvyr_select_vars <- function(vars, data, check_ids = FALSE) {
   vars <- vars
   var_names <- dplyr::tbl_vars(data)
   if (check_ids) {
-    var_rhs <- as.character(rlang::f_rhs(vars))
-    if (!(length(var_rhs) == 1 && var_rhs %in% var_names)) {
-      var_eval <- try(rlang::eval_tidy(vars), silent = TRUE)
-      if (identical(var_eval, 0) || identical(var_eval, 1)) {
-        return(survey::make.formula(var_eval))
-      }
+    id_quo_check <- check_for_id_quo(vars, var_names)
+    if (rlang::is_formula(id_quo_check)) {
+      return(id_quo_check)
     }
   }
   if (is.null(rlang::f_rhs(vars))) return(NULL)
 
   out_vars <- dplyr::select_vars(var_names, !!vars)
   survey::make.formula(out_vars)
+}
+
+# Retruns FALSE if x is a quo(0) or quo(1), or
+# ~0, ~1 if it is.
+check_for_id_quo <- function(x, var_names) {
+  var_rhs <- as.character(rlang::f_rhs(x))
+  if (!(length(var_rhs) == 1 && var_rhs %in% var_names)) {
+    var_eval <- try(rlang::eval_tidy(x), silent = TRUE)
+    if (identical(var_eval, 0) || identical(var_eval, 1)) {
+      return(survey::make.formula(var_eval))
+    }
+  }
+  return(FALSE)
 }
 
 # Need to turn bare variable to variable names inside list (for 2phase)

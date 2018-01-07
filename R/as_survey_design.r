@@ -110,6 +110,43 @@ as_survey_design.survey.design2 <- function(.data, ...) {
   as_tbl_svy(.data)
 }
 
+#' @export
+#' @rdname as_survey_design
+as_survey_design.tbl_lazy <-
+  function(.data, ids = NULL, probs = NULL, strata = NULL,
+           variables = NULL, fpc = NULL, nest = FALSE,
+           check_strata = !nest, weights = NULL, pps = FALSE,
+           variance = c("HT", "YG"), ...) {
+
+    ids <- rlang::enquo(ids)
+    probs <- rlang::enquo(probs)
+    strata <- rlang::enquo(strata)
+    fpc <- rlang::enquo(fpc)
+    weights <- rlang::enquo(weights)
+    variables <- rlang::enquo(variables)
+
+    survey_vars_local <- get_lazy_vars(
+      data = .data, id = !!ids, !!probs, !!strata, !!fpc, !!weights, !!variables
+    )
+
+    ids <- srvyr_select_vars(ids, survey_vars_local, check_ids = TRUE)
+    probs <- srvyr_select_vars(probs, survey_vars_local)
+    strata <- srvyr_select_vars(strata, survey_vars_local)
+    fpc <- srvyr_select_vars(fpc, survey_vars_local)
+    weights <- srvyr_select_vars(weights, survey_vars_local)
+    variables <- srvyr_select_vars(variables, survey_vars_local)
+
+    if (is.null(ids)) ids <- ~1
+    out <- survey::svydesign(
+      ids, probs, strata, variables, fpc, survey_vars_local, nest, check_strata, weights, pps
+    )
+    out$variables <- .data
+
+    as_tbl_svy(
+      out,
+      list(ids = ids, probs = probs, strata = strata, fpc = fpc, weights = weights)
+    )
+  }
 
 #' @export
 #' @rdname srvyr-se-deprecated

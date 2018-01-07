@@ -4,6 +4,7 @@
 \alias{as_survey_design}
 \alias{as_survey_design.data.frame}
 \alias{as_survey_design.survey.design2}
+\alias{as_survey_design.tbl_lazy}
 \title{Create a tbl_svy survey object using sampling design}
 \usage{
 as_survey_design(.data, ...)
@@ -14,6 +15,11 @@ as_survey_design(.data, ...)
   "YG"), ...)
 
 \method{as_survey_design}{survey.design2}(.data, ...)
+
+\method{as_survey_design}{tbl_lazy}(.data, ids = NULL, probs = NULL,
+  strata = NULL, variables = NULL, fpc = NULL, nest = FALSE,
+  check_strata = !nest, weights = NULL, pps = FALSE, variance = c("HT",
+  "YG"), ...)
 }
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}

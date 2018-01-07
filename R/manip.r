@@ -46,13 +46,21 @@ rename_.tbl_svy <- function(.data, ..., .dots) {
 #' @export
 filter.tbl_svy <- function(.data, ...) {
   dots <- rlang::quos(...)
-  subset_svy_vars(.data, !!!dots)
+  if (is_lazy_svy(.data)) {
+    lazy_subset_svy_vars(.data, !!!dots)
+  } else {
+    subset_svy_vars(.data, !!!dots)
+  }
 }
 
 #' @export
 filter_.tbl_svy <- function(.data, ..., .dots) {
   dots <- compat_lazy_dots(.dots, rlang::caller_env(), ...)
-  subset_svy_vars(.data, !!!dots)
+  if (is_lazy_svy(.data)) {
+    lazy_subset_svy_vars(.data, !!!dots)
+  } else {
+    subset_svy_vars(.data, !!!dots)
+  }
 }
 
 

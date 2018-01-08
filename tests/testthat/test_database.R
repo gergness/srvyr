@@ -36,9 +36,15 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
       # Can do a basic summarize
       expect_equal(
         dstrata %>%
-          summarize(api99 = survey_mean(api99)),
+          summarize(
+            api99_mn = survey_mean(api99),
+            api99_mdn = survey_median(api99),
+            api99_tot = survey_total(api99)),
         local_dstrata %>%
-          summarize(api99 = survey_mean(api99))
+          summarize(
+            api99_mn = survey_mean(api99),
+            api99_mdn = survey_median(api99),
+            api99_tot = survey_total(api99))
       )
 
       # Can do a summarize with a calculation in it

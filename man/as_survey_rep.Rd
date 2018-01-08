@@ -3,6 +3,7 @@
 \name{as_survey_rep}
 \alias{as_survey_rep}
 \alias{as_survey_rep.data.frame}
+\alias{as_survey_rep.tbl_lazy}
 \alias{as_survey_rep.svyrep.design}
 \alias{as_survey_rep.survey.design2}
 \alias{as_survey_rep.tbl_svy}
@@ -16,6 +17,12 @@ as_survey_rep(.data, ...)
   bootstrap_average = NULL, scale = NULL, rscales = NULL, fpc = NULL,
   fpctype = c("fraction", "correction"),
   mse = getOption("survey.replicates.mse"), ...)
+
+\method{as_survey_rep}{tbl_lazy}(.data, variables = NULL, repweights = NULL,
+  weights = NULL, type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
+  "other"), combined_weights = TRUE, rho = NULL, bootstrap_average = NULL,
+  scale = NULL, rscales = NULL, fpc = NULL, fpctype = c("fraction",
+  "correction"), mse = getOption("survey.replicates.mse"), ...)
 
 \method{as_survey_rep}{svyrep.design}(.data, ...)
 

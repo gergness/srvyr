@@ -228,7 +228,7 @@ NULL
 #' @export
 #' @importFrom dplyr summarise_each_
 #' @rdname srvyr-se-deprecated
-?NULL
+NULL
 
 #' @name summarize_each
 #' @export

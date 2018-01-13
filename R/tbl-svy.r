@@ -56,7 +56,7 @@ print.tbl_svy <- function (x, varnames = TRUE, all_survey_vars = FALSE, ...) {
   if (varnames) {
     vars <- dplyr::tbl_vars(x$variables)
     if (inherits(x$variables, "tbl_lazy")) {
-      var_single_row <- dplyr::collect(head(x$variables, 1))
+      var_single_row <- dplyr::collect(utils::head(x$variables, 1))
       types <- vapply(var_single_row, dplyr::type_sum, character(1))
     } else {
       types <- vapply(x$variables, dplyr::type_sum, character(1))

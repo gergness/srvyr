@@ -8,14 +8,13 @@ summarise.tbl_svy <- function(.data, ...) {
   old <- set_current_svy(.data)
   on.exit(set_current_svy(old), add = TRUE)
 
-  out <- rlang::eval_tidy(.dots, .data$variables)
-
   # use the argument names to name the output
-  out <- lapply(seq_along(out), function(x) {
-    var_names <- names(out[[x]])
+  out <- lapply(seq_along(.dots), function(x) {
+    out <- rlang::eval_tidy(.dots[[x]], .data$variables)
+    var_names <- names(out)
     vname_is_coef <- var_names == "__SRVYR_COEF__"
     if (any(vname_is_coef)) var_names[vname_is_coef] <- ""
-    stats::setNames(out[[x]], paste0(names(out[x]), var_names))
+    stats::setNames(out, paste0(names(.dots)[x], var_names))
   })
 
   out <- dplyr::bind_cols(out)
@@ -40,16 +39,14 @@ summarise.grouped_svy <- function(.data, ...) {
 
   groups <- group_vars(.data)
 
-  out <- rlang::eval_tidy(.dots, .data$variables)
-
   # use the argument names to name the output
-  out <- lapply(seq_along(out), function(x) {
+  out <- lapply(seq_along(.dots), function(x) {
+    out <- rlang::eval_tidy(.dots[[x]], .data$variables)
     unchanged_names <- groups
-    changed_names <- setdiff(names(out[[x]]), groups)
+    changed_names <- setdiff(names(out), groups)
     changed_names_is_coef <- changed_names == "__SRVYR_COEF__"
-    if (any(changed_names_is_coef)) changed_names[changed_names_is_coef] <- ""
-    results <- stats::setNames(out[[x]], c(unchanged_names, paste0(names(out[x]),
-                                                                   changed_names)))
+    changed_names[which(changed_names_is_coef)] <- ""
+    results <- stats::setNames(out, c(unchanged_names, paste0(names(.dots)[x], changed_names)))
     results <- dplyr::arrange(results, !!!rlang::syms(unchanged_names))
 
     # Only keep stratifying vars in first calculation so they're not repeated

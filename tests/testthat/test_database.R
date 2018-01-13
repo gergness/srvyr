@@ -113,6 +113,13 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
       )
     })
 
+    test_that(paste0("Can use as_survey"), {
+      dstrata <- apistrat_db %>%
+        as_survey(strata = stype, weights = pw)
+
+      expect_equal(inherits(dstrata$variables, "tbl_lazy"), TRUE)
+    })
+
     DBI::dbDisconnect(con)
   }
 

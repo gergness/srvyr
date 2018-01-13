@@ -55,12 +55,11 @@ print.tbl_svy <- function (x, varnames = TRUE, all_survey_vars = FALSE, ...) {
 
   if (varnames) {
     vars <- dplyr::tbl_vars(x$variables)
-
-    types <- vapply(x$variables, dplyr::type_sum, character(1))
-    order_vars <- which(vars %in% attr(x$variables, "order_var"))
-    if (length(order_vars) > 0) {
-      vars <- vars[-order_vars]
-      types <- types[-order_vars]
+    if (inherits(x$variables, "tbl_lazy")) {
+      var_single_row <- dplyr::collect(head(x$variables, 1))
+      types <- vapply(var_single_row, dplyr::type_sum, character(1))
+    } else {
+      types <- vapply(x$variables, dplyr::type_sum, character(1))
     }
 
     var_types <- paste0(vars, " (", types, ")", collapse = ", ")

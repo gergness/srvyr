@@ -87,6 +87,12 @@ as_tbl_svy <- function(x, var_names = list()) {
     class(x) <- c("tbl_svy", class(x))
   }
 
+  if (inherits(x, "DBIsvydesign")) {
+    x$variables <- dplyr::tbl(x$db$connection, x$db$tablename)
+    x$db <- NULL
+    class(x) <- class(x)[class(x) != "DBIsvydesign"]
+  }
+
   if (inherits(x, "twophase2")) {
     # Convert to tbls if not already (expect them to be one of data.frame or tbl_df)
     # data.frames will be converted, others should inherit "tbl".

@@ -115,3 +115,17 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
     DBI::dbDisconnect(con)
   }
 }
+
+if (suppressPackageStartupMessages(require(RSQLite))) {
+  test_that("Can convert from survey DB-backed surveys to srvyr ones", {
+    dbclus1<-svydesign(id=~dnum, weights=~pw, fpc=~fpc,
+                       data="apiclus1",dbtype="SQLite", dbname=system.file("api.db",package="survey"))
+
+    mean_survey <- svymean(~api99, dbclus1)
+
+    dbclus1_srvyr <- as_survey(dbclus1)
+    mean_srvyr <- summarize(dbclus1_srvyr, x = survey_mean(api99))
+    expect_equal(mean_survey[[1]], mean_srvyr$x)
+    expect_equal(SE(mean_survey)[[1]], mean_srvyr$x_se)
+  })
+}

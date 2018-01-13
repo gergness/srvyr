@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-srvyr
-=====
+srvyr <img src="tools/logo.png" align="right" height="149" width="149"/>
+========================================================================
 
 [![Travis-CI Build Status](https://travis-ci.org/gergness/srvyr.svg?branch=master)](https://travis-ci.org/gergness/srvyr) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/gergness/srvyr?branch=master&svg=true)](https://ci.appveyor.com/project/gergness/srvyr) [![Coverage Status](https://codecov.io/gh/gergness/srvyr/master.svg)](https://codecov.io/github/gergness/srvyr?branch=master)
 

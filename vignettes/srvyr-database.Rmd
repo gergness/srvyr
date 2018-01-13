@@ -150,7 +150,7 @@ acs_m_db %>%
 ```
 
 For more information on the specifics of databases
-with dplyr, see `vignette("database", package = dplyr)`, the `DBI` package or the 
+with dplyr, see `vignette("database", package = "dplyr")`, the `DBI` package or the 
 specific database packages, like `MonetDBLite` or `RSQLite`.
 
 ## Srvyr Setup ##

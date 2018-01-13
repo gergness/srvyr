@@ -104,7 +104,8 @@ as_survey_twophase.twophase2 <- function(.data, ...) {
 
 
 #' @export
-#' @rdname as_survey_twophase
+#' @rdname srvyr-se-deprecated
+#' @inheritParams as_survey_twophase
 as_survey_twophase_ <- function(.data, id, strata = NULL, probs = NULL,
                              weights = NULL, fpc = NULL, subset,
                              method = c("full", "approx", "simple")) {

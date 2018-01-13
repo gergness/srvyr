@@ -2,6 +2,7 @@ context("DB backed surveys work.")
 suppressPackageStartupMessages({
   library(survey)
   library(srvyr)
+  library(dplyr)
 })
 
 if (suppressPackageStartupMessages(require(dbplyr))) {
@@ -63,9 +64,9 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
 
       # Can do a grouped summarize
       expect_equal(
-        dstrata %>%
+        suppressWarnings(dstrata %>%
           group_by(stype = as.character(stype)) %>%
-          summarize(api99 = survey_mean(api99)),
+          summarize(api99 = survey_mean(api99))),
         local_dstrata %>%
           group_by(stype = as.character(stype)) %>%
           summarize(api99 = survey_mean(api99))
@@ -73,9 +74,9 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
 
       # Can filter and summarize
       expect_equal(
-        dstrata %>%
+        suppressWarnings(dstrata %>%
           filter(stype == "E") %>%
-          summarize(api99 = survey_mean(api99)),
+          summarize(api99 = survey_mean(api99))),
         local_dstrata %>%
           filter(stype == "E") %>%
           summarize(api99 = survey_mean(api99))
@@ -83,9 +84,9 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
 
       # Can mutate and summarize
       expect_equal(
-        dstrata %>%
+        suppressWarnings(dstrata %>%
           mutate(api_diff = api00 - api99) %>%
-          summarize(api99 = survey_mean(api_diff)),
+          summarize(api99 = survey_mean(api_diff))),
         local_dstrata %>%
           mutate(api_diff = api00 - api99) %>%
           summarize(api99 = survey_mean(api_diff))

@@ -1,6 +1,7 @@
 context("Survey package functions work.")
 
 suppressPackageStartupMessages(library(survey))
+suppressPackageStartupMessages(library(srvyr))
 data(api)
 
 # Overall
@@ -11,12 +12,12 @@ dclus1_srvyr <- apiclus1 %>%
 ## survey
 dclus1_survey <- svydesign(id = ~dnum, weights = ~pw, data = apiclus1,
                            fpc = ~fpc)
-survey_chisq <- svychisq(~sch.wide + stype, dclus1_survey)[["p.value"]]
+survey_chisq <- suppressWarnings(svychisq(~sch.wide + stype, dclus1_survey)[["p.value"]])
 
 ## survey with a tibble
 dclus1_survey_tibble <- svydesign(id = ~dnum, weights = ~pw, fpc = ~fpc,
                                   data = dplyr::as_data_frame(apiclus1))
-srvyr_chisq <- svychisq(~sch.wide + stype, dclus1_srvyr)[["p.value"]]
+srvyr_chisq <- suppressWarnings(svychisq(~sch.wide + stype, dclus1_srvyr)[["p.value"]])
 
 
 test_that("srvyr and survey get same chisq",

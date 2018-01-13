@@ -9,23 +9,29 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
   has_monetdb <- suppressPackageStartupMessages(require(MonetDBLite))
   data(api)
 
-  dbs_to_run <- c("RSQLite", "MonetDBLite")[c(has_rsqlite, has_monetdb)]
+  dbs_to_run <- c("RSQLite", "MonetDBLite")
 
   for (db in dbs_to_run) {
-    if (db == "RSQLite") {
+    if (db == "RSQLite" && has_rsqlite) {
       con <- DBI::dbConnect(RSQLite::SQLite(), path = ":memory:")
       cleaned <- dplyr::select(apistrat, -full)
       names(cleaned) <- stringr::str_replace_all(names(cleaned), "\\.", "")
       apistrat_db <- copy_to(con, cleaned)
-    }
-    if (db == "MonetDBLite") {
+      db_avail <- TRUE
+    } else if (db == "RSQLite" && !has_rsqlite){
+      db_avail <- FALSE
+    } else if (db == "MonetDBLite" && has_monetdb) {
       con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), path = ":memory:")
       cleaned <- dplyr::select(apistrat, -full)
       names(cleaned) <- stringr::str_replace_all(names(cleaned), "\\.", "")
       apistrat_db <- copy_to(con, cleaned)
+      db_avail <- TRUE
+    } else if (db == "MonetDBLite" && has_monetdb) {
+      db_avail <- FALSE
     }
 
     test_that(paste0("DB backed survey tests - ", db), {
+      skip_if_not(db_avail)
       # Can create a svy design from a tbl_lazy
       dstrata <- apistrat_db %>%
         as_survey_design(strata = stype, weights = pw)
@@ -87,6 +93,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
     })
 
     test_that(paste0("Can get replicate weight surveys - ", db), {
+      skip_if_not(db_avail)
       scd <- scd %>%
         mutate(rep1 = 2 * c(1, 0, 1, 0, 1, 0),
                rep2 = 2 * c(1, 0, 0, 1, 0, 1),
@@ -114,28 +121,30 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
     })
 
     test_that(paste0("Can use as_survey"), {
+      skip_if_not(db_avail)
       dstrata <- apistrat_db %>%
         as_survey(strata = stype, weights = pw)
 
       expect_equal(inherits(dstrata$variables, "tbl_lazy"), TRUE)
     })
 
-    DBI::dbDisconnect(con)
+    if (db_avail) DBI::dbDisconnect(con)
   }
 
 
 }
 
-if (suppressPackageStartupMessages(require(RSQLite))) {
-  test_that("Can convert from survey DB-backed surveys to srvyr ones", {
-    dbclus1<-svydesign(id=~dnum, weights=~pw, fpc=~fpc,
-                       data="apiclus1",dbtype="SQLite", dbname=system.file("api.db",package="survey"))
+db_avail <- (suppressPackageStartupMessages(require(RSQLite)))
+test_that("Can convert from survey DB-backed surveys to srvyr ones", {
+  skip_if_not(db_avail)
+  dbclus1<-svydesign(id=~dnum, weights=~pw, fpc=~fpc,
+                     data="apiclus1",dbtype="SQLite", dbname=system.file("api.db",package="survey"))
 
-    mean_survey <- svymean(~api99, dbclus1)
+  mean_survey <- svymean(~api99, dbclus1)
 
-    dbclus1_srvyr <- as_survey(dbclus1)
-    mean_srvyr <- summarize(dbclus1_srvyr, x = survey_mean(api99))
-    expect_equal(mean_survey[[1]], mean_srvyr$x)
-    expect_equal(SE(mean_survey)[[1]], mean_srvyr$x_se)
-  })
-}
+  dbclus1_srvyr <- as_survey(dbclus1)
+  mean_srvyr <- summarize(dbclus1_srvyr, x = survey_mean(api99))
+  expect_equal(mean_survey[[1]], mean_srvyr$x)
+  expect_equal(SE(mean_survey)[[1]], mean_srvyr$x_se)
+  dbDisconnect(dbclus1$db$connection)
+})

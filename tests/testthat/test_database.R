@@ -86,34 +86,37 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
       )
     })
 
-    # Can get replicate weight surveys
-    scd <- scd %>%
-      mutate(rep1 = 2 * c(1, 0, 1, 0, 1, 0),
-             rep2 = 2 * c(1, 0, 0, 1, 0, 1),
-             rep3 = 2 * c(0, 1, 1, 0, 0, 1),
-             rep4 = 2 * c(0, 1, 0, 1, 1, 0))
+    test_that(paste0("Can get replicate weight surveys - ", db), {
+      scd <- scd %>%
+        mutate(rep1 = 2 * c(1, 0, 1, 0, 1, 0),
+               rep2 = 2 * c(1, 0, 0, 1, 0, 1),
+               rep3 = 2 * c(0, 1, 1, 0, 0, 1),
+               rep4 = 2 * c(0, 1, 0, 1, 1, 0))
 
-    names(scd) <- tolower(names(scd))
-    scd_db <- copy_to(con, scd)
+      names(scd) <- tolower(names(scd))
+      scd_db <- copy_to(con, scd)
 
-    scdrep <- suppressWarnings(scd_db %>%
-      as_survey_rep(type = "BRR", repweights = starts_with("rep"),
-                    combined_weights = FALSE))
+      scdrep <- suppressWarnings(scd_db %>%
+                                   as_survey_rep(type = "BRR", repweights = starts_with("rep"),
+                                                 combined_weights = FALSE))
 
-    scdrep_local <- suppressWarnings(scd %>%
-      as_survey_rep(type = "BRR", repweights = starts_with("rep"),
-                    combined_weights = FALSE))
+      scdrep_local <- suppressWarnings(scd %>%
+                                         as_survey_rep(type = "BRR", repweights = starts_with("rep"),
+                                                       combined_weights = FALSE))
 
-    # Can do a basic summarize
-    expect_equal(
-      scdrep %>%
-        summarize(esa = survey_mean(esa)),
-      scdrep_local %>%
-        summarize(esa = survey_mean(esa))
-    )
+      # Can do a basic summarize
+      expect_equal(
+        scdrep %>%
+          summarize(esa = survey_mean(esa)),
+        scdrep_local %>%
+          summarize(esa = survey_mean(esa))
+      )
+    })
 
     DBI::dbDisconnect(con)
   }
+
+
 }
 
 if (suppressPackageStartupMessages(require(RSQLite))) {

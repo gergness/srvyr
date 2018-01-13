@@ -6,7 +6,9 @@ will still work, with one exception: the standard
 evaluation function `as_survey_twophase_()` had to be changed slightly
 so that the entire list is inside quotation. 
 
-* Datbase support has been removed (hopefully temporarily).
+* Datbase support has been rewritten. It should be faster now and doesn't
+require a unique identifier. You also can now convert survey db-backed surveys
+to srvyr with as_survey.
 
 # srvyr 0.2.2
 * Remove test blocking survey update

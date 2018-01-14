@@ -1,4 +1,4 @@
-# srvyr 0.2.2.9000
+# srvyr 0.3.0
 * srvyr now uses tidy evaluation from rlang. The "underscore" functions 
 have been soft deprecated in favor of quosure splicing. See dplyr's
 vignette "programming" for more details. In almost all cases, the old syntax
@@ -9,6 +9,8 @@ so that the entire list is inside quotation.
 * Datbase support has been rewritten. It should be faster now and doesn't
 require a unique identifier. You also can now convert survey db-backed surveys
 to srvyr with as_survey.
+
+* srvyr now has a pkgdown site, check it out at <http://gdfe.co/srvyr>
 
 # srvyr 0.2.2
 * Remove test blocking survey update

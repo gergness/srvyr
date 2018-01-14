@@ -148,7 +148,7 @@ NULL
 NULL
 
 
-#' Summarise and mutate multiple columns.
+#' Manipulate multiple columns.
 #'
 #' See \code{\link[dplyr]{summarize_all}} for more details. *_each functions will be depracated
 #' in favor of *_all/*_if/*_at functions.
@@ -206,6 +206,78 @@ NULL
 #' @rdname summarise_all
 NULL
 
+#' @name filter_all
+#' @export
+#' @importFrom dplyr filter_all
+#' @rdname summarise_all
+NULL
+
+#' @name filter_at
+#' @export
+#' @importFrom dplyr filter_at
+#' @rdname summarise_all
+NULL
+
+#' @name filter_if
+#' @export
+#' @importFrom dplyr filter_if
+#' @rdname summarise_all
+NULL
+
+#' @name select_all
+#' @export
+#' @importFrom dplyr select_all
+#' @rdname summarise_all
+NULL
+
+#' @name select_at
+#' @export
+#' @importFrom dplyr select_at
+#' @rdname summarise_all
+NULL
+
+#' @name select_if
+#' @export
+#' @importFrom dplyr select_if
+#' @rdname summarise_all
+NULL
+
+#' @name rename_all
+#' @export
+#' @importFrom dplyr rename_all
+#' @rdname summarise_all
+NULL
+
+#' @name rename_at
+#' @export
+#' @importFrom dplyr rename_at
+#' @rdname summarise_all
+NULL
+
+#' @name rename_if
+#' @export
+#' @importFrom dplyr rename_if
+#' @rdname summarise_all
+NULL
+
+#' @name group_by_all
+#' @export
+#' @importFrom dplyr group_by_all
+#' @rdname summarise_all
+NULL
+
+#' @name group_by_at
+#' @export
+#' @importFrom dplyr group_by_at
+#' @rdname summarise_all
+NULL
+
+#' @name group_by_if
+#' @export
+#' @importFrom dplyr group_by_if
+#' @rdname summarise_all
+NULL
+
 #' @name mutate_each
 #' @export
 #' @importFrom dplyr mutate_each
@@ -253,4 +325,22 @@ NULL
 #' @export
 #' @importFrom dplyr funs_
 #' @rdname srvyr-se-deprecated
+NULL
+
+#' @name vars
+#' @export
+#' @importFrom dplyr vars
+#' @rdname summarise_all
+NULL
+
+#' @name all_vars
+#' @export
+#' @importFrom dplyr all_vars
+#' @rdname summarise_all
+NULL
+
+#' @name any_vars
+#' @export
+#' @importFrom dplyr any_vars
+#' @rdname summarise_all
 NULL

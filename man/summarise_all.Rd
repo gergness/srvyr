@@ -10,11 +10,26 @@
 \alias{mutate_all}
 \alias{mutate_if}
 \alias{mutate_at}
+\alias{filter_all}
+\alias{filter_at}
+\alias{filter_if}
+\alias{select_all}
+\alias{select_at}
+\alias{select_if}
+\alias{rename_all}
+\alias{rename_at}
+\alias{rename_if}
+\alias{group_by_all}
+\alias{group_by_at}
+\alias{group_by_if}
 \alias{mutate_each}
 \alias{summarise_each}
 \alias{summarize_each}
 \alias{funs}
-\title{Summarise and mutate multiple columns.}
+\alias{vars}
+\alias{all_vars}
+\alias{any_vars}
+\title{Manipulate multiple columns.}
 \description{
 See \code{\link[dplyr]{summarize_all}} for more details. *_each functions will be depracated
 in favor of *_all/*_if/*_at functions.

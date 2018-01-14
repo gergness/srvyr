@@ -256,3 +256,16 @@ Srvyr will also follow dplyr's lead on deprecating the old method of NSE, the
 so-called "underscore functions" (like `summarize_`). Currently, they have been
 soft-deprecated, but I expect them to be removed altogether in some future version
 of srvyr.
+
+## Scoped functions
+Srvyr has also been able to take advantage of the new-ish dplyr "scoped" variants of 
+the main manipulation functions like `summarize_at()`. These functions allow you to 
+quickly calculate variables for multiple variables. For example:
+
+```{r}
+# Calculate survey mean for all variables that have names starting with "api"
+strat_design %>%
+  summarize_at(vars(starts_with("api")), survey_mean)
+```
+
+The dplyr documentation `dplyr::scoped` provides more details.

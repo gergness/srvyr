@@ -328,6 +328,19 @@ srs_design_srvyr <span class="op">%&gt;%</span>
 ## 3 M               898             152          124            60.5</code></pre>
 <p>Srvyr will also follow dplyr’s lead on deprecating the old method of NSE, the so-called “underscore functions” (like <code>summarize_</code>). Currently, they have been soft-deprecated, but I expect them to be removed altogether in some future version of srvyr.</p>
 </div>
+<div id="scoped-functions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#scoped-functions" class="anchor"></a>Scoped functions</h2>
+<p>Srvyr has also been able to take advantage of the new-ish dplyr “scoped” variants of the main manipulation functions like <code><a href="../reference/summarise_all.html">summarize_at()</a></code>. These functions allow you to quickly calculate variables for multiple variables. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calculate survey mean for all variables that have names starting with "api"</span>
+strat_design <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="../reference/summarise_all.html">summarize_at</a></span>(<span class="kw"><a href="http://dplyr.tidyverse.org/reference/vars.html">vars</a></span>(<span class="kw"><a href="http://dplyr.tidyverse.org/reference/select_helpers.html">starts_with</a></span>(<span class="st">"api"</span>)), survey_mean)</code></pre></div>
+<pre><code>## # A tibble: 1 x 6
+##   api00 api00_se api99 api99_se api.stu api.stu_se
+##   &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+## 1   662     9.41   629     9.96     498       16.1</code></pre>
+<p>The dplyr documentation <code><a href="http://dplyr.tidyverse.org/reference/scoped.html">dplyr::scoped</a></code> provides more details.</p>
+</div>
 </div>
 </div>
   </div>
@@ -353,6 +366,7 @@ srs_design_srvyr <span class="op">%&gt;%</span>
 <a href="#grab-bag">Grab Bag</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#using-survey-functions-on-srvyr-objects">Using <code>survey</code> functions on <code>srvyr</code> objects</a></li>
       <li><a href="#standard-evaluation">Standard evaluation</a></li>
+      <li><a href="#scoped-functions">Scoped functions</a></li>
       </ul>
 </li>
       </ul>

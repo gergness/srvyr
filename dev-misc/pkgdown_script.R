@@ -7,6 +7,7 @@ if (!dir.exists("docs/tools")) {
   dir.create("docs/tools")
 }
 file.copy("tools/logo.png", "docs/tools/logo.png", overwrite = TRUE)
+file.copy("tools/pkgdownshield.svg", "docs/tools/pkgdownshield.svg", overwrite = TRUE)
 
 # Add logo to header
 all_html_files <- list.files("docs/", pattern = ".html$", recursive = TRUE)

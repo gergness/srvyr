@@ -3,7 +3,7 @@
 srvyr <img src="tools/logo.png" align="right" height="149" width="149"/>
 ========================================================================
 
-[![Travis-CI Build Status](https://travis-ci.org/gergness/srvyr.svg?branch=master)](https://travis-ci.org/gergness/srvyr) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/gergness/srvyr?branch=master&svg=true)](https://ci.appveyor.com/project/gergness/srvyr) [![Coverage Status](https://codecov.io/gh/gergness/srvyr/master.svg)](https://codecov.io/github/gergness/srvyr?branch=master)
+[![Travis-CI Build Status](https://travis-ci.org/gergness/srvyr.svg?branch=master)](https://travis-ci.org/gergness/srvyr) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/gergness/srvyr?branch=master&svg=true)](https://ci.appveyor.com/project/gergness/srvyr) [![Coverage Status](https://codecov.io/gh/gergness/srvyr/master.svg)](https://codecov.io/github/gergness/srvyr?branch=master) [![Documentation via pkgdown](tools/pkgdownshield.svg)](https://github.io/gergness/srvyr)
 
 srvyr brings parts of [dplyr's](https://github.com/hadley/dplyr/) syntax to survey analysis, using the [survey](https://CRAN.R-project.org/package=survey) package.
 

@@ -5,3 +5,6 @@
 ^\.travis\.yml$
 ^cran-comments\.md$
 ^appveyor\.yml$
+^docs$
+^_pkgdown\.yml$
+^dev-misc$

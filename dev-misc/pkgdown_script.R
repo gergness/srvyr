@@ -9,6 +9,10 @@ if (!dir.exists("docs/tools")) {
 file.copy("tools/logo.png", "docs/tools/logo.png", overwrite = TRUE)
 file.copy("tools/pkgdownshield.svg", "docs/tools/pkgdownshield.svg", overwrite = TRUE)
 
+# Create favicon and put it in docs
+system("convert dev-misc/ico-16.png dev-misc/ico-32.png dev-misc/ico-48.png dev-misc/ico-64.png docs/favicon.ico")
+
+
 # Add logo to header
 all_html_files <- list.files("docs/", pattern = ".html$", recursive = TRUE)
 purrr::walk(all_html_files, function(x) {

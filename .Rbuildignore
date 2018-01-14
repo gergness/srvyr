@@ -8,3 +8,4 @@
 ^docs$
 ^_pkgdown\.yml$
 ^dev-misc$
+^CODE_OF_CONDUCT\.md$

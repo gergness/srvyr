@@ -1,0 +1,175 @@
+---
+title: "srvr database speed"
+author: "Greg Freedman"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This vignette is for testing only and excluded from the R build.
+
+
+# Indexing vs not indexing database objects on order variable
+
+## Setup
+Difficult to run more than once, so there may be some variance. However, I see 
+that in general, survey package databases are about 2X faster than srvyr. Adding the index 
+takes a slight penalty for SQLite, not for MonetDB (might just be ignoring it). 
+MonetDBLite is slightly faster than SQLite. 
+
+```{r, message = FALSE}
+library(survey)
+library(srvyr)
+library(dplyr)
+library(microbenchmark)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(MonetDBLite)
+library(RSQLite)
+
+micro_times <- 10
+
+set.seed(1)
+
+num_obs <- c(1e5)
+num_vars <- 10
+num_strata <- 10
+
+
+data <- data.frame(strata = sample(paste0("st", seq_len(num_strata)), num_obs, replace = TRUE), 
+                   probs = runif(num_obs))
+data[, c(3:(2 + num_vars))] <- runif(num_obs * num_vars) + rep(seq_len(num_vars), each = num_obs)
+data$uid <- order(data$probs) # Random order of uid
+# data$uid <- seq_len(nrow(data)) # Sorted order of uid
+names(data) <- tolower(names(data))
+
+# Database setup
+monetdb_dir <- paste0(tempdir(), "/monetdb")
+dir.create(monetdb_dir)
+monetdb <- src_monetdblite(monetdb_dir)
+
+sqlitedb_dir <- paste0(tempdir(), "/sqlite/")
+dir.create(sqlitedb_dir)
+sqlitedb <- src_sqlite(paste0(sqlitedb_dir, "db-file"), create = TRUE)
+
+
+svys <- list()
+setup_times <- 
+  microbenchmark(
+    `svy_local setup` = {
+      svys[["svy_local"]] <- 
+        svydesign(~1, strata = ~strata, probs = ~probs, data = data)
+    },
+    `srvyr_local setup` = {
+      svys[["srvyr_local"]] <- 
+        data %>% as_survey_design(strata = strata, probs = probs)
+    },
+    `svy_monetdb setup` = {
+      svy_monetdb_data <- copy_to(monetdb, data, name = "svy", temporary = FALSE)
+      
+      svys[["svy_monetdb"]] <- svydesign(~1, strata = ~strata, probs = ~probs, data = "svy", 
+                        dbtype = "MonetDBLite", dbname = monetdb_dir)
+    },
+    `srvyr_monetdb_no_index setup` = {
+      srvyr_monetdb_no_index_data <- copy_to(monetdb, data, name = "srvyr_no_index", temporary = FALSE)
+
+      svys[["srvyr_monetdb_no_index"]] <- 
+        srvyr_monetdb_no_index_data %>% as_survey_design(strata = strata, probs = probs, 
+                                                         uid = uid)
+    },
+    `srvyr_monetdb_index setup` = {
+      srvyr_monetdb_index_data <- copy_to(monetdb, data, name = "srvyr_index", temporary = FALSE)
+      index_status <- DBI::dbSendQuery(monetdb$con, "CREATE INDEX uid ON srvyr_index (uid)")
+      
+      svys[["srvyr_monetdb_index"]] <- 
+        srvyr_monetdb_index_data %>% as_survey_design(strata = strata, probs = probs, 
+                                                      uid = uid)    
+      }, 
+    `svy_sqlitedb setup` = {
+      svy_sqlitedb_data <- copy_to(sqlitedb, data, name = "svy", temporary = FALSE)
+      
+      svys[["svy_sqlitedb"]] <- svydesign(~1, strata = ~strata, probs = ~probs, data = "svy", 
+                        dbtype = "SQLite", dbname = paste0(sqlitedb_dir, "/db-file"))
+    },
+    `srvyr_sqlitedb_no_index setup` = {
+      srvyr_sqlitedb_no_index_data <- copy_to(sqlitedb, data, name = "srvyr_no_index", temporary = FALSE)
+
+      svys[["srvyr_sqlitedb_no_index"]] <- 
+        srvyr_sqlitedb_no_index_data %>% as_survey_design(strata = strata, probs = probs, 
+                                                         uid = uid)
+    },
+    `srvyr_sqlitedb_index setup` = {
+      srvyr_sqlitedb_index_data <- copy_to(sqlitedb, data, name = "srvyr_index", temporary = FALSE)
+      index_status <- DBI::dbSendQuery(sqlitedb$con, "CREATE INDEX uid ON srvyr_index (uid)")
+      #index_status <- DBI::dbSendQuery(sqlitedb$con, "CREATE INDEX uid_v3 ON srvyr_index (uid, v3)")
+      
+      svys[["srvyr_sqlitedb_index"]] <- 
+        srvyr_sqlitedb_index_data %>% as_survey_design(strata = strata, probs = probs, 
+                                                      uid = uid)    
+      },
+      
+    times = 1, unit = "s")
+
+setup_times
+```
+
+## Ungrouped Operations
+Survey's implementation is faster (nearly as fast local). Srvyr's a fair amount slower.
+Index only matters if you include all of the variables of interest in the index...
+
+```{r, message = FALSE}
+mean_function <- function(svy) {
+  if (inherits(svy, "tbl_svy")) {
+    svy %>% summarize(x = survey_mean(v3))
+  } else {
+    svymean(~v3, svy)
+  }
+}
+
+mean_times <- microbenchmark(
+  `svy_local mean` = mean_function(svys[["svy_local"]]), 
+  `srvyr_local mean` = mean_function(svys[["srvyr_local"]]), 
+  `svy_monetdb mean` = mean_function(svys[["svy_monetdb"]]), 
+  `srvyr_monetdb_no_index mean` = mean_function(svys[["srvyr_monetdb_no_index"]]), 
+  `srvyr_monetdb_index mean` = mean_function(svys[["srvyr_monetdb_index"]]), 
+  `svy_sqlitedb mean` = mean_function(svys[["svy_sqlitedb"]]), 
+  `srvyr_sqlitedb_no_index mean` = mean_function(svys[["srvyr_sqlitedb_no_index"]]), 
+  `srvyr_sqlitedb_index mean` = mean_function(svys[["srvyr_sqlitedb_index"]]), 
+  times = micro_times, unit = "s")
+
+mean_times
+  
+```
+
+
+## Grouped Operations
+
+```{r, message = FALSE}
+mean_function <- function(svy) {
+  if (inherits(svy, "tbl_svy")) {
+    svy %>% group_by(strata) %>% summarize(x = survey_mean(v3))
+  } else {
+    svymean(~v3, svy, byvar = ~strata)
+  }
+}
+
+grouped_mean_times <- microbenchmark(
+  `svy_local mean` = mean_function(svys[["svy_local"]]), 
+  `srvyr_local mean` = mean_function(svys[["srvyr_local"]]), 
+  `svy_monetdb mean` = mean_function(svys[["svy_monetdb"]]), 
+  `srvyr_monetdb_no_index mean` = mean_function(svys[["srvyr_monetdb_no_index"]]), 
+  `srvyr_monetdb_index mean` = mean_function(svys[["srvyr_monetdb_index"]]), 
+  `svy_sqlitedb mean` = mean_function(svys[["svy_sqlitedb"]]), 
+  `srvyr_sqlitedb_no_index mean` = mean_function(svys[["srvyr_sqlitedb_no_index"]]), 
+  `srvyr_sqlitedb_index mean` = mean_function(svys[["srvyr_sqlitedb_index"]]), 
+  times = micro_times, unit = "s")
+
+grouped_mean_times
+  
+```
+
+

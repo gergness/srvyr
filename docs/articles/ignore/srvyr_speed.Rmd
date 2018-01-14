@@ -1,0 +1,270 @@
+---
+title: "srvr speed"
+author: "Greg Freedman"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This vignette is for testing only and excluded from the R build because it is too slow 
+(~5 min on my machine).
+
+# Scaling number of observations 
+
+- Scales linearly with number of observations
+- No major differences between survey and srvyr
+- Using "calls" is slower than the variable itself in survey
+
+```{r, message = FALSE}
+library(survey)
+library(srvyr)
+library(dplyr)
+library(microbenchmark)
+library(tidyr)
+library(ggplot2)
+library(scales)
+
+micro_times <- 5
+
+set.seed(1)
+
+num_obs <- c(1e4, 1e5, 1e6)
+num_vars <- 10
+num_strata <- 10
+
+
+function_list <- list(
+  mean = list(f1 = svymean, 
+              f2 = svymean, 
+              f3 = function(svy, x) summarize_each(svy, funs(survey_mean(.)), one_of(x))
+  ), 
+    total = list(f1 = svytotal, 
+                 f2 = svytotal, 
+                 f3 = function(svy, x) summarize_each(svy, funs(survey_total(.)), one_of(x))
+  ), 
+  median = list(f1 = function(x, svy) svyquantile(x, svy, quantiles = 0.5), 
+                f2 = function(x, svy) svyquantile(x, svy, quantiles = 0.5), 
+                f3 = function(svy, x) summarize_each(svy, funs(survey_median(.)), one_of(x))
+  )
+)
+
+
+data <- lapply(num_obs, function(obs) {
+  out <- data.frame(strata = sample(paste0("st", seq_len(num_strata)), obs, replace = TRUE), 
+                       probs = runif(obs))
+  out[, c(3:(2 + num_vars))] <- runif(obs * num_vars) + rep(seq_len(num_vars), each = obs)
+  out
+})
+
+
+svy <- list()
+srvyr <- list()
+out_setup <- lapply(seq_along(data), function(ddd) {
+  microbenchmark(`svy setup` = svy[[ddd]] <<- svydesign(~1, strata = ~strata, probs = ~probs, data = data[[ddd]]), 
+                 `srvyr setup` = srvyr[[ddd]] <<- data[[ddd]] %>% as_survey_design(strata = strata, probs = probs), 
+                 times = micro_times, unit = "s")
+})
+
+names(out_setup) <- as.character(num_obs)
+out_setup <- out_setup %>% 
+  bind_rows(.id = "obs") %>%
+  extract(expr, c("expr", "fff"), "(.+) (.+)")
+
+names(svy) <- as.character(num_obs)
+names(srvyr) <- as.character(num_obs)
+
+out <- lapply(function_list, function(fff) {
+  aaa <- lapply(as.character(num_obs), function(ddd) {
+    microbenchmark(`svy call` = fff$f1(~V3, svy[[ddd]]), 
+                   `svy var` = fff$f2(data.frame(svy[[ddd]]$variables$V3), svy[[ddd]]),
+                   `srvyr` = srvyr[[ddd]] %>% fff$f3("V3"), 
+                   times = micro_times, unit = "s")
+  })
+  names(aaa) <- as.character(num_obs)
+  aaa
+})
+
+out <- lapply(names(function_list), function(fff) {
+  out[[fff]] %>% 
+    bind_rows(.id = "obs") %>%
+    mutate(fff = fff)
+}) %>% 
+  bind_rows() %>% 
+  bind_rows(out_setup) %>% 
+  group_by(obs, expr, fff) %>%
+  summarize(time = mean(time)) %>% 
+  ungroup() %>%
+  mutate(obs = as.numeric(obs), 
+         fff = factor(fff, c("setup", "mean", "total", "median")), 
+         time = time / 1000000000)
+  
+
+ggplot(data = out, aes(x = obs, y = time, group = expr, color = expr)) + 
+  geom_point() + geom_line() + 
+  facet_wrap(~fff) + 
+  scale_x_continuous(labels = comma)
+  
+```
+
+
+# Scaling number of variables 
+
+- srvyr is much worse than survey (scales linearly while survey scales sublinearly)
+- median is way faster in srvyr - I'm not sure why...
+- sending variables into survey is better than calls again
+
+```{r, message = FALSE}
+num_obs <- 1e5
+num_vars <- c(1, 5, 10, 20)
+num_strata <- 10
+
+data <- lapply(num_vars, function(vars) {
+  out <- data.frame(strata = sample(paste0("st", seq_len(num_strata)), num_obs, replace = TRUE), 
+                       probs = runif(num_obs))
+  out[, c(3:(2 + vars))] <- runif(num_obs * vars) + rep(seq_len(vars), each = num_obs)
+  out
+})
+
+
+svy <- list()
+srvyr <- list()
+out_setup <- lapply(seq_along(data), function(ddd) {
+  microbenchmark(`svy setup` = svy[[ddd]] <<- svydesign(~1, strata = ~strata, probs = ~probs, data = data[[ddd]]), 
+                 `srvyr setup` = srvyr[[ddd]] <<- data[[ddd]] %>% as_survey_design(strata = strata, probs = probs), 
+                 times = micro_times, unit = "s")
+})
+
+names(out_setup) <- as.character(num_vars)
+out_setup <- out_setup %>% 
+  bind_rows(.id = "vars") %>%
+  extract(expr, c("expr", "fff"), "(.+) (.+)")
+
+names(svy) <- as.character(num_vars)
+names(srvyr) <- as.character(num_vars)
+
+out <- lapply(function_list, function(fff) {
+  aaa <- lapply(as.character(num_vars), function(ddd) {
+    vnames <- names(svy[[ddd]]$variables)[grep("^V", names(svy[[ddd]]$variables))]
+    microbenchmark(`svy call` = fff$f1(make.formula(vnames), svy[[ddd]]), 
+                   `svy var` = fff$f2(data.frame(svy[[ddd]]$variables[vnames]), svy[[ddd]]),
+                   `srvyr` = srvyr[[ddd]] %>% fff$f3(vnames), 
+                   times = micro_times, unit = "s")
+  })
+  names(aaa) <- as.character(num_vars)
+  aaa
+})
+
+out <- lapply(names(function_list), function(fff) {
+  out[[fff]] %>% 
+    bind_rows(.id = "vars") %>%
+    mutate(fff = fff)
+}) %>% 
+  bind_rows() %>% 
+  bind_rows(out_setup) %>% 
+  group_by(vars, expr, fff) %>%
+  summarize(time = mean(time)) %>% 
+  ungroup() %>%
+  mutate(vars = as.numeric(vars), 
+         fff = factor(fff, c("setup", "mean", "total", "median")), 
+         time = time / 1000000000)
+  
+
+ggplot(data = out, aes(x = vars, y = time, group = expr, color = expr)) + 
+  geom_point() + geom_line() + 
+  facet_wrap(~fff) + 
+  scale_x_continuous(labels = comma)
+  
+```
+
+
+# Scaling number of strata (and grouping variables)
+
+- srvyr just as fast as survey in calculations. 
+- Slight penalty for setup (group_by), but not noticable at this number of obs / groups 
+  (or even 1e6 obs, run separately)
+- calculations grow linearly 
+- Can't use survey variables because of bug in svyby
+
+```{r, message = FALSE}
+function_list <- list(
+  mean = list(f1 = function(x, svy) svyby(x, ~V3, svy, svymean),
+              f2 = function(x, svy) svyby(x, data.frame(svy$variables$V3), svy, svymean), 
+              f3 = function(svy, x) summarize_each(group_by(svy, V3), funs(survey_mean(.)), one_of(x))
+  ), 
+  total = list(f1 = function(x, svy) svyby(x, ~V3, svy, svytotal),
+               f2 = function(x, svy) svyby(x, data.frame(svy$variables$V3), svy, svytotal), 
+               f3 = function(svy, x) summarize_each(group_by(svy, V3), funs(survey_total(.)), one_of(x))
+  ), 
+  median = list(f1 = function(x, svy) svyby(x, ~V3, svy, svyquantile, quantiles = 0.5, ci = TRUE),
+                f2 = function(x, svy) svyby(x, data.frame(svy$variables$V3), svy, svyquantile, 
+                                            quantiles = 0.5, ci = TRUE), 
+                f3 = function(svy, x) summarize_each(group_by(svy, V3), funs(survey_median(.)), one_of(x))
+  )
+)
+
+
+num_obs <- 1e5
+num_vars <- 2
+num_strata <- 10
+num_groups <- c(2, 5, 10, 20)
+
+data <- lapply(num_groups, function(group) {
+  out <- data.frame(strata = sample(paste0("st", seq_len(num_strata)), num_obs, replace = TRUE), 
+                       probs = runif(num_obs))
+  out[, c(3:(2 + num_vars))] <- runif(num_obs * num_vars) + rep(seq_len(num_vars), each = num_obs)
+  out$V3 <- cut_interval(out$V3, group)
+  out
+})
+
+svy <- list()
+srvyr <- list()
+out_setup <- lapply(seq_along(data), function(ddd) {
+  microbenchmark(`svy setup` = svy[[ddd]] <<- svydesign(~1, strata = ~strata, probs = ~probs, data = data[[ddd]]), 
+                 `srvyr setup` = srvyr[[ddd]] <<- data[[ddd]] %>% as_survey_design(strata = strata, probs = probs), 
+                 times = micro_times, unit = "s")
+})
+
+names(out_setup) <- as.character(num_groups)
+out_setup <- out_setup %>% 
+  bind_rows(.id = "groups") %>%
+  extract(expr, c("expr", "fff"), "(.+) (.+)")
+
+names(svy) <- as.character(num_groups)
+names(srvyr) <- as.character(num_groups)
+
+out <- lapply(function_list, function(fff) {
+  aaa <- lapply(as.character(num_groups), function(ddd) {
+    vnames <- "V4"
+    suppressWarnings(microbenchmark(`svy call` = fff$f1(make.formula(vnames), svy[[ddd]]), 
+                   #`svy var` = fff$f2(vnames, svy[[ddd]]), # doesn't work currently bc of bug in svyby
+                   `srvyr` = srvyr[[ddd]] %>% fff$f3(vnames), 
+                   times = micro_times, unit = "s"))
+  })
+  names(aaa) <- as.character(num_groups)
+  aaa
+})
+
+out <- lapply(names(function_list), function(fff) {
+  out[[fff]] %>% 
+    bind_rows(.id = "groups") %>%
+    mutate(fff = fff)
+}) %>% 
+  bind_rows() %>% 
+  bind_rows(out_setup) %>% 
+  group_by(groups, expr, fff) %>%
+  summarize(time = mean(time)) %>% 
+  ungroup() %>%
+  mutate(groups = as.numeric(groups), 
+         fff = factor(fff, c("setup", "mean", "total", "median")), 
+         time = time / 1000000000)
+  
+
+ggplot(data = out, aes(x = groups, y = time, group = expr, color = expr)) + 
+  geom_point() + geom_line() + 
+  facet_wrap(~fff) + 
+  scale_x_continuous(labels = comma)
+  
+```

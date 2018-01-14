@@ -1,0 +1,66 @@
+template:
+  params:
+    bootswatch: flatly
+
+reference:
+  - title: "Set up survey data"
+    desc: "Functions for specifying a survey's structure"
+    contents:
+      - as_survey
+      - as_survey_design
+      - as_survey_rep
+      - as_survey_twophase
+  - title: "Calculate summary statistics of survey data"
+    desc: "Functions for calculating summary measures taking into account complex survey design"
+    contents:
+      - cascade
+      - group_by
+      - summarise
+      - survey_mean
+      - survey_total
+      - survey_quantile
+      - survey_ratio
+      - unweighted
+
+  - title: "Other supported dplyr functions"
+    desc: "Other functions from dplyr that work on srvyr's survey objects"
+    contents:
+      - as_tibble
+      - dplyr_single
+      - groups
+      - tbl_vars
+  - title: "(Primarily for package authors) Extend srvyr"
+    desc: "Functions useful for package authors to extend srvyr"
+    contents:
+      - current_svy
+      - get_var_est
+      - set_survey_vars
+  - exclude:
+      - as_survey_
+      - as_survey_design_
+      - as_survey_rep_
+      - as_survey_twophase_
+      - cascade_
+      - svychisq
+      - tbl_svy
+      - srvyr
+
+navbar:
+  type: default
+  left:
+  - href: index.html
+    icon: fa-home
+  - text: Overview
+    href: articles/srvyr-vs-survey.html
+  - text: Reference
+    href: reference/index.html
+  - text: Articles
+    menu:
+    - text: srvyr Compared to the survey Package (Overview)
+      href: articles/srvyr-vs-survey.html
+    - text: Databases in srvyr
+      href: articles/srvyr-database.html
+    - text: Extending srvyr
+      href: articles/extending-srvyr.html
+  - text: News
+    href: news/index.html

@@ -225,22 +225,34 @@ summary(glm)
 
 ## Standard evaluation
 
-Similar to `dplyr`, the functions in `srvyr` have standard evaluation counterparts
-with a "_" at the end. These functions can be useful when programming because they
-make it easier to send arguments from other functions.
+Srvyr now supports the standard evaluation conventions introduced in dplyr version 0.7 and
+rlang. If you'd like to use a function programmatically, you can use the functions from 
+rlang like `rlang::quo()` or `rlang::sym()` to capture the expression and `rlang::!!`  
+to unquote it. All of these functions are re-exported by srvyr, so you don't need
+to load the rlang library to use them.
+
+Here's a quick example, but please see the dplyr vignette 
+[`vignette("programming", package = "dplyr")`](http://dplyr.tidyverse.org/articles/programming.html)
+for more details.
 
 ```{r, message = FALSE}
-srs_design_srvyr <- apisrs %>% as_survey_design_(ids = "1", fpc = "fpc")
+fpc_var <- sym("fpc")
+srs_design_srvyr <- apisrs %>% as_survey_design(fpc = !!fpc_var)
 
-grouping_var <- "stype"
+grouping_var <- sym("stype")
+api_diff <- quo(api00 - api99)
 
-strat_design_srvyr %>%
-  group_by_(grouping_var) %>% # You can use a character variable 
-  summarize_(api_increase = "survey_total(api_diff >= 0)", # or a string
-             api_decrease = "survey_total(api_diff < 0)")
+srs_design_srvyr %>%
+  group_by(!!grouping_var) %>% 
+  summarize(
+    api_increase = survey_total(UQ(api_diff) >= 0),
+    api_decrease = survey_total(UQ(api_diff) < 0)
+  )
 
 
 ```
 
-For more information, see the standard evaluation vignette in `dplyr`, or `lazyeval`'s
-vignettes.
+Srvyr will also follow dplyr's lead on deprecating the old method of NSE, the
+so-called "underscore functions" (like `summarize_`). Currently, they have been
+soft-deprecated, but I expect them to be removed altogether in some future version
+of srvyr.

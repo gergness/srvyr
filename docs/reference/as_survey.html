@@ -188,8 +188,8 @@ for more information on setting up databases in dplyr.</p>
 
 <span class='co'># dplyr 0.7 introduced new style of NSE called quosures</span>
 <span class='co'># See `vignette("programming", package = "dplyr")` for details</span>
-<span class='no'>st</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rlang/topics/quosure'>quo</a></span>(<span class='no'>stype</span>)
-<span class='no'>wt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rlang/topics/quosure'>quo</a></span>(<span class='no'>pw</span>)
+<span class='no'>st</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='rlang-tidyeval.html'>quo</a></span>(<span class='no'>stype</span>)
+<span class='no'>wt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='rlang-tidyeval.html'>quo</a></span>(<span class='no'>pw</span>)
 <span class='no'>dstrata</span> <span class='kw'>&lt;-</span> <span class='no'>apistrat</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>as_survey</span>(<span class='kw'>strata</span> <span class='kw'>=</span> !!<span class='no'>st</span>, <span class='kw'>weights</span> <span class='kw'>=</span> !!<span class='no'>wt</span>)</div></pre>
   </div>

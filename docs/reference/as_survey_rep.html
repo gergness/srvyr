@@ -240,7 +240,7 @@ replicate weights.</p>
                 <span class='kw'>combined_weights</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: No sampling weights provided: equal probability assumed</span></div><div class='input'>
 <span class='co'># dplyr 0.7 introduced new style of NSE called quosures</span>
 <span class='co'># See `vignette("programming", package = "dplyr")` for details</span>
-<span class='no'>repwts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rlang/topics/quosure'>quo</a></span>(<span class='fu'><a href='http://dplyr.tidyverse.org/reference/select_helpers.html'>starts_with</a></span>(<span class='st'>"rep"</span>))
+<span class='no'>repwts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='rlang-tidyeval.html'>quo</a></span>(<span class='fu'><a href='http://dplyr.tidyverse.org/reference/select_helpers.html'>starts_with</a></span>(<span class='st'>"rep"</span>))
 <span class='no'>scdrep</span> <span class='kw'>&lt;-</span> <span class='no'>scd</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>as_survey_rep</span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"BRR"</span>, <span class='kw'>repweights</span> <span class='kw'>=</span> !!<span class='no'>repwts</span>,
                 <span class='kw'>combined_weights</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: No sampling weights provided: equal probability assumed</span></div><div class='input'>

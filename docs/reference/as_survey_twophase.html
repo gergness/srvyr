@@ -219,7 +219,7 @@ designs with simple random sampling at phase one and stratifed randoms sampling 
 #&gt; 1 15080     2274  44.4    2.27</div><div class='input'>
 <span class='co'># dplyr 0.7 introduced new style of NSE called quosures</span>
 <span class='co'># See `vignette("programming", package = "dplyr")` for details</span>
-<span class='no'>ids</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/rlang/topics/quosure'>quo</a></span>(<span class='fu'>list</span>(<span class='no'>id</span>, <span class='no'>id</span>))
+<span class='no'>ids</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='rlang-tidyeval.html'>quo</a></span>(<span class='fu'>list</span>(<span class='no'>id</span>, <span class='no'>id</span>))
 <span class='no'>d2pbc</span> <span class='kw'>&lt;-</span> <span class='no'>pbc</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>as_survey_twophase</span>(<span class='kw'>id</span> <span class='kw'>=</span> !!<span class='no'>ids</span>, <span class='kw'>subset</span> <span class='kw'>=</span> <span class='st'>"randomized"</span>)</div></pre>
   </div>

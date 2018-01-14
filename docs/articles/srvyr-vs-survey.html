@@ -305,22 +305,28 @@ out &lt;-<span class="st"> </span>strat_design <span class="op">%&gt;%</span>
 <div id="standard-evaluation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#standard-evaluation" class="anchor"></a>Standard evaluation</h2>
-<p>Similar to <code>dplyr</code>, the functions in <code>srvyr</code> have standard evaluation counterparts with a “_" at the end. These functions can be useful when programming because they make it easier to send arguments from other functions.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">srs_design_srvyr &lt;-<span class="st"> </span>apisrs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/srvyr-se-deprecated.html">as_survey_design_</a></span>(<span class="dt">ids =</span> <span class="st">"1"</span>, <span class="dt">fpc =</span> <span class="st">"fpc"</span>)
+<p>Srvyr now supports the standard evaluation conventions introduced in dplyr version 0.7 and rlang. If you’d like to use a function programmatically, you can use the functions from rlang like <code><a href="http://www.rdocumentation.org/packages/rlang/topics/quosure">rlang::quo()</a></code> or <code><a href="http://www.rdocumentation.org/packages/rlang/topics/sym">rlang::sym()</a></code> to capture the expression and <code>rlang::!!</code><br>
+to unquote it. All of these functions are re-exported by srvyr, so you don’t need to load the rlang library to use them.</p>
+<p>Here’s a quick example, but please see the dplyr vignette <a href="http://dplyr.tidyverse.org/articles/programming.html"><code><a href="http://dplyr.tidyverse.org/articles/programming.html">vignette("programming", package = "dplyr")</a></code></a> for more details.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fpc_var &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rlang-tidyeval.html">sym</a></span>(<span class="st">"fpc"</span>)
+srs_design_srvyr &lt;-<span class="st"> </span>apisrs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="dt">fpc =</span> <span class="op">!!</span>fpc_var)
 
-grouping_var &lt;-<span class="st"> "stype"</span>
+grouping_var &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rlang-tidyeval.html">sym</a></span>(<span class="st">"stype"</span>)
+api_diff &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rlang-tidyeval.html">quo</a></span>(api00 <span class="op">-</span><span class="st"> </span>api99)
 
-strat_design_srvyr <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by_</a></span>(grouping_var) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># You can use a character variable </span>
-<span class="st">  </span><span class="kw"><a href="../reference/srvyr-se-deprecated.html">summarize_</a></span>(<span class="dt">api_increase =</span> <span class="st">"survey_total(api_diff &gt;= 0)"</span>, <span class="co"># or a string</span>
-             <span class="dt">api_decrease =</span> <span class="st">"survey_total(api_diff &lt; 0)"</span>)</code></pre></div>
+srs_design_srvyr <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(<span class="op">!!</span>grouping_var) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(
+    <span class="dt">api_increase =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>(<span class="kw">UQ</span>(api_diff) <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>),
+    <span class="dt">api_decrease =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>(<span class="kw">UQ</span>(api_diff) <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>)
+  )</code></pre></div>
 <pre><code>## # A tibble: 3 x 5
 ##   stype  api_increase api_increase_se api_decrease api_decrease_se
 ##   &lt;fctr&gt;        &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;
-## 1 E              4067           119          354             119  
-## 2 H               498            49.4        257              49.4
-## 3 M               998            19.9         20.4            19.9</code></pre>
-<p>For more information, see the standard evaluation vignette in <code>dplyr</code>, or <code>lazyeval</code>’s vignettes.</p>
+## 1 E              4057             205          341            98.5
+## 2 H               557             124          217            79.4
+## 3 M               898             152          124            60.5</code></pre>
+<p>Srvyr will also follow dplyr’s lead on deprecating the old method of NSE, the so-called “underscore functions” (like <code>summarize_</code>). Currently, they have been soft-deprecated, but I expect them to be removed altogether in some future version of srvyr.</p>
 </div>
 </div>
 </div>

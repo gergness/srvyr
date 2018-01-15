@@ -148,4 +148,15 @@ test_that("Can convert from survey DB-backed surveys to srvyr ones", {
   expect_equal(mean_survey[[1]], mean_srvyr$x)
   expect_equal(SE(mean_survey)[[1]], mean_srvyr$x_se)
   dbDisconnect(dbclus1$db$connection)
+
+  db_rclus1<-svrepdesign(weights=~pw, repweights="wt[1-9]+", type="JK1", scale=(1-15/757)*14/15,
+                         data="apiclus1rep",dbtype="SQLite", dbname=system.file("api.db",package="survey"), combined=FALSE)
+  mean_survey <- svymean(~api99,db_rclus1)
+
+  dbclus1_srvyr <- as_survey(db_rclus1)
+  mean_srvyr <- summarize(dbclus1_srvyr, x = survey_mean(api99))
+
+  expect_equal(mean_survey[[1]], mean_srvyr$x)
+  expect_equal(SE(mean_survey)[[1]], mean_srvyr$x_se)
+  dbDisconnect(db_rclus1$db$connection)
 })

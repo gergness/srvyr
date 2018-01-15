@@ -86,10 +86,12 @@ as_tbl_svy <- function(x, var_names = list()) {
     class(x) <- c("tbl_svy", class(x))
   }
 
-  if (inherits(x, "DBIsvydesign")) {
+  x_classes <- class(x)
+  db_svy_classes <- c("DBIsvydesign", "DBIrepdesign")
+  if (any(x_classes %in% db_svy_classes)) {
     x$variables <- dplyr::tbl(x$db$connection, x$db$tablename)
     x$db <- NULL
-    class(x) <- class(x)[class(x) != "DBIsvydesign"]
+    class(x) <- dplyr::setdiff(x_classes, db_svy_classes)
   }
 
   if (inherits(x, "twophase2")) {

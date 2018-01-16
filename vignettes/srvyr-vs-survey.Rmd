@@ -227,7 +227,7 @@ summary(glm)
 
 Srvyr now supports the standard evaluation conventions introduced in dplyr version 0.7 and
 rlang. If you'd like to use a function programmatically, you can use the functions from 
-rlang like `rlang::quo()` or `rlang::sym()` to capture the expression and `rlang::!!`  
+rlang like `rlang::quo()` or `rlang::sym()` to capture the expression and `rlang::!!`
 to unquote it. All of these functions are re-exported by srvyr, so you don't need
 to load the rlang library to use them.
 
@@ -245,8 +245,8 @@ api_diff <- quo(api00 - api99)
 srs_design_srvyr %>%
   group_by(!!grouping_var) %>% 
   summarize(
-    api_increase = survey_total(UQ(api_diff) >= 0),
-    api_decrease = survey_total(UQ(api_diff) < 0)
+    api_increase = survey_total((!!api_diff) >= 0),
+    api_decrease = survey_total((!!api_diff) < 0)
   )
 
 

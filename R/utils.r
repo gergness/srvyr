@@ -67,7 +67,7 @@ srvyr_select_vars_list <- function(x, .data) {
 }
 
 split_list_quosure <- function(q, index) {
-  rlang::new_quosure(rlang::UQ(rlang::f_rhs(q)[[index]]), rlang::f_env(q))
+  rlang::new_quosure(rlang::f_rhs(q)[[index]], rlang::f_env(q))
 }
 
 nullable <- function(f, x, ...) {

@@ -5,7 +5,7 @@ Description: Use piping, verbs like 'group_by' and 'summarize', and other
     'dplyr' inspired syntactic style when calculating summary statistics on survey
     data using functions from the 'survey' package.
 Version: 0.3.0
-Date: 2017-6-22
+Date: 2018-01-23
 Authors@R: c(person("Greg", "Freedman Ellis", email = "greg.freedman@gmail.com", role = c("aut", "cre")),
   person("Thomas", "Lumley", role = "ctb")
   )

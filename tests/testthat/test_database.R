@@ -91,6 +91,17 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
           mutate(api_diff = api00 - api99) %>%
           summarize(api99 = survey_mean(api_diff))
       )
+
+      # Can collect and then use survey functions
+      expect_equal(
+        suppressWarnings(dstrata %>%
+                           select(api99, stype) %>%
+                           collect() %>%
+                           {survey::svyglm(api99 ~ stype, .)}) %>%
+          coef(),
+        survey::svyglm(api99 ~ stype, local_dstrata) %>%
+          coef()
+      )
     })
 
     test_that(paste0("Can get replicate weight surveys - ", db), {

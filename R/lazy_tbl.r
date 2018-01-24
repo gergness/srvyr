@@ -35,14 +35,17 @@ lazy_subset_svy_vars <- function(svy, ...) {
 }
 
 is_lazy_svy <- function(x) {
-  inherits(x, "tbl_svy") && inherits(x$variables, "tbl_lazy")
+  inherits(x, "tbl_lazy_svy")
 }
 
 # Called from summarize, need to subset based on filters and also
 # collect all relevant variables from dots
-localize_lazy_svy <- function(svy, dots) {
-  vars_to_collect <- find_vars_to_collect_in_dots(svy$variables, dots)
-
+localize_lazy_svy <- function(svy, dots = NULL) {
+  if (!is.null(dots)) {
+    vars_to_collect <- find_vars_to_collect_in_dots(svy$variables, dots)
+  } else {
+    vars_to_collect <- tbl_vars(svy$variables)
+  }
   needs_subset <- "__SRVYR_SUBSET_VAR__" %in% dplyr::tbl_vars(svy$variables)
   if (needs_subset) {
     vars_to_collect <- c(vars_to_collect, "__SRVYR_SUBSET_VAR__")
@@ -79,4 +82,33 @@ find_vars_to_collect_in_dots <- function(data, dots) {
 find_vars_to_collect <- function(var_names, expr) {
   all_expr_text <- vapply(expr, rlang::expr_text, "")
   var_names[var_names %in% all_expr_text]
+}
+
+#' Force computation of a database query
+#'
+#' \code{collect} retreives data from a database query (and when run
+#' on a tbl_svy object adjusts weights accordingly). Use collect when
+#' you want to run a function from the survey package on a srvyr db
+#' backed object. \code{compute} stores results in a remote temporary
+#' table.
+#' @export
+#' @name collect
+#' @importFrom dplyr collect
+NULL
+
+#' @name compute
+#' @export
+#' @importFrom dplyr compute
+#' @rdname collect
+NULL
+
+#' @export
+compute.tbl_lazy_svy <- function(x, name = dplyr::random_table_name(), ...) {
+  x$variables <- compute(x$variables, name = name, ...)
+  x
+}
+
+#' @export
+collect.tbl_lazy_svy <- function(x, ...) {
+  localize_lazy_svy(x)
 }

@@ -116,6 +116,11 @@ as_tbl_svy <- function(x, var_names = list()) {
   # To make printing better, change call
   x$call <- "Called via srvyr"
   class(x$call) <- "quoteless_text"
+
+  # Add db class
+  if (inherits(x$variables, "tbl_lazy")) {
+    class(x) <- c("tbl_lazy_svy", class(x))
+  }
   x
 }
 

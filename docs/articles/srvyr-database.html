@@ -85,7 +85,7 @@
       <h1>Databases in srvyr</h1>
                         <h4 class="author">Greg Freedman Ellis</h4>
             
-            <h4 class="date">2018-01-14</h4>
+            <h4 class="date">2018-01-23</h4>
           </div>
 
     
@@ -273,6 +273,16 @@ acs_m_db_svy <span class="op">%&gt;%</span><span class="st"> </span>
 <div id="advanced-topics" class="section level2">
 <h2 class="hasAnchor">
 <a href="#advanced-topics" class="anchor"></a>Advanced Topics</h2>
+<div id="running-survey-commands-with-collect" class="section level3">
+<h3 class="hasAnchor">
+<a href="#running-survey-commands-with-collect" class="anchor"></a>Running survey commands with collect</h3>
+<p>If you’d like to run a command from the survey package, you’ll need to collect the data locally first. You can select only the variables you’ll need for the analysis so that you don’t have to store the whole dataset in memory.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">acs_m_db_svy <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="../reference/dplyr_single.html">select</a></span>(agep, hicov, sex) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="../reference/collect.html">collect</a></span>() <span class="op">%&gt;%</span>
+<span class="st">  </span>{survey<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/survey/topics/svyglm">svyglm</a></span>(hicov <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>agep, .)} <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summary</span>()</code></pre></div>
+</div>
 <div id="write-access" class="section level3">
 <h3 class="hasAnchor">
 <a href="#write-access" class="anchor"></a>Write Access</h3>

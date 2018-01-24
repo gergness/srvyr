@@ -57,11 +57,11 @@ dstrata %>%
   group_by(stype) %>%
   summarise(api_diff = survey_mean(api_diff, vartype = "ci"))
 #> # A tibble: 3 x 4
-#>   stype  api_diff api_diff_low api_diff_upp
-#>   <fctr>    <dbl>        <dbl>        <dbl>
-#> 1 E         38.6         33.1          44.0
-#> 2 H          8.46         1.74         15.2
-#> 3 M         26.4         20.4          32.4
+#>   stype api_diff api_diff_low api_diff_upp
+#>   <fct>    <dbl>        <dbl>        <dbl>
+#> 1 E        38.6         33.1          44.0
+#> 2 H         8.46         1.74         15.2
+#> 3 M        26.4         20.4          32.4
 ```
 
 -   Functions from the survey package are still available:

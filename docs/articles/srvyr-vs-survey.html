@@ -87,7 +87,7 @@
 <code>srvyr</code> compared to the <code>survey</code> package</h1>
                         <h4 class="author">Greg Freedman</h4>
             
-            <h4 class="date">2018-01-14</h4>
+            <h4 class="date">2018-01-23</h4>
           </div>
 
     
@@ -190,11 +190,11 @@ strat_design_srvyr <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">api_increase =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>(api_diff <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>),
             <span class="dt">api_decrease =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>(api_diff <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>))</code></pre></div>
 <pre><code>## # A tibble: 3 x 5
-##   stype  api_increase api_increase_se api_decrease api_decrease_se
-##   &lt;fctr&gt;        &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;
-## 1 E              4067           119          354             119  
-## 2 H               498            49.4        257              49.4
-## 3 M               998            19.9         20.4            19.9</code></pre>
+##   stype api_increase api_increase_se api_decrease api_decrease_se
+##   &lt;fct&gt;        &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;
+## 1 E             4067           119          354             119  
+## 2 H              498            49.4        257              49.4
+## 3 M              998            19.9         20.4            19.9</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Using survey</span>
 <span class="kw"><a href="http://www.rdocumentation.org/packages/survey/topics/svyby">svyby</a></span>(<span class="op">~</span>api_diff <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>, <span class="op">~</span>stype, strat_design_survey, svytotal)</code></pre></div>
 <pre><code>##   stype api_diff &gt;= 0FALSE api_diff &gt;= 0TRUE se.api_diff &gt;= 0FALSE
@@ -217,7 +217,7 @@ srs_design_srvyr <span class="op">%&gt;%</span>
             <span class="dt">total =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>())</code></pre></div>
 <pre><code>## # A tibble: 2 x 5
 ##   awards proportion proportion_se total total_se
-##   &lt;fctr&gt;      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+##   &lt;fct&gt;       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
 ## 1 No          0.380        0.0338  2354      210
 ## 2 Yes         0.620        0.0338  3840      210</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Using survey</span>
@@ -239,11 +239,11 @@ strat_design_srvyr <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(stype) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">n =</span> <span class="kw"><a href="../reference/unweighted.html">unweighted</a></span>(<span class="kw"><a href="http://dplyr.tidyverse.org/reference/n.html">n</a></span>()))</code></pre></div>
 <pre><code>## # A tibble: 3 x 2
-##   stype      n
-##   &lt;fctr&gt; &lt;int&gt;
-## 1 E        100
-## 2 H         50
-## 3 M         50</code></pre>
+##   stype     n
+##   &lt;fct&gt; &lt;int&gt;
+## 1 E       100
+## 2 H        50
+## 3 M        50</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Using survey</span>
 <span class="kw"><a href="http://www.rdocumentation.org/packages/survey/topics/svyby">svyby</a></span>(<span class="op">~</span>api99, <span class="op">~</span>stype, strat_design_survey, unwtd.count)</code></pre></div>
 <pre><code>##   stype counts se
@@ -305,8 +305,7 @@ out &lt;-<span class="st"> </span>strat_design <span class="op">%&gt;%</span>
 <div id="standard-evaluation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#standard-evaluation" class="anchor"></a>Standard evaluation</h2>
-<p>Srvyr now supports the standard evaluation conventions introduced in dplyr version 0.7 and rlang. If you’d like to use a function programmatically, you can use the functions from rlang like <code><a href="http://www.rdocumentation.org/packages/rlang/topics/quosure">rlang::quo()</a></code> or <code><a href="http://www.rdocumentation.org/packages/rlang/topics/sym">rlang::sym()</a></code> to capture the expression and <code>rlang::!!</code><br>
-to unquote it. All of these functions are re-exported by srvyr, so you don’t need to load the rlang library to use them.</p>
+<p>Srvyr now supports the standard evaluation conventions introduced in dplyr version 0.7 and rlang. If you’d like to use a function programmatically, you can use the functions from rlang like <code><a href="http://www.rdocumentation.org/packages/rlang/topics/quosure">rlang::quo()</a></code> or <code><a href="http://www.rdocumentation.org/packages/rlang/topics/sym">rlang::sym()</a></code> to capture the expression and <code>rlang::!!</code> to unquote it. All of these functions are re-exported by srvyr, so you don’t need to load the rlang library to use them.</p>
 <p>Here’s a quick example, but please see the dplyr vignette <a href="http://dplyr.tidyverse.org/articles/programming.html"><code><a href="http://dplyr.tidyverse.org/articles/programming.html">vignette("programming", package = "dplyr")</a></code></a> for more details.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fpc_var &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rlang-tidyeval.html">sym</a></span>(<span class="st">"fpc"</span>)
 srs_design_srvyr &lt;-<span class="st"> </span>apisrs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="dt">fpc =</span> <span class="op">!!</span>fpc_var)
@@ -317,15 +316,15 @@ api_diff &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rl
 srs_design_srvyr <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(<span class="op">!!</span>grouping_var) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(
-    <span class="dt">api_increase =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>(<span class="kw">UQ</span>(api_diff) <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>),
-    <span class="dt">api_decrease =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>(<span class="kw">UQ</span>(api_diff) <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>)
+    <span class="dt">api_increase =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>((<span class="op">!!</span>api_diff) <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>),
+    <span class="dt">api_decrease =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>((<span class="op">!!</span>api_diff) <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>)
   )</code></pre></div>
 <pre><code>## # A tibble: 3 x 5
-##   stype  api_increase api_increase_se api_decrease api_decrease_se
-##   &lt;fctr&gt;        &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;
-## 1 E              4057             205          341            98.5
-## 2 H               557             124          217            79.4
-## 3 M               898             152          124            60.5</code></pre>
+##   stype api_increase api_increase_se api_decrease api_decrease_se
+##   &lt;fct&gt;        &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;
+## 1 E             4057             205          341            98.5
+## 2 H              557             124          217            79.4
+## 3 M              898             152          124            60.5</code></pre>
 <p>Srvyr will also follow dplyr’s lead on deprecating the old method of NSE, the so-called “underscore functions” (like <code>summarize_</code>). Currently, they have been soft-deprecated, but I expect them to be removed altogether in some future version of srvyr.</p>
 </div>
 <div id="scoped-functions" class="section level2">
@@ -334,7 +333,7 @@ srs_design_srvyr <span class="op">%&gt;%</span>
 <p>Srvyr has also been able to take advantage of the new-ish dplyr “scoped” variants of the main manipulation functions like <code><a href="../reference/summarise_all.html">summarize_at()</a></code>. These functions allow you to quickly calculate variables for multiple variables. For example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calculate survey mean for all variables that have names starting with "api"</span>
 strat_design <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="../reference/summarise_all.html">summarize_at</a></span>(<span class="kw"><a href="http://dplyr.tidyverse.org/reference/vars.html">vars</a></span>(<span class="kw"><a href="http://dplyr.tidyverse.org/reference/select_helpers.html">starts_with</a></span>(<span class="st">"api"</span>)), survey_mean)</code></pre></div>
+<span class="st">  </span><span class="kw"><a href="../reference/summarise_all.html">summarize_at</a></span>(<span class="kw"><a href="../reference/summarise_all.html">vars</a></span>(<span class="kw"><a href="http://dplyr.tidyverse.org/reference/select_helpers.html">starts_with</a></span>(<span class="st">"api"</span>)), survey_mean)</code></pre></div>
 <pre><code>## # A tibble: 1 x 6
 ##   api00 api00_se api99 api99_se api.stu api.stu_se
 ##   &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;

@@ -85,7 +85,7 @@
       <h1>Extending srvyr</h1>
                         <h4 class="author">Greg Freedman Ellis</h4>
             
-            <h4 class="date">2018-01-14</h4>
+            <h4 class="date">2018-01-23</h4>
           </div>
 
     
@@ -98,7 +98,7 @@
 <pre><code>## Loading required package: boot</code></pre>
 <pre><code>## Loading required package: MASS</code></pre>
 <pre><code>## Loading required package: stringr</code></pre>
-<p>An exciting new feature that is easier now that I have reworked srvyr’s non-standard evaluation to match dplyr 0.7+ is that it is now possible for non-srvyr functions to be called from within <code>summarize</code>. This vignette describes some of the inner-workings of summarize so that others can extend srvyr. This is kind of a fiddly part of srvyr, and I don’t expect that many people will want or need to understand it, so this guide is mostly aimed at package authors who already have an understanding of how survey objects work. If you’d like more explanation, please let me know on <a href="https://github.com/gergness/srvyr">github</a>!</p>
+<p>I don’t expect this vignette to be help for most srvyr users, it is instead intended for other package developers. An exciting new feature that is easier now that I have reworked srvyr’s non-standard evaluation to match dplyr 0.7+ is that it is now possible for non-srvyr functions to be called from within <code>summarize</code>. This vignette describes some of the inner-workings of summarize so that others can extend srvyr. This is kind of a fiddly part of srvyr, and I don’t expect that many people will want or need to understand it, so this guide is mostly aimed at package authors who already have an understanding of how survey objects work. If you’d like more explanation, please let me know on <a href="https://github.com/gergness/srvyr">github</a>!</p>
 <div id="translating-from-survey-to-srvyr" class="section level2">
 <h2 class="hasAnchor">
 <a href="#translating-from-survey-to-srvyr" class="anchor"></a>Translating from survey to srvyr</h2>
@@ -244,7 +244,7 @@ srvyr_eusilc <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">eqincome =</span> <span class="kw">survey_gini</span>(eqincome))
 <span class="co">#&gt; # A tibble: 2 x 3</span>
 <span class="co">#&gt;   rb090  eqincome eqincome_se</span>
-<span class="co">#&gt;   &lt;fctr&gt;    &lt;dbl&gt;       &lt;dbl&gt;</span>
+<span class="co">#&gt;   &lt;fct&gt;     &lt;dbl&gt;       &lt;dbl&gt;</span>
 <span class="co">#&gt; 1 male      0.258     0.00262</span>
 <span class="co">#&gt; 2 female    0.270     0.00289</span></code></pre></div>
 </div>

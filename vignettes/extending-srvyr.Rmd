@@ -19,14 +19,15 @@ if (!require(convey) | !require(vardpoor)) {
   message("Missing convey and vardpoor packages. Install them to run vignette.")
 }
 ```
-An exciting new feature that is easier now that I have reworked srvyr's
-non-standard evaluation to match dplyr 0.7+ is that it is now possible for
-non-srvyr functions to be called from within `summarize`. This vignette
-describes some of the inner-workings of summarize so that others can extend
-srvyr. This is kind of a fiddly part of srvyr, and I don't expect that many
-people will want or need to understand it, so this guide is mostly aimed at
-package authors who already have an understanding of how survey objects work. If
-you'd like more explanation, please let me know on
+I don't expect this vignette to be help for most srvyr users, it is instead
+intended for other package developers. An exciting new feature that is easier
+now that I have reworked srvyr's non-standard evaluation to match dplyr 0.7+ is
+that it is now possible for non-srvyr functions to be called from within
+`summarize`. This vignette describes some of the inner-workings of summarize so
+that others can extend srvyr. This is kind of a fiddly part of srvyr, and I
+don't expect that many people will want or need to understand it, so this guide
+is mostly aimed at package authors who already have an understanding of how
+survey objects work. If you'd like more explanation, please let me know on
 [github](https://github.com/gergness/srvyr)!
 
 ## Translating from survey to srvyr

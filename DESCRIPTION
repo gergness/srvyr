@@ -6,7 +6,9 @@ Description: Use piping, verbs like 'group_by' and 'summarize', and other
     data using functions from the 'survey' package.
 Version: 0.3.0
 Date: 2017-6-22
-Authors@R: person("Greg", "Freedman Ellis", email = "greg.freedman@gmail.com", role = c("aut", "cre"))
+Authors@R: c(person("Greg", "Freedman Ellis", email = "greg.freedman@gmail.com", role = c("aut", "cre")),
+  person("Thomas", "Lumley", role = "ctb")
+  )
 URL: http://gdfe.co/srvyr, https://github.com/gergness/srvyr
 BugReports: https://github.com/gergness/srvyr/issues
 Depends:

@@ -258,6 +258,19 @@ acs_m_db_svy %>%
 ```
 
 ## Advanced Topics ##
+### Running survey commands with collect ###
+If you'd like to run a command from the survey package, you'll need to collect the
+data locally first. You can select only the variables you'll need for the analysis 
+so that you don't have to store the whole dataset in memory.
+
+```{r}
+acs_m_db_svy %>%
+  select(agep, hicov, sex) %>%
+  collect() %>%
+  {survey::svyglm(hicov ~ sex + agep, .)} %>%
+  summary()
+```
+
 ### Write Access ###
 Note that srvyr does not require write access to perform calculations, 
 the database created in this vignette was set to read-only at the beginning. 

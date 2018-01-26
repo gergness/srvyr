@@ -51,6 +51,7 @@ suppressMessages({
   library(survey)
   library(srvyr)
   library(dplyr)
+  library(dbplyr)
   library(RSQLite)
 })
 

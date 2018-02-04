@@ -112,3 +112,15 @@ compute.tbl_lazy_svy <- function(x, name = dplyr::random_table_name(), ...) {
 collect.tbl_lazy_svy <- function(x, ...) {
   localize_lazy_svy(x)
 }
+
+capture_survey_db_updates <- function(svy) {
+  for (uuu in svy$updates) {
+    update_name_sym <- rlang::sym(names(uuu))
+    update_expression <- uuu[[1]]$expression
+    svy$variables <- dplyr::mutate(
+      svy$variables,
+      !!update_name_sym := !!update_expression
+    )
+  }
+  return(svy)
+}

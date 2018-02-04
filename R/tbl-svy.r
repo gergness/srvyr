@@ -90,7 +90,9 @@ as_tbl_svy <- function(x, var_names = list()) {
   db_svy_classes <- c("DBIsvydesign", "DBIrepdesign")
   if (any(x_classes %in% db_svy_classes)) {
     x$variables <- dplyr::tbl(x$db$connection, x$db$tablename)
+    x <- capture_survey_db_updates(x)
     x$db <- NULL
+    x$updates <- NULL
     class(x) <- dplyr::setdiff(x_classes, db_svy_classes)
   }
 

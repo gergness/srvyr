@@ -183,9 +183,18 @@ test_that("Can convert from survey DB-backed surveys to srvyr ones", {
   expect_equal(easy_mean_survey[[1]], easy_mean_srvyr$x)
   expect_equal(SE(easy_mean_survey)[[1]], easy_mean_srvyr$x_se)
 
+  # Subsers from survey-db get converted to srbyr-db
+  dbclus1_subset <- subset(dbclus1, stype == "E")
+  subset_mean_survey <- svymean(~api99, dbclus1_subset)
+  dbclus1_srvyr <- as_survey(dbclus1_subset)
+  subset_mean_srvyr <- summarize(dbclus1_srvyr, x = survey_mean(api99))
+  expect_equal(subset_mean_survey[[1]], subset_mean_srvyr$x)
+  expect_equal(SE(subset_mean_survey)[[1]], subset_mean_srvyr$x_se)
 
+  # Decent warning when update is too complicated for srvyr
   plus_one <- function(x) x + 1
   dbclus1 <- update(dbclus1, hard_update = plus_one(api99))
   expect_warning(as_survey(dbclus1), "Could not convert variable 'hard_update'")
+
   dbDisconnect(dbclus1$db$connection)
 })

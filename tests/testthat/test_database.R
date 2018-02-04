@@ -186,5 +186,6 @@ test_that("Can convert from survey DB-backed surveys to srvyr ones", {
 
   plus_one <- function(x) x + 1
   dbclus1 <- update(dbclus1, hard_update = plus_one(api99))
+  expect_warning(as_survey(dbclus1), "Could not convert variable 'hard_update'")
   dbDisconnect(dbclus1$db$connection)
 })

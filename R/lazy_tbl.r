@@ -117,10 +117,19 @@ capture_survey_db_updates <- function(svy) {
   for (uuu in svy$updates) {
     update_name_sym <- rlang::sym(names(uuu))
     update_expression <- uuu[[1]]$expression
-    svy$variables <- dplyr::mutate(
+    new_vars <- dplyr::mutate(
       svy$variables,
       !!update_name_sym := !!update_expression
     )
+    error <- tryCatch(dplyr::collect(head(new_vars, n = 1)), error = function(e) e)
+    if (!is.data.frame(error)) {
+      warning(paste0(
+        "Could not convert variable '", names(uuu), "' from survey database to srvyr database.\n",
+        "  Reason: ", error
+      ), call. = FALSE)
+    } else {
+      svy$variables <- new_vars
+    }
   }
   return(svy)
 }

@@ -115,20 +115,23 @@ collect.tbl_lazy_svy <- function(x, ...) {
 
 capture_survey_db_updates <- function(svy) {
   for (uuu in svy$updates) {
-    update_name_sym <- rlang::sym(names(uuu))
-    update_expression <- uuu[[1]]$expression
-    new_vars <- dplyr::mutate(
-      svy$variables,
-      !!update_name_sym := !!update_expression
-    )
-    error <- tryCatch(dplyr::collect(head(new_vars, n = 1)), error = function(e) e)
-    if (!is.data.frame(error)) {
-      warning(paste0(
-        "Could not convert variable '", names(uuu), "' from survey database to srvyr database.\n",
-        "  Reason: ", error
-      ), call. = FALSE)
-    } else {
-      svy$variables <- new_vars
+    for (iii in seq_along(uuu)) {
+      update_name <- names(uuu)[iii]
+      update_name_sym <- rlang::sym(update_name)
+      update_expression <- uuu[[iii]]$expression
+      new_vars <- dplyr::mutate(
+        svy$variables,
+        !!update_name_sym := !!update_expression
+      )
+      error <- tryCatch(dplyr::collect(head(new_vars, n = 1)), error = function(e) e)
+      if (!is.data.frame(error)) {
+        warning(paste0(
+          "Could not convert variable '", update_name, "' from survey database to srvyr database.\n",
+          "  Reason: ", error
+        ), call. = FALSE)
+      } else {
+        svy$variables <- new_vars
+      }
     }
   }
   return(svy)

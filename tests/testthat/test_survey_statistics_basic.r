@@ -2,6 +2,7 @@ context("Quick tests for basic summary stats (mean / total)")
 
 library(srvyr)
 library(survey)
+source("utilities.R")
 
 data(api)
 dstrata <- apistrat %>%
@@ -53,7 +54,7 @@ out_survey[, c("survey_mean_low", "survey_mean_upp")] <-
   confint(temp_survey, df = df_test)
 
 test_that("deff and df work for grouped survey mean",
-          expect_equal(out_srvyr, out_survey))
+          expect_df_equal(out_srvyr, out_survey))
 
 
 out_srvyr <- dstrata %>%
@@ -72,4 +73,4 @@ out_survey[, c("survey_tot_low", "survey_tot_upp")] <-
   confint(temp_survey, df = df_test)
 
 test_that("deff and df work for grouped survey total",
-          expect_equal(out_srvyr, out_survey))
+          expect_df_equal(out_srvyr, out_survey))

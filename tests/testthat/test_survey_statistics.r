@@ -2,6 +2,7 @@ context("Quick tests for summary stats (ratio / quantile)")
 
 library(srvyr)
 library(survey)
+source("utilities.R")
 
 df_test <- 30
 
@@ -114,7 +115,7 @@ out_survey <- c(ratio[1], ratio[2], mdn[1], mdn[2])
 names(out_survey) <- c("ratio_low", "ratio_upp", "mdn_q50_low", "mdn_q50_upp")
 
 test_that("median/ratio with CIs respect level parameter (ungrouped)",
-          expect_equal(out_srvyr, out_survey))
+          expect_df_equal(out_srvyr, out_survey))
 
 
 suppressWarnings(out_srvyr <- dstrata %>%
@@ -136,7 +137,7 @@ out_survey <- dplyr::bind_cols(data.frame(ratio), mdn)
 names(out_survey) <- c("ratio_low", "ratio_upp", "mdn_q50_low", "mdn_q50_upp")
 
 test_that("median/ratio with CIs respect level parameter (grouped)",
-          expect_equal(out_srvyr, out_survey))
+          expect_df_equal(out_srvyr, out_survey))
 
 
 out_survey <- svyratio(~api99, ~api00, dstrata, deff = TRUE)
@@ -173,7 +174,7 @@ out_survey[, c("survey_ratio_low", "survey_ratio_upp")] <-
   confint(temp_survey, df = df_test)
 
 test_that("deff and df work for grouped survey total",
-          expect_equal(out_srvyr, out_survey))
+          expect_df_equal(out_srvyr, out_survey))
 
 
 out_survey <- svyquantile(~api99, dstrata, c(0.5), ci = TRUE, df = df_test)
@@ -204,7 +205,7 @@ out_survey <- temp_survey %>%
   select(-se)
 
 test_that("df works for grouped survey quantile",
-          expect_equal(out_srvyr, out_survey))
+          expect_df_equal(out_srvyr, out_survey))
 
 
 data(scd, package = "survey")

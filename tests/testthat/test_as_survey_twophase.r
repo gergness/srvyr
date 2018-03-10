@@ -1,6 +1,7 @@
 context("as_survey_twophase works as expected.")
 library(srvyr)
 library(survey)
+source("utilities.R")
 
 # From survey::twophase examples
 data(pbc, package="survival")
@@ -34,7 +35,7 @@ srvyr_results <- d2pbc_srvyr %>%
 
 
 test_that("as_survey_twophase gets same mean / total / median / ratio in srvyr",
-          expect_equal(survey_results, srvyr_results))
+          expect_df_equal(survey_results, srvyr_results))
 
 
 survey_results <- list(
@@ -59,4 +60,4 @@ suppressWarnings(srvyr_results <- d2pbc_srvyr %>%
 
 test_that(
   "as_survey_twophase gets same mean / total / median / ratio in (grouped)",
-  expect_equal(survey_results, srvyr_results))
+  expect_df_equal(survey_results, srvyr_results))

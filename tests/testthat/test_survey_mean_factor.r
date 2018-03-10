@@ -2,6 +2,7 @@ context("Quick tests for survey factors")
 
 library(srvyr)
 library(survey)
+source("utilities.R")
 
 data(api)
 dstrata <- apistrat %>%
@@ -43,7 +44,7 @@ test_that("survey_total is correct when doing props with multiple groups",
                        out_srvyr %>% filter(awards == "No") %>% .$tot))
 
 test_that("survey_total is correct when doing props with multiple groups (se)",
-          expect_equal(out_survey[["se.awardsNo"]],
+          expect_df_equal(out_survey[["se.awardsNo"]],
                        out_srvyr %>%
                          filter(awards == "No") %>%
                          .$tot_se))
@@ -108,7 +109,7 @@ out_srvyr <- dstrata %>%
 
 test_that(
   "survey_mean and survey_total work with cis",
-  expect_equal(out_srvyr, out_survey))
+  expect_df_equal(out_srvyr, out_survey))
 
 # One group
 out_survey <- svymean(~awards, dstrata)

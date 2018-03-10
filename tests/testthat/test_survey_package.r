@@ -3,6 +3,7 @@ context("Survey package functions work.")
 suppressPackageStartupMessages(library(survey))
 suppressPackageStartupMessages(library(srvyr))
 data(api)
+source("utilities.R")
 
 # Overall
 ## srvyr
@@ -21,5 +22,5 @@ srvyr_chisq <- suppressWarnings(svychisq(~sch.wide + stype, dclus1_srvyr)[["p.va
 
 
 test_that("srvyr and survey get same chisq",
-          expect_equal(survey_chisq, srvyr_chisq))
+          expect_df_equal(survey_chisq, srvyr_chisq))
 

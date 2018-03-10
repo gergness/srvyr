@@ -2,6 +2,7 @@ context("A basic workflow gets correct results.")
 
 suppressPackageStartupMessages(library(survey))
 data(api)
+source("utilities.R")
 
 # Overall
 ## srvyr

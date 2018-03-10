@@ -2,7 +2,7 @@ context("Cascade works.")
 
 suppressPackageStartupMessages(library(survey))
 data(api)
-
+source("utilities.R")
 
 dstrata_srvyr <- apistrat %>%
   as_survey(strata = stype, weights = pw)
@@ -40,7 +40,7 @@ summarize_results <- dplyr::bind_rows(
 ) %>% dplyr::arrange(stype, awards)
 
 test_that("cascade works for 1 group",
-          expect_equal(cascade_results, summarize_results))
+          expect_df_equal(cascade_results, summarize_results))
 
 
 # .fill works

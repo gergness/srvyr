@@ -2,6 +2,7 @@ context("Quick tests for survey proportions")
 
 library(srvyr)
 library(survey)
+source("utilities.R")
 
 data(api)
 dstrata <- apistrat %>%
@@ -18,7 +19,7 @@ out_survey <- dplyr::bind_cols(data.frame(coef(out_survey)[1]),
 names(out_survey) <- c("x", "x_low", "x_upp")
 
 test_that("ungrouped proportion works correctly",
-          expect_equal(out_srvyr, out_survey))
+          expect_df_equal(out_srvyr, out_survey))
 
 
 out_srvyr <- dstrata %>%
@@ -32,4 +33,4 @@ out_survey <- dplyr::tbl_df(data.frame(out_survey))
 names(out_survey) <- c("stype", "x", "x_low", "x_upp")
 
 test_that("grouped proportion works correctly",
-          expect_equal(out_srvyr, out_survey))
+          expect_df_equal(out_srvyr, out_survey))

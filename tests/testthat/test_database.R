@@ -5,6 +5,8 @@ suppressPackageStartupMessages({
   library(dplyr)
 })
 
+source("utilities.R")
+
 if (suppressPackageStartupMessages(require(dbplyr))) {
   has_rsqlite <- suppressPackageStartupMessages(require(RSQLite))
   has_monetdb <- suppressPackageStartupMessages(require(MonetDBLite))
@@ -41,7 +43,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
         as_survey_design(strata = stype, weights = pw)
 
       # Can do a basic summarize
-      expect_equal(
+      expect_df_equal(
         dstrata %>%
           summarize(
             api99_mn = survey_mean(api99),
@@ -55,7 +57,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
       )
 
       # Can do a summarize with a calculation in it
-      expect_equal(
+      expect_df_equal(
         dstrata %>%
           summarize(api_diff = survey_mean(api00 - api99)),
         local_dstrata %>%
@@ -63,7 +65,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
       )
 
       # Can do a grouped summarize
-      expect_equal(
+      expect_df_equal(
         suppressWarnings(dstrata %>%
           group_by(stype = as.character(stype)) %>%
           summarize(api99 = survey_mean(api99))),
@@ -73,7 +75,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
       )
 
       # Can filter and summarize
-      expect_equal(
+      expect_df_equal(
         suppressWarnings(dstrata %>%
           filter(stype == "E") %>%
           summarize(api99 = survey_mean(api99))),
@@ -83,7 +85,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
       )
 
       # Can mutate and summarize
-      expect_equal(
+      expect_df_equal(
         suppressWarnings(dstrata %>%
           mutate(api_diff = api00 - api99) %>%
           summarize(api99 = survey_mean(api_diff))),
@@ -93,7 +95,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
       )
 
       # Can collect and then use survey functions
-      expect_equal(
+      expect_df_equal(
         suppressWarnings(dstrata %>%
                            select(api99, stype) %>%
                            collect() %>%
@@ -124,7 +126,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
                                                        combined_weights = FALSE))
 
       # Can do a basic summarize
-      expect_equal(
+      expect_df_equal(
         scdrep %>%
           summarize(esa = survey_mean(esa)),
         scdrep_local %>%

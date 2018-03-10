@@ -1,4 +1,11 @@
-# srvyr 0.3.0.9000
+# srvyr 0.3.1
+* When converting from a survey db-backed survey to a srvyr one
+  srvyr now tries to capture the updates you've already sent.
+  If dbplyr can convert the function, then it will bring the
+  update. If it can't it will warn you (#35).
+
+* Small bug fixes, mostly having to do with CRAN checks, 
+  running on CI services, or for upstream rev dep checks.
 
 # srvyr 0.3.0
 * srvyr now uses tidy evaluation from rlang. The "underscore" functions 

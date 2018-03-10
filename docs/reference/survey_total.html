@@ -171,30 +171,30 @@ the default automatically sets the survey to the current survey.</p></td>
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>enroll</span> <span class='kw'>=</span> <span class='fu'>survey_total</span>(<span class='no'>enroll</span>),
             <span class='kw'>tot_meals</span> <span class='kw'>=</span> <span class='fu'>survey_total</span>(<span class='no'>enroll</span> * <span class='no'>meals</span> / <span class='fl'>100</span>, <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"ci"</span>, <span class='st'>"cv"</span>)))</div><div class='output co'>#&gt; # A tibble: 1 x 6
-#&gt;    enroll enroll_se tot_meals tot_meals_low tot_meals_upp tot_meals_cv
-#&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
-#&gt; 1 3687178    117319   1753775       1528167       1979384       0.0652</div><div class='input'>
+#&gt;     enroll enroll_se tot_meals tot_meals_low tot_meals_upp tot_meals_cv
+#&gt;      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
+#&gt; 1 3687178.   117319.  1753775.      1528167.      1979384.       0.0652</div><div class='input'>
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>awards</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api00</span> <span class='kw'>=</span> <span class='fu'>survey_total</span>(<span class='no'>enroll</span>))</div><div class='output co'>#&gt; # A tibble: 2 x 3
-#&gt;   awards   api00 api00_se
-#&gt;   &lt;fct&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-#&gt; 1 No     1627217   147847
-#&gt; 2 Yes    2059960   143734</div><div class='input'>
+#&gt;   awards    api00 api00_se
+#&gt;   &lt;fct&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1 No     1627217.  147847.
+#&gt; 2 Yes    2059960.  143734.</div><div class='input'>
 <span class='co'># Leave x empty to calculate the total in each group</span>
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>awards</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>pct</span> <span class='kw'>=</span> <span class='fu'>survey_total</span>())</div><div class='output co'>#&gt; # A tibble: 2 x 3
 #&gt;   awards   pct pct_se
 #&gt;   &lt;fct&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-#&gt; 1 No      2236    216
-#&gt; 2 Yes     3958    216</div><div class='input'>
+#&gt; 1 No     2236.   216.
+#&gt; 2 Yes    3958.   216.</div><div class='input'>
 <span class='co'># level takes a vector for multiple levels of confidence intervals</span>
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>enroll</span> <span class='kw'>=</span> <span class='fu'>survey_total</span>(<span class='no'>enroll</span>, <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='st'>"ci"</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0.95</span>, <span class='fl'>0.65</span>)))</div><div class='output co'>#&gt; # A tibble: 1 x 5
-#&gt;    enroll enroll_low95 enroll_upp95 enroll_low65 enroll_upp65
-#&gt;     &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
-#&gt; 1 3687178      3455815      3918540      3577271      3797084</div><div class='input'>
+#&gt;     enroll enroll_low95 enroll_upp95 enroll_low65 enroll_upp65
+#&gt;      &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
+#&gt; 1 3687178.     3455815.     3918540.     3577271.     3797084.</div><div class='input'>
 <span class='co'># Note that the default degrees of freedom in srvyr is different from</span>
 <span class='co'># survey, so your confidence intervals might not exactly match. To</span>
 <span class='co'># replicate survey's behavior, use df = Inf</span>
@@ -203,7 +203,7 @@ the default automatically sets the survey to the current survey.</p></td>
             <span class='kw'>survey_defualt</span> <span class='kw'>=</span> <span class='fu'>survey_total</span>(<span class='no'>api99</span>, <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='st'>"ci"</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>Inf</span>))</div><div class='output co'>#&gt; # A tibble: 1 x 6
 #&gt;   srvyr_default srvyr_default_low srvyr_default_upp survey_defualt
 #&gt;           &lt;dbl&gt;             &lt;dbl&gt;             &lt;dbl&gt;          &lt;dbl&gt;
-#&gt; 1       3898472           3775136           4021807        3898472
+#&gt; 1      3898472.          3775136.          4021807.       3898472.
 #&gt; # ... with 2 more variables: survey_defualt_low &lt;dbl&gt;, survey_defualt_upp &lt;dbl&gt;</div><div class='input'>
 <span class='no'>comparison</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>survey</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/survey/topics/surveysummary'>svytotal</a></span>(~<span class='no'>api99</span>, <span class='no'>dstrata</span>)
 <span class='fu'>confint</span>(<span class='no'>comparison</span>) <span class='co'># survey's default</span></div><div class='output co'>#&gt;         2.5 %  97.5 %

@@ -87,7 +87,7 @@
 <code>srvyr</code> compared to the <code>survey</code> package</h1>
                         <h4 class="author">Greg Freedman</h4>
             
-            <h4 class="date">2018-01-23</h4>
+            <h4 class="date">2018-03-10</h4>
           </div>
 
     
@@ -192,9 +192,9 @@ strat_design_srvyr <span class="op">%&gt;%</span>
 <pre><code>## # A tibble: 3 x 5
 ##   stype api_increase api_increase_se api_decrease api_decrease_se
 ##   &lt;fct&gt;        &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;
-## 1 E             4067           119          354             119  
-## 2 H              498            49.4        257              49.4
-## 3 M              998            19.9         20.4            19.9</code></pre>
+## 1 E            4067.           119.         354.            119. 
+## 2 H             498.            49.4        257.             49.4
+## 3 M             998.            19.9         20.4            19.9</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Using survey</span>
 <span class="kw"><a href="http://www.rdocumentation.org/packages/survey/topics/svyby">svyby</a></span>(<span class="op">~</span>api_diff <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>, <span class="op">~</span>stype, strat_design_survey, svytotal)</code></pre></div>
 <pre><code>##   stype api_diff &gt;= 0FALSE api_diff &gt;= 0TRUE se.api_diff &gt;= 0FALSE
@@ -218,8 +218,8 @@ srs_design_srvyr <span class="op">%&gt;%</span>
 <pre><code>## # A tibble: 2 x 5
 ##   awards proportion proportion_se total total_se
 ##   &lt;fct&gt;       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
-## 1 No          0.380        0.0338  2354      210
-## 2 Yes         0.620        0.0338  3840      210</code></pre>
+## 1 No          0.380        0.0338 2354.     210.
+## 2 Yes         0.620        0.0338 3840.     210.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Using survey</span>
 <span class="kw"><a href="http://www.rdocumentation.org/packages/survey/topics/surveysummary">svymean</a></span>(<span class="op">~</span>awards, srs_design_survey)</code></pre></div>
 <pre><code>##           mean     SE
@@ -305,7 +305,7 @@ out &lt;-<span class="st"> </span>strat_design <span class="op">%&gt;%</span>
 <div id="standard-evaluation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#standard-evaluation" class="anchor"></a>Standard evaluation</h2>
-<p>Srvyr now supports the standard evaluation conventions introduced in dplyr version 0.7 and rlang. If you’d like to use a function programmatically, you can use the functions from rlang like <code><a href="http://www.rdocumentation.org/packages/rlang/topics/quosure">rlang::quo()</a></code> or <code><a href="http://www.rdocumentation.org/packages/rlang/topics/sym">rlang::sym()</a></code> to capture the expression and <code>rlang::!!</code> to unquote it. All of these functions are re-exported by srvyr, so you don’t need to load the rlang library to use them.</p>
+<p>Srvyr now supports the standard evaluation conventions introduced in dplyr version 0.7 and rlang. If you’d like to use a function programmatically, you can use the functions from rlang like <code><a href="http://www.rdocumentation.org/packages/rlang/topics/quotation">rlang::quo()</a></code> or <code><a href="http://www.rdocumentation.org/packages/rlang/topics/sym">rlang::sym()</a></code> to capture the expression and <code>rlang::!!</code> to unquote it. All of these functions are re-exported by srvyr, so you don’t need to load the rlang library to use them.</p>
 <p>Here’s a quick example, but please see the dplyr vignette <a href="http://dplyr.tidyverse.org/articles/programming.html"><code><a href="http://dplyr.tidyverse.org/articles/programming.html">vignette("programming", package = "dplyr")</a></code></a> for more details.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fpc_var &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rlang-tidyeval.html">sym</a></span>(<span class="st">"fpc"</span>)
 srs_design_srvyr &lt;-<span class="st"> </span>apisrs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="dt">fpc =</span> <span class="op">!!</span>fpc_var)
@@ -322,9 +322,9 @@ srs_design_srvyr <span class="op">%&gt;%</span>
 <pre><code>## # A tibble: 3 x 5
 ##   stype api_increase api_increase_se api_decrease api_decrease_se
 ##   &lt;fct&gt;        &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;
-## 1 E             4057             205          341            98.5
-## 2 H              557             124          217            79.4
-## 3 M              898             152          124            60.5</code></pre>
+## 1 E            4057.            205.         341.            98.5
+## 2 H             557.            124.         217.            79.4
+## 3 M             898.            152.         124.            60.5</code></pre>
 <p>Srvyr will also follow dplyr’s lead on deprecating the old method of NSE, the so-called “underscore functions” (like <code>summarize_</code>). Currently, they have been soft-deprecated, but I expect them to be removed altogether in some future version of srvyr.</p>
 </div>
 <div id="scoped-functions" class="section level2">
@@ -337,7 +337,7 @@ strat_design <span class="op">%&gt;%</span>
 <pre><code>## # A tibble: 1 x 6
 ##   api00 api00_se api99 api99_se api.stu api.stu_se
 ##   &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
-## 1   662     9.41   629     9.96     498       16.1</code></pre>
+## 1  662.     9.41  629.     9.96    498.       16.1</code></pre>
 <p>The dplyr documentation <code><a href="http://dplyr.tidyverse.org/reference/scoped.html">dplyr::scoped</a></code> provides more details.</p>
 </div>
 </div>

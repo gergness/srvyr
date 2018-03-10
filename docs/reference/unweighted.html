@@ -146,7 +146,7 @@ the default automatically sets the survey to the current survey.</p></td>
             <span class='kw'>n</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'>n</span>()))</div><div class='output co'>#&gt; # A tibble: 1 x 2
 #&gt;   api99_unw     n
 #&gt;       &lt;dbl&gt; &lt;int&gt;
-#&gt; 1       625   200</div><div class='input'>
+#&gt; 1      625.   200</div><div class='input'>
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>stype</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api_diff_unw</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'>mean</span>(<span class='no'>api00</span> - <span class='no'>api99</span>)))</div><div class='output co'>#&gt; # A tibble: 3 x 2

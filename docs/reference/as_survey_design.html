@@ -204,8 +204,10 @@ it will turn it into a srvyr object, so that srvyr functions will work with it</
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Examples from ?survey::svydesign</span>
-<span class='fu'>library</span>(<span class='no'>survey</span>)
-<span class='fu'>data</span>(<span class='no'>api</span>)
+<span class='fu'>library</span>(<span class='no'>survey</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: grid</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: Matrix</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: survival</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘survey’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:graphics’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    dotchart</span></div><div class='input'><span class='fu'>data</span>(<span class='no'>api</span>)
 
 <span class='co'># stratified sample</span>
 <span class='no'>dstrata</span> <span class='kw'>&lt;-</span> <span class='no'>apistrat</span> <span class='kw'>%&gt;%</span>

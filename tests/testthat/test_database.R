@@ -29,7 +29,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
       names(cleaned) <- stringr::str_replace_all(names(cleaned), "\\.", "")
       apistrat_db <- copy_to(con, cleaned)
       db_avail <- TRUE
-    } else if (db == "MonetDBLite" && has_monetdb) {
+    } else if (db == "MonetDBLite" && !has_monetdb) {
       db_avail <- FALSE
     }
 

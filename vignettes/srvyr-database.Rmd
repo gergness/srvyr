@@ -9,6 +9,18 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, echo = FALSE}
+if (!require(MonetDBLite)) {
+  message("Could not find MonetDBLite so could not run vignette.")
+  knitr::opts_chunk$set(eval = FALSE)
+}
+
+if (!file.exists("acs_m.Rdata")) {
+  message("Could not find db file so could not run vignette.")
+  knitr::opts_chunk$set(eval = FALSE)
+}
+```
+
 Srvyr 0.3 has a completely rewritten database backend. Using databases that are already stored
 dplyr's `tbl_lazy` objects is now just as easy as working with data stored in regular R 
 data.frames as you don't need to have a unique identifier. Additionally, it now works more

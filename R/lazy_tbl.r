@@ -123,7 +123,7 @@ capture_survey_db_updates <- function(svy) {
         svy$variables,
         !!update_name_sym := !!update_expression
       )
-      error <- tryCatch(dplyr::collect(head(new_vars, n = 1)), error = function(e) e)
+      error <- tryCatch(dplyr::collect(utils::head(new_vars, n = 1)), error = function(e) e)
       if (!is.data.frame(error)) {
         warning(paste0(
           "Could not convert variable '", update_name, "' from survey database to srvyr database.\n",

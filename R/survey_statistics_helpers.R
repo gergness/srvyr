@@ -139,7 +139,8 @@ get_var_est_quantile <- function(stat, vartype, q, grps = "", level = 0.95, df =
       se
     } else if (vvv == "ci") {
       if (inherits(stat, "data.frame")) {
-        ci <- data.frame(stat[c("ci_l", "ci_u")])
+        ci_cols <- grep("^ci_[lu]", names(stat))
+        ci <- data.frame(stat[, ci_cols])
       } else {
         ci <- data.frame(matrix(stats::confint(stat), ncol = 2 * out_width))
       }

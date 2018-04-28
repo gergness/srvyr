@@ -237,3 +237,29 @@ results_survey <- svyquantile(~arrests, mysvy, quantiles = 0.5)
 
 test_that("srvyr does the right thing by default for quantiles of replicate surveys",
           expect_equal(results_srvyr[[1]], results_survey[[1]]))
+
+test_that(
+  "Can calcualte multiple quantiles on grouped data (#38)",
+  {
+    dstrata <- apistrat %>%
+      as_survey_design(strata = stype, weights = pw)
+
+    suppressWarnings(
+      srvyr <- dstrata %>%
+        group_by(awards) %>%
+        summarise(api99 = survey_quantile(api99, c(0.25, 0.5, 0.75)))
+    )
+
+    suppressWarnings(
+      survey <- svyby(
+        ~api99, ~awards, dstrata, svyquantile, quantiles = c(0.25, 0.5, 0.75), ci = TRUE,
+        vartype = c("se", "ci")
+      )
+    )
+
+    expect_equal(srvyr$api99_q25, survey$`0.25`)
+    expect_equal(srvyr$api99_q25_se, survey$`se.0.25`)
+    expect_equal(srvyr$api99_q25_low, survey$`ci_l.0.25_api99`)
+    expect_equal(srvyr$api99_q25_upp, survey$`ci_u.0.25_api99`)
+  }
+)

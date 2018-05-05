@@ -8,14 +8,17 @@
 <title>Databases in srvyr • srvyr</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Databases in srvyr">
+<meta property="og:description" content="">
+<meta name="twitter:card" content="summary">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -24,9 +27,13 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">srvyr</a>
-<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: 5px 20px 5px 0px">
+      <span class="navbar-brand">
+<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
+        <a class="navbar-link" href="../index.html">srvyr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -80,17 +87,20 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Databases in srvyr</h1>
                         <h4 class="author">Greg Freedman Ellis</h4>
             
-            <h4 class="date">2018-03-10</h4>
-          </div>
+            <h4 class="date">2018-05-04</h4>
+      
+      <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/srvyr-database.Rmd"><code>vignettes/srvyr-database.Rmd</code></a></small>
+      <div class="hidden name"><code>srvyr-database.Rmd</code></div>
+
+    </div>
 
     
     
-<div class="contents">
 <pre><code>## Loading required package: MonetDBLite</code></pre>
 <p>Srvyr 0.3 has a completely rewritten database backend. Using databases that are already stored dplyr’s <code>tbl_lazy</code> objects is now just as easy as working with data stored in regular R data.frames as you don’t need to have a unique identifier. Additionally, it now works more similarly to the survey package’s database code and so shouldn’t be any slower.</p>
 <p>During development, I have tested using SQLite and MonetDBLite database, but in theory other database backends should work as well.</p>
@@ -297,10 +307,10 @@ acs_m_db_svy <span class="op">%&gt;%</span>
 <pre><code>## Warning: Translator is missing window variants of the following aggregate functions:
 ## * median</code></pre>
 <pre><code>## # A tibble: 2 x 3
-##   st       count count_se
-##   &lt;chr&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1 02     722718.       0.
-## 2 15    1374810.       0.</code></pre>
+##   st      count count_se
+##   &lt;chr&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+## 1 02     722718        0
+## 2 15    1374810        0</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Or the average age of downloaded states</span>
 acs_m_db_svy <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">agep =</span> <span class="kw"><a href="../reference/survey_mean.html">survey_mean</a></span>(agep, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</code></pre></div>
@@ -349,7 +359,7 @@ acs_m_db_svy <span class="op">%&gt;%</span>
 <pre><code>## # A tibble: 1 x 3
 ##   agep_q25 agep_q50 agep_q75
 ##      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1      19.      36.      55.</code></pre>
+## 1       19       36       55</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Filter works, so we can restrict the acs_m object to females only</span>
 acs_m_db_svy_female &lt;-<span class="st"> </span>acs_m_db_svy <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/dplyr_single.html">filter</a></span>(sex <span class="op">==</span><span class="st"> </span><span class="dv">2</span>)
@@ -382,7 +392,7 @@ acs_m_db_svy_female <span class="op">%&gt;%</span>
 <pre><code>## # A tibble: 1 x 1
 ##   agep_q50
 ##      &lt;dbl&gt;
-## 1      37.</code></pre>
+## 1       37</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Note that though some R functions are translated by dplyr into SQL, not</span>
 <span class="co"># all of them are. For example, when constructing a new age category </span>
 <span class="co"># variable in the dataset neither findIntervals nor cut work on databases, </span>
@@ -494,7 +504,6 @@ acs_m_db_svy <span class="op">%&gt;%</span><span class="st"> </span>
 </div>
 </div>
 </div>
-</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -526,6 +535,8 @@ acs_m_db_svy <span class="op">%&gt;%</span><span class="st"> </span>
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

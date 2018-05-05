@@ -1,0 +1,8 @@
+pandoc: 1.19.2.1
+pkgdown: 1.0.0
+pkgdown_sha: ~
+articles:
+  extending-srvyr: extending-srvyr.html
+  srvyr-database: srvyr-database.html
+  srvyr-vs-survey: srvyr-vs-survey.html
+

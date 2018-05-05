@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>All news • srvyr</title>
+<title>Changelog • srvyr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,19 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Changelog" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,9 +53,13 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">srvyr</a>
-<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: 5px 20px 5px 0px">
+      <span class="navbar-brand">
+<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
+        <a class="navbar-link" href="../index.html">srvyr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -95,6 +105,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -102,25 +113,34 @@
       
       </header>
 
-      <div class="row">
-
-  <div class="col-md-9">
+<div class="row">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Change log <small>All releases</small></h1>
+      <h1>Changelog <small></small></h1>
+      <small>Source: <a href='https://github.com/gergness/srvyr/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="contents">
-    <div id="srvyr-0-3-1" class="section level1">
-<h1 class="hasAnchor">
-<a href="#srvyr-0-3-1" class="anchor"></a>srvyr 0.3.1</h1>
+    <div id="srvyr-0-3-2" class="section level1">
+<h1 class="page-header">
+<a href="#srvyr-0-3-2" class="anchor"></a>srvyr 0.3.2<small> 2018-05-04 </small>
+</h1>
 <ul>
-<li><p>When converting from a survey db-backed survey to a srvyr one srvyr now tries to capture the updates you’ve already sent. If dbplyr can convert the function, then it will bring the update. If it can’t it will warn you (#35).</p></li>
+<li>Bug fix for calculating multiple quantiles on grouped data (<a href='https://github.com/gergness/srvyr/issues/38'>#38</a>, thanks <a href='http://github.com/iantperry'>@iantperry</a>)</li>
+</ul>
+</div>
+    <div id="srvyr-0-3-1" class="section level1">
+<h1 class="page-header">
+<a href="#srvyr-0-3-1" class="anchor"></a>srvyr 0.3.1<small> 2018-03-10 </small>
+</h1>
+<ul>
+<li><p>When converting from a survey db-backed survey to a srvyr one srvyr now tries to capture the updates you’ve already sent. If dbplyr can convert the function, then it will bring the update. If it can’t it will warn you (<a href='https://github.com/gergness/srvyr/issues/35'>#35</a>).</p></li>
 <li><p>Small bug fixes, mostly having to do with CRAN checks, running on CI services, or for upstream rev dep checks.</p></li>
 </ul>
 </div>
     <div id="srvyr-0-3-0" class="section level1">
-<h1 class="hasAnchor">
-<a href="#srvyr-0-3-0" class="anchor"></a>srvyr 0.3.0</h1>
+<h1 class="page-header">
+<a href="#srvyr-0-3-0" class="anchor"></a>srvyr 0.3.0<small> 2018-01-24 </small>
+</h1>
 <ul>
 <li><p>srvyr now uses tidy evaluation from rlang. The “underscore” functions have been soft deprecated in favor of quosure splicing. See dplyr’s vignette “programming” for more details. In almost all cases, the old syntax will still work, with one exception: the standard evaluation function <code><a href="../reference/srvyr-se-deprecated.html">as_survey_twophase_()</a></code> had to be changed slightly so that the entire list is inside quotation.</p></li>
 <li><p>Datbase support has been rewritten. It should be faster now and doesn’t require a unique identifier. You also can now convert survey db-backed surveys to srvyr with as_survey.</p></li>
@@ -128,30 +148,34 @@
 </ul>
 </div>
     <div id="srvyr-0-2-2" class="section level1">
-<h1 class="hasAnchor">
-<a href="#srvyr-0-2-2" class="anchor"></a>srvyr 0.2.2</h1>
+<h1 class="page-header">
+<a href="#srvyr-0-2-2" class="anchor"></a>srvyr 0.2.2<small> 2017-06-23 </small>
+</h1>
 <ul>
 <li>Remove test blocking survey update</li>
 </ul>
 </div>
     <div id="srvyr-0-2-1" class="section level1">
-<h1 class="hasAnchor">
-<a href="#srvyr-0-2-1" class="anchor"></a>srvyr 0.2.1</h1>
+<h1 class="page-header">
+<a href="#srvyr-0-2-1" class="anchor"></a>srvyr 0.2.1<small> 2017-04-26 </small>
+</h1>
 <ul>
 <li><p>Added support for dplyr mutate_at/_if/_all and summarize_at/_if/_all for srvyr surveys.</p></li>
 <li><p>Fixed a few bugs introduced with dplyr 0.6. This version of srvyr will work with both old versions of dplyr and 0.6, but may be full of warnings if you update dplyr. Full support for the new dplyr is coming soon.</p></li>
 </ul>
 </div>
     <div id="srvyr-0-2-0" class="section level1">
-<h1 class="hasAnchor">
-<a href="#srvyr-0-2-0" class="anchor"></a>srvyr 0.2.0</h1>
+<h1 class="page-header">
+<a href="#srvyr-0-2-0" class="anchor"></a>srvyr 0.2.0<small> 2016-09-26 </small>
+</h1>
 <ul>
 <li>Added support for database backed surveys, using dplyr’s handling of DBI. Because of problems interacting with the survey package twophase designs do not work.</li>
 </ul>
 </div>
     <div id="srvyr-0-1-2" class="section level1">
-<h1 class="hasAnchor">
-<a href="#srvyr-0-1-2" class="anchor"></a>srvyr 0.1.2</h1>
+<h1 class="page-header">
+<a href="#srvyr-0-1-2" class="anchor"></a>srvyr 0.1.2<small> 2016-06-28 </small>
+</h1>
 <ul>
 <li><p>Fixed a problem with confidence levels not being passed into quantiles</p></li>
 <li><p>Added deff parameter to <code><a href="../reference/survey_mean.html">survey_mean()</a></code>, <code><a href="../reference/survey_total.html">survey_total()</a></code> and <code><a href="../reference/survey_quantile.html">survey_median()</a></code>, and a df parameter to those functions and <code><a href="../reference/survey_quantile.html">survey_quantile()</a></code> / <code><a href="../reference/survey_quantile.html">survey_median()</a></code>.</p></li>
@@ -159,21 +183,22 @@
 </ul>
 </div>
     <div id="srvyr-0-1-1" class="section level1">
-<h1 class="hasAnchor">
-<a href="#srvyr-0-1-1" class="anchor"></a>srvyr 0.1.1</h1>
+<h1 class="page-header">
+<a href="#srvyr-0-1-1" class="anchor"></a>srvyr 0.1.1<small> 2016-04-03 </small>
+</h1>
 <ul>
 <li><p>New function <code>cascade</code> summarizes groups, and cascades to create summary statistics of groups of groups.</p></li>
 <li><p>Fixed a bug for confidence intervals for <code><a href="../reference/survey_total.html">survey_total()</a></code> on groups.</p></li>
 <li><p>Fixed some issues with the upcoming version of dplyr.</p></li>
 </ul>
 </div>
-    </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#srvyr-0-3-2">0.3.2</a></li>
         <li><a href="#srvyr-0-3-1">0.3.1</a></li>
         <li><a href="#srvyr-0-3-0">0.3.0</a></li>
         <li><a href="#srvyr-0-2-2">0.2.2</a></li>
@@ -199,5 +224,8 @@
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

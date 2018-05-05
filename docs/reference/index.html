@@ -18,13 +18,19 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Function reference" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,9 +53,13 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">srvyr</a>
-<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: 5px 20px 5px 0px">
+      <span class="navbar-brand">
+<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
+        <a class="navbar-link" href="../index.html">srvyr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -95,6 +105,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -102,172 +113,167 @@
       
       </header>
 
-      <div class="row">
-  <div class="col-md-9">
+<div class="row">
+  <div class="contents col-md-9">
     <div class="page-header">
-      <h1>
-        Reference
-        <small>version&nbsp;0.3.1</small>
-      </h1>
+      <h1>Reference</h1>
     </div>
 
-    <div class="contents">
-      <table class="ref-index">
+    <table class="ref-index">
 
-      <colgroup>
-        <col class="alias" />
-        <col class="title" />
-      </colgroup>
+    <colgroup>
+      <col class="alias" />
+      <col class="title" />
+    </colgroup>
 
-      <tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-set-up-survey-data" class="hasAnchor"><a href="#section-set-up-survey-data" class="anchor"></a>Set up survey data</h2>
-            <p class="section-desc"><p>Functions for specifying a survey’s structure</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="as_survey.html">as_survey</a></code> </p>
-          </td>
-          <td><p>Create a tbl_svy from a data.frame</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="as_survey_design.html">as_survey_design</a></code> </p>
-          </td>
-          <td><p>Create a tbl_svy survey object using sampling design</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="as_survey_rep.html">as_survey_rep</a></code> </p>
-          </td>
-          <td><p>Create a tbl_svy survey object using replicate weights</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="as_survey_twophase.html">as_survey_twophase</a></code> </p>
-          </td>
-          <td><p>Create a tbl_svy survey object using two phase design</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-calculate-summary-statistics-of-survey-data" class="hasAnchor"><a href="#section-calculate-summary-statistics-of-survey-data" class="anchor"></a>Calculate summary statistics of survey data</h2>
-            <p class="section-desc"><p>Functions for calculating summary measures taking into account complex survey design</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cascade.html">cascade</a></code> </p>
-          </td>
-          <td><p>Summarise multiple values into cascading groups</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="group_by.html">group_by</a></code> </p>
-          </td>
-          <td><p>Group a (survey) dataset by one or more variables.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="summarise.html">summarise</a></code> <code><a href="summarise.html">summarize</a></code> </p>
-          </td>
-          <td><p>Summarise multiple values to a single value.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="survey_mean.html">survey_mean</a></code> </p>
-          </td>
-          <td><p>Calculate the mean and its variation using survey methods</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="survey_total.html">survey_total</a></code> </p>
-          </td>
-          <td><p>Calculate the total and its variation using survey methods</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="survey_quantile.html">survey_quantile</a></code> <code><a href="survey_quantile.html">survey_median</a></code> </p>
-          </td>
-          <td><p>Calculate the quantile and its variation using survey methods</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="survey_ratio.html">survey_ratio</a></code> </p>
-          </td>
-          <td><p>Calculate the ratio and its variation using survey methods</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="unweighted.html">unweighted</a></code> </p>
-          </td>
-          <td><p>Calculate the an unweighted summary statistic from a survey</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-other-supported-dplyr-functions" class="hasAnchor"><a href="#section-other-supported-dplyr-functions" class="anchor"></a>Other supported dplyr functions</h2>
-            <p class="section-desc"><p>Other functions from dplyr that work on srvyr’s survey objects</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="as_tibble.html">as_tibble</a></code> </p>
-          </td>
-          <td><p>Coerce survey variables to a data frame (tibble)</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="dplyr_single.html">dplyr_single</a></code> </p>
-          </td>
-          <td><p>Single table verbs from dplyr</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="groups.html">groups</a></code> </p>
-          </td>
-          <td><p>Get/set the grouping variables for tbl.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="tbl_vars.html">tbl_vars</a></code> </p>
-          </td>
-          <td><p>List variables produced by a tbl.</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section--primarily-for-package-authors-extend-srvyr" class="hasAnchor"><a href="#section--primarily-for-package-authors-extend-srvyr" class="anchor"></a>(Primarily for package authors) Extend srvyr</h2>
-            <p class="section-desc"><p>Functions useful for package authors to extend srvyr</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="current_svy.html">current_svy</a></code> </p>
-          </td>
-          <td><p>Get the survey data for the current context</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_var_est.html">get_var_est</a></code> </p>
-          </td>
-          <td><p>Get the variance estimates for a survey estimate</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="set_survey_vars.html">set_survey_vars</a></code> </p>
-          </td>
-          <td><p>Set the variables for the current survey variable</p></td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
+    <tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-set-up-survey-data" class="hasAnchor"><a href="#section-set-up-survey-data" class="anchor"></a>Set up survey data</h2>
+          <p class="section-desc"><p>Functions for specifying a survey’s structure</p></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="as_survey.html">as_survey()</a></code> </p>
+        </td>
+        <td><p>Create a tbl_svy from a data.frame</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="as_survey_design.html">as_survey_design()</a></code> </p>
+        </td>
+        <td><p>Create a tbl_svy survey object using sampling design</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="as_survey_rep.html">as_survey_rep()</a></code> </p>
+        </td>
+        <td><p>Create a tbl_svy survey object using replicate weights</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="as_survey_twophase.html">as_survey_twophase()</a></code> </p>
+        </td>
+        <td><p>Create a tbl_svy survey object using two phase design</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-calculate-summary-statistics-of-survey-data" class="hasAnchor"><a href="#section-calculate-summary-statistics-of-survey-data" class="anchor"></a>Calculate summary statistics of survey data</h2>
+          <p class="section-desc"><p>Functions for calculating summary measures taking into account complex survey design</p></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="cascade.html">cascade()</a></code> </p>
+        </td>
+        <td><p>Summarise multiple values into cascading groups</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="group_by.html">group_by</a></code> </p>
+        </td>
+        <td><p>Group a (survey) dataset by one or more variables.</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="summarise.html">summarise()</a></code> <code><a href="summarise.html">summarize()</a></code> </p>
+        </td>
+        <td><p>Summarise multiple values to a single value.</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="survey_mean.html">survey_mean()</a></code> </p>
+        </td>
+        <td><p>Calculate the mean and its variation using survey methods</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="survey_total.html">survey_total()</a></code> </p>
+        </td>
+        <td><p>Calculate the total and its variation using survey methods</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="survey_quantile.html">survey_quantile()</a></code> <code><a href="survey_quantile.html">survey_median()</a></code> </p>
+        </td>
+        <td><p>Calculate the quantile and its variation using survey methods</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="survey_ratio.html">survey_ratio()</a></code> </p>
+        </td>
+        <td><p>Calculate the ratio and its variation using survey methods</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="unweighted.html">unweighted()</a></code> </p>
+        </td>
+        <td><p>Calculate the an unweighted summary statistic from a survey</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-other-supported-dplyr-functions" class="hasAnchor"><a href="#section-other-supported-dplyr-functions" class="anchor"></a>Other supported dplyr functions</h2>
+          <p class="section-desc"><p>Other functions from dplyr that work on srvyr’s survey objects</p></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="as_tibble.html">as_tibble</a></code> </p>
+        </td>
+        <td><p>Coerce survey variables to a data frame (tibble)</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="dplyr_single.html">dplyr_single</a></code> </p>
+        </td>
+        <td><p>Single table verbs from dplyr</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="groups.html">groups</a></code> </p>
+        </td>
+        <td><p>Get/set the grouping variables for tbl.</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="tbl_vars.html">tbl_vars</a></code> </p>
+        </td>
+        <td><p>List variables produced by a tbl.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section--primarily-for-package-authors-extend-srvyr" class="hasAnchor"><a href="#section--primarily-for-package-authors-extend-srvyr" class="anchor"></a>(Primarily for package authors) Extend srvyr</h2>
+          <p class="section-desc"><p>Functions useful for package authors to extend srvyr</p></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="current_svy.html">current_svy()</a></code> </p>
+        </td>
+        <td><p>Get the survey data for the current context</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="get_var_est.html">get_var_est()</a></code> </p>
+        </td>
+        <td><p>Get the variance estimates for a survey estimate</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="set_survey_vars.html">set_survey_vars()</a></code> </p>
+        </td>
+        <td><p>Set the variables for the current survey variable</p></td>
+      </tr>
+    </tbody>
+    </table>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -293,5 +299,8 @@
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

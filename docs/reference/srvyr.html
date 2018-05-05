@@ -18,13 +18,25 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="svrvyr: A package for 'dplyr'-Like Syntax for Summary Statistics of Survey Data. — srvyr" />
+
+<meta property="og:description" content="The srvyr package provides a new way of calculating summary statistics
+on survey data, based on the dplyr package. There are three stages to using
+srvyr functions, creating a survey object, manipulating the data, and
+calculating survey statistics." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,9 +59,13 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">srvyr</a>
-<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: 5px 20px 5px 0px">
+      <span class="navbar-brand">
+<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
+        <a class="navbar-link" href="../index.html">srvyr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -95,6 +111,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -102,22 +119,27 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>svrvyr: A package for 'dplyr'-Like Syntax for Summary Statistics of Survey Data.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/srvyr.r'><code>R/srvyr.r</code></a></small>
+    <div class="hidden name"><code>srvyr.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>The srvyr package provides a new way of calculating summary statistics
 on survey data, based on the dplyr package. There are three stages to using
 srvyr functions, creating a survey object, manipulating the data, and
 calculating survey statistics.</p>
     
+    </div>
 
         
     <h2 class="hasAnchor" id="functions-to-create-a-survey-object"><a class="anchor" href="#functions-to-create-a-survey-object"></a>Functions to create a survey object</h2>
 
+    
     <p><code><a href='as_survey_design.html'>as_survey_design</a></code>, <code><a href='as_survey_rep.html'>as_survey_rep</a></code>,
 and <code><a href='as_survey_twophase.html'>as_survey_twophase</a></code> are used to create surveys based on
 a data.frame and design variables, replicate weights or two phase design
@@ -186,5 +208,8 @@ a function without taking into consideration the survey weighting.</p>
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

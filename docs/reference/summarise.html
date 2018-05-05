@@ -18,13 +18,22 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Summarise multiple values to a single value. — summarise" />
+
+<meta property="og:description" content="Summarise multiple values to a single value." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,9 +56,13 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">srvyr</a>
-<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: 5px 20px 5px 0px">
+      <span class="navbar-brand">
+<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
+        <a class="navbar-link" href="../index.html">srvyr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -95,6 +108,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -102,20 +116,24 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Summarise multiple values to a single value.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/summarise.r'><code>R/summarise.r</code></a></small>
+    <div class="hidden name"><code>summarise.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Summarise multiple values to a single value.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>summarise</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
 <span class='fu'>summarize</span>(<span class='no'>.data</span>, <span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -140,7 +158,8 @@ for variance, and <code>cv</code> for coefficient of variation. <code>level</cod
 specifies the level for the confidence interval.</p>
 <p>The other arguments correspond to the analagous function arguments from the
 survey package.</p>
-<p>The available functions from srvyr are:</p><dl class='dl-horizontal'>
+<p>The available functions from srvyr are:</p>
+<dl class='dl-horizontal'>
 <dt><code><a href='survey_mean.html'>survey_mean</a></code></dt><dd><p>Calculate the survey mean of the entire population or by <code>groups</code>.
    Based on <code><a href='http://www.rdocumentation.org/packages/survey/topics/surveysummary'>svymean</a></code>.</p></dd>
 <dt><code><a href='survey_total.html'>survey_total</a></code></dt><dd><p>Calculate the survey total of the entire population or by <code>groups</code>.
@@ -209,5 +228,8 @@ survey package.</p>
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

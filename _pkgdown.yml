@@ -21,7 +21,6 @@ reference:
       - survey_quantile
       - survey_ratio
       - unweighted
-
   - title: "Other supported dplyr functions"
     desc: "Other functions from dplyr that work on srvyr's survey objects"
     contents:
@@ -35,15 +34,6 @@ reference:
       - current_svy
       - get_var_est
       - set_survey_vars
-  - exclude:
-      - as_survey_
-      - as_survey_design_
-      - as_survey_rep_
-      - as_survey_twophase_
-      - cascade_
-      - svychisq
-      - tbl_svy
-      - srvyr
 
 navbar:
   type: default

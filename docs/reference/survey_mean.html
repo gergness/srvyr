@@ -18,13 +18,25 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Calculate the mean and its variation using survey methods — survey_mean" />
+
+<meta property="og:description" content="Calculate means and proportions from complex survey data. A wrapper
+around svymean, or if proportion = TRUE,
+svyciprop. survey_mean should always be
+called from summarise." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,9 +59,13 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">srvyr</a>
-<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: 5px 20px 5px 0px">
+      <span class="navbar-brand">
+<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
+        <a class="navbar-link" href="../index.html">srvyr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -95,6 +111,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -102,25 +119,29 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Calculate the mean and its variation using survey methods</h1>
+    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/survey_statistics.r'><code>R/survey_statistics.r</code></a></small>
+    <div class="hidden name"><code>survey_mean.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Calculate means and proportions from complex survey data. A wrapper
 around <code><a href='http://www.rdocumentation.org/packages/survey/topics/surveysummary'>svymean</a></code>, or if <code>proportion = TRUE</code>,
 <code><a href='http://www.rdocumentation.org/packages/survey/topics/svyciprop'>svyciprop</a></code>. <code>survey_mean</code> should always be
 called from <code><a href='summarise.html'>summarise</a></code>.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>survey_mean</span>(<span class='no'>x</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"se"</span>, <span class='st'>"ci"</span>, <span class='st'>"var"</span>, <span class='st'>"cv"</span>),
   <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='kw'>proportion</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>prop_method</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"logit"</span>, <span class='st'>"likelihood"</span>,
   <span class='st'>"asin"</span>, <span class='st'>"beta"</span>, <span class='st'>"mean"</span>), <span class='kw'>deff</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>.svy</span> <span class='kw'>=</span> <span class='fu'><a href='current_svy.html'>current_svy</a></span>(),
   <span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -255,5 +276,8 @@ the default automatically sets the survey to the current survey.</p></td>
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

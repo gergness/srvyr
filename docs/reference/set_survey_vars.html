@@ -18,13 +18,27 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Set the variables for the current survey variable — set_survey_vars" />
+
+<meta property="og:description" content="This is a helper to allow srvyr's syntactic style. In general, users
+will not have to worry about setting variables in a survey object
+unless they are trying to extend srvyr. This function helps convert a vector
+to a variable in the correct part of a survey object's structure so that
+functions can refer to it using the survey package's formula notation.
+See vignette("extending-srvyr") for more details." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,9 +61,13 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">srvyr</a>
-<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: 5px 20px 5px 0px">
+      <span class="navbar-brand">
+<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
+        <a class="navbar-link" href="../index.html">srvyr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -95,6 +113,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -102,12 +121,15 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Set the variables for the current survey variable</h1>
+    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/survey_statistics_helpers.R'><code>R/survey_statistics_helpers.R</code></a></small>
+    <div class="hidden name"><code>set_survey_vars.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>This is a helper to allow srvyr's syntactic style. In general, users
 will not have to worry about setting variables in a survey object
@@ -116,10 +138,11 @@ to a variable in the correct part of a survey object's structure so that
 functions can refer to it using the survey package's formula notation.
 See <code><a href='../articles/extending-srvyr.html'>vignette("extending-srvyr")</a></code> for more details.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>set_survey_vars</span>(<span class='no'>.svy</span>, <span class='no'>x</span>, <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"__SRVYR_TEMP_VAR__"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -171,5 +194,8 @@ this variable instead.</p></td>
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

@@ -18,13 +18,24 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="tbl_svy object. — tbl_svy" />
+
+<meta property="og:description" content="A tbl_svy wraps a locally stored svydesign and adds methods for
+dplyr single-table verbs like mutate, group_by and
+summarise. Create a tbl_svy using as_survey_design." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,9 +58,13 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">srvyr</a>
-<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: 5px 20px 5px 0px">
+      <span class="navbar-brand">
+<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
+        <a class="navbar-link" href="../index.html">srvyr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -95,6 +110,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -102,23 +118,28 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>tbl_svy object.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/tbl-svy.r'><code>R/tbl-svy.r</code></a></small>
+    <div class="hidden name"><code>tbl_svy.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>A <code>tbl_svy</code> wraps a locally stored svydesign and adds methods for
 dplyr single-table verbs like <code>mutate</code>, <code>group_by</code> and
 <code>summarise</code>. Create a <code>tbl_svy</code> using <code><a href='as_survey_design.html'>as_survey_design</a></code>.</p>
     
+    </div>
 
         
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
     
-    <p><code>tbl_df</code> implements these methods from dplyr.</p><dl class='dl-horizontal'>
+    <p><code>tbl_df</code> implements these methods from dplyr.</p>
+<dl class='dl-horizontal'>
 <dt><code><a href='http://dplyr.tidyverse.org/reference/select.html'>select</a></code> or <code><a href='http://dplyr.tidyverse.org/reference/select.html'>rename</a></code></dt><dd><p>Select or rename variables in a survey's dataset.</p></dd>
 <dt><code><a href='http://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></code> or <code><a href='http://dplyr.tidyverse.org/reference/mutate.html'>transmute</a></code></dt><dd><p>Modify and create variables in a survey's dataset.</p></dd>
 <dt><code><a href='group_by.html'>group_by</a></code> and <code><a href='summarise.html'>summarise</a></code></dt><dd><p>Get descriptive statistics from survey.</p></dd>
@@ -215,5 +236,8 @@ dplyr single-table verbs like <code>mutate</code>, <code>group_by</code> and
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

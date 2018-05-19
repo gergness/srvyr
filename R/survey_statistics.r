@@ -83,7 +83,6 @@ survey_mean.tbl_svy <- function(
   prop_method <- match.arg(prop_method)
   if (is.null(df)) df <- survey::degf(.svy)
   stop_for_factor(x)
-
   if (!proportion) {
     if (class(x) == "logical") x <- as.integer(x)
     .svy <- set_survey_vars(.svy, x)
@@ -91,6 +90,8 @@ survey_mean.tbl_svy <- function(
     out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
     out
   } else {
+    if (deff) warning("Cannot calculate design effects on proportions.", call. = FALSE)
+
     .svy <- set_survey_vars(.svy, x)
     stat <- survey::svyciprop(
       ~`__SRVYR_TEMP_VAR__`, .svy, na.rm = na.rm, level = level, method = prop_method
@@ -124,6 +125,10 @@ survey_mean.grouped_svy <- function(
     grps_formula <- survey::make.formula(group_vars(.svy))
 
     if (proportion) {
+      if (deff) {
+        warning("Cannot calculate design effects on proportions.", call. = FALSE)
+        deff <- FALSE
+      }
       stat <- survey::svyby(
         ~`__SRVYR_TEMP_VAR__`, grps_formula, .svy, survey::svyciprop, na.rm = na.rm,
         se = TRUE, vartype = c("se", "ci"), method = prop_method

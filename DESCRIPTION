@@ -23,6 +23,7 @@ License: GPL-2 | GPL-3
 LazyData: TRUE
 Suggests:
     convey,
+    DBI,
     dbplyr,
     ggplot2,
     knitr,

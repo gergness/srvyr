@@ -18,7 +18,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
     if (db == "RSQLite" && has_rsqlite) {
       con <- DBI::dbConnect(RSQLite::SQLite(), path = ":memory:")
       cleaned <- dplyr::select(apistrat, -full)
-      names(cleaned) <- stringr::str_replace_all(names(cleaned), "\\.", "")
+      names(cleaned) <- gsub("\\.", "", names(cleaned))
       apistrat_db <- copy_to(con, cleaned)
       db_avail <- TRUE
     } else if (db == "RSQLite" && !has_rsqlite){
@@ -26,7 +26,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
     } else if (db == "MonetDBLite" && has_monetdb) {
       con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), path = ":memory:")
       cleaned <- dplyr::select(apistrat, -full)
-      names(cleaned) <- stringr::str_replace_all(names(cleaned), "\\.", "")
+      names(cleaned) <- gsub("\\.", "", names(cleaned))
       apistrat_db <- copy_to(con, cleaned)
       db_avail <- TRUE
     } else if (db == "MonetDBLite" && !has_monetdb) {

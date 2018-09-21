@@ -131,7 +131,7 @@ survey_mean.grouped_svy <- function(
       }
       stat <- survey::svyby(
         ~`__SRVYR_TEMP_VAR__`, grps_formula, .svy, survey::svyciprop, na.rm = na.rm,
-        se = TRUE, vartype = c("se", "ci"), method = prop_method
+        se = TRUE, vartype = c("se", "ci"), method = prop_method, level = level
       )
     } else {
       stat <- survey::svyby(

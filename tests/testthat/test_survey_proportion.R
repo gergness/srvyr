@@ -34,3 +34,23 @@ names(out_survey) <- c("stype", "x", "x_low", "x_upp")
 
 test_that("grouped proportion works correctly",
           expect_df_equal(out_srvyr, out_survey))
+
+
+test_that("Can set level for grouped proportion (#44)", {
+  data(api)
+  api_des = apistrat %>% as_survey_design(ids=dnum, strata=stype, weights=pw, nest=T)
+
+  # 90% CI for grouped data
+  cl_90 = api_des %>%
+    group_by(stype) %>%
+    summarize(prop=survey_mean(comp.imp == "Yes", na.rm=T, proportion=T, vartype="ci", level=0.9))
+
+  # 99% CI for grouped data
+  cl_99 = api_des %>%
+    group_by(stype) %>%
+    summarize(prop=survey_mean(comp.imp == "Yes", na.rm=T, proportion=T, vartype="ci", level=0.99))
+
+  expect_true(!identical(cl_90, cl_99))
+
+
+})

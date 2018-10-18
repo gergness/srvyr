@@ -145,3 +145,6 @@ is.calibrated <- function(design)
 is.pps <- function(x) {
   if (is.null(x$pps)) FALSE else (x$pps != FALSE)
 }
+
+# From base (for backward compatibility)
+isFALSE <- function (x) is.logical(x) && length(x) == 1L && !is.na(x) && !x

@@ -90,7 +90,7 @@ survey_mean.tbl_svy <- function(
     out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
     out
   } else {
-    if (deff) warning("Cannot calculate design effects on proportions.", call. = FALSE)
+    if (!isFALSE(deff)) warning("Cannot calculate design effects on proportions.", call. = FALSE)
 
     .svy <- set_survey_vars(.svy, x)
     stat <- survey::svyciprop(
@@ -125,7 +125,7 @@ survey_mean.grouped_svy <- function(
     grps_formula <- survey::make.formula(group_vars(.svy))
 
     if (proportion) {
-      if (deff) {
+      if (!isFALSE(deff)) {
         warning("Cannot calculate design effects on proportions.", call. = FALSE)
         deff <- FALSE
       }

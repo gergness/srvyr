@@ -114,7 +114,7 @@ get_var_est <- function(
     out <- c(list(stat[grps]), out)
   }
 
-  if (deff) {
+  if (!isFALSE(deff)) {
     deff <- data.frame(matrix(survey::deff(stat), ncol = out_width))
     names(deff) <- "_deff"
     out <- c(out, list(deff))
@@ -216,7 +216,7 @@ get_var_est_factor <- function(
   names(coef) <- var_names
   out <- c(list(coef), out)
 
-  if (deff) {
+  if (!isFALSE(deff)) {
     deff <- data.frame(matrix(survey::deff(stat), ncol = out_width))
     names(deff) <- paste0(var_names, "_deff")
     out <- c(out, list(deff))
@@ -224,12 +224,12 @@ get_var_est_factor <- function(
 
   if (length(grps) == 0  || grps == "") {
     names_out <- c("coef", vartype)
-    if (deff) names_out <- c(names_out, "deff")
+    if (!isFALSE(deff)) names_out <- c(names_out, "deff")
     names(out) <- names_out
   } else {
     out <- c(list(stat[grps]), out)
     names_out <- c("grps", "coef", vartype)
-    if (deff) names_out <- c(names_out, "deff")
+    if (!isFALSE(deff)) names_out <- c(names_out, "deff")
     names(out) <- names_out
   }
   if (!peel_is_factor) peel_levels <- NULL

@@ -154,6 +154,24 @@ test_that("df works for ungrouped survey total",
                        c(out_srvyr[["survey_ratio_low"]][[1]], out_srvyr[["survey_ratio_upp"]][[1]])))
 
 
+test_that(
+  "deff works with `deff='replace'` (#46)",
+  {
+    data(api)
+
+    dstrat<-svydesign(id=~1,strata=~stype, weights=~pw, data=apistrat, fpc=~fpc)
+
+    survey_answer <- unname(deff(svymean(~api99, dstrat, deff = "replace")))
+
+
+    srvyr_answer <- dstrat %>%
+      as_survey() %>%
+      summarize(api99 = survey_mean(api99, deff = "replace")) %>%
+      dplyr::pull(api99_deff)
+
+      expect_equal(survey_answer, srvyr_answer)
+  }
+  )
 
 
 

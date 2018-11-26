@@ -260,7 +260,7 @@ of srvyr.
 ## Scoped functions
 Srvyr has also been able to take advantage of the new-ish dplyr "scoped" variants of 
 the main manipulation functions like `summarize_at()`. These functions allow you to 
-quickly calculate variables for multiple variables. For example:
+quickly calculate summary statistics for multiple variables. For example:
 
 ```{r}
 # Calculate survey mean for all variables that have names starting with "api"

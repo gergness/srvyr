@@ -4,8 +4,8 @@
 \alias{survey_ratio}
 \title{Calculate the ratio and its variation using survey methods}
 \usage{
-survey_ratio(numerator, denominator, na.rm = FALSE, vartype = c("se", "ci",
-  "var", "cv"), level = 0.95, deff = FALSE, df = NULL,
+survey_ratio(numerator, denominator, na.rm = FALSE, vartype = c("se",
+  "ci", "var", "cv"), level = 0.95, deff = FALSE, df = NULL,
   .svy = current_svy(), ...)
 }
 \arguments{

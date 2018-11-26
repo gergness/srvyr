@@ -11,15 +11,15 @@ as_survey_design(.data, ...)
 
 \method{as_survey_design}{data.frame}(.data, ids = NULL, probs = NULL,
   strata = NULL, variables = NULL, fpc = NULL, nest = FALSE,
-  check_strata = !nest, weights = NULL, pps = FALSE, variance = c("HT",
-  "YG"), ...)
+  check_strata = !nest, weights = NULL, pps = FALSE,
+  variance = c("HT", "YG"), ...)
 
 \method{as_survey_design}{survey.design2}(.data, ...)
 
 \method{as_survey_design}{tbl_lazy}(.data, ids = NULL, probs = NULL,
   strata = NULL, variables = NULL, fpc = NULL, nest = FALSE,
-  check_strata = !nest, weights = NULL, pps = FALSE, variance = c("HT",
-  "YG"), ...)
+  check_strata = !nest, weights = NULL, pps = FALSE,
+  variance = c("HT", "YG"), ...)
 }
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}

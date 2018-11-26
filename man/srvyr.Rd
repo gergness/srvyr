@@ -34,9 +34,9 @@ using dplyr with a data.frame. \code{\link{mutate}} modifies or creates a variab
 \code{\link{filter}} keeps certain observations.
 
 Note that \code{arrange} and two table verbs such as \code{bind_rows},
-\code{bind_cosl}, or any of the joins are not usable on survey objects
-because they might require modificaitons to the definition of your survey. If
-you need to use these variables, you should do so before you convert the
+\code{bind_cols}, or any of the joins are not usable on survey objects
+because they might require modifications to the definition of your survey. If
+you need to use these functions, you should do so before you convert the
 data.frame to a survey object.
 }
 

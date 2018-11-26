@@ -28,11 +28,12 @@ as_survey_design_(.data, ids = NULL, probs = NULL, strata = NULL,
   variables = NULL, fpc = NULL, nest = FALSE, check_strata = !nest,
   weights = NULL, pps = FALSE, variance = c("HT", "YG"))
 
-as_survey_rep_(.data, variables = NULL, repweights = NULL, weights = NULL,
-  type = c("BRR", "Fay", "JK1", "JKn", "bootstrap", "other"),
-  combined_weights = TRUE, rho = NULL, bootstrap_average = NULL,
-  scale = NULL, rscales = NULL, fpc = NULL, fpctype = c("fraction",
-  "correction"), mse = getOption("survey.replicates.mse"))
+as_survey_rep_(.data, variables = NULL, repweights = NULL,
+  weights = NULL, type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
+  "other"), combined_weights = TRUE, rho = NULL,
+  bootstrap_average = NULL, scale = NULL, rscales = NULL,
+  fpc = NULL, fpctype = c("fraction", "correction"),
+  mse = getOption("survey.replicates.mse"))
 
 as_survey_twophase_(.data, id, strata = NULL, probs = NULL,
   weights = NULL, fpc = NULL, subset, method = c("full", "approx",

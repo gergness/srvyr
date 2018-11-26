@@ -5,9 +5,9 @@
 \title{Calculate the mean and its variation using survey methods}
 \usage{
 survey_mean(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
-  level = 0.95, proportion = FALSE, prop_method = c("logit", "likelihood",
-  "asin", "beta", "mean"), deff = FALSE, df = NULL, .svy = current_svy(),
-  ...)
+  level = 0.95, proportion = FALSE, prop_method = c("logit",
+  "likelihood", "asin", "beta", "mean"), deff = FALSE, df = NULL,
+  .svy = current_svy(), ...)
 }
 \arguments{
 \item{x}{A variable or expression, or empty}

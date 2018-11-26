@@ -5,15 +5,16 @@
 \alias{survey_median}
 \title{Calculate the quantile and its variation using survey methods}
 \usage{
-survey_quantile(x, quantiles, na.rm = FALSE, vartype = NULL, level = 0.95,
-  q_method = "linear", f = 1, interval_type = c("Wald", "score",
-  "betaWald", "probability", "quantile"), ties = c("discrete", "rounded"),
-  df = Inf, .svy = current_svy(), ...)
+survey_quantile(x, quantiles, na.rm = FALSE, vartype = NULL,
+  level = 0.95, q_method = "linear", f = 1,
+  interval_type = c("Wald", "score", "betaWald", "probability",
+  "quantile"), ties = c("discrete", "rounded"), df = Inf,
+  .svy = current_svy(), ...)
 
 survey_median(x, na.rm = FALSE, vartype = NULL, level = 0.95,
   q_method = "linear", f = 1, interval_type = c("Wald", "score",
-  "betaWald", "probability", "quantile"), ties = c("discrete", "rounded"),
-  df = Inf, .svy = current_svy(), ...)
+  "betaWald", "probability", "quantile"), ties = c("discrete",
+  "rounded"), df = Inf, .svy = current_svy(), ...)
 }
 \arguments{
 \item{x}{A variable or expression}

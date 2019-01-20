@@ -1,3 +1,4 @@
+^CRAN-RELEASE$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
@@ -9,3 +10,4 @@
 ^_pkgdown\.yml$
 ^dev-misc$
 ^CODE_OF_CONDUCT\.md$
+^revdep$

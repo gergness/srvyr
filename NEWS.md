@@ -1,4 +1,4 @@
-# srvyr 0.3.3.9000
+# srvyr 0.3.4
 * survey_mean/survey_total allow `deff="replace"` like their survey package
   forbearers. (#46, thanks @mandes95)
   

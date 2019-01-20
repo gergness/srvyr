@@ -3,3 +3,4 @@
 .RData
 inst/doc
 /vignettes/ignore/my_db.sqlite3
+revdep

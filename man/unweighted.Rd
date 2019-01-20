@@ -20,6 +20,7 @@ a normal data.frame with \code{\link[dplyr]{summarise}}.
 }
 \examples{
 library(survey)
+library(dplyr)
 data(api)
 
 dstrata <- apistrat \%>\%

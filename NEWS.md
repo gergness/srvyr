@@ -1,6 +1,8 @@
 # srvyr 0.3.3.9000
 * survey_mean/survey_total allow `deff="replace"` like their survey package
   forbearers. (#46, thanks @mandes95)
+  
+* Fixes for new release of dplyr
 
 # srvyr 0.3.3
 * Add warning to explain that design effects cannot be calculated on

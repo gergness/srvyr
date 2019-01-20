@@ -1,6 +1,7 @@
 context("as_survey_twophase works as expected.")
 library(srvyr)
 library(survey)
+library(dplyr)
 source("utilities.R")
 
 # From survey::twophase examples

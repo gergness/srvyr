@@ -25,6 +25,7 @@
 #' # Examples from ?survey::twophase
 #' # two-phase simple random sampling.
 #' data(pbc, package="survival")
+#' library(dplyr)
 #'
 #' pbc <- pbc %>%
 #'   mutate(randomized = !is.na(trt) & trt > 0,

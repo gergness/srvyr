@@ -533,6 +533,7 @@ survey_median <- function(
 #' @param ... Ignored
 #' @examples
 #' library(survey)
+#' library(dplyr)
 #' data(api)
 #'
 #' dstrata <- apistrat %>%

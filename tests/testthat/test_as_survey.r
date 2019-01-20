@@ -1,4 +1,5 @@
 context("as_survey works.")
+library(dplyr)
 data <- data.frame(id1 = 1:2, id2 = 3:4, repwt1 = 1:0, repwt2 = 0:1,
                    wt = c(1 / 4, 3 / 4), x = 10:11)
 pps <- "brewer" # test that it sees things outside of data.frame

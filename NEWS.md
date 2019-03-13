@@ -1,4 +1,10 @@
-# srvyr 0.3.4.9000
+# srvyr 0.3.4.9001
+
+* New functions survey_var and survey_sd to calculate population variance and
+  standard deviaton.
+
+* Computation of standard errors in all survey_ functions can be suppressed
+  by setting vartype=NULL (#45).
 
 # srvyr 0.3.4
 * survey_mean/survey_total allow `deff="replace"` like their survey package

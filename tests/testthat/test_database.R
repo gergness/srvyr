@@ -8,8 +8,8 @@ suppressPackageStartupMessages({
 source("utilities.R")
 
 if (suppressPackageStartupMessages(require(dbplyr))) {
-  has_rsqlite <- suppressPackageStartupMessages(require(RSQLite))
-  has_monetdb <- suppressPackageStartupMessages(require(MonetDBLite))
+  has_rsqlite <- suppressWarnings(suppressPackageStartupMessages(require(RSQLite)))
+  has_monetdb <- suppressWarnings(suppressPackageStartupMessages(require(MonetDBLite)))
   data(api)
 
   dbs_to_run <- c("RSQLite", "MonetDBLite")
@@ -148,7 +148,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
 
 }
 
-db_avail <- (suppressPackageStartupMessages(require(RSQLite)))
+db_avail <- suppressWarnings(suppressPackageStartupMessages(require(RSQLite)))
 test_that("Can convert from survey DB-backed surveys to srvyr ones", {
   skip_if_not(db_avail)
   dbclus1<-svydesign(id=~dnum, weights=~pw, fpc=~fpc,

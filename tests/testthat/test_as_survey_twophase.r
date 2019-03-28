@@ -19,22 +19,37 @@ d2pbc_srvyr <- pbc %>%
 survey_results <- list(
   as.data.frame(svymean(~bili, d2pbc_survey)),
   as.data.frame(svytotal(~bili, d2pbc_survey)),
-  as.data.frame(svyquantile(~bili, d2pbc_survey, quantiles = 0.5)),
+  svyquantile(~bili, d2pbc_survey, quantiles = 0.5, ci = TRUE) %>%
+    {cbind(as.data.frame(.$quantile),
+           as.data.frame(SE(.)))},
+  as.data.frame(svyvar(~bili, d2pbc_survey)),
   data.frame(albumin = svyratio(~bili, ~albumin, d2pbc_survey)[[1]],
              se = sqrt(unname(svyratio(~bili, ~albumin, d2pbc_survey)[[2]])))
 ) %>% dplyr::bind_cols() %>%
-  setNames(c("mean", "mean_se", "total", "total_se", "median", "ratio",
-             "ratio_se")) %>%
+  setNames(c("mean", "mean_se", "total", "total_se", "median", "median_se",
+             "var", "var_se", "ratio", "ratio_se")) %>%
   dplyr::tbl_df()
 
 srvyr_results <- d2pbc_srvyr %>%
   summarize(mean = survey_mean(bili),
             total = survey_total(bili),
-            median = survey_median(bili, vartype = NULL),
+            median = survey_median(bili),
+            var = survey_var(bili),
             ratio = survey_ratio(bili, albumin))
 
-test_that("as_survey_twophase gets same mean / total / median / ratio in srvyr",
+test_that("as_survey_twophase gets same mean / total / median / var / ratio in srvyr",
           expect_df_equal(survey_results, srvyr_results))
+
+srvyr_results_vartypeNULL <- d2pbc_srvyr %>%
+  summarize(mean = survey_mean(bili, vartype = NULL),
+            total = survey_total(bili, vartype = NULL),
+            median = survey_median(bili, vartype = NULL),
+            var = survey_var(bili, vartype = NULL),
+            ratio = survey_ratio(bili, albumin, vartype = NULL))
+
+test_that("as_survey_twophase gets same mean / total / median / var / ratio in srvyr - with vartype = NULL",
+          expect_df_equal(select(survey_results, -ends_with("_se")),
+                                 srvyr_results_vartypeNULL))
 
 survey_results <- list(
   as.data.frame(svyby(~bili, ~sex, d2pbc_survey, svymean)),

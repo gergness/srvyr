@@ -5,8 +5,8 @@
 \alias{survey_sd}
 \title{Calculate the population variance and its variation using survey methods}
 \usage{
-survey_var(x, na.rm = FALSE, vartype = c("se", "var"),
-  .svy = current_svy(), ...)
+survey_var(x, na.rm = FALSE, vartype = c("se", "ci", "var"),
+  level = 0.95, df = Inf, .svy = current_svy(), ...)
 
 survey_sd(x, na.rm = FALSE, .svy = current_svy(), ...)
 }
@@ -19,6 +19,14 @@ survey_sd(x, na.rm = FALSE, .svy = current_svy(), ...)
 or variance ("var") (confidence intervals and coefficient
 of variation not available).}
 
+\item{level}{(For vartype = "ci" only) A single number or vector of numbers indicating
+the confidence level.}
+
+\item{df}{(For vartype = "ci" only) A numeric value indicating the degrees of freedom
+for t-distribution. The default (Inf) is equivalent to using normal
+distribution and in case of population variance statistics there is little
+reason to use any other values (see \emph{Details}).}
+
 \item{.svy}{A \code{tbl_svy} object. When called from inside a summarize function
 the default automatically sets the survey to the current survey.}
 
@@ -30,13 +38,25 @@ around \code{\link[survey]{svyvar}}. \code{survey_var} should always be
 called from \code{\link{summarise}}.
 }
 \details{
-Sampling distribution of the variance statistic is in general asymmetric and
-if analised variable isn't normally distributed or there is huge variation in
-sampling probabilities of the survey design (or both) need not approach
-normality reasonably fast (with growing number of survey design degrees of
-freedom). Because of that constructing confidence intervals for population
-variance is in general a complicated task and can't be done with the same
-methods srvyr package provides for other statistics.
+Be aware that confidence intervals for population variance statistic are
+computed by package \emph{survey} using \emph{t} or normal (with df=Inf)
+distribution (i.e. symmetric distributions). \strong{This could be a very poor
+approximation} if even one of these conditions is met:
+\itemize{
+  \item{there are few sampling design degrees of freedom,}
+  \item{analyzed variable isn't normally distributed,}
+  \item{there is huge variation in sampling probabilities of the survey design.}
+}
+Because of this be very careful using confidence intervals for population variance
+statistics especially while performing analysis within subsets of data or using
+grouped survey objects.
+
+Sampling distribution of the variance statistic in general is asymmetric
+(chi-squared in case of simple random sampling of normally distributed variable)
+and if analyzed variable isn't normally distributed or there is huge variation in
+sampling probabilities of the survey design (or both) it could converge to
+normality only very slowly (with growing number of survey design degrees of
+freedom).
 }
 \examples{
 library(survey)

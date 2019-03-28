@@ -87,7 +87,7 @@ survey_mean.tbl_svy <- function(
   if (missing(x)) stop("Variable should be provided as an argument to survey_mean() or grouped survey object should be used.")
   stop_for_factor(x)
   if (!proportion) {
-    if (class(x) == "logical") x <- as.integer(x)
+    if (is.logical(x)) x <- as.integer(x)
     .svy <- set_survey_vars(.svy, x)
     stat <- survey::svymean(~`__SRVYR_TEMP_VAR__`, .svy, na.rm = na.rm, deff = deff)
     out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
@@ -124,7 +124,7 @@ survey_mean.grouped_svy <- function(
     survey_stat_factor(.svy, survey::svymean, na.rm, vartype, level, deff, df)
   } else {
     stop_for_factor(x)
-    if (class(x) == "logical") x <- as.integer(x)
+    if (is.logical(x)) x <- as.integer(x)
     .svy <- set_survey_vars(.svy, x)
     grps_formula <- survey::make.formula(group_vars(.svy))
 
@@ -226,7 +226,7 @@ survey_total.tbl_svy <- function(
 
   if (missing(x)) stop("Variable should be provided as an argument to survey_total() or grouped survey object should be used.")
   stop_for_factor(x)
-  if (class(x) == "logical") x <- as.integer(x)
+  if (is.logical(x)) x <- as.integer(x)
 
   .svy <- set_survey_vars(.svy, x)
   stat <- survey::svytotal(~`__SRVYR_TEMP_VAR__`, .svy, na.rm = na.rm, deff = deff)
@@ -249,7 +249,7 @@ survey_total.grouped_svy <- function(
     survey_stat_factor(.svy, survey::svytotal, na.rm, vartype, level, deff, df)
   } else {
     stop_for_factor(x)
-    if (class(x) == "logical") x <- as.integer(x)
+    if (is.logical(x)) x <- as.integer(x)
     .svy <- set_survey_vars(.svy, x)
     grps_formula <- survey::make.formula(group_vars(.svy))
 
@@ -331,6 +331,8 @@ survey_ratio.tbl_svy <- function(
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
   if (is.null(df)) df <- survey::degf(.svy)
+  stop_for_factor(numerator)
+  stop_for_factor(denominator)
 
   .svy <- set_survey_vars(.svy, numerator, "__SRVYR_TEMP_NUM__")
   .svy <- set_survey_vars(.svy, denominator, "__SRVYR_TEMP_DEN__", add = TRUE)
@@ -353,6 +355,8 @@ survey_ratio.grouped_svy <- function(
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
   if (is.null(df)) df <- survey::degf(.svy)
+  stop_for_factor(numerator)
+  stop_for_factor(denominator)
 
   grp_names <- group_vars(.svy)
 
@@ -445,6 +449,7 @@ survey_quantile.tbl_svy <- function(
   alpha = round(1 - level, 7)
 
   if (missing(x)) stop("Variable should be provided as an argument to survey_quantile().")
+  stop_for_factor(x)
   .svy <- set_survey_vars(.svy, x)
 
   stat <- survey::svyquantile(
@@ -486,6 +491,7 @@ survey_quantile.grouped_svy <- function(
 
   grp_names <- group_vars(.svy)
   if (missing(x)) stop("survey_quantile() can't be used with regards to the grouping variable.")
+  stop_for_factor(x)
   .svy <- set_survey_vars(.svy, x)
 
   stat <- survey::svyby(
@@ -529,10 +535,6 @@ survey_median <- function(
   )
   names(out) = sub("^_q50", "", names(out))
   out
-  # survey_quantile(
-  #   x, quantiles = 0.5, na.rm = na.rm, vartype = vartype, level = level, q_method = q_method,
-  #   f = f, interval_type = interval_type, ties = ties, df = df, .svy = .svy
-  # )
 }
 
 #' Calculate the population variance and its variation using survey methods
@@ -546,17 +548,35 @@ survey_median <- function(
 #' @param vartype Report variability as one or more of: standard error ("se", default)
 #'                or variance ("var") (confidence intervals and coefficient
 #'                of variation not available).
+#' @param level (For vartype = "ci" only) A single number or vector of numbers indicating
+#'              the confidence level.
+#' @param df (For vartype = "ci" only) A numeric value indicating the degrees of freedom
+#'           for t-distribution. The default (Inf) is equivalent to using normal
+#'           distribution and in case of population variance statistics there is little
+#'           reason to use any other values (see \emph{Details}).
 #' @param .svy A \code{tbl_svy} object. When called from inside a summarize function
 #'             the default automatically sets the survey to the current survey.
 #' @param ... Ignored
 #' @details
-#' Sampling distribution of the variance statistic in general is asymmetric and
-#' if analised variable isn't normally distributed or there is huge variation in
+#' Be aware that confidence intervals for population variance statistic are
+#' computed by package \emph{survey} using \emph{t} or normal (with df=Inf)
+#' distribution (i.e. symmetric distributions). \strong{This could be a very poor
+#' approximation} if even one of these conditions is met:
+#' \itemize{
+#'   \item{there are few sampling design degrees of freedom,}
+#'   \item{analyzed variable isn't normally distributed,}
+#'   \item{there is huge variation in sampling probabilities of the survey design.}
+#' }
+#' Because of this be very careful using confidence intervals for population variance
+#' statistics especially while performing analysis within subsets of data or using
+#' grouped survey objects.
+#'
+#' Sampling distribution of the variance statistic in general is asymmetric
+#' (chi-squared in case of simple random sampling of normally distributed variable)
+#' and if analyzed variable isn't normally distributed or there is huge variation in
 #' sampling probabilities of the survey design (or both) it could converge to
 #' normality only very slowly (with growing number of survey design degrees of
-#' freedom). Because of that constructing confidence intervals for population
-#' variance is in general a complicated task and can't be done with the same
-#' methods srvyr package provides for other statistics.
+#' freedom).
 #' @examples
 #' library(survey)
 #' data(api)
@@ -581,41 +601,42 @@ survey_median <- function(
 #' @export
 
 survey_var <- function(
-  x, na.rm = FALSE, vartype = c("se", "var"), .svy = current_svy(), ...
+  x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95, df = Inf,
+  .svy = current_svy(), ...
 ) {
   UseMethod("survey_var", .svy)
 }
 
 #' @export
 survey_var.tbl_svy <- function(
-  x, na.rm = FALSE, vartype = c("se", "var"), .svy = current_svy(), ...
+  x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95, df = Inf,
+  .svy = current_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
-  df <- Inf
   if (missing(x)) stop("Variable should be provided as an argument to survey_var().")
   stop_for_factor(x)
-  if (class(x) == "logical") x <- as.integer(x)
+  if (is.logical(x)) x <- as.integer(x)
 
   .svy <- set_survey_vars(.svy, x)
   stat <- survey::svyvar(~`__SRVYR_TEMP_VAR__`, .svy, na.rm = na.rm)
 
-  out <- get_var_est(stat, vartype, level = NULL, df = df, deff = FALSE)
+  out <- get_var_est(stat, vartype, level = level, df = df, deff = FALSE)
   out
 }
 
 #' @export
 survey_var.grouped_svy <- function(
-  x, na.rm = FALSE, vartype = c("se", "var"), .svy = current_svy(), ...
+  x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95, df = Inf,
+  .svy = current_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
-  df <- Inf
   if (missing(x)) stop("survey_var() can't be used with regards to the grouping variable.")
   stop_for_factor(x)
-  if (class(x) == "logical") x <- as.integer(x)
+  if (is.logical(x)) x <- as.integer(x)
   .svy <- set_survey_vars(.svy, x)
   grps_formula <- survey::make.formula(group_vars(.svy))
 
@@ -626,7 +647,7 @@ survey_var.grouped_svy <- function(
     na.rm = na.rm
   )
   out <- get_var_est(
-    stat, vartype, grps = group_vars(.svy), level = NULL, df = df, deff = FALSE
+    stat, vartype, grps = group_vars(.svy), level = level, df = df, deff = FALSE
   )
   out
 }
@@ -636,11 +657,14 @@ survey_var.grouped_svy <- function(
 survey_sd <- function(
   x, na.rm = FALSE, .svy = current_svy(), ...
 ) {
-  survey_var(
-     x, na.rm = na.rm, vartype = NULL, .svy = .svy
-  ) %>% mutate(
+  out <- survey_var(
+    x, na.rm = na.rm, vartype = NULL, .svy = .svy
+  )
+  out <- mutate(
+    out,
     `__SRVYR_COEF__` = sqrt(.data$`__SRVYR_COEF__`)
   )
+  out
 }
 
 #' Calculate the an unweighted summary statistic from a survey

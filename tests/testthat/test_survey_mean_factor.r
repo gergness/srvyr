@@ -92,7 +92,7 @@ test_that("survey_* preserves character when calculating a statistic (multi grps
 # confidence intervals
 out_survey_mn <- svymean(~awards, dstrata)
 out_survey_tot <- svytotal(~awards, dstrata)
-out_survey <- dplyr::data_frame(
+out_survey <- tibble::tibble(
   awards = factor(c("No", "Yes")),
   pct = as.numeric(out_survey_mn),
   pct_low = as.numeric(confint(out_survey_mn, df = degf(dstrata))[, 1]),

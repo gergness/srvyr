@@ -18,7 +18,7 @@ summarise.tbl_svy <- function(.data, ...) {
   })
 
   out <- dplyr::bind_cols(out)
-  dplyr::tbl_df(out)
+  tibble::as_tibble(out)
 }
 
 #' @export
@@ -55,7 +55,7 @@ summarise.grouped_svy <- function(.data, ...) {
   })
 
   out <- dplyr::bind_cols(out)
-  dplyr::tbl_df(out)
+  tibble::as_tibble(out)
 }
 
 #' @export

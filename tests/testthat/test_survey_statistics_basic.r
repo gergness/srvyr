@@ -57,7 +57,7 @@ test_that("df works for ungrouped survey total",
 temp_survey <- svyby(~api99, ~stype, dstrata, svymean, deff = TRUE, vartype = c("se", "ci"))
 out_survey <- temp_survey %>%
   data.frame() %>%
-  dplyr::tbl_df() %>%
+  tibble::as_tibble() %>%
   rename(survey_mean = api99, survey_mean_se = se, survey_mean_low = ci_l,
          survey_mean_upp = ci_u, survey_mean_deff = `DEff.api99`)
 
@@ -122,7 +122,7 @@ test_that("survey_total works for ungrouped surveys - with vartype = NULL",
 temp_survey <- svyby(~api99, ~stype, dstrata, svytotal, deff = TRUE, vartype = c("se", "ci"))
 out_survey <- temp_survey %>%
   data.frame() %>%
-  dplyr::tbl_df() %>%
+  tibble::as_tibble() %>%
   rename(survey_total = api99, survey_total_se = se,
          survey_total_low = ci_l, survey_total_upp = ci_u,
          survey_total_deff = `DEff.api99`)

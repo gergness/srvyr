@@ -28,7 +28,7 @@ survey_results <- list(
 ) %>% dplyr::bind_cols() %>%
   setNames(c("mean", "mean_se", "total", "total_se", "median", "median_se",
              "var", "var_se", "ratio", "ratio_se")) %>%
-  dplyr::tbl_df()
+  tibble::as_tibble()
 
 srvyr_results <- d2pbc_srvyr %>%
   summarize(mean = survey_mean(bili),
@@ -60,7 +60,7 @@ survey_results <- list(
   setNames(c("sex", "mean", "mean_se", "sex2", "total", "total_se",
              "sex3", "median", "median_se")) %>%
   select(-sex2, -sex3) %>%
-  dplyr::tbl_df()
+  tibble::as_tibble()
 
 attr(survey_results, "svyby") <- NULL
 attr(survey_results, "call") <- NULL

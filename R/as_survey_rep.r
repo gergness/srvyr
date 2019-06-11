@@ -167,7 +167,7 @@ as_survey_rep.survey.design2 <-
                             compress = compress, mse = mse)
 
     class(.data) <- c("tbl_svy", class(.data))
-    .data$variables <- dplyr::tbl_df(.data$variables)
+    .data$variables <- tibble::as_tibble(.data$variables)
 
     as_tbl_svy(.data)
   }

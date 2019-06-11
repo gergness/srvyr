@@ -5,7 +5,7 @@ df <- data.frame(id = 1:5, strata = c(2, 2, 3, 3, 3), x = 11:15)
            expect_equal(df %>%
                           as_survey_design(ids = id, strata = strata),
                         df %>%
-                          dplyr::tbl_df() %>%
+                          tibble::as_tibble() %>%
                           as_survey_design(ids = id, strata = strata)))
 
 

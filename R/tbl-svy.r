@@ -100,17 +100,17 @@ as_tbl_svy <- function(x, var_names = list()) {
     # Convert to tbls if not already (expect them to be one of data.frame or tbl_df)
     # data.frames will be converted, others should inherit "tbl".
     if (!inherits(x$phase1$full$variables, "tbl")) {
-      x$phase1$full$variables <- dplyr::tbl_df(x$phase1$full$variables)
+      x$phase1$full$variables <- tibble::as_tibble(x$phase1$full$variables)
     }
     if (!inherits(x$phase1$sample$variables, "tbl")) {
-      x$phase1$sample$variables <- dplyr::tbl_df(x$phase1$sample$variables)
+      x$phase1$sample$variables <- tibble::as_tibble(x$phase1$sample$variables)
     }
 
     # To make twophase behave similarly to the other survey objects, add sample
     # variables from phase1 to the first level of the object.
     x$variables <- x$phase1$sample$variables
   } else if (!inherits(x$variables, "tbl")) {
-      x$variables <- dplyr::tbl_df(x$variables)
+      x$variables <- tibble::as_tibble(x$variables)
   }
 
   survey_vars(x) <- strip_varlist_formula(var_names)

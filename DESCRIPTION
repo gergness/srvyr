@@ -18,7 +18,8 @@ Imports:
     magrittr,
     rlang,
     survey,
-    tibble
+    tibble,
+    tidyselect
 License: GPL-2 | GPL-3
 LazyData: TRUE
 Suggests:

@@ -598,3 +598,33 @@ test_that("some other errors and warnings",
                          fixed = TRUE)
           }
 )
+
+
+test_that(
+  "summarize behaves well with differently sized groups (#49)",
+  {
+    data(api)
+    dclus1 <- as_survey(apiclus1, id = dnum, weights = pw, fpc = fpc)
+
+    results <- dclus1 %>%
+      mutate(yr.rnd = factor(yr.rnd, levels = c("No", "Yes", "Maybe"))) %>%
+      group_by(yr.rnd, .drop = TRUE) %>%
+      summarize(
+        n = survey_total(),
+        ratio = survey_ratio(api00, api99)
+      )
+
+    expect_equal(as.character(results$yr.rnd), c("No", "Yes"))
+
+    results <- dclus1 %>%
+      mutate(yr.rnd = factor(yr.rnd, levels = c("No", "Yes", "Maybe"))) %>%
+      group_by(yr.rnd, .drop = FALSE) %>%
+      summarize(
+        n = survey_total(),
+        ratio = survey_ratio(api00, api99)
+      )
+
+    expect_equal(as.character(results$yr.rnd), c("No", "Yes", "Maybe"))
+
+  }
+)

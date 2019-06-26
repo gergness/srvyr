@@ -12,6 +12,9 @@
   
 * Removed references to MonetDBLite since it has been removed from CRAN.
 
+* Small updates to replace soft-deprecated dplyr functions with their tibble
+  and tidyselect equivalents.
+
 # srvyr 0.3.4
 * survey_mean/survey_total allow `deff="replace"` like their survey package
   forbearers. (#46, thanks @mandes95)

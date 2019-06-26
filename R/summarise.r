@@ -38,9 +38,8 @@ summarise.grouped_svy <- function(.data, ...) {
   on.exit(set_current_svy(old), add = TRUE)
 
   groups <- group_vars(.data)
-
   # use the argument names to name the output
-  out <- lapply(seq_along(.dots), function(x) {
+  calculations <- lapply(seq_along(.dots), function(x) {
     out <- rlang::eval_tidy(.dots[[x]], .data$variables)
     unchanged_names <- groups
     changed_names <- setdiff(names(out), groups)
@@ -49,13 +48,18 @@ summarise.grouped_svy <- function(.data, ...) {
     results <- stats::setNames(out, c(unchanged_names, paste0(names(.dots)[x], changed_names)))
     results <- dplyr::arrange(results, !!!rlang::syms(unchanged_names))
 
-    # Only keep stratifying vars in first calculation so they're not repeated
-    if (x > 1) results <- results[, !(names(results) %in% groups), drop = FALSE]
     results
   })
 
-  out <- dplyr::bind_cols(out)
-  tibble::as_tibble(out)
+  # Create a skeleton of a summary using dplyr:::summarize.tbl_df
+  # So that we handle the .drop cases. See https://github.com/gergness/srvyr/issues/49
+  out <- dplyr::summarize((.data$variables), `___SRVYR_DROP___` = 1)
+  out[["___SRVYR_DROP___"]] <- NULL
+  for (ccc in calculations) {
+    out <- dplyr::left_join(out, ccc, by = groups)
+  }
+
+  dplyr::tbl_df(out)
 }
 
 #' @export

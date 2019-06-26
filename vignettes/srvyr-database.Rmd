@@ -10,8 +10,8 @@ vignette: >
 ---
 
 ```{r, echo = FALSE}
-if (!require(MonetDBLite)) {
-  message("Could not find MonetDBLite so could not run vignette.")
+if (!require(RSQLite)) {
+  message("Could not find RSQLite so could not run vignette.")
   knitr::opts_chunk$set(eval = FALSE)
 }
 
@@ -26,8 +26,8 @@ dplyr's `tbl_lazy` objects is now just as easy as working with data stored in re
 data.frames as you don't need to have a unique identifier. Additionally, it now works more
 similarly to the survey package's database code and so shouldn't be any slower.
 
-During development, I have tested using SQLite and MonetDBLite database, but in theory 
-other database backends should work as well.
+During development, I have tested using SQLite (and the now defunct MonetDBLite) 
+databases, but in theory other database backends should work as well.
 
 This vignette shows the basics of how to use srvyr with databases. 
 It is based on analysis from the wonderful resource asdfree 
@@ -50,12 +50,11 @@ again it could easily be adapted to keep all of the variables.
 
 
 For more information on the specifics of the American Community Survey, see 
-the asdfree site. Now, our code loads this prepared dataset, initiates a MonetDB database, and 
+the asdfree site. Now, our code loads this prepared dataset, initiates a SQLite database, and 
 puts the data into the dataset.
 
 ```{r}
 suppressMessages({
-  library(MonetDBLite)
   library(survey)
   library(srvyr)
   library(dplyr)
@@ -70,11 +69,8 @@ suppressMessages({
 load("acs_m.Rdata") # acs_m data
 
 # Set up database and table
-db <- src_monetdblite()
+db <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
 acs_m_db <- copy_to(db, acs_m, "acs_m", temporary = FALSE)
-
-# Make table read only to reflect real world usage (see advanced topics below).
-db_status <- dbSendQuery(acs_m_db$src$con, "ALTER TABLE acs_m SET READ ONLY")
 
 # Or, if the data was already stored in the database, you could do this
 # acs_m_data <- tbl(db, sql("SELECT * FROM acs_m")) 
@@ -104,7 +100,7 @@ object.size(acs_m_db)
 Note that though many commands behave exactly the same whether on a local data.frame or
 database, sometimes more advanced / complicated syntax around variable modification allowed 
 in dplyr does not work on a particular database and so it is better to be more explicit. For
-example, creating a variable inside of a summarize call does not work (at least with MonetDB).
+example, creating a variable inside of a summarize call does not work in some databases.
 .
 
 ```{r}
@@ -112,6 +108,7 @@ acs_m %>%
   group_by(sex) %>%
   summarize(hicov = mean(hicov == 1))
 
+# Works in RSQlite, but didn't in the now defunct MonetDB
 # acs_m_db %>% 
 #   group_by(sex) %>%
 #   summarize(hicov = mean(hicov == 1))
@@ -129,7 +126,7 @@ acs_m_db %>%
 
 Further, sometimes working with variable types can get difficult if you are used to working in
 R. Notice how in the above, instead of `hicov = (hicov == 1)`, I wrote out the ifelse statement. 
-If I hadn't MonetDB would be unable to calculate the mean of the boolean variable created.
+If I hadn't RSQLite would be unable to calculate the mean of the boolean variable created.
 
 Finally, a major difference when transitioning from dplyr on local data.frames is that not 
 all R functions are translated to SQL. For example, `cut()` isn't implemented in SQL, 
@@ -160,7 +157,7 @@ acs_m_db %>%
 
 For more information on the specifics of databases
 with dplyr, see `vignette("database", package = "dplyr")`, the `DBI` package or the 
-specific database packages, like `MonetDBLite` or `RSQLite`.
+specific database packages, like `RSQLite`.
 
 ## Srvyr Setup ##
 Srvyr commands are nearly identical to old. The only difference for setup is that you 

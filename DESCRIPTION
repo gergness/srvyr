@@ -32,7 +32,6 @@ Suggests:
     rmarkdown,
     pander,
     RSQLite,
-    MonetDBLite,
     survival,
     testthat,
     vardpoor

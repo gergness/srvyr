@@ -17,7 +17,7 @@ survey_chisq <- suppressWarnings(svychisq(~sch.wide + stype, dclus1_survey)[["p.
 
 ## survey with a tibble
 dclus1_survey_tibble <- svydesign(id = ~dnum, weights = ~pw, fpc = ~fpc,
-                                  data = dplyr::as_data_frame(apiclus1))
+                                  data = tibble::as_tibble(apiclus1))
 srvyr_chisq <- suppressWarnings(svychisq(~sch.wide + stype, dclus1_srvyr)[["p.value"]])
 
 

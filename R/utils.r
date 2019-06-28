@@ -21,7 +21,7 @@ NULL
 # the logic is a little complicated:
 # 1) If `vars` evaluates to a single column name, it will use the column
 # 2) If it is not a column name and it evaluates to 0 or 1 then return ~0/~1
-# 3) If it is anything else, use dplyr::select_vars to find columns
+# 3) If it is anything else, use tidyselect::vars_select to find columns
 srvyr_select_vars <- function(vars, data, check_ids = FALSE) {
   vars <- vars
   var_names <- dplyr::tbl_vars(data)
@@ -33,7 +33,7 @@ srvyr_select_vars <- function(vars, data, check_ids = FALSE) {
   }
   if (is.null(rlang::f_rhs(vars))) return(NULL)
 
-  out_vars <- dplyr::select_vars(var_names, !!vars)
+  out_vars <- tidyselect::vars_select(var_names, !!vars)
   survey::make.formula(out_vars)
 }
 

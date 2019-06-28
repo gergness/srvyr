@@ -8,7 +8,8 @@ Version: 0.3.4.9002
 Date: 2019-01-19
 Authors@R: c(person("Greg", "Freedman Ellis", email = "greg.freedman@gmail.com", role = c("aut", "cre")),
   person("Thomas", "Lumley", role = "ctb"),
-  person("Tomasz", "\u017b\u00F3\u0142tak", role = "ctb"))
+  person("Tomasz", "\u017b\u00F3\u0142tak", role = "ctb"),
+  person("Ben", "Schneider", role = "ctb"))
 URL: http://gdfe.co/srvyr, https://github.com/gergness/srvyr
 BugReports: https://github.com/gergness/srvyr/issues
 Depends:
@@ -18,7 +19,8 @@ Imports:
     magrittr,
     rlang,
     survey,
-    tibble
+    tibble,
+    tidyselect
 License: GPL-2 | GPL-3
 LazyData: TRUE
 Suggests:

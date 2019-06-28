@@ -251,7 +251,7 @@ temp_survey <- svyby(~api99, ~stype, dstrata, svyratio, deff = TRUE,
                      vartype = c("se", "ci"), denominator = ~api00)
 out_survey <- temp_survey %>%
   data.frame() %>%
-  dplyr::tbl_df() %>%
+  tibble::as_tibble() %>%
   rename(survey_ratio = api99.api00, survey_ratio_low = ci_l,
          survey_ratio_upp = ci_u, survey_ratio_deff = `DEff`) %>%
   select(-se.api99.api00)
@@ -282,7 +282,7 @@ temp_survey <- suppressWarnings(
 
 out_survey <- temp_survey %>%
   data.frame() %>%
-  dplyr::tbl_df() %>%
+  tibble::as_tibble() %>%
   rename(survey = api99, survey_low = ci_l, survey_upp = ci_u) %>%
   select(-se)
 

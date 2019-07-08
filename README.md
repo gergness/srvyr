@@ -3,7 +3,7 @@
 
 # srvyr <img src="tools/logo.png" align="right" height="149" width="149"/>
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/srvyr)](https://CRAN.R-project.org/package)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/srvyr)](https://CRAN.R-project.org/package=srvyr)
 [![Travis-CI Build
 Status](https://travis-ci.org/gergness/srvyr.svg?branch=master)](https://travis-ci.org/gergness/srvyr)
 [![AppVeyor Build

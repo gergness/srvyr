@@ -1,3 +1,5 @@
+# srvyr (development version)
+
 # srvyr 0.3.5
 * New functions survey_var and survey_sd to calculate population variance and
   standard deviaton.

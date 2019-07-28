@@ -33,7 +33,7 @@
       <span class="navbar-brand">
 <img src="tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
       </span>
     </div>
 
@@ -104,71 +104,71 @@
 <p>srvyr brings parts of <a href="https://github.com/hadley/dplyr/">dplyr’s</a> syntax to survey analysis, using the <a href="https://CRAN.R-project.org/package=survey">survey</a> package.</p>
 <p>srvyr focuses on calculating summary statistics from survey data, such as the mean, total or quantile. It allows for the use of many dplyr verbs, such as <code>summarize</code>, <code>group_by</code>, and <code>mutate</code>, the convenience of pipe-able functions, rlang’s style of non-standard evaluation and more consistent return types than the survey package.</p>
 <p>You can try it out:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"srvyr"</span>)
-<span class="co"># or for development version</span>
-<span class="co"># devtools::install_github("gergness/srvyr")</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"srvyr"</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co"># or for development version</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co"># devtools::install_github("gergness/srvyr")</span></a></code></pre></div>
 <div id="example-usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example-usage" class="anchor"></a>Example usage</h2>
 <p>First, describe the variables that define the survey’s stucture with the function <code><a href="reference/as_survey.html">as_survey()</a></code>with the bare column names of the names that you would use in functions from the survey package like <code><a href="https://www.rdocumentation.org/packages/survey/topics/svydesign">survey::svydesign()</a></code>, <code><a href="https://www.rdocumentation.org/packages/survey/topics/svrepdesign">survey::svrepdesign()</a></code> or <code><a href="https://www.rdocumentation.org/packages/survey/topics/twophase">survey::twophase()</a></code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(srvyr, <span class="dt">warn.conflicts =</span> <span class="ot">FALSE</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(api, <span class="dt">package =</span> <span class="st">"survey"</span>)
-
-dstrata &lt;-<span class="st"> </span>apistrat <span class="op">%&gt;%</span>
-<span class="st">   </span><span class="kw"><a href="reference/as_survey_design.html">as_survey_design</a></span>(<span class="dt">strata =</span> stype, <span class="dt">weights =</span> pw)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(srvyr, <span class="dt">warn.conflicts =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(api, <span class="dt">package =</span> <span class="st">"survey"</span>)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">dstrata &lt;-<span class="st"> </span>apistrat <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="st">   </span><span class="kw"><a href="reference/as_survey_design.html">as_survey_design</a></span>(<span class="dt">strata =</span> stype, <span class="dt">weights =</span> pw)</a></code></pre></div>
 <p>Now many of the dplyr verbs are available.</p>
 <ul>
 <li>
 <code><a href="reference/dplyr_single.html">mutate()</a></code> adds or modifies a variable.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dstrata &lt;-<span class="st"> </span>dstrata <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="reference/dplyr_single.html">mutate</a></span>(<span class="dt">api_diff =</span> api00 <span class="op">-</span><span class="st"> </span>api99)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">dstrata &lt;-<span class="st"> </span>dstrata <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/dplyr_single.html">mutate</a></span>(<span class="dt">api_diff =</span> api00 <span class="op">-</span><span class="st"> </span>api99)</a></code></pre></div>
 <ul>
 <li>
 <code><a href="reference/summarise.html">summarise()</a></code> calculates summary statistics such as mean, total, quantile or ratio.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dstrata <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="reference/summarise.html">summarise</a></span>(<span class="dt">api_diff =</span> <span class="kw"><a href="reference/survey_mean.html">survey_mean</a></span>(api_diff, <span class="dt">vartype =</span> <span class="st">"ci"</span>))
-<span class="co">#&gt; # A tibble: 1 x 3</span>
-<span class="co">#&gt;   api_diff api_diff_low api_diff_upp</span>
-<span class="co">#&gt;      &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;</span>
-<span class="co">#&gt; 1     32.9         28.8         37.0</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">dstrata <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/summarise.html">summarise</a></span>(<span class="dt">api_diff =</span> <span class="kw"><a href="reference/survey_mean.html">survey_mean</a></span>(api_diff, <span class="dt">vartype =</span> <span class="st">"ci"</span>))</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; # A tibble: 1 x 3</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt;   api_diff api_diff_low api_diff_upp</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt;      &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt; 1     32.9         28.8         37.0</span></a></code></pre></div>
 <ul>
 <li>
 <code><a href="reference/group_by.html">group_by()</a></code> and then <code><a href="reference/summarise.html">summarise()</a></code> creates summaries by groups.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dstrata <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="reference/group_by.html">group_by</a></span>(stype) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="reference/summarise.html">summarise</a></span>(<span class="dt">api_diff =</span> <span class="kw"><a href="reference/survey_mean.html">survey_mean</a></span>(api_diff, <span class="dt">vartype =</span> <span class="st">"ci"</span>))
-<span class="co">#&gt; # A tibble: 3 x 4</span>
-<span class="co">#&gt;   stype api_diff api_diff_low api_diff_upp</span>
-<span class="co">#&gt;   &lt;fct&gt;    &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 E        38.6         33.1          44.0</span>
-<span class="co">#&gt; 2 H         8.46         1.74         15.2</span>
-<span class="co">#&gt; 3 M        26.4         20.4          32.4</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">dstrata <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/group_by.html">group_by</a></span>(stype) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/summarise.html">summarise</a></span>(<span class="dt">api_diff =</span> <span class="kw"><a href="reference/survey_mean.html">survey_mean</a></span>(api_diff, <span class="dt">vartype =</span> <span class="st">"ci"</span>))</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; # A tibble: 3 x 4</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt;   stype api_diff api_diff_low api_diff_upp</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt;   &lt;fct&gt;    &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co">#&gt; 1 E        38.6         33.1          44.0</span></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; 2 H         8.46         1.74         15.2</span></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; 3 M        26.4         20.4          32.4</span></a></code></pre></div>
 <ul>
 <li>Functions from the survey package are still available:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_model &lt;-<span class="st"> </span>survey<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/survey/topics/svyglm">svyglm</a></span>(api99 <span class="op">~</span><span class="st"> </span>stype, dstrata)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(my_model)
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; svyglm(formula = api99 ~ stype, dstrata)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Survey design:</span>
-<span class="co">#&gt; Called via srvyr</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    </span>
-<span class="co">#&gt; (Intercept)   635.87      13.34  47.669   &lt;2e-16 ***</span>
-<span class="co">#&gt; stypeH        -18.51      20.68  -0.895    0.372    </span>
-<span class="co">#&gt; stypeM        -25.67      21.42  -1.198    0.232    </span>
-<span class="co">#&gt; ---</span>
-<span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; (Dispersion parameter for gaussian family taken to be 16409.56)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Number of Fisher Scoring iterations: 2</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">my_model &lt;-<span class="st"> </span>survey<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/survey/topics/svyglm">svyglm</a></span>(api99 <span class="op">~</span><span class="st"> </span>stype, dstrata)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(my_model)</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt; Call:</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#&gt; svyglm(formula = api99 ~ stype, design = dstrata)</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt; Survey design:</span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt; Called via srvyr</span></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-10" data-line-number="10"><span class="co">#&gt; Coefficients:</span></a>
+<a class="sourceLine" id="cb6-11" data-line-number="11"><span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    </span></a>
+<a class="sourceLine" id="cb6-12" data-line-number="12"><span class="co">#&gt; (Intercept)   635.87      13.34  47.669   &lt;2e-16 ***</span></a>
+<a class="sourceLine" id="cb6-13" data-line-number="13"><span class="co">#&gt; stypeH        -18.51      20.68  -0.895    0.372    </span></a>
+<a class="sourceLine" id="cb6-14" data-line-number="14"><span class="co">#&gt; stypeM        -25.67      21.42  -1.198    0.232    </span></a>
+<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="co">#&gt; ---</span></a>
+<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></a>
+<a class="sourceLine" id="cb6-17" data-line-number="17"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-18" data-line-number="18"><span class="co">#&gt; (Dispersion parameter for gaussian family taken to be 16409.56)</span></a>
+<a class="sourceLine" id="cb6-19" data-line-number="19"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-20" data-line-number="20"><span class="co">#&gt; Number of Fisher Scoring iterations: 2</span></a></code></pre></div>
 </div>
 <div id="what-people-are-saying-about-srvyr" class="section level2">
 <h2 class="hasAnchor">
@@ -187,7 +187,7 @@ dstrata &lt;-<span class="st"> </span>apistrat <span class="op">%&gt;%</span>
 <div id="contributing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#contributing" class="anchor"></a>Contributing</h2>
-<p>I do appreciate bug reports, suggestions and pull requests! I started this as a way to learn about R package development, and am still learning, so you’ll have to bear with me. Please review the <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>, as all participants are required to abide by its terms.</p>
+<p>I do appreciate bug reports, suggestions and pull requests! I started this as a way to learn about R package development, and am still learning, so you’ll have to bear with me. Please review the <a href="https://github.com/gergness/srvyr/blob/master/CODE_OF_CONDUCT.md">Contributor Code of Conduct</a>, as all participants are required to abide by its terms.</p>
 <p>If you’re unfamiliar with contributing to an R package, I recommend the guides provided by Rstudio’s tidyverse team, such as Jim Hester’s <a href="https://www.tidyverse.org/articles/2017/08/contributing/">blog post</a> or Hadley Wickham’s <a href="http://r-pkgs.had.co.nz">R packages book</a>.</p>
 </div>
 </div>
@@ -224,7 +224,7 @@ dstrata &lt;-<span class="st"> </span>apistrat <span class="op">%&gt;%</span>
       <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="http://cran.r-project.org/web/packages/srvyr"><img src="http://www.r-pkg.org/badges/version/srvyr" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://CRAN.R-project.org/package=srvyr"><img src="http://www.r-pkg.org/badges/version/srvyr" alt="CRAN_Status_Badge"></a></li>
 <li><a href="https://travis-ci.org/gergness/srvyr"><img src="https://travis-ci.org/gergness/srvyr.svg?branch=master" alt="Travis-CI Build Status"></a></li>
 <li><a href="https://ci.appveyor.com/project/gergness/srvyr"><img src="https://ci.appveyor.com/api/projects/status/github/gergness/srvyr?branch=master&amp;svg=true" alt="AppVeyor Build Status"></a></li>
 <li><a href="https://codecov.io/github/gergness/srvyr?branch=master"><img src="https://codecov.io/gh/gergness/srvyr/master.svg" alt="Coverage Status"></a></li>

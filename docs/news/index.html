@@ -61,7 +61,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
       </span>
     </div>
 
@@ -125,9 +125,21 @@
       <small>Source: <a href='https://github.com/gergness/srvyr/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="srvyr-0-3-5" class="section level1">
+<h1 class="page-header">
+<a href="#srvyr-0-3-5" class="anchor"></a>srvyr 0.3.5<small> 2019-07-09 </small>
+</h1>
+<ul>
+<li><p>New functions survey_var and survey_sd to calculate population variance and standard deviaton.</p></li>
+<li><p>Computation of standard errors in all survey_ functions can be suppressed by setting vartype=NULL (<a href='https://github.com/gergness/srvyr/issues/45'>#45</a>, thanks <a href='https://github.com/tzoltak'>@tzoltak</a>).</p></li>
+<li><p>Fixed an issue where you’d get an error when summarize components returned different lengths of data - usually when factor levels were not present in the data (<a href='https://github.com/gergness/srvyr/issues/49'>#49</a>).</p></li>
+<li><p>Removed references to MonetDBLite since it has been removed from CRAN.</p></li>
+<li><p>Small updates to replace soft-deprecated dplyr functions with their tibble and tidyselect equivalents (<a href='https://github.com/gergness/srvyr/issues/52'>#52</a>, thanks <a href='https://github.com/bschneidr'>@bschneidr</a>).</p></li>
+</ul>
+</div>
     <div id="srvyr-0-3-4" class="section level1">
 <h1 class="page-header">
-<a href="#srvyr-0-3-4" class="anchor"></a>srvyr 0.3.4<small> Unreleased </small>
+<a href="#srvyr-0-3-4" class="anchor"></a>srvyr 0.3.4<small> 2019-01-20 </small>
 </h1>
 <ul>
 <li><p>survey_mean/survey_total allow <code>deff="replace"</code> like their survey package forbearers. (<a href='https://github.com/gergness/srvyr/issues/46'>#46</a>, thanks <a href='https://github.com/mandes95'>@mandes95</a>)</p></li>
@@ -221,6 +233,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#srvyr-0-3-5">0.3.5</a></li>
         <li><a href="#srvyr-0-3-4">0.3.4</a></li>
         <li><a href="#srvyr-0-3-3">0.3.3</a></li>
         <li><a href="#srvyr-0-3-2">0.3.2</a></li>

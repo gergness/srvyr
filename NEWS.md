@@ -1,4 +1,5 @@
 # srvyr (development version)
+* Small update to quasiquotation syntax inside `unweighted` to improve consistency with recent rlang updates (#54).
 
 # srvyr 0.3.5
 * New functions survey_var and survey_sd to calculate population variance and

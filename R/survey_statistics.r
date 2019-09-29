@@ -696,7 +696,7 @@ survey_sd <- function(
 unweighted <- function(x, .svy = current_svy(), ...) {
   dots <- rlang::enquo(x)
 
-  out <- summarize(.svy[["variables"]], !!!dots)
+  out <- summarize(.svy[["variables"]], !!dots)
   names(out)[length(names(out))] <- ""
   out
 }

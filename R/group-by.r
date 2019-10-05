@@ -47,7 +47,7 @@ group_vars.tbl_svy <- function(x) {
 #' On \code{tbl_svy} objects, \code{group_by} sets up the object for
 #' operations similar to those allowed in \code{\link[survey]{svyby}}.
 #' @param .data A tbl
-#' @param ... variables to gorup by. All tbls accept variable names, some will
+#' @param ... variables to group by. All tbls accept variable names, some will
 #' also accept functions of variables. Duplicated groups will be silently dropped.
 #' @param add By default, when \code{add = FALSE}, \code{group_by} will override
 #' existing groups. To instead add to the existing groups, use \code{add = TRUE}

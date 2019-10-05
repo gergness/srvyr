@@ -1,4 +1,4 @@
-#' svrvyr: A package for 'dplyr'-Like Syntax for Summary Statistics of Survey Data.
+#' srvyr: A package for 'dplyr'-Like Syntax for Summary Statistics of Survey Data.
 #'
 #' The srvyr package provides a new way of calculating summary statistics
 #' on survey data, based on the dplyr package. There are three stages to using

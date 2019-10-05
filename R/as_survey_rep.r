@@ -17,18 +17,18 @@
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
 #' @param variables Variables to include in the design (default is all)
-#' @param repweights Variables specifying the replication weight varibles
+#' @param repweights Variables specifying the replication weight variables
 #' @param weights Variables specifying sampling weights
 #' @param type Type of replication weights
 #' @param combined_weights \code{TRUE} if the \code{repweights} already
 #' include the sampling weights. This is usually the case.
-#' @param rho Shrinkage factor fo rweights in Fay's method
+#' @param rho Shrinkage factor for weights in Fay's method
 #' @param bootstrap_average For \code{type = "bootstrap"}, if the bootstrap
 #' weights have been averaged, gives the number of iterations averaged over.
 #' @param scale,rscales Scaling constant for variance, see
 #' \code{\link[survey]{svrepdesign}} for more information.
 #' @param fpc,fpctype Finite population correction information
-#' @param mse if \code{TRUE}, compute varainces based on sum of squares
+#' @param mse if \code{TRUE}, compute variances based on sum of squares
 #' around the point estimate, rather than the mean of the replicates
 #' @param ... ignored
 #' @param compress if \code{TRUE}, store replicate weights in compressed form

@@ -86,7 +86,7 @@ find_vars_to_collect <- function(var_names, expr) {
 
 #' Force computation of a database query
 #'
-#' \code{collect} retreives data from a database query (and when run
+#' \code{collect} retrieves data from a database query (and when run
 #' on a tbl_svy object adjusts weights accordingly). Use collect when
 #' you want to run a function from the survey package on a srvyr db
 #' backed object. \code{compute} stores results in a remote temporary

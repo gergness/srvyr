@@ -75,7 +75,7 @@ filter_.tbl_svy <- function(.data, ..., .dots) {
 #' \code{select} and \code{rename} keep or rename variables. See
 #' \code{\link[dplyr]{select}} for more details.
 #'
-#' \code{filter} keeps certain observaions. See \code{\link[dplyr]{filter}}
+#' \code{filter} keeps certain observations. See \code{\link[dplyr]{filter}}
 #' for more details.
 #'
 #' \code{arrange} is not implemented for \code{tbl_svy} objects. Nor are any
@@ -150,7 +150,7 @@ NULL
 
 #' Manipulate multiple columns.
 #'
-#' See \code{\link[dplyr]{summarize_all}} for more details. *_each functions will be depracated
+#' See \code{\link[dplyr]{summarize_all}} for more details. *_each functions will be deprecated
 #' in favor of *_all/*_if/*_at functions.
 #'
 #' @name summarise_all

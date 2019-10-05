@@ -8,7 +8,7 @@
 #'
 #' @export
 #' @param .data A data frame (which contains the variables specified below)
-#' @param id list of two sets of variable names for sampling unit identifers
+#' @param id list of two sets of variable names for sampling unit identifiers
 #' @param strata list of two sets of variable names (or \code{NULLs}) for stratum identifiers
 #' @param probs list of two sets of variable names (or \code{NULLs}) for sampling probabilities
 #' @param weights Only for method = "approx", list of two sets of variable names (or \code{NULLs})
@@ -16,8 +16,8 @@
 #' @param fpc list of two sets of variables (or \code{NULLs} for finite population corrections
 #' @param subset bare name of a variable which specifies which observations are selected in phase 2
 #' @param method "full" requires (much) more memory, but gives unbiased variance estimates for
-#' general multistage designs at both phases. "simple" or "approx" use less memory, and is correect for
-#' designs with simple random sampling at phase one and stratifed randoms sampling at phase two. See
+#' general multistage designs at both phases. "simple" or "approx" use less memory, and is correct for
+#' designs with simple random sampling at phase one and stratified randoms sampling at phase two. See
 #' \code{\link[survey]{twophase}} for more details.
 #' @param ... ignored
 #' @return An object of class \code{tbl_svy}

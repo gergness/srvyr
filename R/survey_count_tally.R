@@ -1,6 +1,6 @@
 #' Count/tally survey weighted observations by group
 #'
-#' Analagous to \code{\link[dplyr]{tally}} and count, calculates the survey weighted
+#' Analogous to \code{\link[dplyr]{tally}} and count, calculates the survey weighted
 #' count of observations. \code{survey_tally} will call \code{\link{survey_total}} empty (resulting
 #' in the count of each group) or on \code{wt} if it is specified (resulting in the
 #' survey weighted total of \code{wt}). \code{survey_count} is similar, but calls \code{group_by}

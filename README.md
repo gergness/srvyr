@@ -33,9 +33,9 @@ install.packages("srvyr")
 
 ## Example usage
 
-First, describe the variables that define the survey’s stucture with the
-function `as_survey()`with the bare column names of the names that you
-would use in functions from the survey package like
+First, describe the variables that define the survey’s structure with
+the function `as_survey()`with the bare column names of the names that
+you would use in functions from the survey package like
 `survey::svydesign()`, `survey::svrepdesign()` or `survey::twophase()`.
 
 ``` r
@@ -125,7 +125,7 @@ summary(my_model)
 
 > 1.  Yay\!
 > 
-> –<cite>Thomas Lumley, [in the Biased and Inefficent
+> –<cite>Thomas Lumley, [in the Biased and Inefficient
 > blog](http://notstatschat.tumblr.com/post/161225885311/pipeable-survey-analysis-in-r)</cite>
 
 ## Contributing

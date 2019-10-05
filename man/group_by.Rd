@@ -7,7 +7,7 @@
 \arguments{
 \item{.data}{A tbl}
 
-\item{...}{variables to gorup by. All tbls accept variable names, some will
+\item{...}{variables to group by. All tbls accept variable names, some will
 also accept functions of variables. Duplicated groups will be silently dropped.}
 
 \item{add}{By default, when \code{add = FALSE}, \code{group_by} will override

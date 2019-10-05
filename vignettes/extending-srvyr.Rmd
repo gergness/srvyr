@@ -31,14 +31,14 @@ survey objects work. If you'd like more explanation, please let me know on
 [github](https://github.com/gergness/srvyr)!
 
 ## Translating from survey to srvyr
-srvyr implements the "survey tatistics" functions from the survey package. Some examples
+srvyr implements the "survey statistics" functions from the survey package. Some examples
 are the svymean, svytotal, svyciprop, svyquantile and svyratio all return a
 `svystat` object which usually prints out the estimate and its standard error
 and other estimates of the variance can be calculated from it. In srvyr, these
 estimates are created inside of a summarize call and the variance estimates are
 specified at the same time.
 
-The combination of srvyr's group_by and summarize is analagous to the `svyby`
+The combination of srvyr's group_by and summarize is analogous to the `svyby`
 function that performs one of the survey statistic function and performs it on
 multiple groups.
 
@@ -66,7 +66,7 @@ should be:
 srvyr now exports several functions that can help convert functions designed
 for the survey package to this format.
 
-- `current_svy()` - This function, modelled after `dplyr::current_vars()`,
+- `current_svy()` - This function, modeled after `dplyr::current_vars()`,
   is a hidden way to send the survey object to the object (by hidden, I mean 
   that the user doesn't have to specify the survey in the arguments of their
   function call). To use it, have an argument in your functions that

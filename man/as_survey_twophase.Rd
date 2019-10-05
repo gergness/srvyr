@@ -19,7 +19,7 @@ as_survey_twophase(.data, ...)
 
 \item{...}{ignored}
 
-\item{id}{list of two sets of variable names for sampling unit identifers}
+\item{id}{list of two sets of variable names for sampling unit identifiers}
 
 \item{strata}{list of two sets of variable names (or \code{NULLs}) for stratum identifiers}
 
@@ -33,8 +33,8 @@ for sampling weights}
 \item{subset}{bare name of a variable which specifies which observations are selected in phase 2}
 
 \item{method}{"full" requires (much) more memory, but gives unbiased variance estimates for
-general multistage designs at both phases. "simple" or "approx" use less memory, and is correect for
-designs with simple random sampling at phase one and stratifed randoms sampling at phase two. See
+general multistage designs at both phases. "simple" or "approx" use less memory, and is correct for
+designs with simple random sampling at phase one and stratified randoms sampling at phase two. See
 \code{\link[survey]{twophase}} for more details.}
 }
 \value{

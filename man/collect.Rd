@@ -5,7 +5,7 @@
 \alias{compute}
 \title{Force computation of a database query}
 \description{
-\code{collect} retreives data from a database query (and when run
+\code{collect} retrieves data from a database query (and when run
 on a tbl_svy object adjusts weights accordingly). Use collect when
 you want to run a function from the survey package on a srvyr db
 backed object. \code{compute} stores results in a remote temporary

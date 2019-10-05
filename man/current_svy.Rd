@@ -12,7 +12,7 @@ a tbl_svy (or error if called with no survey context)
 \description{
 This is a helper to allow srvyr's syntactic style. In particular, it tells
 functions inside of a summarize call what survey to use. In general, users
-will not have to worry about getting (or setting) the current conext's survey,
+will not have to worry about getting (or setting) the current context's survey,
 unless they are trying to extend srvyr. See \code{vignette("extending-srvyr")}
 for more details.
 }

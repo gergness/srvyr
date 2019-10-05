@@ -31,6 +31,6 @@
 \alias{any_vars}
 \title{Manipulate multiple columns.}
 \description{
-See \code{\link[dplyr]{summarize_all}} for more details. *_each functions will be depracated
+See \code{\link[dplyr]{summarize_all}} for more details. *_each functions will be deprecated
 in favor of *_all/*_if/*_at functions.
 }

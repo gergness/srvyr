@@ -102,7 +102,7 @@ as_survey.twophase2 <- function(.data, ...) {
 #'
 #' srvyr has updated it's standard evaluation semantics to match dplyr 0.7, so
 #' these underscore functions are no longer required (but are still supported
-#' for backward compatbility reasons). See \code{\link[dplyr]{se-deprecated}} or the
+#' for backward compatibility reasons). See \code{\link[dplyr]{se-deprecated}} or the
 #' dplyr vignette on programming (\code{vignette("programming", package =
 #' "dplyr")}) for more details.
 #' @name srvyr-se-deprecated

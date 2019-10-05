@@ -33,11 +33,11 @@ This vignette shows the basics of how to use srvyr with databases.
 It is based on analysis from the wonderful resource asdfree 
 ( [website](http://asdfree.com/) and [github](https://github.com/ajdamico/asdfree) ). 
 Many thanks to [ajdamico](http://github.com/ajdamico) and collaborators. 
-Specifically, I have adpated code from [American Community Survey - 2011 single year analysis](https://github.com/ajdamico/asdfree/blob/d0b965e9672161da086e30471760d08281b74343/American%20Community%20Survey/2011%20single-year%20-%20analysis%20examples.R) and the associated data preparation scripts. 
+Specifically, I have adapted code from [American Community Survey - 2011 single year analysis](https://github.com/ajdamico/asdfree/blob/d0b965e9672161da086e30471760d08281b74343/American%20Community%20Survey/2011%20single-year%20-%20analysis%20examples.R) and the associated data preparation scripts. 
 
 ## Database Setup ##
 In order to focus on srvyr and databases, we start with a prepared dataset. The full code 
-is avaliable [on Github](https://github.com/gergness/srvyr/blob/master/vignettes/save_acs_data.R), and the high level description of what it does is:
+is available [on Github](https://github.com/gergness/srvyr/blob/master/vignettes/save_acs_data.R), and the high level description of what it does is:
 
 - Download data from acs website (currently only Alaska and Hawaii to save time, 
 though it would be easy to adapt to download to all 50 states and Puerto Rico). 
@@ -161,7 +161,7 @@ specific database packages, like `RSQLite`.
 
 ## Srvyr Setup ##
 Srvyr commands are nearly identical to old. The only difference for setup is that you 
-need a variable that uniquely identifieds each row in the database (uid). 
+need a variable that uniquely identifies each row in the database (uid). 
 
 ```{r}
 acs_m_db_svy <- acs_m_db %>% 
@@ -193,8 +193,8 @@ Analysis commands from srvyr are also similar to ones that work on local data.fr
 The main differences come from the issues discussed above about explicitly creating variables
 difficulties in translating R commands, and variable types. 
 
-The following anlaysis is based on the asdfree analysis and shows some basi analysis on
-the total populaiton, insurance coverage, age and sex. 
+The following analysis is based on the asdfree analysis and shows some basic analysis on
+the total population, insurance coverage, age and sex. 
 
 ```{r}
 # You can calculate the population of the united states #

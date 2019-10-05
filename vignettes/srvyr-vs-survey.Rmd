@@ -52,7 +52,7 @@ variation, we have to completely rewrite the `dplyr` code for the `survey` packa
 
 # Preparing a survey dataset
 
-`as_survey_design()`, `as_survey_rep()` and `as_survey_twophase()` are analagous
+`as_survey_design()`, `as_survey_rep()` and `as_survey_twophase()` are analogous
 to `survey::svydesign()`, `survey::svrepdesign()` and `survey::twophase()` 
 respectively. Because they are designed to match `dplyr`'s style of non-standard
 evaluation, they accept bare column names instead of formulas (~). They also
@@ -70,7 +70,7 @@ srs_design_survey <- svydesign(ids = ~1, fpc = ~fpc, data = apisrs)
 
 The `srvyr` functions also accept `dplyr::select()`'s special selection
 functions (such as `starts_with()`, `one_of()`, etc.), so these functions are
-analagous:
+analogous:
 ```{r, message = FALSE}
 # selecting variables to keep in the survey object (stratified example)
 strat_design_srvyr <- apistrat %>%

@@ -18,7 +18,7 @@ These are data manipulation functions designed to work on \code{tbl_svy} objects
 \code{select} and \code{rename} keep or rename variables. See
 \code{\link[dplyr]{select}} for more details.
 
-\code{filter} keeps certain observaions. See \code{\link[dplyr]{filter}}
+\code{filter} keeps certain observations. See \code{\link[dplyr]{filter}}
 for more details.
 
 \code{arrange} is not implemented for \code{tbl_svy} objects. Nor are any

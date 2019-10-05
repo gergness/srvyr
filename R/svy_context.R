@@ -1,4 +1,4 @@
-# Functions modelled on the tidyselect functions for telling functions within
+# Functions modeled on the tidyselect functions for telling functions within
 # summarize what the survey is. I think they are a little overly complex - I
 # can't really imagine having one already set and and setting another, but just
 # in case, I keep that code.

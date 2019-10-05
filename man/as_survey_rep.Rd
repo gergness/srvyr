@@ -44,7 +44,7 @@ as_survey_rep(.data, ...)
 
 \item{variables}{Variables to include in the design (default is all)}
 
-\item{repweights}{Variables specifying the replication weight varibles}
+\item{repweights}{Variables specifying the replication weight variables}
 
 \item{weights}{Variables specifying sampling weights}
 
@@ -53,7 +53,7 @@ as_survey_rep(.data, ...)
 \item{combined_weights}{\code{TRUE} if the \code{repweights} already
 include the sampling weights. This is usually the case.}
 
-\item{rho}{Shrinkage factor fo rweights in Fay's method}
+\item{rho}{Shrinkage factor for weights in Fay's method}
 
 \item{bootstrap_average}{For \code{type = "bootstrap"}, if the bootstrap
 weights have been averaged, gives the number of iterations averaged over.}
@@ -63,7 +63,7 @@ weights have been averaged, gives the number of iterations averaged over.}
 
 \item{fpc, fpctype}{Finite population correction information}
 
-\item{mse}{if \code{TRUE}, compute varainces based on sum of squares
+\item{mse}{if \code{TRUE}, compute variances based on sum of squares
 around the point estimate, rather than the mean of the replicates}
 
 \item{compress}{if \code{TRUE}, store replicate weights in compressed form

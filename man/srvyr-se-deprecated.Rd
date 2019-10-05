@@ -72,14 +72,14 @@ approximation. An object of class ppsmat to use the Horvitz-Thompson estimator.}
 \item{variance}{For pps without replacement, use variance="YG" for the Yates-Grundy estimator
 instead of the Horvitz-Thompson estimator}
 
-\item{repweights}{Variables specifying the replication weight varibles}
+\item{repweights}{Variables specifying the replication weight variables}
 
 \item{type}{Type of replication weights}
 
 \item{combined_weights}{\code{TRUE} if the \code{repweights} already
 include the sampling weights. This is usually the case.}
 
-\item{rho}{Shrinkage factor fo rweights in Fay's method}
+\item{rho}{Shrinkage factor for weights in Fay's method}
 
 \item{bootstrap_average}{For \code{type = "bootstrap"}, if the bootstrap
 weights have been averaged, gives the number of iterations averaged over.}
@@ -92,16 +92,16 @@ weights have been averaged, gives the number of iterations averaged over.}
 
 \item{fpctype}{Finite population correction information}
 
-\item{mse}{if \code{TRUE}, compute varainces based on sum of squares
+\item{mse}{if \code{TRUE}, compute variances based on sum of squares
 around the point estimate, rather than the mean of the replicates}
 
-\item{id}{list of two sets of variable names for sampling unit identifers}
+\item{id}{list of two sets of variable names for sampling unit identifiers}
 
 \item{subset}{bare name of a variable which specifies which observations are selected in phase 2}
 
 \item{method}{"full" requires (much) more memory, but gives unbiased variance estimates for
-general multistage designs at both phases. "simple" or "approx" use less memory, and is correect for
-designs with simple random sampling at phase one and stratifed randoms sampling at phase two. See
+general multistage designs at both phases. "simple" or "approx" use less memory, and is correct for
+designs with simple random sampling at phase one and stratified randoms sampling at phase two. See
 \code{\link[survey]{twophase}} for more details.}
 
 \item{.dots}{Used to work around non-standard evaluation. See
@@ -112,7 +112,7 @@ designs with simple random sampling at phase one and stratifed randoms sampling 
 \description{
 srvyr has updated it's standard evaluation semantics to match dplyr 0.7, so
 these underscore functions are no longer required (but are still supported
-for backward compatbility reasons). See \code{\link[dplyr]{se-deprecated}} or the
+for backward compatability reasons). See \code{\link[dplyr]{se-deprecated}} or the
 dplyr vignette on programming (\code{vignette("programming", package =
 "dplyr")}) for more details.
 }

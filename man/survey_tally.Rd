@@ -9,7 +9,8 @@ survey_tally(x, wt, sort = FALSE, name = "n", vartype = c("se", "ci",
   "var", "cv"))
 
 survey_count(x, ..., wt = NULL, sort = FALSE, name = "n",
-  .drop = dplyr::group_by_drop_default(x))
+  .drop = dplyr::group_by_drop_default(x), vartype = c("se", "ci",
+  "var", "cv"))
 }
 \arguments{
 \item{x}{A tbl_svy object, as created by \code{as_survey} and related functions.}
@@ -51,7 +52,10 @@ dstrata <- apistrat \%>\%
   as_survey_design(strata = stype, weights = pw)
 
 dstrata \%>\%
-  group_by(awards)
+  group_by(awards) \%>\%
   survey_tally()
+
+dstrata \%>\%
+  survey_count(awards)
 
 }

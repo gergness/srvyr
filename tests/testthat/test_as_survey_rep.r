@@ -22,7 +22,7 @@ scd2brr_srvyr <- scd2brr$repweights %>%
   mutate(weights = 1) %>%
   as_survey_rep(repweights = starts_with("rep"),
                     type = "BRR", rho = scd2brr$rho,
-                    scale = scd2brr$scale, rscales = scd2brr$rscales,
+                    rscales = scd2brr$rscales,
                     mse = scd2brr$mse, weights = weights)
 
 out_survey <- svymean(~alive, scd2brr)
@@ -150,13 +150,13 @@ test_that("works with character", {
     scd2brr_base %>%
       as_survey_rep(repweights = starts_with("rep"),
                     type = "BRR", rho = scd2brr$rho,
-                    scale = scd2brr$scale, rscales = scd2brr$rscales,
+                    rscales = scd2brr$rscales,
                     mse = scd2brr$mse, weights = weights),
 
     scd2brr_base %>%
       as_survey_rep_(repweights = 'starts_with("rep")',
                      type = "BRR", rho = scd2brr$rho,
-                     scale = scd2brr$scale, rscales = scd2brr$rscales,
+                     rscales = scd2brr$rscales,
                      mse = scd2brr$mse, weights = "weights")
   )
 })
@@ -166,13 +166,13 @@ test_that("works with formula", {
     scd2brr_base %>%
       as_survey_rep(repweights = starts_with("rep"),
                     type = "BRR", rho = scd2brr$rho,
-                    scale = scd2brr$scale, rscales = scd2brr$rscales,
+                    rscales = scd2brr$rscales,
                     mse = scd2brr$mse, weights = weights),
 
     scd2brr_base %>%
       as_survey_rep_(repweights = ~starts_with("rep"),
                      type = "BRR", rho = scd2brr$rho,
-                     scale = scd2brr$scale, rscales = scd2brr$rscales,
+                     rscales = scd2brr$rscales,
                      mse = scd2brr$mse, weights = ~weights)
   )
 })

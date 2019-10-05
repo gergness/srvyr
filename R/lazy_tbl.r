@@ -71,7 +71,7 @@ localize_lazy_svy <- function(svy, dots = NULL) {
 find_vars_to_collect_in_dots <- function(data, dots) {
   # All dots must be a function for srvyr summarize, so we can
   # go down to each dot's expression arguments
-  all_args <- lapply(dots, function(x) rlang::lang_args(x))
+  all_args <- lapply(dots, function(x) rlang::call_args(x))
   all_args <- rlang::squash(unname(all_args))
 
   used_vars <- lapply(all_args, find_vars_to_collect, var_names = dplyr::tbl_vars(data))

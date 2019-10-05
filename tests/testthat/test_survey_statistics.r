@@ -628,3 +628,26 @@ test_that(
 
   }
 )
+
+test_that(
+  "unweighted works in simple ungrouped case", {
+    data(api, package = "survey")
+    dclus1 <- as_survey_design(apiclus1, id = dnum, weights = pw, fpc = fpc)
+    test <- dclus1 %>%
+      summarize(n = unweighted(n()))
+
+    expect_equal(test$n, c(183))
+  }
+)
+
+test_that(
+  "unweighted works in simple grouped case", {
+    data(api, package = "survey")
+    dclus1 <- as_survey_design(apiclus1, id = dnum, weights = pw, fpc = fpc)
+    test <- dclus1 %>%
+      group_by(sch.wide) %>%
+      summarize(n = unweighted(n()))
+
+    expect_equal(test$n, c(23, 160))
+  }
+)

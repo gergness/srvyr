@@ -1,12 +1,12 @@
 #' @export
-group_by.tbl_svy <- function(.data, ..., add = FALSE) {
-  .data$variables <- group_by(.data$variables, ..., add = add)
+group_by.tbl_svy <- function(.data, ..., add = FALSE, .drop = dplyr::group_by_drop_default(.data)) {
+  .data$variables <- group_by(.data$variables, ..., add = add, .drop = .drop)
   class(.data) <- c("grouped_svy", class(.data))
   .data
 }
 
 #' @export
-group_by_.tbl_svy <- function(.data, ..., .dots, add = FALSE) {
+group_by_.tbl_svy <- function(.data, ..., .dots, add = FALSE, .drop = dplyr::group_by_drop_default(.data)) {
   dots <- compat_lazy_dots(.dots, caller_env(), ...)
   group_by(.data, !!!dots, add = add)
 }

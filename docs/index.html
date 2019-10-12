@@ -5,14 +5,15 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>'dplyr'-Like Syntax for Summary Statistics of Survey Data • srvyr</title>
+<title>dplyr-Like Syntax for Summary Statistics of Survey Data • srvyr</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="'dplyr'-Like Syntax for Summary Statistics of Survey Data">
-<meta property="og:description" content="Use piping, verbs like 'group_by' and 'summarize', and other
-    'dplyr' inspired syntactic style when calculating summary statistics on survey
-    data using functions from the 'survey' package.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<script src="pkgdown.js"></script><meta property="og:title" content="dplyr-Like Syntax for Summary Statistics of Survey Data">
+<meta property="og:description" content="Use piping, verbs like group_by and summarize, and other
+    dplyr inspired syntactic style when calculating summary statistics on survey
+    data using functions from the survey package.">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -20,7 +21,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-article">
+    <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -33,7 +34,7 @@
       <span class="navbar-brand">
 <img src="tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.6</span>
       </span>
     </div>
 
@@ -76,7 +77,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/gergness/srvyr">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -89,13 +90,9 @@
 <!--/.navbar -->
 
       
-      </header><div class="row">
-  <div class="col-md-9 contents">
-    
 
-    
-    
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+      </header><div class="row">
+  <div class="contents col-md-9">
 <div id="srvyr" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#srvyr" class="anchor"></a>srvyr <img src="tools/logo.png" align="right" height="149" width="149">
@@ -104,15 +101,15 @@
 <p>srvyr brings parts of <a href="https://github.com/hadley/dplyr/">dplyr’s</a> syntax to survey analysis, using the <a href="https://CRAN.R-project.org/package=survey">survey</a> package.</p>
 <p>srvyr focuses on calculating summary statistics from survey data, such as the mean, total or quantile. It allows for the use of many dplyr verbs, such as <code>summarize</code>, <code>group_by</code>, and <code>mutate</code>, the convenience of pipe-able functions, rlang’s style of non-standard evaluation and more consistent return types than the survey package.</p>
 <p>You can try it out:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"srvyr"</span>)</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"srvyr"</span>)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co"># or for development version</span></a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co"># devtools::install_github("gergness/srvyr")</span></a></code></pre></div>
 <div id="example-usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example-usage" class="anchor"></a>Example usage</h2>
-<p>First, describe the variables that define the survey’s stucture with the function <code><a href="reference/as_survey.html">as_survey()</a></code>with the bare column names of the names that you would use in functions from the survey package like <code><a href="https://www.rdocumentation.org/packages/survey/topics/svydesign">survey::svydesign()</a></code>, <code><a href="https://www.rdocumentation.org/packages/survey/topics/svrepdesign">survey::svrepdesign()</a></code> or <code><a href="https://www.rdocumentation.org/packages/survey/topics/twophase">survey::twophase()</a></code>.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(srvyr, <span class="dt">warn.conflicts =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(api, <span class="dt">package =</span> <span class="st">"survey"</span>)</a>
+<p>First, describe the variables that define the survey’s structure with the function <code><a href="reference/as_survey.html">as_survey()</a></code>with the bare column names of the names that you would use in functions from the survey package like <code><a href="https://rdrr.io/pkg/survey/man/svydesign.html">survey::svydesign()</a></code>, <code><a href="https://rdrr.io/pkg/survey/man/svrepdesign.html">survey::svrepdesign()</a></code> or <code><a href="https://rdrr.io/pkg/survey/man/twophase.html">survey::twophase()</a></code>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(srvyr, <span class="dt">warn.conflicts =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(api, <span class="dt">package =</span> <span class="st">"survey"</span>)</a>
 <a class="sourceLine" id="cb2-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb2-4" data-line-number="4">dstrata &lt;-<span class="st"> </span>apistrat <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb2-5" data-line-number="5"><span class="st">   </span><span class="kw"><a href="reference/as_survey_design.html">as_survey_design</a></span>(<span class="dt">strata =</span> stype, <span class="dt">weights =</span> pw)</a></code></pre></div>
@@ -121,13 +118,13 @@
 <li>
 <code><a href="reference/dplyr_single.html">mutate()</a></code> adds or modifies a variable.</li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">dstrata &lt;-<span class="st"> </span>dstrata <span class="op">%&gt;%</span></a>
+<!-- end list --><div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">dstrata &lt;-<span class="st"> </span>dstrata <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/dplyr_single.html">mutate</a></span>(<span class="dt">api_diff =</span> api00 <span class="op">-</span><span class="st"> </span>api99)</a></code></pre></div>
 <ul>
 <li>
 <code><a href="reference/summarise.html">summarise()</a></code> calculates summary statistics such as mean, total, quantile or ratio.</li>
 </ul>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">dstrata <span class="op">%&gt;%</span><span class="st"> </span></a>
+<!-- end list --><div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">dstrata <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/summarise.html">summarise</a></span>(<span class="dt">api_diff =</span> <span class="kw"><a href="reference/survey_mean.html">survey_mean</a></span>(api_diff, <span class="dt">vartype =</span> <span class="st">"ci"</span>))</a>
 <a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; # A tibble: 1 x 3</span></a>
 <a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt;   api_diff api_diff_low api_diff_upp</span></a>
@@ -137,7 +134,7 @@
 <li>
 <code><a href="reference/group_by.html">group_by()</a></code> and then <code><a href="reference/summarise.html">summarise()</a></code> creates summaries by groups.</li>
 </ul>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">dstrata <span class="op">%&gt;%</span><span class="st"> </span></a>
+<!-- end list --><div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">dstrata <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb5-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/group_by.html">group_by</a></span>(stype) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb5-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/summarise.html">summarise</a></span>(<span class="dt">api_diff =</span> <span class="kw"><a href="reference/survey_mean.html">survey_mean</a></span>(api_diff, <span class="dt">vartype =</span> <span class="st">"ci"</span>))</a>
 <a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; # A tibble: 3 x 4</span></a>
@@ -149,8 +146,8 @@
 <ul>
 <li>Functions from the survey package are still available:</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">my_model &lt;-<span class="st"> </span>survey<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/survey/topics/svyglm">svyglm</a></span>(api99 <span class="op">~</span><span class="st"> </span>stype, dstrata)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(my_model)</a>
+<!-- end list --><div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">my_model &lt;-<span class="st"> </span>survey<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svyglm.html">svyglm</a></span>(api99 <span class="op">~</span><span class="st"> </span>stype, dstrata)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(my_model)</a>
 <a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt; Call:</span></a>
 <a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#&gt; svyglm(formula = api99 ~ stype, design = dstrata)</span></a>
@@ -178,10 +175,10 @@
 <p>– <cite>Kieran Healy, in <a href="http://socviz.co/modeling.html#plots-from-complex-surveys">Data Visualization: A practical introduction</a> </cite></p>
 </blockquote>
 <blockquote>
-<ol style="list-style-type: decimal">
+<ol>
 <li>Yay!</li>
 </ol>
-<p>–<cite>Thomas Lumley, <a href="http://notstatschat.tumblr.com/post/161225885311/pipeable-survey-analysis-in-r">in the Biased and Inefficent blog</a></cite></p>
+<p>–<cite>Thomas Lumley, <a href="http://notstatschat.tumblr.com/post/161225885311/pipeable-survey-analysis-in-r">in the Biased and Inefficient blog</a></cite></p>
 </blockquote>
 </div>
 <div id="contributing" class="section level2">
@@ -213,6 +210,12 @@
 </li>
 </ul>
 </div>
+<div class="community">
+<h2>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
+</ul>
+</div>
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
@@ -221,7 +224,7 @@
 </ul>
 </div>
 
-      <div class="dev-status">
+  <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=srvyr"><img src="http://www.r-pkg.org/badges/version/srvyr" alt="CRAN_Status_Badge"></a></li>
@@ -232,7 +235,6 @@
 </ul>
 </div>
 </div>
-
 </div>
 
 
@@ -241,12 +243,14 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

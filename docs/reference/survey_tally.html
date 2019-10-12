@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate the an unweighted summary statistic from a survey — unweighted • srvyr</title>
+<title>Count/tally survey weighted observations by group — survey_tally • srvyr</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,12 @@
 
 
 
-<meta property="og:title" content="Calculate the an unweighted summary statistic from a survey — unweighted" />
-<meta property="og:description" content="Calculate unweighted summaries from a survey dataset, just as on
-a normal data.frame with summarise." />
+<meta property="og:title" content="Count/tally survey weighted observations by group — survey_tally" />
+<meta property="og:description" content="Analogous to tally and count, calculates the survey weighted
+count of observations. survey_tally will call survey_total empty (resulting
+in the count of each group) or on wt if it is specified (resulting in the
+survey weighted total of wt). survey_count is similar, but calls group_by
+before calculating the count and then returns the data to the original groupings." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -131,65 +134,97 @@ a normal data.frame with summarise." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate the an unweighted summary statistic from a survey</h1>
-    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/survey_statistics.r'><code>R/survey_statistics.r</code></a></small>
-    <div class="hidden name"><code>unweighted.Rd</code></div>
+    <h1>Count/tally survey weighted observations by group</h1>
+    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/survey_count_tally.R'><code>R/survey_count_tally.R</code></a></small>
+    <div class="hidden name"><code>survey_tally.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculate unweighted summaries from a survey dataset, just as on
-a normal data.frame with <code><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></code>.</p>
+    <p>Analogous to <code><a href='https://dplyr.tidyverse.org/reference/tally.html'>tally</a></code> and count, calculates the survey weighted
+count of observations. <code>survey_tally</code> will call <code><a href='survey_total.html'>survey_total</a></code> empty (resulting
+in the count of each group) or on <code>wt</code> if it is specified (resulting in the
+survey weighted total of <code>wt</code>). <code>survey_count</code> is similar, but calls <code>group_by</code>
+before calculating the count and then returns the data to the original groupings.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>unweighted</span>(<span class='no'>x</span>, <span class='kw'>.svy</span> <span class='kw'>=</span> <span class='fu'><a href='current_svy.html'>current_svy</a></span>(), <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>survey_tally</span>(<span class='no'>x</span>, <span class='no'>wt</span>, <span class='kw'>sort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"n"</span>, <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"se"</span>, <span class='st'>"ci"</span>,
+  <span class='st'>"var"</span>, <span class='st'>"cv"</span>))
+
+<span class='fu'>survey_count</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>wt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"n"</span>,
+  <span class='kw'>.drop</span> <span class='kw'>=</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by_drop_default.html'>group_by_drop_default</a></span>(<span class='no'>x</span>), <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"se"</span>, <span class='st'>"ci"</span>,
+  <span class='st'>"var"</span>, <span class='st'>"cv"</span>))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A variable or expression</p></td>
+      <td><p>A tbl_svy object, as created by <code>as_survey</code> and related functions.</p></td>
     </tr>
     <tr>
-      <th>.svy</th>
-      <td><p>A <code>tbl_svy</code> object. When called from inside a summarize function
-the default automatically sets the survey to the current survey.</p></td>
+      <th>wt</th>
+      <td><p>(Optional) A variable to weight on (in addition to the survey weights,
+which are always used). If left unspecified, <code>tally()</code> will use a variable
+named "n" if one exists, but <code>count()</code> will not. Override this behavior by
+specifying <code>wt = NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>sort</th>
+      <td><p>Whether to sort the results (defaults to <code>FALSE</code>)</p></td>
+    </tr>
+    <tr>
+      <th>name</th>
+      <td><p>Name of count variable created (defaults to n). If the variable already
+exists, will add "n" to the end until it does not.</p></td>
+    </tr>
+    <tr>
+      <th>vartype</th>
+      <td><p>What types variation estimates to calculate, passed to
+<code><a href='survey_total.html'>survey_total</a></code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Ignored</p></td>
+      <td><p>Variables to group by, passed to <code><a href='group_by.html'>group_by()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>.drop</th>
+      <td><p>When .drop = TRUE, empty groups are dropped, see <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></code>
+documentation for more details.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>If <code>n</code> already exists, <code>tally</code> will use it as the weight, but <code>count</code>
+will not.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survey</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>api</span>)
 
 <span class='no'>dstrata</span> <span class='kw'>&lt;-</span> <span class='no'>apistrat</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span>(<span class='kw'>strata</span> <span class='kw'>=</span> <span class='no'>stype</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>pw</span>)
 
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api99_unw</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>api99</span>)),
-            <span class='kw'>n</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/n.html'>n</a></span>()))</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 2</span><span>
-#&gt;   api99_unw     n
-#&gt;       </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>      625.   200</div><div class='input'>
+  <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>awards</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'>survey_tally</span>()</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 2 x 3</span><span>
+#&gt;   awards     n  n_se
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> No     </span><span style='text-decoration: underline;'>2</span><span>236.  216.
+#&gt; </span><span style='color: #555555;'>2</span><span> Yes    </span><span style='text-decoration: underline;'>3</span><span>958.  216.</div><div class='input'>
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>stype</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api_diff_unw</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>api00</span> - <span class='no'>api99</span>)))</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 3 x 2</span><span>
-#&gt;   stype api_diff_unw
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> E            38.6 
-#&gt; </span><span style='color: #555555;'>2</span><span> H             8.46
-#&gt; </span><span style='color: #555555;'>3</span><span> M            26.4 </div><div class='input'>
+  <span class='fu'>survey_count</span>(<span class='no'>awards</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 2 x 3</span><span>
+#&gt;   awards     n  n_se
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> No     </span><span style='text-decoration: underline;'>2</span><span>236.  216.
+#&gt; </span><span style='color: #555555;'>2</span><span> Yes    </span><span style='text-decoration: underline;'>3</span><span>958.  216.</div><div class='input'>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#details">Details</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 

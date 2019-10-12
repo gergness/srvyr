@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Extending srvyr • srvyr</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Extending srvyr">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -31,7 +32,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.6</span>
       </span>
     </div>
 
@@ -74,7 +75,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/gergness/srvyr">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -87,13 +88,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Extending srvyr</h1>
                         <h4 class="author">Greg Freedman Ellis</h4>
             
-            <h4 class="date">2019-07-28</h4>
+            <h4 class="date">2019-10-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/extending-srvyr.Rmd"><code>vignettes/extending-srvyr.Rmd</code></a></small>
       <div class="hidden name"><code>extending-srvyr.Rmd</code></div>
@@ -109,8 +111,8 @@
 <div id="translating-from-survey-to-srvyr" class="section level2">
 <h2 class="hasAnchor">
 <a href="#translating-from-survey-to-srvyr" class="anchor"></a>Translating from survey to srvyr</h2>
-<p>srvyr implements the “survey tatistics” functions from the survey package. Some examples are the svymean, svytotal, svyciprop, svyquantile and svyratio all return a <code>svystat</code> object which usually prints out the estimate and its standard error and other estimates of the variance can be calculated from it. In srvyr, these estimates are created inside of a summarize call and the variance estimates are specified at the same time.</p>
-<p>The combination of srvyr’s group_by and summarize is analagous to the <code>svyby</code> function that performs one of the survey statistic function and performs it on multiple groups.</p>
+<p>srvyr implements the “survey statistics” functions from the survey package. Some examples are the svymean, svytotal, svyciprop, svyquantile and svyratio all return a <code>svystat</code> object which usually prints out the estimate and its standard error and other estimates of the variance can be calculated from it. In srvyr, these estimates are created inside of a summarize call and the variance estimates are specified at the same time.</p>
+<p>The combination of srvyr’s group_by and summarize is analogous to the <code>svyby</code> function that performs one of the survey statistic function and performs it on multiple groups.</p>
 <p>Note that srvyr does not implement many other types of calculations that the survey package can (notably the regressions). While some of these could be shoehorned into srvyr, I feel that they are outside the scope of what people usually expect to have in a data.frame. In general, I think the broom package is better for tidying these kinds of calculations.</p>
 </div>
 <div id="what-summarize-expects" class="section level2">
@@ -130,7 +132,7 @@
 <p>srvyr now exports several functions that can help convert functions designed for the survey package to this format.</p>
 <ul>
 <li>
-<code><a href="../reference/current_svy.html">current_svy()</a></code> - This function, modelled after <code><a href="https://dplyr.tidyverse.org/reference/select_vars.html">dplyr::current_vars()</a></code>, is a hidden way to send the survey object to the object (by hidden, I mean that the user doesn’t have to specify the survey in the arguments of their function call). To use it, have an argument in your functions that defaults to current_svy().</li>
+<code><a href="../reference/current_svy.html">current_svy()</a></code> - This function, modeled after <code><a href="https://dplyr.tidyverse.org/reference/select_vars.html">dplyr::current_vars()</a></code>, is a hidden way to send the survey object to the object (by hidden, I mean that the user doesn’t have to specify the survey in the arguments of their function call). To use it, have an argument in your functions that defaults to current_svy().</li>
 <li>
 <code><a href="../reference/set_survey_vars.html">set_survey_vars()</a></code> - Many survey functions have limited support for both supplying a formula indicating the variables to calculate a statistic on as well as a vector. However, oftentimes the vector version is less well supported than the formula version. Since srvyr uses dplyr semantics, it ends up returning the values as vectors. This function will add on the variable to the survey, defaulting to having the name “__SRVYR_TEMP_VAR__”.</li>
 <li>
@@ -154,55 +156,55 @@
 <p>To distinguish between ungrouped and grouped survey objects, we’ll make a generic. Also note the use of <code>.svy = current_svy()</code> to get the survey object from the current summarize context.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># S3 generic function</span></a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">survey_gini &lt;-<span class="st"> </span><span class="cf">function</span>(</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">  x, <span class="dt">na.rm =</span> <span class="ot">FALSE</span>, <span class="dt">vartype =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span>), <span class="dt">.svy =</span> <span class="kw"><a href="../reference/current_svy.html">current_svy</a></span>(), ...</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">  x, <span class="dt">na.rm =</span> <span class="ot">FALSE</span>, <span class="dt">vartype =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span>), <span class="dt">.svy =</span> <span class="kw"><a href="../reference/current_svy.html">current_svy</a></span>(), ...</a>
 <a class="sourceLine" id="cb4-4" data-line-number="4">) {</a>
-<a class="sourceLine" id="cb4-5" data-line-number="5">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/UseMethod">UseMethod</a></span>(<span class="st">"survey_gini"</span>, .svy)</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">  <span class="kw"><a href="https://rdrr.io/r/base/UseMethod.html">UseMethod</a></span>(<span class="st">"survey_gini"</span>, .svy)</a>
 <a class="sourceLine" id="cb4-6" data-line-number="6">}</a></code></pre></div>
-<p>And here’s the ungrouped version, which uses <code><a href="../reference/set_survey_vars.html">set_survey_vars()</a></code>, <code><a href="https://www.rdocumentation.org/packages/convey/topics/svygini">convey::svygini()</a></code> and <code><a href="../reference/get_var_est.html">get_var_est()</a></code>.</p>
+<p>And here’s the ungrouped version, which uses <code><a href="../reference/set_survey_vars.html">set_survey_vars()</a></code>, <code><a href="https://rdrr.io/pkg/convey/man/svygini.html">convey::svygini()</a></code> and <code><a href="../reference/get_var_est.html">get_var_est()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">survey_gini.tbl_svy &lt;-<span class="st"> </span><span class="cf">function</span>(</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">  x, <span class="dt">na.rm =</span> <span class="ot">FALSE</span>, <span class="dt">vartype =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span>), <span class="dt">.svy =</span> <span class="kw"><a href="../reference/current_svy.html">current_svy</a></span>(), ...</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">  x, <span class="dt">na.rm =</span> <span class="ot">FALSE</span>, <span class="dt">vartype =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span>), <span class="dt">.svy =</span> <span class="kw"><a href="../reference/current_svy.html">current_svy</a></span>(), ...</a>
 <a class="sourceLine" id="cb5-3" data-line-number="3">) {</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">  <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/missing">missing</a></span>(vartype)) vartype &lt;-<span class="st"> "se"</span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">  vartype &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match.arg">match.arg</a></span>(vartype, <span class="dt">several.ok =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">  .svy &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/srvyr/topics/set_survey_vars">set_survey_vars</a></span>(.svy, x)</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">  <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/missing.html">missing</a></span>(vartype)) vartype &lt;-<span class="st"> "se"</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">  vartype &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(vartype, <span class="dt">several.ok =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">  .svy &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/srvyr/man/set_survey_vars.html">set_survey_vars</a></span>(.svy, x)</a>
 <a class="sourceLine" id="cb5-7" data-line-number="7">  </a>
-<a class="sourceLine" id="cb5-8" data-line-number="8">  out &lt;-<span class="st"> </span>convey<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/convey/topics/svygini">svygini</a></span>(<span class="op">~</span><span class="st">`</span><span class="dt">__SRVYR_TEMP_VAR__</span><span class="st">`</span>, <span class="dt">na.rm =</span> na.rm, <span class="dt">design =</span> .svy)</a>
-<a class="sourceLine" id="cb5-9" data-line-number="9">  out &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/srvyr/topics/get_var_est">get_var_est</a></span>(out, vartype)</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">  out &lt;-<span class="st"> </span>convey<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span>(<span class="op">~</span><span class="st">`</span><span class="dt">__SRVYR_TEMP_VAR__</span><span class="st">`</span>, <span class="dt">na.rm =</span> na.rm, <span class="dt">design =</span> .svy)</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">  out &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/srvyr/man/get_var_est.html">get_var_est</a></span>(out, vartype)</a>
 <a class="sourceLine" id="cb5-10" data-line-number="10">  out</a>
 <a class="sourceLine" id="cb5-11" data-line-number="11">}</a></code></pre></div>
-<p>Finally, the grouped version which uses the above functions plus <code><a href="https://www.rdocumentation.org/packages/survey/topics/svyby">survey::svyby()</a></code>.</p>
+<p>Finally, the grouped version which uses the above functions plus <code><a href="https://rdrr.io/pkg/survey/man/svyby.html">survey::svyby()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">survey_gini.grouped_svy &lt;-<span class="st"> </span><span class="cf">function</span>(</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">  x, <span class="dt">na.rm =</span> <span class="ot">FALSE</span>, <span class="dt">vartype =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span>), <span class="dt">.svy =</span> <span class="kw"><a href="../reference/current_svy.html">current_svy</a></span>(), ...</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">  x, <span class="dt">na.rm =</span> <span class="ot">FALSE</span>, <span class="dt">vartype =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span>), <span class="dt">.svy =</span> <span class="kw"><a href="../reference/current_svy.html">current_svy</a></span>(), ...</a>
 <a class="sourceLine" id="cb6-3" data-line-number="3">) {</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">  <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/missing">missing</a></span>(vartype)) vartype &lt;-<span class="st"> "se"</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">  vartype &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match.arg">match.arg</a></span>(vartype, <span class="dt">several.ok =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">  .svy &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/srvyr/topics/set_survey_vars">set_survey_vars</a></span>(.svy, x)</a>
-<a class="sourceLine" id="cb6-7" data-line-number="7">  grps_formula &lt;-<span class="st"> </span>survey<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/survey/topics/surveysummary">make.formula</a></span>(<span class="kw"><a href="../reference/groups.html">group_vars</a></span>(.svy))</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">  <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/missing.html">missing</a></span>(vartype)) vartype &lt;-<span class="st"> "se"</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">  vartype &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(vartype, <span class="dt">several.ok =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">  .svy &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/srvyr/man/set_survey_vars.html">set_survey_vars</a></span>(.svy, x)</a>
+<a class="sourceLine" id="cb6-7" data-line-number="7">  grps_formula &lt;-<span class="st"> </span>survey<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/surveysummary.html">make.formula</a></span>(<span class="kw"><a href="../reference/groups.html">group_vars</a></span>(.svy))</a>
 <a class="sourceLine" id="cb6-8" data-line-number="8">  </a>
-<a class="sourceLine" id="cb6-9" data-line-number="9">  out &lt;-<span class="st"> </span>survey<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/survey/topics/svyby">svyby</a></span>(</a>
+<a class="sourceLine" id="cb6-9" data-line-number="9">  out &lt;-<span class="st"> </span>survey<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svyby.html">svyby</a></span>(</a>
 <a class="sourceLine" id="cb6-10" data-line-number="10">    <span class="op">~</span><span class="st">`</span><span class="dt">__SRVYR_TEMP_VAR__</span><span class="st">`</span>, grps_formula, convey<span class="op">::</span>svygini, <span class="dt">na.rm =</span> na.rm, <span class="dt">design =</span> .svy</a>
 <a class="sourceLine" id="cb6-11" data-line-number="11">  )</a>
-<a class="sourceLine" id="cb6-12" data-line-number="12">  out &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/srvyr/topics/get_var_est">get_var_est</a></span>(out, vartype, <span class="dt">grps =</span> <span class="kw"><a href="../reference/groups.html">group_vars</a></span>(.svy))</a>
+<a class="sourceLine" id="cb6-12" data-line-number="12">  out &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/srvyr/man/get_var_est.html">get_var_est</a></span>(out, vartype, <span class="dt">grps =</span> <span class="kw"><a href="../reference/groups.html">group_vars</a></span>(.svy))</a>
 <a class="sourceLine" id="cb6-13" data-line-number="13">  out</a>
 <a class="sourceLine" id="cb6-14" data-line-number="14">}</a></code></pre></div>
 <p>And here’s what these functions look like in practice:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Example from ?convey::svygini</span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/message">suppressPackageStartupMessages</a></span>({</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(srvyr)</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(survey)</a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(convey)</a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(vardpoor)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span>({</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(srvyr)</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(survey)</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(convey)</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(vardpoor)</a>
 <a class="sourceLine" id="cb7-7" data-line-number="7">})</a>
-<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(eusilc) ; <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>( eusilc ) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/chartr">tolower</a></span>( <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>( eusilc ) )</a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(eusilc) ; <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>( eusilc ) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/chartr.html">tolower</a></span>( <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>( eusilc ) )</a>
 <a class="sourceLine" id="cb7-9" data-line-number="9"></a>
 <a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co"># Setup for survey package</span></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11">des_eusilc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/survey/topics/svydesign">svydesign</a></span>(</a>
+<a class="sourceLine" id="cb7-11" data-line-number="11">des_eusilc &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span>(</a>
 <a class="sourceLine" id="cb7-12" data-line-number="12">  <span class="dt">ids =</span> <span class="op">~</span>rb030, </a>
 <a class="sourceLine" id="cb7-13" data-line-number="13">  <span class="dt">strata =</span> <span class="op">~</span>db040,  </a>
 <a class="sourceLine" id="cb7-14" data-line-number="14">  <span class="dt">weights =</span> <span class="op">~</span>rb050, </a>
 <a class="sourceLine" id="cb7-15" data-line-number="15">  <span class="dt">data =</span> eusilc</a>
 <a class="sourceLine" id="cb7-16" data-line-number="16">)</a>
-<a class="sourceLine" id="cb7-17" data-line-number="17">des_eusilc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/convey/topics/convey_prep">convey_prep</a></span>(des_eusilc)</a>
+<a class="sourceLine" id="cb7-17" data-line-number="17">des_eusilc &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/convey/man/convey_prep.html">convey_prep</a></span>(des_eusilc)</a>
 <a class="sourceLine" id="cb7-18" data-line-number="18"></a>
 <a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co"># Setup for srvyr package</span></a>
 <a class="sourceLine" id="cb7-20" data-line-number="20">srvyr_eusilc &lt;-<span class="st"> </span>eusilc <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -211,11 +213,11 @@
 <a class="sourceLine" id="cb7-23" data-line-number="23">    <span class="dt">strata =</span> db040,</a>
 <a class="sourceLine" id="cb7-24" data-line-number="24">    <span class="dt">weights =</span> rb050</a>
 <a class="sourceLine" id="cb7-25" data-line-number="25">  ) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-26" data-line-number="26"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/convey/topics/convey_prep">convey_prep</a></span>()</a>
+<a class="sourceLine" id="cb7-26" data-line-number="26"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/convey/man/convey_prep.html">convey_prep</a></span>()</a>
 <a class="sourceLine" id="cb7-27" data-line-number="27"></a>
 <a class="sourceLine" id="cb7-28" data-line-number="28"><span class="co">## Ungrouped</span></a>
 <a class="sourceLine" id="cb7-29" data-line-number="29"><span class="co"># Calculate ungrouped for survey package</span></a>
-<a class="sourceLine" id="cb7-30" data-line-number="30"><span class="kw"><a href="https://www.rdocumentation.org/packages/convey/topics/svygini">svygini</a></span>(<span class="op">~</span>eqincome, <span class="dt">design =</span> des_eusilc)</a>
+<a class="sourceLine" id="cb7-30" data-line-number="30"><span class="kw"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span>(<span class="op">~</span>eqincome, <span class="dt">design =</span> des_eusilc)</a>
 <a class="sourceLine" id="cb7-31" data-line-number="31"><span class="co">#&gt;             gini     SE</span></a>
 <a class="sourceLine" id="cb7-32" data-line-number="32"><span class="co">#&gt; eqincome 0.26497 0.0019</span></a>
 <a class="sourceLine" id="cb7-33" data-line-number="33"></a>
@@ -234,7 +236,7 @@
 <a class="sourceLine" id="cb7-46" data-line-number="46"></a>
 <a class="sourceLine" id="cb7-47" data-line-number="47"><span class="co">## Groups</span></a>
 <a class="sourceLine" id="cb7-48" data-line-number="48"><span class="co"># Calculate by groups for survey</span></a>
-<a class="sourceLine" id="cb7-49" data-line-number="49">survey<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/survey/topics/svyby">svyby</a></span>(<span class="op">~</span>eqincome, <span class="op">~</span>rb090, des_eusilc, convey<span class="op">::</span>svygini)</a>
+<a class="sourceLine" id="cb7-49" data-line-number="49">survey<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svyby.html">svyby</a></span>(<span class="op">~</span>eqincome, <span class="op">~</span>rb090, des_eusilc, convey<span class="op">::</span>svygini)</a>
 <a class="sourceLine" id="cb7-50" data-line-number="50"><span class="co">#&gt;         rb090  eqincome          se</span></a>
 <a class="sourceLine" id="cb7-51" data-line-number="51"><span class="co">#&gt; male     male 0.2578983 0.002617279</span></a>
 <a class="sourceLine" id="cb7-52" data-line-number="52"><span class="co">#&gt; female female 0.2702080 0.002892713</span></a>
@@ -258,6 +260,7 @@
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -274,17 +277,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Greg Freedman Ellis.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

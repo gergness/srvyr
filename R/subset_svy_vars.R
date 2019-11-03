@@ -89,7 +89,7 @@ filtered_row_numbers <- function(.svy, ...) {
 
   filtered_vars$`___row_number` <- seq_len(nrow(filtered_vars))
   filtered_vars <- dplyr::filter(filtered_vars, !!!dots)
-  row_numbers <- dplyr::select(filtered_vars, .data$`___row_number`)[[1]]
+  row_numbers <- dplyr::select(filtered_vars, .data$`___row_number`)[["___row_number"]]
   filtered_vars <- dplyr::select(filtered_vars, -.data$`___row_number`)
 
   list(row_numbers = row_numbers, filtered_vars = filtered_vars)

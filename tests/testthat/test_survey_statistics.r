@@ -651,3 +651,27 @@ test_that(
     expect_equal(test$n, c(23, 160))
   }
 )
+
+test_that(
+  "Can groupby before or after a filter (#59)", {
+    data(api, package = "survey")
+
+    set.seed(10)
+    apistrat$sch.wide[sample(1:nrow(apistrat), 40)] <- NA
+
+    d <- apistrat %>% as_survey_design(strata = stype, weights = pw) %>%
+      mutate(testvar = as.numeric(sch.wide == "Yes"))
+
+    t2 <- d %>%
+      group_by(stype) %>%
+      filter(!is.na(testvar)) %>%
+      summarize(a = survey_mean(testvar, na.rm = T, proportion = T))
+
+    t3 <- d %>%
+      filter(!is.na(testvar)) %>%
+      group_by(stype) %>%
+      summarize(a = survey_mean(testvar, na.rm = T, proportion = T))
+
+    expect_equal(t2, t3)
+  }
+)

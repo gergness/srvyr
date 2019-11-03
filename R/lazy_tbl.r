@@ -20,8 +20,14 @@ get_lazy_vars <- function(data, id, ...) {
   dplyr::collect(query)
 }
 
-lazy_subset_svy_vars <- function(svy, ...) {
+lazy_subset_svy_vars <- function(svy, ..., .preserve = FALSE) {
   dots <- rlang::quos(...)
+
+  if (!identical(.preserve, FALSE)) {
+    stop("`.preserve` is not supported on database backends",
+         call. = FALSE)
+  }
+
   if (!"__SRVYR_SUBSET_VAR__" %in% tbl_vars(svy$variables)) {
     svy$variables <- dplyr::mutate(svy$variables, `__SRVYR_SUBSET_VAR__` = TRUE)
   }

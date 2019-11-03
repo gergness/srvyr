@@ -1,11 +1,11 @@
-subset_svy_vars <- function(x, dots) {
+subset_svy_vars <- function(x, ..., .preserve = FALSE) {
   UseMethod("subset_svy_vars")
 }
 
 # Adapted from survey:::"[.survey.design2"
-subset_svy_vars.survey.design2 <- function(x, ...) {
+subset_svy_vars.survey.design2 <- function(x, ..., .preserve = FALSE) {
   dots <- rlang::quos(...)
-  filtered <- filtered_row_numbers(x, !!!dots)
+  filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve)
   filtered_vars <- filtered[["filtered_vars"]]
   row_numbers <- filtered[["row_numbers"]]
 
@@ -36,9 +36,9 @@ subset_svy_vars.survey.design2 <- function(x, ...) {
 }
 
 # Adapted from survey:::"[.svyrep.design"
-subset_svy_vars.svyrep.design <- function(x, ...){
+subset_svy_vars.svyrep.design <- function(x, ..., .preserve = FALSE){
   dots <- rlang::quos(...)
-  filtered <- filtered_row_numbers(x, !!!dots)
+  filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve)
   filtered_vars <- filtered[["filtered_vars"]]
   row_numbers <- filtered[["row_numbers"]]
 
@@ -60,9 +60,9 @@ subset_svy_vars.svyrep.design <- function(x, ...){
 }
 
 # Adapted from survey:::"[.twophase2"
-subset_svy_vars.twophase2 <- function(x, ...) {
+subset_svy_vars.twophase2 <- function(x, ..., .preserve = FALSE) {
   dots <- rlang::quos(...)
-  filtered <- filtered_row_numbers(x, !!!dots)
+  filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve)
   filtered_vars <- filtered[["filtered_vars"]]
   row_numbers <- filtered[["row_numbers"]]
 
@@ -83,12 +83,12 @@ subset_svy_vars.twophase2 <- function(x, ...) {
 }
 
 
-filtered_row_numbers <- function(.svy, ...) {
+filtered_row_numbers <- function(.svy, ..., .preserve = FALSE) {
   dots <- rlang::quos(...)
   filtered_vars <- .svy$variables
 
   filtered_vars$`___row_number` <- seq_len(nrow(filtered_vars))
-  filtered_vars <- dplyr::filter(filtered_vars, !!!dots)
+  filtered_vars <- dplyr::filter(filtered_vars, !!!dots, .preserve = .preserve)
   row_numbers <- dplyr::select(filtered_vars, .data$`___row_number`)[["___row_number"]]
   filtered_vars <- dplyr::select(filtered_vars, -.data$`___row_number`)
 

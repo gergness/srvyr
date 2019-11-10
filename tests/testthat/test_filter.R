@@ -280,4 +280,136 @@ source("utilities.R")
           )
         })
 
+# filter_all ----
+
+      test_that(
+        "filter_all works with any_vars() predicate", {
+          # Stratified design
+          expect_equal(
+            # Survey design object
+            object = stratified_design %>%
+              filter_all(
+                .vars_predicate = any_vars(grepl("Ocean", .))
+              ) %>% nrow(),
+            # Underlying data frame (not a survey design object)
+            expected = apistrat %>%
+              filter_all(
+                .vars_predicate = any_vars(grepl("Ocean", .))
+              ) %>% nrow()
+          )
+
+          # Cluster design
+          expect_equal(
+            # Survey design object
+            object = cluster_design %>%
+              filter_all(
+                .vars_predicate = any_vars(grepl("Ocean", .))
+              ) %>% nrow(),
+            # Underlying data frame (not a survey design object)
+            expected = apiclus1 %>%
+              filter_all(
+                .vars_predicate = any_vars(grepl("Ocean", .))
+              ) %>% nrow()
+          )
+
+          # Calibration weighted design
+
+          ## First check that the correct number of rows are retained
+          expect_equal(
+            # Survey design object
+            object = raked_design %>%
+              filter_all(
+                .vars_predicate = any_vars(grepl("Ocean", .))
+              ) %>% nrow(),
+            # Underlying data frame (not a survey design object)
+            expected = raked_design %>%
+              subset(
+                grepl("Ocean", name) | grepl("Ocean", sname) | grepl("Ocean", dname)
+              ) %>% nrow()
+          )
+          ## Next check that calculation results match behavior of survey package
+          expect_equal(
+            object = raked_design %>%
+              filter_all(
+                .vars_predicate = any_vars(grepl("Ocean", .))
+              ) %>%
+              summarize(api_ratio = survey_ratio(api00, api99, vartype = NULL)) %>%
+              dplyr::pull("api_ratio"),
+            expected = svyratio(
+              numerator = ~ api00, denominator = ~ api99,
+              design = subset(raked_design,
+                              grepl("Ocean", name) | grepl("Ocean", sname) | grepl("Ocean", dname))
+            )[['ratio']][1]
+          )
+        })
+
+      test_that(
+        "filter_all works with all_vars() predicate", {
+          # Stratified design
+          expect_equal(
+            # Survey design object
+            object = stratified_design %>%
+              mutate(incomplete_sname = ifelse(nchar(sname) > 12, NA_character_, sname)) %>%
+              filter_all(
+                .vars_predicate = all_vars(!is.character(.) | !is.na(.))
+              ) %>% nrow(),
+            # Underlying data frame (not a survey design object)
+            expected = apistrat %>%
+              mutate(incomplete_sname = ifelse(nchar(sname) > 12, NA_character_, sname)) %>%
+              filter_all(
+                .vars_predicate = all_vars(!is.character(.) | !is.na(.))
+              ) %>% nrow()
+          )
+
+          # Cluster design
+          expect_equal(
+            # Survey design object
+            object = cluster_design %>%
+              mutate(incomplete_sname = ifelse(nchar(sname) > 12, NA_character_, sname)) %>%
+              filter_all(
+                .vars_predicate = all_vars(!is.character(.) | !is.na(.))
+              ) %>% nrow(),
+            # Underlying data frame (not a survey design object)
+            expected = apiclus1 %>%
+              mutate(incomplete_sname = ifelse(nchar(sname) > 12, NA_character_, sname)) %>%
+              filter_all(
+                .vars_predicate = all_vars(!is.character(.) | !is.na(.))
+              ) %>% nrow()
+          )
+
+          # Calibration weighted design
+
+          ## First check that the correct number of rows are retained
+          expect_equal(
+            # Survey design object
+            object = raked_design %>%
+              mutate(incomplete_sname = ifelse(nchar(sname) > 12, NA_character_, sname)) %>%
+              filter_all(
+                .vars_predicate = all_vars(!is.character(.) | !is.na(.))
+              ) %>% nrow(),
+            # Underlying data frame (not a survey design object)
+            expected = raked_design %>%
+              mutate(incomplete_sname = ifelse(nchar(sname) > 12, NA_character_, sname)) %>%
+              subset(
+                !is.na(incomplete_sname)
+              ) %>% nrow()
+          )
+          ## Next check that calculation results match behavior of survey package
+          expect_equal(
+            object = raked_design %>%
+              mutate(incomplete_sname = ifelse(nchar(sname) > 12, NA_character_, sname)) %>%
+              filter_all(
+                .vars_predicate = all_vars(!is.character(.) | !is.na(.))
+              ) %>%
+              summarize(api_ratio = survey_ratio(api00, api99, vartype = NULL)) %>%
+              dplyr::pull("api_ratio"),
+            expected = svyratio(
+              numerator = ~ api00, denominator = ~ api99,
+              design = raked_design %>%
+                mutate(incomplete_sname = ifelse(nchar(sname) > 12, NA_character_, sname)) %>%
+                subset( !is.na(incomplete_sname) )
+            )[['ratio']][1]
+          )
+        })
+
 

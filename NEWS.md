@@ -1,5 +1,6 @@
 # srvyr (development version)
 * `filter`ing on grouped survey designs now works correctly (#54, thanks for reporting @dcaseykc)
+* Added function `pull` (#63, thanks @dcaseykc)
 
 # srvyr 0.3.6
 * Small update to quasiquotation syntax inside `unweighted` to improve consistency with recent rlang updates (#54).

@@ -5,8 +5,15 @@
 \alias{survey_sd}
 \title{Calculate the population variance and its variation using survey methods}
 \usage{
-survey_var(x, na.rm = FALSE, vartype = c("se", "ci", "var"),
-  level = 0.95, df = Inf, .svy = current_svy(), ...)
+survey_var(
+  x,
+  na.rm = FALSE,
+  vartype = c("se", "ci", "var"),
+  level = 0.95,
+  df = Inf,
+  .svy = current_svy(),
+  ...
+)
 
 survey_sd(x, na.rm = FALSE, .svy = current_svy(), ...)
 }

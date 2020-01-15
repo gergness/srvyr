@@ -5,12 +5,23 @@
 \alias{survey_count}
 \title{Count/tally survey weighted observations by group}
 \usage{
-survey_tally(x, wt, sort = FALSE, name = "n", vartype = c("se", "ci",
-  "var", "cv"))
+survey_tally(
+  x,
+  wt,
+  sort = FALSE,
+  name = "n",
+  vartype = c("se", "ci", "var", "cv")
+)
 
-survey_count(x, ..., wt = NULL, sort = FALSE, name = "n",
-  .drop = dplyr::group_by_drop_default(x), vartype = c("se", "ci",
-  "var", "cv"))
+survey_count(
+  x,
+  ...,
+  wt = NULL,
+  sort = FALSE,
+  name = "n",
+  .drop = dplyr::group_by_drop_default(x),
+  vartype = c("se", "ci", "var", "cv")
+)
 }
 \arguments{
 \item{x}{A tbl_svy object, as created by \code{as_survey} and related functions.}

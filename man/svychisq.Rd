@@ -4,10 +4,6 @@
 \alias{svychisq}
 \title{Chisquared tests of association for survey data.}
 \arguments{
-\item{formula}{Model formula specifying margins for the table (using + only)}
-
-\item{design}{survey object}
-
 \item{formula}{See details in \code{\link[survey]{svychisq}}}
 
 \item{design}{See details in \code{\link[survey]{svychisq}}}

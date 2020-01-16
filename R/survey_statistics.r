@@ -416,7 +416,7 @@ survey_quantile <- function(
   x, quantiles, na.rm = FALSE, vartype = NULL,
   level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...
+  ties = c("discrete", "rounded"), df = NULL, .svy = current_svy(), ...
 ) {
   UseMethod("survey_quantile", .svy)
 }
@@ -426,7 +426,7 @@ survey_quantile.tbl_svy <- function(
   x, quantiles, na.rm = FALSE, vartype = c("se", "ci"),
   level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...
+  ties = c("discrete", "rounded"), df = NULL, .svy = current_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
@@ -467,7 +467,7 @@ survey_quantile.grouped_svy <- function(
   x, quantiles, na.rm = FALSE, vartype = c("se", "ci"),
   level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...
+  ties = c("discrete", "rounded"), df = NULL, .svy = current_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
@@ -513,7 +513,7 @@ survey_median <- function(
   x, na.rm = FALSE, vartype = c("se", "ci"),
   level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"), df = Inf, .svy = current_svy(), ...
+  ties = c("discrete", "rounded"), df = NULL, .svy = current_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
@@ -601,7 +601,7 @@ survey_median <- function(
 #' @export
 
 survey_var <- function(
-  x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95, df = Inf,
+  x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95, df = NULL,
   .svy = current_svy(), ...
 ) {
   UseMethod("survey_var", .svy)
@@ -609,7 +609,7 @@ survey_var <- function(
 
 #' @export
 survey_var.tbl_svy <- function(
-  x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95, df = Inf,
+  x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95, df = NULL,
   .svy = current_svy(), ...
 ) {
   if (!is.null(vartype)) {
@@ -618,6 +618,8 @@ survey_var.tbl_svy <- function(
   if (missing(x)) stop("Variable should be provided as an argument to survey_var().")
   stop_for_factor(x)
   if (is.logical(x)) x <- as.integer(x)
+
+  if (is.null(df)) df <- survey::degf(.svy)
 
   .svy <- set_survey_vars(.svy, x)
   stat <- survey::svyvar(~`__SRVYR_TEMP_VAR__`, .svy, na.rm = na.rm)
@@ -628,7 +630,7 @@ survey_var.tbl_svy <- function(
 
 #' @export
 survey_var.grouped_svy <- function(
-  x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95, df = Inf,
+  x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95, df = NULL,
   .svy = current_svy(), ...
 ) {
   if (!is.null(vartype)) {
@@ -641,6 +643,8 @@ survey_var.grouped_svy <- function(
   grps_formula <- survey::make.formula(group_vars(.svy))
 
   if (any(dplyr::count(.svy$variables)$n < 2)) stop("Population variance can't be computed because some groups contain less than 2 observations.")
+
+  if (is.null(df)) df <- survey::degf(.svy)
 
   stat <- survey::svyby(
     ~`__SRVYR_TEMP_VAR__`, grps_formula, .svy, survey::svyvar,

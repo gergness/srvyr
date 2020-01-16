@@ -49,7 +49,7 @@ test_that("survey_ratio works for grouped surveys - with vartype=NULL",
 
 ################################################################################
 # survey_quantile
-out_survey <- svyquantile(~api00, dstrata, c(0.5, 0.75), ci = TRUE) %>%
+out_survey <- svyquantile(~api00, dstrata, c(0.5, 0.75), ci = TRUE, df = NULL) %>%
   {cbind(as.data.frame(.$quantiles),
          SE(.) %>%
            as.list() %>%
@@ -57,7 +57,7 @@ out_survey <- svyquantile(~api00, dstrata, c(0.5, 0.75), ci = TRUE) %>%
            as.data.frame(check.names = FALSE))}
 
 out_srvyr <- dstrata %>%
-  summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75)))
+  summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75), df = NULL))
 
 test_that("survey_quantile works for ungrouped surveys - no ci (with se)",
           expect_equal(unname(unlist(out_survey)),
@@ -71,11 +71,11 @@ test_that("survey_quantile works for ungrouped surveys - with vartype=NULL",
           expect_equal(unname(unlist(select(out_survey, -ends_with("_se")))),
                        unname(unlist(out_srvyr_vartypeNULL))))
 
-out_survey <- svyquantile(~api00, dstrata, c(0.5, 0.75), ci = TRUE)
+out_survey <- svyquantile(~api00, dstrata, c(0.5, 0.75), ci = TRUE, df = NULL)
 
 out_srvyr <- dstrata %>%
   summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75),
-                                    vartype = "ci"))
+                                    vartype = "ci", df = NULL))
 
 test_that("survey_quantile works for ungrouped surveys - with ci",
           expect_equal(c(out_survey$CIs[[1]], out_survey$CIs[[2]]),
@@ -84,13 +84,13 @@ test_that("survey_quantile works for ungrouped surveys - with ci",
 
 out_survey <- suppressWarnings(
   svyby(~api00, ~stype, dstrata, svyquantile,
-        quantiles = c(0.5, 0.75), ci = TRUE))
+        quantiles = c(0.5, 0.75), ci = TRUE, df = NULL))
 
 out_srvyr <- suppressWarnings(
   dstrata %>%
     group_by(stype) %>%
     summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75),
-                                      vartype = "se")))
+                                      vartype = "se", df = NULL)))
 
 test_that("survey_quantile works for grouped surveys - with se",
           expect_equal(c(out_survey$`0.5`[[1]], out_survey[["se.0.5"]][[1]]),
@@ -109,13 +109,13 @@ test_that("survey_quantile works for grouped surveys - with vartype=NULL",
 
 out_survey <- suppressWarnings(
   svyby(~api00, ~stype + awards, dstrata, svyquantile,
-        quantiles = c(0.5, 0.75), ci = TRUE))
+        quantiles = c(0.5, 0.75), ci = TRUE, df = NULL))
 
 out_srvyr <- suppressWarnings(
   dstrata %>%
     group_by(stype, awards) %>%
     summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75),
-                                      vartype = "se")))
+                                      vartype = "se", df = NULL)))
 
 test_that(
   "survey_quantile works for grouped surveys - multiple grouping variables",
@@ -124,7 +124,7 @@ test_that(
 
 ################################################################################
 # survey_median
-out_survey <- svyquantile(~api00, dstrata, c(0.5), ci = TRUE) %>%
+out_survey <- svyquantile(~api00, dstrata, c(0.5), ci = TRUE, df = NULL) %>%
   {cbind(as.data.frame(.$quantiles),
          SE(.) %>%
            as.list() %>%
@@ -132,7 +132,7 @@ out_survey <- svyquantile(~api00, dstrata, c(0.5), ci = TRUE) %>%
            as.data.frame(check.names = FALSE))}
 
 out_srvyr <- dstrata %>%
-  summarise(api00 = survey_median(api00))
+  summarise(api00 = survey_median(api00, df = NULL))
 
 test_that("survey_median works for ungrouped surveys - no ci",
           expect_equal(unname(unlist(out_survey)),
@@ -147,12 +147,12 @@ test_that("survey_median works for ungrouped surveys - with vartype=NULL",
 
 out_survey <- suppressWarnings(
   svyby(~api00, ~stype, dstrata, svyquantile,
-        quantiles = 0.5, ci = TRUE))
+        quantiles = 0.5, ci = TRUE, df = NULL))
 
 out_srvyr <- suppressWarnings(
   dstrata %>%
     group_by(stype) %>%
-    summarise(api00 = survey_median(api00, vartype = "se")))
+    summarise(api00 = survey_median(api00, vartype = "se", df = NULL)))
 
 test_that("survey_median works for grouped surveys - with se",
           expect_equal(unname(unlist(out_survey)),
@@ -177,7 +177,7 @@ out_srvyr <- dstrata %>%
 
 ratio <- svyratio(~api00, ~api99, dstrata)
 ratio <- confint(ratio, level = 0.9, df = degf(dstrata))
-mdn <- svyquantile(~api00, dstrata, quantile = 0.5, ci = TRUE, alpha = 0.1)
+mdn <- svyquantile(~api00, dstrata, quantile = 0.5, ci = TRUE, alpha = 0.1, df = NULL)
 mdn <- confint(mdn)
 out_survey <- c(ratio[1], ratio[2], mdn[1], mdn[2])
 names(out_survey) <- c("ratio_low", "ratio_upp", "mdn_low", "mdn_upp")
@@ -197,7 +197,7 @@ ratio <- confint(ratio, level = 0.9, df = degf(dstrata))
 
 mdn <- suppressWarnings(
   svyby(~api00, ~stype, dstrata, svyquantile,
-        quantile = 0.5, ci = TRUE, alpha = 0.1, vartype = "ci") %>%
+        quantile = 0.5, ci = TRUE, alpha = 0.1, vartype = "ci", df = NULL) %>%
     data.frame() %>%
     select(-api00, -stype))
 
@@ -330,11 +330,11 @@ test_that(
       dstrata %>%
         group_by(awards) %>%
         summarise(api99 = survey_quantile(api99, c(0.25, 0.5, 0.75),
-                                          vartype = c("se", "ci"))))
+                                          vartype = c("se", "ci"), df = NULL)))
 
     survey <- suppressWarnings(
       svyby( ~api99, ~awards, dstrata, svyquantile,
-             quantiles = c(0.25, 0.5, 0.75), ci = TRUE, vartype = c("se", "ci")))
+             quantiles = c(0.25, 0.5, 0.75), ci = TRUE, vartype = c("se", "ci"), df = NULL))
 
     expect_equal(srvyr$api99_q25, survey$`0.25`)
     expect_equal(srvyr$api99_q25_se, survey$`se.0.25`)
@@ -367,7 +367,7 @@ test_that(
 
     survey <- svyvar(~api99, dstrata) %>%
       {cbind(select(as.data.frame(.), variance),
-             as.data.frame(confint(.)))} %>%
+             as.data.frame(confint(., df = degf(dstrata))))} %>%
       setNames(c("api99", "api99_low", "api99_upp"))
 
     expect_df_equal(srvyr, survey)
@@ -412,7 +412,7 @@ test_that(
 
     survey <- svyby(~api99, ~awards, dstrata, svyvar) %>%
       {cbind(select(., -se),
-             confint(.))} %>%
+             confint(., df = degf(dstrata)))} %>%
       setNames(c("awards", "api99", "api99_low", "api99_upp"))
 
     expect_df_equal(srvyr, survey)

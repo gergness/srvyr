@@ -19,7 +19,7 @@ d2pbc_srvyr <- pbc %>%
 survey_results <- list(
   as.data.frame(svymean(~bili, d2pbc_survey)),
   as.data.frame(svytotal(~bili, d2pbc_survey)),
-  svyquantile(~bili, d2pbc_survey, quantiles = 0.5, ci = TRUE) %>%
+  svyquantile(~bili, d2pbc_survey, quantiles = 0.5, ci = TRUE, df = NULL) %>%
     {cbind(as.data.frame(.$quantile),
            as.data.frame(SE(.)))},
   as.data.frame(svyvar(~bili, d2pbc_survey)),
@@ -33,7 +33,7 @@ survey_results <- list(
 srvyr_results <- d2pbc_srvyr %>%
   summarize(mean = survey_mean(bili),
             total = survey_total(bili),
-            median = survey_median(bili),
+            median = survey_median(bili, df = NULL),
             var = survey_var(bili),
             ratio = survey_ratio(bili, albumin))
 
@@ -55,7 +55,7 @@ survey_results <- list(
   as.data.frame(svyby(~bili, ~sex, d2pbc_survey, svymean)),
   as.data.frame(svyby(~bili, ~sex, d2pbc_survey, svytotal)),
   as.data.frame(suppressWarnings(svyby(~bili, ~sex, d2pbc_survey, svyquantile,
-                                       quantiles = 0.5, ci = TRUE)))
+                                       quantiles = 0.5, ci = TRUE, df = NULL)))
 ) %>% dplyr::bind_cols() %>%
   setNames(c("sex", "mean", "mean_se", "sex2", "total", "total_se",
              "sex3", "median", "median_se")) %>%
@@ -69,7 +69,7 @@ suppressWarnings(srvyr_results <- d2pbc_srvyr %>%
   group_by(sex) %>%
   summarize(mean = survey_mean(bili),
             total = survey_total(bili),
-            median = survey_median(bili, vartype = "se")))
+            median = survey_median(bili, vartype = "se", df = NULL)))
 
 test_that(
   "as_survey_twophase gets same mean / total / median / ratio in (grouped)",

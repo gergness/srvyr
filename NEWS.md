@@ -1,6 +1,8 @@
 # srvyr (development version)
 * `filter`ing on grouped survey designs now works correctly (#54, thanks for reporting @dcaseykc)
 
+* Added function `pull` (#63, thanks @dcaseykc)
+
 * `df` parameter now set to be degrees of freedom of survey for quantiles and variance to match other 
    functions.
    

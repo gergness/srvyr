@@ -3,7 +3,6 @@
 \docType{package}
 \name{srvyr}
 \alias{srvyr}
-\alias{srvyr-package}
 \title{srvyr: A package for 'dplyr'-Like Syntax for Summary Statistics of Survey Data.}
 \description{
 The srvyr package provides a new way of calculating summary statistics

@@ -11,31 +11,65 @@
 \usage{
 as_survey_rep(.data, ...)
 
-\method{as_survey_rep}{data.frame}(.data, variables = NULL,
-  repweights = NULL, weights = NULL, type = c("BRR", "Fay", "JK1",
-  "JKn", "bootstrap", "other"), combined_weights = TRUE, rho = NULL,
-  bootstrap_average = NULL, scale = NULL, rscales = NULL,
-  fpc = NULL, fpctype = c("fraction", "correction"),
-  mse = getOption("survey.replicates.mse"), ...)
+\method{as_survey_rep}{data.frame}(
+  .data,
+  variables = NULL,
+  repweights = NULL,
+  weights = NULL,
+  type = c("BRR", "Fay", "JK1", "JKn", "bootstrap", "other"),
+  combined_weights = TRUE,
+  rho = NULL,
+  bootstrap_average = NULL,
+  scale = NULL,
+  rscales = NULL,
+  fpc = NULL,
+  fpctype = c("fraction", "correction"),
+  mse = getOption("survey.replicates.mse"),
+  ...
+)
 
-\method{as_survey_rep}{tbl_lazy}(.data, variables = NULL,
-  repweights = NULL, weights = NULL, type = c("BRR", "Fay", "JK1",
-  "JKn", "bootstrap", "other"), combined_weights = TRUE, rho = NULL,
-  bootstrap_average = NULL, scale = NULL, rscales = NULL,
-  fpc = NULL, fpctype = c("fraction", "correction"),
-  mse = getOption("survey.replicates.mse"), ...)
+\method{as_survey_rep}{tbl_lazy}(
+  .data,
+  variables = NULL,
+  repweights = NULL,
+  weights = NULL,
+  type = c("BRR", "Fay", "JK1", "JKn", "bootstrap", "other"),
+  combined_weights = TRUE,
+  rho = NULL,
+  bootstrap_average = NULL,
+  scale = NULL,
+  rscales = NULL,
+  fpc = NULL,
+  fpctype = c("fraction", "correction"),
+  mse = getOption("survey.replicates.mse"),
+  ...
+)
 
 \method{as_survey_rep}{svyrep.design}(.data, ...)
 
-\method{as_survey_rep}{survey.design2}(.data, type = c("auto", "JK1",
-  "JKn", "BRR", "bootstrap", "subbootstrap", "mrbbootstrap", "Fay"),
-  rho = 0, fpc = NULL, fpctype = NULL, ..., compress = TRUE,
-  mse = getOption("survey.replicates.mse"))
+\method{as_survey_rep}{survey.design2}(
+  .data,
+  type = c("auto", "JK1", "JKn", "BRR", "bootstrap", "subbootstrap", "mrbbootstrap",
+    "Fay"),
+  rho = 0,
+  fpc = NULL,
+  fpctype = NULL,
+  ...,
+  compress = TRUE,
+  mse = getOption("survey.replicates.mse")
+)
 
-\method{as_survey_rep}{tbl_svy}(.data, type = c("auto", "JK1", "JKn",
-  "BRR", "bootstrap", "subbootstrap", "mrbbootstrap", "Fay"), rho = 0,
-  fpc = NULL, fpctype = NULL, ..., compress = TRUE,
-  mse = getOption("survey.replicates.mse"))
+\method{as_survey_rep}{tbl_svy}(
+  .data,
+  type = c("auto", "JK1", "JKn", "BRR", "bootstrap", "subbootstrap", "mrbbootstrap",
+    "Fay"),
+  rho = 0,
+  fpc = NULL,
+  fpctype = NULL,
+  ...,
+  compress = TRUE,
+  mse = getOption("survey.replicates.mse")
+)
 }
 \arguments{
 \item{.data}{A data frame (which contains the variables specified below)}

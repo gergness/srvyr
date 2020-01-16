@@ -4,8 +4,15 @@
 \alias{get_var_est}
 \title{Get the variance estimates for a survey estimate}
 \usage{
-get_var_est(stat, vartype, grps = "", level = 0.95, df = Inf,
-  pre_calc_ci = FALSE, deff = FALSE)
+get_var_est(
+  stat,
+  vartype,
+  grps = "",
+  level = 0.95,
+  df = Inf,
+  pre_calc_ci = FALSE,
+  deff = FALSE
+)
 }
 \arguments{
 \item{stat}{A survey statistic object, usually the result of a function from the survey

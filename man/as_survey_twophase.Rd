@@ -8,9 +8,17 @@
 \usage{
 as_survey_twophase(.data, ...)
 
-\method{as_survey_twophase}{data.frame}(.data, id, strata = NULL,
-  probs = NULL, weights = NULL, fpc = NULL, subset,
-  method = c("full", "approx", "simple"), ...)
+\method{as_survey_twophase}{data.frame}(
+  .data,
+  id,
+  strata = NULL,
+  probs = NULL,
+  weights = NULL,
+  fpc = NULL,
+  subset,
+  method = c("full", "approx", "simple"),
+  ...
+)
 
 \method{as_survey_twophase}{twophase2}(.data, ...)
 }

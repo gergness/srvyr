@@ -4,8 +4,16 @@
 \alias{survey_total}
 \title{Calculate the total and its variation using survey methods}
 \usage{
-survey_total(x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
-  level = 0.95, deff = FALSE, df = NULL, .svy = current_svy(), ...)
+survey_total(
+  x,
+  na.rm = FALSE,
+  vartype = c("se", "ci", "var", "cv"),
+  level = 0.95,
+  deff = FALSE,
+  df = NULL,
+  .svy = current_svy(),
+  ...
+)
 }
 \arguments{
 \item{x}{A variable or expression, or empty}

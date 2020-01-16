@@ -31,6 +31,12 @@ select_.tbl_svy <- function(.data, ..., .dots) {
 }
 
 #' @export
+pull.tbl_svy <- function(.data, var = -1){
+  var <- rlang::enquo(var)
+  dplyr::pull(.data$variables, !!var)
+}
+
+#' @export
 rename.tbl_svy <- function(.data, ...) {
   dots <- rlang::quos(...)
   .data$variables <- rename(.data$variables, !!!dots)
@@ -75,6 +81,9 @@ filter_.tbl_svy <- function(.data, ..., .dots) {
 #' \code{select} and \code{rename} keep or rename variables. See
 #' \code{\link[dplyr]{select}} for more details.
 #'
+#' \code{pull} extracts a variable as a vector (whereas \code{select} returns a \code{tbl_svy}).
+#' See \code{\link[dplyr]{pull}} for more details.
+#'
 #' \code{filter} keeps certain observations. See \code{\link[dplyr]{filter}}
 #' for more details.
 #'
@@ -117,6 +126,13 @@ NULL
 #' @importFrom dplyr select
 NULL
 
+#' @name pull
+#' @export
+#' @importFrom dplyr pull
+#' @rdname dplyr_single
+NULL
+
+
 #' @name select_
 #' @export
 #' @importFrom dplyr select_
@@ -146,7 +162,6 @@ NULL
 #' @importFrom dplyr filter_
 #' @rdname srvyr-se-deprecated
 NULL
-
 
 #' Manipulate multiple columns.
 #'

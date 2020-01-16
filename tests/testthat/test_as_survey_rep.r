@@ -21,7 +21,7 @@ scd2brr_srvyr <- scd2brr$repweights %>%
   dplyr::bind_cols(scd) %>%
   mutate(weights = 1) %>%
   as_survey_rep(repweights = starts_with("rep"),
-                    type = "BRR", rho = scd2brr$rho,
+                    type = "BRR",
                     rscales = scd2brr$rscales,
                     mse = scd2brr$mse, weights = weights)
 
@@ -149,13 +149,13 @@ test_that("works with character", {
   expect_equal(
     scd2brr_base %>%
       as_survey_rep(repweights = starts_with("rep"),
-                    type = "BRR", rho = scd2brr$rho,
+                    type = "BRR",
                     rscales = scd2brr$rscales,
                     mse = scd2brr$mse, weights = weights),
 
     scd2brr_base %>%
       as_survey_rep_(repweights = 'starts_with("rep")',
-                     type = "BRR", rho = scd2brr$rho,
+                     type = "BRR",
                      rscales = scd2brr$rscales,
                      mse = scd2brr$mse, weights = "weights")
   )
@@ -165,13 +165,13 @@ test_that("works with formula", {
   expect_equal(
     scd2brr_base %>%
       as_survey_rep(repweights = starts_with("rep"),
-                    type = "BRR", rho = scd2brr$rho,
+                    type = "BRR",
                     rscales = scd2brr$rscales,
                     mse = scd2brr$mse, weights = weights),
 
     scd2brr_base %>%
       as_survey_rep_(repweights = ~starts_with("rep"),
-                     type = "BRR", rho = scd2brr$rho,
+                     type = "BRR",
                      rscales = scd2brr$rscales,
                      mse = scd2brr$mse, weights = ~weights)
   )

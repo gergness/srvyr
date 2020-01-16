@@ -1,6 +1,11 @@
 # srvyr (development version)
 * `filter`ing on grouped survey designs now works correctly (#54, thanks for reporting @dcaseykc)
 
+* `df` parameter now set to be degrees of freedom of survey for quantiles and variance to match other 
+   functions.
+   
+* Updated tests to work with upcoming version of survey (#66).
+
 # srvyr 0.3.6
 * Small update to quasiquotation syntax inside `unweighted` to improve consistency with recent rlang updates (#54).
 

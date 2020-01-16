@@ -367,7 +367,7 @@ test_that(
 
     survey <- svyvar(~api99, dstrata) %>%
       {cbind(select(as.data.frame(.), variance),
-             as.data.frame(confint(.)))} %>%
+             as.data.frame(confint(., df = degf(dstrata))))} %>%
       setNames(c("api99", "api99_low", "api99_upp"))
 
     expect_df_equal(srvyr, survey)
@@ -412,7 +412,7 @@ test_that(
 
     survey <- svyby(~api99, ~awards, dstrata, svyvar) %>%
       {cbind(select(., -se),
-             confint(.))} %>%
+             confint(., df = degf(dstrata)))} %>%
       setNames(c("awards", "api99", "api99_low", "api99_upp"))
 
     expect_df_equal(srvyr, survey)

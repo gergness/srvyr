@@ -74,7 +74,7 @@ select." />
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.7</span>
       </span>
     </div>
 
@@ -150,9 +150,17 @@ column names, or convenience functions described in
     <pre class="usage"><span class='fu'>as_survey_twophase</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>as_survey_twophase</span>(<span class='no'>.data</span>, <span class='no'>id</span>, <span class='kw'>strata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>probs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>subset</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"full"</span>, <span class='st'>"approx"</span>, <span class='st'>"simple"</span>), <span class='no'>...</span>)
+<span class='fu'>as_survey_twophase</span>(
+  <span class='no'>.data</span>,
+  <span class='no'>id</span>,
+  <span class='kw'>strata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>probs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>subset</span>,
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"full"</span>, <span class='st'>"approx"</span>, <span class='st'>"simple"</span>),
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for twophase2</span>
 <span class='fu'>as_survey_twophase</span>(<span class='no'>.data</span>, <span class='no'>...</span>)</pre>

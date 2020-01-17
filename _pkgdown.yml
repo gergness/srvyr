@@ -16,10 +16,13 @@ reference:
       - cascade
       - group_by
       - summarise
+      - summarise_all
       - survey_mean
       - survey_total
       - survey_quantile
       - survey_ratio
+      - survey_tally
+      - survey_var
       - unweighted
   - title: "Other supported dplyr functions"
     desc: "Other functions from dplyr that work on srvyr's survey objects"

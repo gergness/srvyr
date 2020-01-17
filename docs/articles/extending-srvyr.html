@@ -32,7 +32,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.7</span>
       </span>
     </div>
 
@@ -89,13 +89,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="extending-srvyr_files/jquery-1.11.3/jquery.min.js"></script><script src="extending-srvyr_files/elevate-section-attrs-2.0/elevate-section-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Extending srvyr</h1>
                         <h4 class="author">Greg Freedman Ellis</h4>
             
-            <h4 class="date">2019-10-12</h4>
+            <h4 class="date">2020-01-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/extending-srvyr.Rmd"><code>vignettes/extending-srvyr.Rmd</code></a></small>
       <div class="hidden name"><code>extending-srvyr.Rmd</code></div>
@@ -154,108 +154,108 @@
 <a href="#example-conveysvygini---survey_gini" class="anchor"></a>Example: convey::svygini -&gt; survey_gini</h2>
 <p>That was just a lot of text, but I think it’s probably easiest just to provide an example. The convey package provides several methods for analysis of inequality using survey data. The svygini function calculates the gini coefficient. Here, we’ll write functions that make a srvyr version <code>survey_gini</code>.</p>
 <p>To distinguish between ungrouped and grouped survey objects, we’ll make a generic. Also note the use of <code>.svy = current_svy()</code> to get the survey object from the current summarize context.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># S3 generic function</span></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">survey_gini &lt;-<span class="st"> </span><span class="cf">function</span>(</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">  x, <span class="dt">na.rm =</span> <span class="ot">FALSE</span>, <span class="dt">vartype =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span>), <span class="dt">.svy =</span> <span class="kw"><a href="../reference/current_svy.html">current_svy</a></span>(), ...</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">) {</a>
-<a class="sourceLine" id="cb4-5" data-line-number="5">  <span class="kw"><a href="https://rdrr.io/r/base/UseMethod.html">UseMethod</a></span>(<span class="st">"survey_gini"</span>, .svy)</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">}</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># S3 generic function</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>survey_gini &lt;-<span class="st"> </span><span class="cf">function</span>(</span>
+<span id="cb4-3"><a href="#cb4-3"></a>  x, <span class="dt">na.rm =</span> <span class="ot">FALSE</span>, <span class="dt">vartype =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span>), <span class="dt">.svy =</span> <span class="kw"><a href="../reference/current_svy.html">current_svy</a></span>(), ...</span>
+<span id="cb4-4"><a href="#cb4-4"></a>) {</span>
+<span id="cb4-5"><a href="#cb4-5"></a>  <span class="kw"><a href="https://rdrr.io/r/base/UseMethod.html">UseMethod</a></span>(<span class="st">"survey_gini"</span>, .svy)</span>
+<span id="cb4-6"><a href="#cb4-6"></a>}</span></code></pre></div>
 <p>And here’s the ungrouped version, which uses <code><a href="../reference/set_survey_vars.html">set_survey_vars()</a></code>, <code><a href="https://rdrr.io/pkg/convey/man/svygini.html">convey::svygini()</a></code> and <code><a href="../reference/get_var_est.html">get_var_est()</a></code>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">survey_gini.tbl_svy &lt;-<span class="st"> </span><span class="cf">function</span>(</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">  x, <span class="dt">na.rm =</span> <span class="ot">FALSE</span>, <span class="dt">vartype =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span>), <span class="dt">.svy =</span> <span class="kw"><a href="../reference/current_svy.html">current_svy</a></span>(), ...</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">) {</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">  <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/missing.html">missing</a></span>(vartype)) vartype &lt;-<span class="st"> "se"</span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">  vartype &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(vartype, <span class="dt">several.ok =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">  .svy &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/srvyr/man/set_survey_vars.html">set_survey_vars</a></span>(.svy, x)</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">  </a>
-<a class="sourceLine" id="cb5-8" data-line-number="8">  out &lt;-<span class="st"> </span>convey<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span>(<span class="op">~</span><span class="st">`</span><span class="dt">__SRVYR_TEMP_VAR__</span><span class="st">`</span>, <span class="dt">na.rm =</span> na.rm, <span class="dt">design =</span> .svy)</a>
-<a class="sourceLine" id="cb5-9" data-line-number="9">  out &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/srvyr/man/get_var_est.html">get_var_est</a></span>(out, vartype)</a>
-<a class="sourceLine" id="cb5-10" data-line-number="10">  out</a>
-<a class="sourceLine" id="cb5-11" data-line-number="11">}</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>survey_gini.tbl_svy &lt;-<span class="st"> </span><span class="cf">function</span>(</span>
+<span id="cb5-2"><a href="#cb5-2"></a>  x, <span class="dt">na.rm =</span> <span class="ot">FALSE</span>, <span class="dt">vartype =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span>), <span class="dt">.svy =</span> <span class="kw"><a href="../reference/current_svy.html">current_svy</a></span>(), ...</span>
+<span id="cb5-3"><a href="#cb5-3"></a>) {</span>
+<span id="cb5-4"><a href="#cb5-4"></a>  <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/missing.html">missing</a></span>(vartype)) vartype &lt;-<span class="st"> "se"</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>  vartype &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(vartype, <span class="dt">several.ok =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb5-6"><a href="#cb5-6"></a>  .svy &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/srvyr/man/set_survey_vars.html">set_survey_vars</a></span>(.svy, x)</span>
+<span id="cb5-7"><a href="#cb5-7"></a>  </span>
+<span id="cb5-8"><a href="#cb5-8"></a>  out &lt;-<span class="st"> </span>convey<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span>(<span class="op">~</span><span class="st">`</span><span class="dt">__SRVYR_TEMP_VAR__</span><span class="st">`</span>, <span class="dt">na.rm =</span> na.rm, <span class="dt">design =</span> .svy)</span>
+<span id="cb5-9"><a href="#cb5-9"></a>  out &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/srvyr/man/get_var_est.html">get_var_est</a></span>(out, vartype)</span>
+<span id="cb5-10"><a href="#cb5-10"></a>  out</span>
+<span id="cb5-11"><a href="#cb5-11"></a>}</span></code></pre></div>
 <p>Finally, the grouped version which uses the above functions plus <code><a href="https://rdrr.io/pkg/survey/man/svyby.html">survey::svyby()</a></code>.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">survey_gini.grouped_svy &lt;-<span class="st"> </span><span class="cf">function</span>(</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">  x, <span class="dt">na.rm =</span> <span class="ot">FALSE</span>, <span class="dt">vartype =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span>), <span class="dt">.svy =</span> <span class="kw"><a href="../reference/current_svy.html">current_svy</a></span>(), ...</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">) {</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">  <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/missing.html">missing</a></span>(vartype)) vartype &lt;-<span class="st"> "se"</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">  vartype &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(vartype, <span class="dt">several.ok =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">  .svy &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/srvyr/man/set_survey_vars.html">set_survey_vars</a></span>(.svy, x)</a>
-<a class="sourceLine" id="cb6-7" data-line-number="7">  grps_formula &lt;-<span class="st"> </span>survey<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/surveysummary.html">make.formula</a></span>(<span class="kw"><a href="../reference/groups.html">group_vars</a></span>(.svy))</a>
-<a class="sourceLine" id="cb6-8" data-line-number="8">  </a>
-<a class="sourceLine" id="cb6-9" data-line-number="9">  out &lt;-<span class="st"> </span>survey<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svyby.html">svyby</a></span>(</a>
-<a class="sourceLine" id="cb6-10" data-line-number="10">    <span class="op">~</span><span class="st">`</span><span class="dt">__SRVYR_TEMP_VAR__</span><span class="st">`</span>, grps_formula, convey<span class="op">::</span>svygini, <span class="dt">na.rm =</span> na.rm, <span class="dt">design =</span> .svy</a>
-<a class="sourceLine" id="cb6-11" data-line-number="11">  )</a>
-<a class="sourceLine" id="cb6-12" data-line-number="12">  out &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/srvyr/man/get_var_est.html">get_var_est</a></span>(out, vartype, <span class="dt">grps =</span> <span class="kw"><a href="../reference/groups.html">group_vars</a></span>(.svy))</a>
-<a class="sourceLine" id="cb6-13" data-line-number="13">  out</a>
-<a class="sourceLine" id="cb6-14" data-line-number="14">}</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>survey_gini.grouped_svy &lt;-<span class="st"> </span><span class="cf">function</span>(</span>
+<span id="cb6-2"><a href="#cb6-2"></a>  x, <span class="dt">na.rm =</span> <span class="ot">FALSE</span>, <span class="dt">vartype =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span>), <span class="dt">.svy =</span> <span class="kw"><a href="../reference/current_svy.html">current_svy</a></span>(), ...</span>
+<span id="cb6-3"><a href="#cb6-3"></a>) {</span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/missing.html">missing</a></span>(vartype)) vartype &lt;-<span class="st"> "se"</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a>  vartype &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(vartype, <span class="dt">several.ok =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb6-6"><a href="#cb6-6"></a>  .svy &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/srvyr/man/set_survey_vars.html">set_survey_vars</a></span>(.svy, x)</span>
+<span id="cb6-7"><a href="#cb6-7"></a>  grps_formula &lt;-<span class="st"> </span>survey<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/surveysummary.html">make.formula</a></span>(<span class="kw"><a href="../reference/groups.html">group_vars</a></span>(.svy))</span>
+<span id="cb6-8"><a href="#cb6-8"></a>  </span>
+<span id="cb6-9"><a href="#cb6-9"></a>  out &lt;-<span class="st"> </span>survey<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svyby.html">svyby</a></span>(</span>
+<span id="cb6-10"><a href="#cb6-10"></a>    <span class="op">~</span><span class="st">`</span><span class="dt">__SRVYR_TEMP_VAR__</span><span class="st">`</span>, grps_formula, convey<span class="op">::</span>svygini, <span class="dt">na.rm =</span> na.rm, <span class="dt">design =</span> .svy</span>
+<span id="cb6-11"><a href="#cb6-11"></a>  )</span>
+<span id="cb6-12"><a href="#cb6-12"></a>  out &lt;-<span class="st"> </span>srvyr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/srvyr/man/get_var_est.html">get_var_est</a></span>(out, vartype, <span class="dt">grps =</span> <span class="kw"><a href="../reference/groups.html">group_vars</a></span>(.svy))</span>
+<span id="cb6-13"><a href="#cb6-13"></a>  out</span>
+<span id="cb6-14"><a href="#cb6-14"></a>}</span></code></pre></div>
 <p>And here’s what these functions look like in practice:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Example from ?convey::svygini</span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span>({</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(srvyr)</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(survey)</a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(convey)</a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(vardpoor)</a>
-<a class="sourceLine" id="cb7-7" data-line-number="7">})</a>
-<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(eusilc) ; <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>( eusilc ) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/chartr.html">tolower</a></span>( <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>( eusilc ) )</a>
-<a class="sourceLine" id="cb7-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co"># Setup for survey package</span></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11">des_eusilc &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span>(</a>
-<a class="sourceLine" id="cb7-12" data-line-number="12">  <span class="dt">ids =</span> <span class="op">~</span>rb030, </a>
-<a class="sourceLine" id="cb7-13" data-line-number="13">  <span class="dt">strata =</span> <span class="op">~</span>db040,  </a>
-<a class="sourceLine" id="cb7-14" data-line-number="14">  <span class="dt">weights =</span> <span class="op">~</span>rb050, </a>
-<a class="sourceLine" id="cb7-15" data-line-number="15">  <span class="dt">data =</span> eusilc</a>
-<a class="sourceLine" id="cb7-16" data-line-number="16">)</a>
-<a class="sourceLine" id="cb7-17" data-line-number="17">des_eusilc &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/convey/man/convey_prep.html">convey_prep</a></span>(des_eusilc)</a>
-<a class="sourceLine" id="cb7-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co"># Setup for srvyr package</span></a>
-<a class="sourceLine" id="cb7-20" data-line-number="20">srvyr_eusilc &lt;-<span class="st"> </span>eusilc <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-21" data-line-number="21"><span class="st">  </span><span class="kw"><a href="../reference/as_survey.html">as_survey</a></span>(</a>
-<a class="sourceLine" id="cb7-22" data-line-number="22">    <span class="dt">ids =</span> rb030,</a>
-<a class="sourceLine" id="cb7-23" data-line-number="23">    <span class="dt">strata =</span> db040,</a>
-<a class="sourceLine" id="cb7-24" data-line-number="24">    <span class="dt">weights =</span> rb050</a>
-<a class="sourceLine" id="cb7-25" data-line-number="25">  ) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-26" data-line-number="26"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/convey/man/convey_prep.html">convey_prep</a></span>()</a>
-<a class="sourceLine" id="cb7-27" data-line-number="27"></a>
-<a class="sourceLine" id="cb7-28" data-line-number="28"><span class="co">## Ungrouped</span></a>
-<a class="sourceLine" id="cb7-29" data-line-number="29"><span class="co"># Calculate ungrouped for survey package</span></a>
-<a class="sourceLine" id="cb7-30" data-line-number="30"><span class="kw"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span>(<span class="op">~</span>eqincome, <span class="dt">design =</span> des_eusilc)</a>
-<a class="sourceLine" id="cb7-31" data-line-number="31"><span class="co">#&gt;             gini     SE</span></a>
-<a class="sourceLine" id="cb7-32" data-line-number="32"><span class="co">#&gt; eqincome 0.26497 0.0019</span></a>
-<a class="sourceLine" id="cb7-33" data-line-number="33"></a>
-<a class="sourceLine" id="cb7-34" data-line-number="34"><span class="co"># With our new function</span></a>
-<a class="sourceLine" id="cb7-35" data-line-number="35"><span class="kw">survey_gini</span>(srvyr_eusilc<span class="op">$</span>variables<span class="op">$</span>eqincome, <span class="dt">.svy =</span> srvyr_eusilc)</a>
-<a class="sourceLine" id="cb7-36" data-line-number="36"><span class="co">#&gt;   __SRVYR_COEF__         _se</span></a>
-<a class="sourceLine" id="cb7-37" data-line-number="37"><span class="co">#&gt; 1      0.2649652 0.001946982</span></a>
-<a class="sourceLine" id="cb7-38" data-line-number="38"></a>
-<a class="sourceLine" id="cb7-39" data-line-number="39"><span class="co"># And finally, the more typical way through summarize</span></a>
-<a class="sourceLine" id="cb7-40" data-line-number="40">srvyr_eusilc <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-41" data-line-number="41"><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">eqincome =</span> <span class="kw">survey_gini</span>(eqincome))</a>
-<a class="sourceLine" id="cb7-42" data-line-number="42"><span class="co">#&gt; # A tibble: 1 x 2</span></a>
-<a class="sourceLine" id="cb7-43" data-line-number="43"><span class="co">#&gt;   eqincome eqincome_se</span></a>
-<a class="sourceLine" id="cb7-44" data-line-number="44"><span class="co">#&gt;      &lt;dbl&gt;       &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb7-45" data-line-number="45"><span class="co">#&gt; 1    0.265     0.00195</span></a>
-<a class="sourceLine" id="cb7-46" data-line-number="46"></a>
-<a class="sourceLine" id="cb7-47" data-line-number="47"><span class="co">## Groups</span></a>
-<a class="sourceLine" id="cb7-48" data-line-number="48"><span class="co"># Calculate by groups for survey</span></a>
-<a class="sourceLine" id="cb7-49" data-line-number="49">survey<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svyby.html">svyby</a></span>(<span class="op">~</span>eqincome, <span class="op">~</span>rb090, des_eusilc, convey<span class="op">::</span>svygini)</a>
-<a class="sourceLine" id="cb7-50" data-line-number="50"><span class="co">#&gt;         rb090  eqincome          se</span></a>
-<a class="sourceLine" id="cb7-51" data-line-number="51"><span class="co">#&gt; male     male 0.2578983 0.002617279</span></a>
-<a class="sourceLine" id="cb7-52" data-line-number="52"><span class="co">#&gt; female female 0.2702080 0.002892713</span></a>
-<a class="sourceLine" id="cb7-53" data-line-number="53"></a>
-<a class="sourceLine" id="cb7-54" data-line-number="54"><span class="co"># With our new function</span></a>
-<a class="sourceLine" id="cb7-55" data-line-number="55"><span class="kw">survey_gini</span>(srvyr_eusilc<span class="op">$</span>variables<span class="op">$</span>eqincome, <span class="dt">.svy =</span> <span class="kw"><a href="../reference/group_by.html">group_by</a></span>(srvyr_eusilc, rb090))</a>
-<a class="sourceLine" id="cb7-56" data-line-number="56"><span class="co">#&gt;    rb090 __SRVYR_COEF__         _se</span></a>
-<a class="sourceLine" id="cb7-57" data-line-number="57"><span class="co">#&gt; 1   male      0.2578983 0.002617279</span></a>
-<a class="sourceLine" id="cb7-58" data-line-number="58"><span class="co">#&gt; 2 female      0.2702080 0.002892713</span></a>
-<a class="sourceLine" id="cb7-59" data-line-number="59"></a>
-<a class="sourceLine" id="cb7-60" data-line-number="60"><span class="co"># And finally, the more typical way through summarize</span></a>
-<a class="sourceLine" id="cb7-61" data-line-number="61">srvyr_eusilc <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-62" data-line-number="62"><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(rb090) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-63" data-line-number="63"><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">eqincome =</span> <span class="kw">survey_gini</span>(eqincome))</a>
-<a class="sourceLine" id="cb7-64" data-line-number="64"><span class="co">#&gt; # A tibble: 2 x 3</span></a>
-<a class="sourceLine" id="cb7-65" data-line-number="65"><span class="co">#&gt;   rb090  eqincome eqincome_se</span></a>
-<a class="sourceLine" id="cb7-66" data-line-number="66"><span class="co">#&gt;   &lt;fct&gt;     &lt;dbl&gt;       &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb7-67" data-line-number="67"><span class="co">#&gt; 1 male      0.258     0.00262</span></a>
-<a class="sourceLine" id="cb7-68" data-line-number="68"><span class="co">#&gt; 2 female    0.270     0.00289</span></a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Example from ?convey::svygini</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="kw"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span>({</span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(srvyr)</span>
+<span id="cb7-4"><a href="#cb7-4"></a>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(survey)</span>
+<span id="cb7-5"><a href="#cb7-5"></a>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(convey)</span>
+<span id="cb7-6"><a href="#cb7-6"></a>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(vardpoor)</span>
+<span id="cb7-7"><a href="#cb7-7"></a>})</span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(eusilc) ; <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>( eusilc ) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/chartr.html">tolower</a></span>( <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>( eusilc ) )</span>
+<span id="cb7-9"><a href="#cb7-9"></a></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co"># Setup for survey package</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>des_eusilc &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span>(</span>
+<span id="cb7-12"><a href="#cb7-12"></a>  <span class="dt">ids =</span> <span class="op">~</span>rb030, </span>
+<span id="cb7-13"><a href="#cb7-13"></a>  <span class="dt">strata =</span> <span class="op">~</span>db040,  </span>
+<span id="cb7-14"><a href="#cb7-14"></a>  <span class="dt">weights =</span> <span class="op">~</span>rb050, </span>
+<span id="cb7-15"><a href="#cb7-15"></a>  <span class="dt">data =</span> eusilc</span>
+<span id="cb7-16"><a href="#cb7-16"></a>)</span>
+<span id="cb7-17"><a href="#cb7-17"></a>des_eusilc &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/convey/man/convey_prep.html">convey_prep</a></span>(des_eusilc)</span>
+<span id="cb7-18"><a href="#cb7-18"></a></span>
+<span id="cb7-19"><a href="#cb7-19"></a><span class="co"># Setup for srvyr package</span></span>
+<span id="cb7-20"><a href="#cb7-20"></a>srvyr_eusilc &lt;-<span class="st"> </span>eusilc <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-21"><a href="#cb7-21"></a><span class="st">  </span><span class="kw"><a href="../reference/as_survey.html">as_survey</a></span>(</span>
+<span id="cb7-22"><a href="#cb7-22"></a>    <span class="dt">ids =</span> rb030,</span>
+<span id="cb7-23"><a href="#cb7-23"></a>    <span class="dt">strata =</span> db040,</span>
+<span id="cb7-24"><a href="#cb7-24"></a>    <span class="dt">weights =</span> rb050</span>
+<span id="cb7-25"><a href="#cb7-25"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb7-26"><a href="#cb7-26"></a><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/convey/man/convey_prep.html">convey_prep</a></span>()</span>
+<span id="cb7-27"><a href="#cb7-27"></a></span>
+<span id="cb7-28"><a href="#cb7-28"></a><span class="co">## Ungrouped</span></span>
+<span id="cb7-29"><a href="#cb7-29"></a><span class="co"># Calculate ungrouped for survey package</span></span>
+<span id="cb7-30"><a href="#cb7-30"></a><span class="kw"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span>(<span class="op">~</span>eqincome, <span class="dt">design =</span> des_eusilc)</span>
+<span id="cb7-31"><a href="#cb7-31"></a><span class="co">#&gt;             gini     SE</span></span>
+<span id="cb7-32"><a href="#cb7-32"></a><span class="co">#&gt; eqincome 0.26497 0.0019</span></span>
+<span id="cb7-33"><a href="#cb7-33"></a></span>
+<span id="cb7-34"><a href="#cb7-34"></a><span class="co"># With our new function</span></span>
+<span id="cb7-35"><a href="#cb7-35"></a><span class="kw">survey_gini</span>(srvyr_eusilc<span class="op">$</span>variables<span class="op">$</span>eqincome, <span class="dt">.svy =</span> srvyr_eusilc)</span>
+<span id="cb7-36"><a href="#cb7-36"></a><span class="co">#&gt;   __SRVYR_COEF__         _se</span></span>
+<span id="cb7-37"><a href="#cb7-37"></a><span class="co">#&gt; 1      0.2649652 0.001946982</span></span>
+<span id="cb7-38"><a href="#cb7-38"></a></span>
+<span id="cb7-39"><a href="#cb7-39"></a><span class="co"># And finally, the more typical way through summarize</span></span>
+<span id="cb7-40"><a href="#cb7-40"></a>srvyr_eusilc <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-41"><a href="#cb7-41"></a><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">eqincome =</span> <span class="kw">survey_gini</span>(eqincome))</span>
+<span id="cb7-42"><a href="#cb7-42"></a><span class="co">#&gt; # A tibble: 1 x 2</span></span>
+<span id="cb7-43"><a href="#cb7-43"></a><span class="co">#&gt;   eqincome eqincome_se</span></span>
+<span id="cb7-44"><a href="#cb7-44"></a><span class="co">#&gt;      &lt;dbl&gt;       &lt;dbl&gt;</span></span>
+<span id="cb7-45"><a href="#cb7-45"></a><span class="co">#&gt; 1    0.265     0.00195</span></span>
+<span id="cb7-46"><a href="#cb7-46"></a></span>
+<span id="cb7-47"><a href="#cb7-47"></a><span class="co">## Groups</span></span>
+<span id="cb7-48"><a href="#cb7-48"></a><span class="co"># Calculate by groups for survey</span></span>
+<span id="cb7-49"><a href="#cb7-49"></a>survey<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svyby.html">svyby</a></span>(<span class="op">~</span>eqincome, <span class="op">~</span>rb090, des_eusilc, convey<span class="op">::</span>svygini)</span>
+<span id="cb7-50"><a href="#cb7-50"></a><span class="co">#&gt;         rb090  eqincome          se</span></span>
+<span id="cb7-51"><a href="#cb7-51"></a><span class="co">#&gt; male     male 0.2578983 0.002617279</span></span>
+<span id="cb7-52"><a href="#cb7-52"></a><span class="co">#&gt; female female 0.2702080 0.002892713</span></span>
+<span id="cb7-53"><a href="#cb7-53"></a></span>
+<span id="cb7-54"><a href="#cb7-54"></a><span class="co"># With our new function</span></span>
+<span id="cb7-55"><a href="#cb7-55"></a><span class="kw">survey_gini</span>(srvyr_eusilc<span class="op">$</span>variables<span class="op">$</span>eqincome, <span class="dt">.svy =</span> <span class="kw"><a href="../reference/group_by.html">group_by</a></span>(srvyr_eusilc, rb090))</span>
+<span id="cb7-56"><a href="#cb7-56"></a><span class="co">#&gt;    rb090 __SRVYR_COEF__         _se</span></span>
+<span id="cb7-57"><a href="#cb7-57"></a><span class="co">#&gt; 1   male      0.2578983 0.002617279</span></span>
+<span id="cb7-58"><a href="#cb7-58"></a><span class="co">#&gt; 2 female      0.2702080 0.002892713</span></span>
+<span id="cb7-59"><a href="#cb7-59"></a></span>
+<span id="cb7-60"><a href="#cb7-60"></a><span class="co"># And finally, the more typical way through summarize</span></span>
+<span id="cb7-61"><a href="#cb7-61"></a>srvyr_eusilc <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-62"><a href="#cb7-62"></a><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(rb090) <span class="op">%&gt;%</span></span>
+<span id="cb7-63"><a href="#cb7-63"></a><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">eqincome =</span> <span class="kw">survey_gini</span>(eqincome))</span>
+<span id="cb7-64"><a href="#cb7-64"></a><span class="co">#&gt; # A tibble: 2 x 3</span></span>
+<span id="cb7-65"><a href="#cb7-65"></a><span class="co">#&gt;   rb090  eqincome eqincome_se</span></span>
+<span id="cb7-66"><a href="#cb7-66"></a><span class="co">#&gt;   &lt;fct&gt;     &lt;dbl&gt;       &lt;dbl&gt;</span></span>
+<span id="cb7-67"><a href="#cb7-67"></a><span class="co">#&gt; 1 male      0.258     0.00262</span></span>
+<span id="cb7-68"><a href="#cb7-68"></a><span class="co">#&gt; 2 female    0.270     0.00289</span></span></code></pre></div>
 </div>
   </div>
 

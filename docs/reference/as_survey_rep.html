@@ -70,7 +70,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.7</span>
       </span>
     </div>
 
@@ -142,35 +142,69 @@
     <pre class="usage"><span class='fu'>as_survey_rep</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>as_survey_rep</span>(<span class='no'>.data</span>, <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>repweights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"BRR"</span>, <span class='st'>"Fay"</span>, <span class='st'>"JK1"</span>,
-  <span class='st'>"JKn"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"other"</span>), <span class='kw'>combined_weights</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>rho</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>bootstrap_average</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rscales</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fpctype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fraction"</span>, <span class='st'>"correction"</span>),
-  <span class='kw'>mse</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"survey.replicates.mse"</span>), <span class='no'>...</span>)
+<span class='fu'>as_survey_rep</span>(
+  <span class='no'>.data</span>,
+  <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>repweights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"BRR"</span>, <span class='st'>"Fay"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"other"</span>),
+  <span class='kw'>combined_weights</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>rho</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>bootstrap_average</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>rscales</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fpctype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fraction"</span>, <span class='st'>"correction"</span>),
+  <span class='kw'>mse</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"survey.replicates.mse"</span>),
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for tbl_lazy</span>
-<span class='fu'>as_survey_rep</span>(<span class='no'>.data</span>, <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>repweights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"BRR"</span>, <span class='st'>"Fay"</span>, <span class='st'>"JK1"</span>,
-  <span class='st'>"JKn"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"other"</span>), <span class='kw'>combined_weights</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>rho</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>bootstrap_average</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rscales</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fpctype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fraction"</span>, <span class='st'>"correction"</span>),
-  <span class='kw'>mse</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"survey.replicates.mse"</span>), <span class='no'>...</span>)
+<span class='fu'>as_survey_rep</span>(
+  <span class='no'>.data</span>,
+  <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>repweights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"BRR"</span>, <span class='st'>"Fay"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"other"</span>),
+  <span class='kw'>combined_weights</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>rho</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>bootstrap_average</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>rscales</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fpctype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fraction"</span>, <span class='st'>"correction"</span>),
+  <span class='kw'>mse</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"survey.replicates.mse"</span>),
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for svyrep.design</span>
 <span class='fu'>as_survey_rep</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for survey.design2</span>
-<span class='fu'>as_survey_rep</span>(<span class='no'>.data</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"auto"</span>, <span class='st'>"JK1"</span>,
-  <span class='st'>"JKn"</span>, <span class='st'>"BRR"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"subbootstrap"</span>, <span class='st'>"mrbbootstrap"</span>, <span class='st'>"Fay"</span>),
-  <span class='kw'>rho</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fpctype</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>mse</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"survey.replicates.mse"</span>))
+<span class='fu'>as_survey_rep</span>(
+  <span class='no'>.data</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"auto"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"BRR"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"subbootstrap"</span>, <span class='st'>"mrbbootstrap"</span>,
+    <span class='st'>"Fay"</span>),
+  <span class='kw'>rho</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fpctype</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>,
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>mse</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"survey.replicates.mse"</span>)
+)
 
 <span class='co'># S3 method for tbl_svy</span>
-<span class='fu'>as_survey_rep</span>(<span class='no'>.data</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"auto"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>,
-  <span class='st'>"BRR"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"subbootstrap"</span>, <span class='st'>"mrbbootstrap"</span>, <span class='st'>"Fay"</span>), <span class='kw'>rho</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fpctype</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>mse</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"survey.replicates.mse"</span>))</pre>
+<span class='fu'>as_survey_rep</span>(
+  <span class='no'>.data</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"auto"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"BRR"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"subbootstrap"</span>, <span class='st'>"mrbbootstrap"</span>,
+    <span class='st'>"Fay"</span>),
+  <span class='kw'>rho</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fpctype</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>,
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>mse</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"survey.replicates.mse"</span>)
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

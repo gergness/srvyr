@@ -68,7 +68,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.7</span>
       </span>
     </div>
 
@@ -132,18 +132,29 @@
       <small>Source: <a href='https://github.com/gergness/srvyr/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="srvyr-0-3-6" class="section level1">
+    <div id="srvyr-037" class="section level1">
 <h1 class="page-header">
-<a href="#srvyr-0-3-6" class="anchor"></a>srvyr 0.3.6<small> 2019-10-05 </small>
+<a href="#srvyr-037" class="anchor"></a>srvyr 0.3.7<small> Unreleased </small>
+</h1>
+<ul>
+<li><p><code>filter</code>ing on grouped survey designs now works correctly (<a href='https://github.com/gergness/srvyr/issues/54'>#54</a>, thanks for reporting <a href='https://github.com/dcaseykc'>@dcaseykc</a>)</p></li>
+<li><p>Added function <code>pull</code> (<a href='https://github.com/gergness/srvyr/issues/63'>#63</a>, thanks <a href='https://github.com/dcaseykc'>@dcaseykc</a>)</p></li>
+<li><p><code>df</code> parameter now set to be degrees of freedom of survey for quantiles and variance to match other functions.</p></li>
+<li><p>Updated tests to work with upcoming version of survey (<a href='https://github.com/gergness/srvyr/issues/66'>#66</a>).</p></li>
+</ul>
+</div>
+    <div id="srvyr-036" class="section level1">
+<h1 class="page-header">
+<a href="#srvyr-036" class="anchor"></a>srvyr 0.3.6<small> 2019-10-05 </small>
 </h1>
 <ul>
 <li><p>Small update to quasiquotation syntax inside <code>unweighted</code> to improve consistency with recent rlang updates (<a href='https://github.com/gergness/srvyr/issues/54'>#54</a>).</p></li>
 <li><p>Added functions <code><a href="../reference/survey_tally.html">survey_tally()</a></code> and <code><a href="../reference/survey_tally.html">survey_count()</a></code> (<a href='https://github.com/gergness/srvyr/issues/53'>#53</a>)</p></li>
 </ul>
 </div>
-    <div id="srvyr-0-3-5" class="section level1">
+    <div id="srvyr-035" class="section level1">
 <h1 class="page-header">
-<a href="#srvyr-0-3-5" class="anchor"></a>srvyr 0.3.5<small> 2019-07-09 </small>
+<a href="#srvyr-035" class="anchor"></a>srvyr 0.3.5<small> 2019-07-09 </small>
 </h1>
 <ul>
 <li><p>New functions survey_var and survey_sd to calculate population variance and standard deviaton.</p></li>
@@ -153,44 +164,44 @@
 <li><p>Small updates to replace soft-deprecated dplyr functions with their tibble and tidyselect equivalents (<a href='https://github.com/gergness/srvyr/issues/52'>#52</a>, thanks <a href='https://github.com/bschneidr'>@bschneidr</a>).</p></li>
 </ul>
 </div>
-    <div id="srvyr-0-3-4" class="section level1">
+    <div id="srvyr-034" class="section level1">
 <h1 class="page-header">
-<a href="#srvyr-0-3-4" class="anchor"></a>srvyr 0.3.4<small> 2019-01-20 </small>
+<a href="#srvyr-034" class="anchor"></a>srvyr 0.3.4<small> 2019-01-20 </small>
 </h1>
 <ul>
 <li><p>survey_mean/survey_total allow <code>deff="replace"</code> like their survey package forbearers. (<a href='https://github.com/gergness/srvyr/issues/46'>#46</a>, thanks <a href='https://github.com/mandes95'>@mandes95</a>)</p></li>
 <li><p>Fixes for new release of dplyr</p></li>
 </ul>
 </div>
-    <div id="srvyr-0-3-3" class="section level1">
+    <div id="srvyr-033" class="section level1">
 <h1 class="page-header">
-<a href="#srvyr-0-3-3" class="anchor"></a>srvyr 0.3.3<small> 2018-05-22 </small>
+<a href="#srvyr-033" class="anchor"></a>srvyr 0.3.3<small> 2018-05-22 </small>
 </h1>
 <ul>
 <li><p>Add warning to explain that design effects cannot be calculated on proportions. (<a href='https://github.com/gergness/srvyr/issues/39'>#39</a>, thanks <a href='https://github.com/mlaviolet'>@mlaviolet</a>)</p></li>
 <li><p>Remove dependency on stringr in tests and add DBI to suggests so that test dependencies are correctly specified (<a href='https://github.com/gergness/srvyr/issues/40'>#40</a>, thanks CRAN!)</p></li>
 </ul>
 </div>
-    <div id="srvyr-0-3-2" class="section level1">
+    <div id="srvyr-032" class="section level1">
 <h1 class="page-header">
-<a href="#srvyr-0-3-2" class="anchor"></a>srvyr 0.3.2<small> 2018-05-04 </small>
+<a href="#srvyr-032" class="anchor"></a>srvyr 0.3.2<small> 2018-05-04 </small>
 </h1>
 <ul>
 <li>Bug fix for calculating multiple quantiles on grouped data (<a href='https://github.com/gergness/srvyr/issues/38'>#38</a>, thanks <a href='https://github.com/iantperry'>@iantperry</a>)</li>
 </ul>
 </div>
-    <div id="srvyr-0-3-1" class="section level1">
+    <div id="srvyr-031" class="section level1">
 <h1 class="page-header">
-<a href="#srvyr-0-3-1" class="anchor"></a>srvyr 0.3.1<small> 2018-03-10 </small>
+<a href="#srvyr-031" class="anchor"></a>srvyr 0.3.1<small> 2018-03-10 </small>
 </h1>
 <ul>
 <li><p>When converting from a survey db-backed survey to a srvyr one srvyr now tries to capture the updates you’ve already sent. If dbplyr can convert the function, then it will bring the update. If it can’t it will warn you (<a href='https://github.com/gergness/srvyr/issues/35'>#35</a>).</p></li>
 <li><p>Small bug fixes, mostly having to do with CRAN checks, running on CI services, or for upstream rev dep checks.</p></li>
 </ul>
 </div>
-    <div id="srvyr-0-3-0" class="section level1">
+    <div id="srvyr-030" class="section level1">
 <h1 class="page-header">
-<a href="#srvyr-0-3-0" class="anchor"></a>srvyr 0.3.0<small> 2018-01-24 </small>
+<a href="#srvyr-030" class="anchor"></a>srvyr 0.3.0<small> 2018-01-24 </small>
 </h1>
 <ul>
 <li><p>srvyr now uses tidy evaluation from rlang. The “underscore” functions have been soft deprecated in favor of quosure splicing. See dplyr’s vignette “programming” for more details. In almost all cases, the old syntax will still work, with one exception: the standard evaluation function <code><a href="../reference/srvyr-se-deprecated.html">as_survey_twophase_()</a></code> had to be changed slightly so that the entire list is inside quotation.</p></li>
@@ -198,34 +209,34 @@
 <li><p>srvyr now has a pkgdown site, check it out at <a href="http://gdfe.co/srvyr" class="uri">http://gdfe.co/srvyr</a></p></li>
 </ul>
 </div>
-    <div id="srvyr-0-2-2" class="section level1">
+    <div id="srvyr-022" class="section level1">
 <h1 class="page-header">
-<a href="#srvyr-0-2-2" class="anchor"></a>srvyr 0.2.2<small> 2017-06-23 </small>
+<a href="#srvyr-022" class="anchor"></a>srvyr 0.2.2<small> 2017-06-23 </small>
 </h1>
 <ul>
 <li>Remove test blocking survey update</li>
 </ul>
 </div>
-    <div id="srvyr-0-2-1" class="section level1">
+    <div id="srvyr-021" class="section level1">
 <h1 class="page-header">
-<a href="#srvyr-0-2-1" class="anchor"></a>srvyr 0.2.1<small> 2017-04-26 </small>
+<a href="#srvyr-021" class="anchor"></a>srvyr 0.2.1<small> 2017-04-26 </small>
 </h1>
 <ul>
 <li><p>Added support for dplyr mutate_at/_if/_all and summarize_at/_if/_all for srvyr surveys.</p></li>
 <li><p>Fixed a few bugs introduced with dplyr 0.6. This version of srvyr will work with both old versions of dplyr and 0.6, but may be full of warnings if you update dplyr. Full support for the new dplyr is coming soon.</p></li>
 </ul>
 </div>
-    <div id="srvyr-0-2-0" class="section level1">
+    <div id="srvyr-020" class="section level1">
 <h1 class="page-header">
-<a href="#srvyr-0-2-0" class="anchor"></a>srvyr 0.2.0<small> 2016-09-26 </small>
+<a href="#srvyr-020" class="anchor"></a>srvyr 0.2.0<small> 2016-09-26 </small>
 </h1>
 <ul>
 <li>Added support for database backed surveys, using dplyr’s handling of DBI. Because of problems interacting with the survey package twophase designs do not work.</li>
 </ul>
 </div>
-    <div id="srvyr-0-1-2" class="section level1">
+    <div id="srvyr-012" class="section level1">
 <h1 class="page-header">
-<a href="#srvyr-0-1-2" class="anchor"></a>srvyr 0.1.2<small> 2016-06-28 </small>
+<a href="#srvyr-012" class="anchor"></a>srvyr 0.1.2<small> 2016-06-28 </small>
 </h1>
 <ul>
 <li><p>Fixed a problem with confidence levels not being passed into quantiles</p></li>
@@ -233,9 +244,9 @@
 <li><p><code>summarize</code> and <code>mutate</code> match dplyr’s behavior when arguments aren’t named (uses <code>dplyr::auto_name()</code>)</p></li>
 </ul>
 </div>
-    <div id="srvyr-0-1-1" class="section level1">
+    <div id="srvyr-011" class="section level1">
 <h1 class="page-header">
-<a href="#srvyr-0-1-1" class="anchor"></a>srvyr 0.1.1<small> 2016-04-03 </small>
+<a href="#srvyr-011" class="anchor"></a>srvyr 0.1.1<small> 2016-04-03 </small>
 </h1>
 <ul>
 <li><p>New function <code>cascade</code> summarizes groups, and cascades to create summary statistics of groups of groups.</p></li>
@@ -249,18 +260,19 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#srvyr-0-3-6">0.3.6</a></li>
-        <li><a href="#srvyr-0-3-5">0.3.5</a></li>
-        <li><a href="#srvyr-0-3-4">0.3.4</a></li>
-        <li><a href="#srvyr-0-3-3">0.3.3</a></li>
-        <li><a href="#srvyr-0-3-2">0.3.2</a></li>
-        <li><a href="#srvyr-0-3-1">0.3.1</a></li>
-        <li><a href="#srvyr-0-3-0">0.3.0</a></li>
-        <li><a href="#srvyr-0-2-2">0.2.2</a></li>
-        <li><a href="#srvyr-0-2-1">0.2.1</a></li>
-        <li><a href="#srvyr-0-2-0">0.2.0</a></li>
-        <li><a href="#srvyr-0-1-2">0.1.2</a></li>
-        <li><a href="#srvyr-0-1-1">0.1.1</a></li>
+        <li><a href="#srvyr-037">0.3.7</a></li>
+        <li><a href="#srvyr-036">0.3.6</a></li>
+        <li><a href="#srvyr-035">0.3.5</a></li>
+        <li><a href="#srvyr-034">0.3.4</a></li>
+        <li><a href="#srvyr-033">0.3.3</a></li>
+        <li><a href="#srvyr-032">0.3.2</a></li>
+        <li><a href="#srvyr-031">0.3.1</a></li>
+        <li><a href="#srvyr-030">0.3.0</a></li>
+        <li><a href="#srvyr-022">0.2.2</a></li>
+        <li><a href="#srvyr-021">0.2.1</a></li>
+        <li><a href="#srvyr-020">0.2.0</a></li>
+        <li><a href="#srvyr-012">0.1.2</a></li>
+        <li><a href="#srvyr-011">0.1.1</a></li>
       </ul>
     </div>
   </div>

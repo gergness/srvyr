@@ -32,7 +32,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.7</span>
       </span>
     </div>
 
@@ -89,14 +89,14 @@
 
       
 
-      </header><div class="row">
+      </header><script src="srvyr-vs-survey_files/jquery-1.11.3/jquery.min.js"></script><script src="srvyr-vs-survey_files/elevate-section-attrs-2.0/elevate-section-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>
 <code>srvyr</code> compared to the <code>survey</code> package</h1>
                         <h4 class="author">Greg Freedman</h4>
             
-            <h4 class="date">2019-10-12</h4>
+            <h4 class="date">2020-01-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/srvyr-vs-survey.Rmd"><code>vignettes/srvyr-vs-survey.Rmd</code></a></small>
       <div class="hidden name"><code>srvyr-vs-survey.Rmd</code></div>
@@ -111,22 +111,22 @@
 <h1 class="hasAnchor">
 <a href="#motivating-example" class="anchor"></a>Motivating example</h1>
 <p>The <code>dplyr</code> package has made it fast and easy to write code to summarize data. For example, if we wanted to check how the year-to-year change in academic progress indicator score varied by school level and percent of parents were high school graduates, we can do this:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(survey)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(api)</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">out &lt;-<span class="st"> </span>apistrat <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="../reference/dplyr_single.html">mutate</a></span>(<span class="dt">hs_grad_pct =</span> <span class="kw"><a href="https://rdrr.io/r/base/cut.html">cut</a></span>(hsg, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">20</span>, <span class="dv">100</span>), <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9">                           <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"&lt;20%"</span>, <span class="st">"20+%"</span>))) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(stype, hs_grad_pct) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">api_diff =</span> <span class="kw"><a href="https://rdrr.io/r/stats/weighted.mean.html">weighted.mean</a></span>(api00 <span class="op">-</span><span class="st"> </span>api99, pw),</a>
-<a class="sourceLine" id="cb1-12" data-line-number="12">            <span class="dt">n =</span> <span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>())</a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="dt">data =</span> out, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> stype, <span class="dt">y =</span> api_diff, <span class="dt">group =</span> hs_grad_pct, <span class="dt">fill =</span> hs_grad_pct)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span>(<span class="dt">stat =</span> <span class="st">"identity"</span>, <span class="dt">position =</span> <span class="st">"dodge"</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">y =</span> <span class="dv">0</span>, <span class="dt">label =</span> n), <span class="dt">position =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span>(<span class="dt">width =</span> <span class="fl">0.9</span>), <span class="dt">vjust =</span> <span class="dv">-1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(survey)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(api)</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a>out &lt;-<span class="st"> </span>apistrat <span class="op">%&gt;%</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="st">  </span><span class="kw"><a href="../reference/dplyr_single.html">mutate</a></span>(<span class="dt">hs_grad_pct =</span> <span class="kw"><a href="https://rdrr.io/r/base/cut.html">cut</a></span>(hsg, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">20</span>, <span class="dv">100</span>), <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb1-9"><a href="#cb1-9"></a>                           <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"&lt;20%"</span>, <span class="st">"20+%"</span>))) <span class="op">%&gt;%</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(stype, hs_grad_pct) <span class="op">%&gt;%</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">api_diff =</span> <span class="kw"><a href="https://rdrr.io/r/stats/weighted.mean.html">weighted.mean</a></span>(api00 <span class="op">-</span><span class="st"> </span>api99, pw),</span>
+<span id="cb1-12"><a href="#cb1-12"></a>            <span class="dt">n =</span> <span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>())</span>
+<span id="cb1-13"><a href="#cb1-13"></a></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="dt">data =</span> out, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> stype, <span class="dt">y =</span> api_diff, <span class="dt">group =</span> hs_grad_pct, <span class="dt">fill =</span> hs_grad_pct)) <span class="op">+</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span>(<span class="dt">stat =</span> <span class="st">"identity"</span>, <span class="dt">position =</span> <span class="st">"dodge"</span>) <span class="op">+</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">y =</span> <span class="dv">0</span>, <span class="dt">label =</span> n), <span class="dt">position =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span>(<span class="dt">width =</span> <span class="fl">0.9</span>), <span class="dt">vjust =</span> <span class="dv">-1</span>)</span></code></pre></div>
 <p><img src="srvyr-vs-survey_files/figure-html/unnamed-chunk-1-1.png" width="576"></p>
 <p>However, if we wanted to add error bars to the graph to capture the uncertainty due to sampling variation, we have to completely rewrite the <code>dplyr</code> code for the <code>survey</code> package. <code>srvyr</code> allows a more direct translation.</p>
 </div>
@@ -134,36 +134,36 @@
 <h1 class="hasAnchor">
 <a href="#preparing-a-survey-dataset" class="anchor"></a>Preparing a survey dataset</h1>
 <p><code><a href="../reference/as_survey_design.html">as_survey_design()</a></code>, <code><a href="../reference/as_survey_rep.html">as_survey_rep()</a></code> and <code><a href="../reference/as_survey_twophase.html">as_survey_twophase()</a></code> are analogous to <code><a href="https://rdrr.io/pkg/survey/man/svydesign.html">survey::svydesign()</a></code>, <code><a href="https://rdrr.io/pkg/survey/man/svrepdesign.html">survey::svrepdesign()</a></code> and <code><a href="https://rdrr.io/pkg/survey/man/twophase.html">survey::twophase()</a></code> respectively. Because they are designed to match <code>dplyr</code>’s style of non-standard evaluation, they accept bare column names instead of formulas (~). They also move the data argument first, so that it is easier to use <code>magrittr</code> pipes (<code><a href="../reference/pipe.html">%&gt;%</a></code>).</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(srvyr)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co"># simple random sample</span></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">srs_design_srvyr &lt;-<span class="st"> </span>apisrs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="dt">ids =</span> <span class="dv">1</span>, <span class="dt">fpc =</span> fpc)</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">srs_design_survey &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span>(<span class="dt">ids =</span> <span class="op">~</span><span class="dv">1</span>, <span class="dt">fpc =</span> <span class="op">~</span>fpc, <span class="dt">data =</span> apisrs)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(srvyr)</span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># simple random sample</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>srs_design_srvyr &lt;-<span class="st"> </span>apisrs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="dt">ids =</span> <span class="dv">1</span>, <span class="dt">fpc =</span> fpc)</span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a>srs_design_survey &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span>(<span class="dt">ids =</span> <span class="op">~</span><span class="dv">1</span>, <span class="dt">fpc =</span> <span class="op">~</span>fpc, <span class="dt">data =</span> apisrs)</span></code></pre></div>
 <p>The <code>srvyr</code> functions also accept <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code>’s special selection functions (such as <code><a href="https://dplyr.tidyverse.org/reference/reexports.html">starts_with()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/reexports.html">one_of()</a></code>, etc.), so these functions are analogous:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># selecting variables to keep in the survey object (stratified example)</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">strat_design_srvyr &lt;-<span class="st"> </span>apistrat <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="dv">1</span>, <span class="dt">strata =</span> stype, <span class="dt">fpc =</span> fpc, <span class="dt">weight =</span> pw,</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">                <span class="dt">variables =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(stype, <span class="kw"><a href="https://dplyr.tidyverse.org/reference/reexports.html">starts_with</a></span>(<span class="st">"api"</span>)))</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">strat_design_survey &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span>(<span class="op">~</span><span class="dv">1</span>, <span class="dt">strata =</span> <span class="op">~</span>stype, <span class="dt">fpc =</span> <span class="op">~</span>fpc,</a>
-<a class="sourceLine" id="cb3-7" data-line-number="7">                                 <span class="dt">variables =</span> <span class="op">~</span>stype <span class="op">+</span><span class="st"> </span>api99 <span class="op">+</span><span class="st"> </span>api00 <span class="op">+</span><span class="st"> </span>api.stu,</a>
-<a class="sourceLine" id="cb3-8" data-line-number="8">                                 <span class="dt">weight =</span> <span class="op">~</span>pw, <span class="dt">data =</span> apistrat)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># selecting variables to keep in the survey object (stratified example)</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>strat_design_srvyr &lt;-<span class="st"> </span>apistrat <span class="op">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="st">  </span><span class="kw"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="dv">1</span>, <span class="dt">strata =</span> stype, <span class="dt">fpc =</span> fpc, <span class="dt">weight =</span> pw,</span>
+<span id="cb3-4"><a href="#cb3-4"></a>                <span class="dt">variables =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(stype, <span class="kw"><a href="https://dplyr.tidyverse.org/reference/reexports.html">starts_with</a></span>(<span class="st">"api"</span>)))</span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a>strat_design_survey &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span>(<span class="op">~</span><span class="dv">1</span>, <span class="dt">strata =</span> <span class="op">~</span>stype, <span class="dt">fpc =</span> <span class="op">~</span>fpc,</span>
+<span id="cb3-7"><a href="#cb3-7"></a>                                 <span class="dt">variables =</span> <span class="op">~</span>stype <span class="op">+</span><span class="st"> </span>api99 <span class="op">+</span><span class="st"> </span>api00 <span class="op">+</span><span class="st"> </span>api.stu,</span>
+<span id="cb3-8"><a href="#cb3-8"></a>                                 <span class="dt">weight =</span> <span class="op">~</span>pw, <span class="dt">data =</span> apistrat)</span></code></pre></div>
 <p>The function <code><a href="../reference/as_survey.html">as_survey()</a></code> will automatically choose between the three <code>as_survey_*</code> functions based on the arguments, so you can save a few keystrokes.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># simple random sample (again)</span></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">srs_design_srvyr2 &lt;-<span class="st"> </span>apisrs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/as_survey.html">as_survey</a></span>(<span class="dt">ids =</span> <span class="dv">1</span>, <span class="dt">fpc =</span> fpc)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># simple random sample (again)</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>srs_design_srvyr2 &lt;-<span class="st"> </span>apisrs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/as_survey.html">as_survey</a></span>(<span class="dt">ids =</span> <span class="dv">1</span>, <span class="dt">fpc =</span> fpc)</span></code></pre></div>
 </div>
 <div id="data-manipulation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#data-manipulation" class="anchor"></a>Data manipulation</h1>
 <p>Once you’ve set up your survey data, you can use <code>dplyr</code> verbs such as <code><a href="../reference/dplyr_single.html">mutate()</a></code>, <code><a href="../reference/dplyr_single.html">select()</a></code>, <code><a href="../reference/dplyr_single.html">filter()</a></code> and <code><a href="../reference/dplyr_single.html">rename()</a></code>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">strat_design_srvyr &lt;-<span class="st"> </span>strat_design_srvyr <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/dplyr_single.html">mutate</a></span>(<span class="dt">api_diff =</span> api00 <span class="op">-</span><span class="st"> </span>api99) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/dplyr_single.html">rename</a></span>(<span class="dt">api_students =</span> api.stu)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">strat_design_survey<span class="op">$</span>variables<span class="op">$</span>api_diff &lt;-<span class="st"> </span>strat_design_survey<span class="op">$</span>variables<span class="op">$</span>api00 <span class="op">-</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="st">  </span>strat_design_survey<span class="op">$</span>variables<span class="op">$</span>api99</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(strat_design_survey<span class="op">$</span>variables)[<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(strat_design_survey<span class="op">$</span>variables) <span class="op">==</span><span class="st"> "api.stu"</span>] &lt;-<span class="st"> "api_students"</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>strat_design_srvyr &lt;-<span class="st"> </span>strat_design_srvyr <span class="op">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="st">  </span><span class="kw"><a href="../reference/dplyr_single.html">mutate</a></span>(<span class="dt">api_diff =</span> api00 <span class="op">-</span><span class="st"> </span>api99) <span class="op">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="st">  </span><span class="kw"><a href="../reference/dplyr_single.html">rename</a></span>(<span class="dt">api_students =</span> api.stu)</span>
+<span id="cb5-4"><a href="#cb5-4"></a></span>
+<span id="cb5-5"><a href="#cb5-5"></a>strat_design_survey<span class="op">$</span>variables<span class="op">$</span>api_diff &lt;-<span class="st"> </span>strat_design_survey<span class="op">$</span>variables<span class="op">$</span>api00 <span class="op">-</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="st">  </span>strat_design_survey<span class="op">$</span>variables<span class="op">$</span>api99</span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(strat_design_survey<span class="op">$</span>variables)[<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(strat_design_survey<span class="op">$</span>variables) <span class="op">==</span><span class="st"> "api.stu"</span>] &lt;-<span class="st"> "api_students"</span></span></code></pre></div>
 <p>Note that <code><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange()</a></code> is not available, because the <code>srvyr</code> object expects to stay in the same order. Nor are two-table verbs such as <code><a href="https://dplyr.tidyverse.org/reference/join.html">full_join()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows()</a></code>, etc. available to <code>srvyr</code> objects either because they may have implications on the survey design. If you need to use these functions, you should use them earlier in your analysis pipeline, when the objects are still stored as <code>data.frame</code>s.</p>
 </div>
 <div id="summary-statistics" class="section level1">
@@ -173,22 +173,22 @@
 <h2 class="hasAnchor">
 <a href="#of-the-entire-population" class="anchor"></a>Of the entire population</h2>
 <p><code>srvyr</code> also provides <code><a href="../reference/summarise.html">summarize()</a></code> and several survey-specific functions that calculate summary statistics on numeric variables: <code><a href="../reference/survey_mean.html">survey_mean()</a></code>, <code><a href="../reference/survey_total.html">survey_total()</a></code>, <code><a href="../reference/survey_quantile.html">survey_quantile()</a></code> and <code><a href="../reference/survey_ratio.html">survey_ratio()</a></code>. These functions differ from their counterparts in <code>survey</code> because they always return a data.frame in a consistent format. As such, they do not return the variance-covariance matrix, and so are not as flexible.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># Using srvyr</span></a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">out &lt;-<span class="st"> </span>strat_design_srvyr <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">api_diff =</span> <span class="kw"><a href="../reference/survey_mean.html">survey_mean</a></span>(api_diff, <span class="dt">vartype =</span> <span class="st">"ci"</span>))</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">out</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Using srvyr</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>out &lt;-<span class="st"> </span>strat_design_srvyr <span class="op">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">api_diff =</span> <span class="kw"><a href="../reference/survey_mean.html">survey_mean</a></span>(api_diff, <span class="dt">vartype =</span> <span class="st">"ci"</span>))</span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a>out</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 3
 ##   api_diff api_diff_low api_diff_upp
 ##      &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
 ## 1     32.9         28.8         36.9</code></pre>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># Using survey</span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">out &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/surveysummary.html">svymean</a></span>(<span class="op">~</span>api_diff, strat_design_survey)</a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">out</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Using survey</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>out &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/surveysummary.html">svymean</a></span>(<span class="op">~</span>api_diff, strat_design_survey)</span>
+<span id="cb8-3"><a href="#cb8-3"></a></span>
+<span id="cb8-4"><a href="#cb8-4"></a>out</span></code></pre></div>
 <pre><code>##            mean     SE
 ## api_diff 32.893 2.0511</code></pre>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span>(out)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span>(out)</span></code></pre></div>
 <pre><code>##             2.5 %   97.5 %
 ## api_diff 28.87241 36.91262</code></pre>
 </div>
@@ -196,19 +196,19 @@
 <h2 class="hasAnchor">
 <a href="#by-group" class="anchor"></a>By group</h2>
 <p><code>srvyr</code> also allows you to calculate statistics on numeric variables by group, using <code><a href="../reference/group_by.html">group_by()</a></code>.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co"># Using srvyr</span></a>
-<a class="sourceLine" id="cb12-2" data-line-number="2">strat_design_srvyr <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(stype) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">api_increase =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>(api_diff <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb12-5" data-line-number="5">            <span class="dt">api_decrease =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>(api_diff <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># Using srvyr</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>strat_design_srvyr <span class="op">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(stype) <span class="op">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">api_increase =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>(api_diff <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>),</span>
+<span id="cb12-5"><a href="#cb12-5"></a>            <span class="dt">api_decrease =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>(api_diff <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>))</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 5
 ##   stype api_increase api_increase_se api_decrease api_decrease_se
 ##   &lt;fct&gt;        &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;
 ## 1 E            4067.           119.         354.            119. 
 ## 2 H             498.            49.4        257.             49.4
 ## 3 M             998.            19.9         20.4            19.9</code></pre>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co"># Using survey</span></a>
-<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svyby.html">svyby</a></span>(<span class="op">~</span>api_diff <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>, <span class="op">~</span>stype, strat_design_survey, svytotal)</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># Using survey</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svyby.html">svyby</a></span>(<span class="op">~</span>api_diff <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>, <span class="op">~</span>stype, strat_design_survey, svytotal)</span></code></pre></div>
 <pre><code>##   stype api_diff &gt;= 0FALSE api_diff &gt;= 0TRUE se.api_diff &gt;= 0FALSE
 ## E     E             353.68           4067.32             119.17185
 ## H     H             256.70            498.30              49.37208
@@ -222,22 +222,22 @@
 <h2 class="hasAnchor">
 <a href="#proportions-by-group" class="anchor"></a>Proportions by group</h2>
 <p>You can also calculate the proportion or count in each group of a factor or character variable by leaving x empty in <code><a href="../reference/survey_mean.html">survey_mean()</a></code> or <code><a href="../reference/survey_total.html">survey_total()</a></code>.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co"># Using srvyr</span></a>
-<a class="sourceLine" id="cb16-2" data-line-number="2">srs_design_srvyr <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(awards) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb16-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">proportion =</span> <span class="kw"><a href="../reference/survey_mean.html">survey_mean</a></span>(),</a>
-<a class="sourceLine" id="cb16-5" data-line-number="5">            <span class="dt">total =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>())</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># Using srvyr</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a>srs_design_srvyr <span class="op">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(awards) <span class="op">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">proportion =</span> <span class="kw"><a href="../reference/survey_mean.html">survey_mean</a></span>(),</span>
+<span id="cb16-5"><a href="#cb16-5"></a>            <span class="dt">total =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>())</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 5
 ##   awards proportion proportion_se total total_se
 ##   &lt;fct&gt;       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
 ## 1 No           0.38        0.0338 2354.     210.
 ## 2 Yes          0.62        0.0338 3840.     210.</code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co"># Using survey</span></a>
-<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/pkg/survey/man/surveysummary.html">svymean</a></span>(<span class="op">~</span>awards, srs_design_survey)</a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># Using survey</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="kw"><a href="https://rdrr.io/pkg/survey/man/surveysummary.html">svymean</a></span>(<span class="op">~</span>awards, srs_design_survey)</span></code></pre></div>
 <pre><code>##           mean     SE
 ## awardsNo  0.38 0.0338
 ## awardsYes 0.62 0.0338</code></pre>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/pkg/survey/man/surveysummary.html">svytotal</a></span>(<span class="op">~</span>awards, srs_design_survey)</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw"><a href="https://rdrr.io/pkg/survey/man/surveysummary.html">svytotal</a></span>(<span class="op">~</span>awards, srs_design_survey)</span></code></pre></div>
 <pre><code>##            total     SE
 ## awardsNo  2353.7 209.65
 ## awardsYes 3840.3 209.65</code></pre>
@@ -246,18 +246,18 @@
 <h2 class="hasAnchor">
 <a href="#unweighted-calculations" class="anchor"></a>Unweighted calculations</h2>
 <p>Finally, the <code><a href="../reference/unweighted.html">unweighted()</a></code> function can act as an escape hatch to calculate unweighted calculations on the dataset.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="co"># Using srvyr</span></a>
-<a class="sourceLine" id="cb22-2" data-line-number="2">strat_design_srvyr <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(stype) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb22-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">n =</span> <span class="kw"><a href="../reference/unweighted.html">unweighted</a></span>(<span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>()))</a></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="co"># Using srvyr</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>strat_design_srvyr <span class="op">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3"></a><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(stype) <span class="op">%&gt;%</span></span>
+<span id="cb22-4"><a href="#cb22-4"></a><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">n =</span> <span class="kw"><a href="../reference/unweighted.html">unweighted</a></span>(<span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>()))</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 2
 ##   stype     n
 ##   &lt;fct&gt; &lt;int&gt;
 ## 1 E       100
 ## 2 H        50
 ## 3 M        50</code></pre>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="co"># Using survey</span></a>
-<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svyby.html">svyby</a></span>(<span class="op">~</span>api99, <span class="op">~</span>stype, strat_design_survey, unwtd.count)</a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="co"># Using survey</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svyby.html">svyby</a></span>(<span class="op">~</span>api99, <span class="op">~</span>stype, strat_design_survey, unwtd.count)</span></code></pre></div>
 <pre><code>##   stype counts se
 ## E     E    100  0
 ## H     H     50  0
@@ -268,21 +268,21 @@
 <h1 class="hasAnchor">
 <a href="#back-to-the-example" class="anchor"></a>Back to the example</h1>
 <p>So now, we have all the tools needed to create the first graph and add error bounds. Notice that the data manipulation code is nearly identical to the <code>dplyr</code> code, with a little extra set up, and replacing <code><a href="https://rdrr.io/r/stats/weighted.mean.html">weighted.mean()</a></code> with <code>survey_mean</code>.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">strat_design &lt;-<span class="st"> </span>apistrat <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="dt">strata =</span> stype, <span class="dt">fpc =</span> fpc, <span class="dt">weight  =</span> pw)</a>
-<a class="sourceLine" id="cb26-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb26-4" data-line-number="4">out &lt;-<span class="st"> </span>strat_design <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb26-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/dplyr_single.html">mutate</a></span>(<span class="dt">hs_grad_pct =</span> <span class="kw"><a href="https://rdrr.io/r/base/cut.html">cut</a></span>(hsg, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">20</span>, <span class="dv">100</span>), <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb26-6" data-line-number="6">                           <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"&lt;20%"</span>, <span class="st">"20+%"</span>))) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb26-7" data-line-number="7"><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(stype, hs_grad_pct) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb26-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">api_diff =</span> <span class="kw"><a href="../reference/survey_mean.html">survey_mean</a></span>(api00 <span class="op">-</span><span class="st"> </span>api99, <span class="dt">vartype =</span> <span class="st">"ci"</span>),</a>
-<a class="sourceLine" id="cb26-9" data-line-number="9">            <span class="dt">n =</span> <span class="kw"><a href="../reference/unweighted.html">unweighted</a></span>(<span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>()))</a>
-<a class="sourceLine" id="cb26-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb26-11" data-line-number="11"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="dt">data =</span> out, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> stype, <span class="dt">y =</span> api_diff, <span class="dt">group =</span> hs_grad_pct, <span class="dt">fill =</span> hs_grad_pct,</a>
-<a class="sourceLine" id="cb26-12" data-line-number="12">                       <span class="dt">ymax =</span> api_diff_upp, <span class="dt">ymin =</span> api_diff_low)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb26-13" data-line-number="13"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span>(<span class="dt">stat =</span> <span class="st">"identity"</span>, <span class="dt">position =</span> <span class="st">"dodge"</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb26-14" data-line-number="14"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span>(<span class="dt">position =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span>(<span class="dt">width =</span> <span class="fl">0.9</span>), <span class="dt">width =</span> <span class="fl">0.1</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb26-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">y =</span> <span class="dv">0</span>, <span class="dt">label =</span> n), <span class="dt">position =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span>(<span class="dt">width =</span> <span class="fl">0.9</span>), <span class="dt">vjust =</span> <span class="dv">-1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>strat_design &lt;-<span class="st"> </span>apistrat <span class="op">%&gt;%</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="st">  </span><span class="kw"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="dt">strata =</span> stype, <span class="dt">fpc =</span> fpc, <span class="dt">weight  =</span> pw)</span>
+<span id="cb26-3"><a href="#cb26-3"></a></span>
+<span id="cb26-4"><a href="#cb26-4"></a>out &lt;-<span class="st"> </span>strat_design <span class="op">%&gt;%</span></span>
+<span id="cb26-5"><a href="#cb26-5"></a><span class="st">  </span><span class="kw"><a href="../reference/dplyr_single.html">mutate</a></span>(<span class="dt">hs_grad_pct =</span> <span class="kw"><a href="https://rdrr.io/r/base/cut.html">cut</a></span>(hsg, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">20</span>, <span class="dv">100</span>), <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb26-6"><a href="#cb26-6"></a>                           <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"&lt;20%"</span>, <span class="st">"20+%"</span>))) <span class="op">%&gt;%</span></span>
+<span id="cb26-7"><a href="#cb26-7"></a><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(stype, hs_grad_pct) <span class="op">%&gt;%</span></span>
+<span id="cb26-8"><a href="#cb26-8"></a><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">api_diff =</span> <span class="kw"><a href="../reference/survey_mean.html">survey_mean</a></span>(api00 <span class="op">-</span><span class="st"> </span>api99, <span class="dt">vartype =</span> <span class="st">"ci"</span>),</span>
+<span id="cb26-9"><a href="#cb26-9"></a>            <span class="dt">n =</span> <span class="kw"><a href="../reference/unweighted.html">unweighted</a></span>(<span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>()))</span>
+<span id="cb26-10"><a href="#cb26-10"></a></span>
+<span id="cb26-11"><a href="#cb26-11"></a><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="dt">data =</span> out, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> stype, <span class="dt">y =</span> api_diff, <span class="dt">group =</span> hs_grad_pct, <span class="dt">fill =</span> hs_grad_pct,</span>
+<span id="cb26-12"><a href="#cb26-12"></a>                       <span class="dt">ymax =</span> api_diff_upp, <span class="dt">ymin =</span> api_diff_low)) <span class="op">+</span></span>
+<span id="cb26-13"><a href="#cb26-13"></a><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span>(<span class="dt">stat =</span> <span class="st">"identity"</span>, <span class="dt">position =</span> <span class="st">"dodge"</span>) <span class="op">+</span></span>
+<span id="cb26-14"><a href="#cb26-14"></a><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span>(<span class="dt">position =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span>(<span class="dt">width =</span> <span class="fl">0.9</span>), <span class="dt">width =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb26-15"><a href="#cb26-15"></a><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">y =</span> <span class="dv">0</span>, <span class="dt">label =</span> n), <span class="dt">position =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span>(<span class="dt">width =</span> <span class="fl">0.9</span>), <span class="dt">vjust =</span> <span class="dv">-1</span>)</span></code></pre></div>
 <p><img src="srvyr-vs-survey_files/figure-html/unnamed-chunk-10-1.png" width="576"></p>
 </div>
 <div id="grab-bag" class="section level1">
@@ -292,8 +292,8 @@
 <h2 class="hasAnchor">
 <a href="#using-survey-functions-on-srvyr-objects" class="anchor"></a>Using <code>survey</code> functions on <code>srvyr</code> objects</h2>
 <p>Because <code>srvyr</code> objects are just <code>survey</code> objects with some extra structure, all of the functions from <code>survey</code> will still work with them. If you need to calculate something beyond simple summary statistics, you can use <code>survey</code> functions.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">glm &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svyglm.html">svyglm</a></span>(api00 <span class="op">~</span><span class="st"> </span>ell <span class="op">+</span><span class="st"> </span>meals <span class="op">+</span><span class="st"> </span>mobility, <span class="dt">design =</span> strat_design)</a>
-<a class="sourceLine" id="cb27-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(glm)</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>glm &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/survey/man/svyglm.html">svyglm</a></span>(api00 <span class="op">~</span><span class="st"> </span>ell <span class="op">+</span><span class="st"> </span>meals <span class="op">+</span><span class="st"> </span>mobility, <span class="dt">design =</span> strat_design)</span>
+<span id="cb27-2"><a href="#cb27-2"></a><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(glm)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## svyglm(formula = api00 ~ ell + meals + mobility, design = strat_design)
@@ -317,20 +317,20 @@
 <div id="standard-evaluation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#standard-evaluation" class="anchor"></a>Standard evaluation</h2>
-<p>Srvyr now supports the standard evaluation conventions introduced in dplyr version 0.7 and rlang. If you’d like to use a function programmatically, you can use the functions from rlang like <code><a href="https://rlang.r-lib.org/reference/quotation.html">rlang::quo()</a></code> or <code><a href="https://rlang.r-lib.org/reference/sym.html">rlang::sym()</a></code> to capture the expression and <code>rlang::!!</code> to unquote it. All of these functions are re-exported by srvyr, so you don’t need to load the rlang library to use them.</p>
+<p>Srvyr now supports the standard evaluation conventions introduced in dplyr version 0.7 and rlang. If you’d like to use a function programmatically, you can use the functions from rlang like <code><a href="https://rlang.r-lib.org/reference/nse-defuse.html">rlang::quo()</a></code> or <code><a href="https://rlang.r-lib.org/reference/sym.html">rlang::sym()</a></code> to capture the expression and <code>rlang::!!</code> to unquote it. All of these functions are re-exported by srvyr, so you don’t need to load the rlang library to use them.</p>
 <p>Here’s a quick example, but please see the dplyr vignette <a href="http://dplyr.tidyverse.org/articles/programming.html"><code><a href="https://dplyr.tidyverse.org/articles/programming.html">vignette("programming", package = "dplyr")</a></code></a> for more details.</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">fpc_var &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rlang-tidyeval.html">sym</a></span>(<span class="st">"fpc"</span>)</a>
-<a class="sourceLine" id="cb29-2" data-line-number="2">srs_design_srvyr &lt;-<span class="st"> </span>apisrs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="dt">fpc =</span> <span class="op">!!</span>fpc_var)</a>
-<a class="sourceLine" id="cb29-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb29-4" data-line-number="4">grouping_var &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rlang-tidyeval.html">sym</a></span>(<span class="st">"stype"</span>)</a>
-<a class="sourceLine" id="cb29-5" data-line-number="5">api_diff &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rlang-tidyeval.html">quo</a></span>(api00 <span class="op">-</span><span class="st"> </span>api99)</a>
-<a class="sourceLine" id="cb29-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb29-7" data-line-number="7">srs_design_srvyr <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb29-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(<span class="op">!!</span>grouping_var) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb29-9" data-line-number="9"><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(</a>
-<a class="sourceLine" id="cb29-10" data-line-number="10">    <span class="dt">api_increase =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>((<span class="op">!!</span>api_diff) <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb29-11" data-line-number="11">    <span class="dt">api_decrease =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>((<span class="op">!!</span>api_diff) <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb29-12" data-line-number="12">  )</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>fpc_var &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rlang-tidyeval.html">sym</a></span>(<span class="st">"fpc"</span>)</span>
+<span id="cb29-2"><a href="#cb29-2"></a>srs_design_srvyr &lt;-<span class="st"> </span>apisrs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="dt">fpc =</span> <span class="op">!!</span>fpc_var)</span>
+<span id="cb29-3"><a href="#cb29-3"></a></span>
+<span id="cb29-4"><a href="#cb29-4"></a>grouping_var &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rlang-tidyeval.html">sym</a></span>(<span class="st">"stype"</span>)</span>
+<span id="cb29-5"><a href="#cb29-5"></a>api_diff &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rlang-tidyeval.html">quo</a></span>(api00 <span class="op">-</span><span class="st"> </span>api99)</span>
+<span id="cb29-6"><a href="#cb29-6"></a></span>
+<span id="cb29-7"><a href="#cb29-7"></a>srs_design_srvyr <span class="op">%&gt;%</span></span>
+<span id="cb29-8"><a href="#cb29-8"></a><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(<span class="op">!!</span>grouping_var) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-9"><a href="#cb29-9"></a><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(</span>
+<span id="cb29-10"><a href="#cb29-10"></a>    <span class="dt">api_increase =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>((<span class="op">!!</span>api_diff) <span class="op">&gt;=</span><span class="st"> </span><span class="dv">0</span>),</span>
+<span id="cb29-11"><a href="#cb29-11"></a>    <span class="dt">api_decrease =</span> <span class="kw"><a href="../reference/survey_total.html">survey_total</a></span>((<span class="op">!!</span>api_diff) <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>)</span>
+<span id="cb29-12"><a href="#cb29-12"></a>  )</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 5
 ##   stype api_increase api_increase_se api_decrease api_decrease_se
 ##   &lt;fct&gt;        &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;
@@ -343,9 +343,9 @@
 <h2 class="hasAnchor">
 <a href="#scoped-functions" class="anchor"></a>Scoped functions</h2>
 <p>Srvyr has also been able to take advantage of the new-ish dplyr “scoped” variants of the main manipulation functions like <code><a href="../reference/summarise_all.html">summarize_at()</a></code>. These functions allow you to quickly calculate summary statistics for multiple variables. For example:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co"># Calculate survey mean for all variables that have names starting with "api"</span></a>
-<a class="sourceLine" id="cb31-2" data-line-number="2">strat_design <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb31-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/summarise_all.html">summarize_at</a></span>(<span class="kw"><a href="../reference/summarise_all.html">vars</a></span>(<span class="kw"><a href="https://dplyr.tidyverse.org/reference/reexports.html">starts_with</a></span>(<span class="st">"api"</span>)), survey_mean)</a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="co"># Calculate survey mean for all variables that have names starting with "api"</span></span>
+<span id="cb31-2"><a href="#cb31-2"></a>strat_design <span class="op">%&gt;%</span></span>
+<span id="cb31-3"><a href="#cb31-3"></a><span class="st">  </span><span class="kw"><a href="../reference/summarise_all.html">summarize_at</a></span>(<span class="kw"><a href="../reference/summarise_all.html">vars</a></span>(<span class="kw"><a href="https://dplyr.tidyverse.org/reference/reexports.html">starts_with</a></span>(<span class="st">"api"</span>)), survey_mean)</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 6
 ##   api00 api00_se api99 api99_se api.stu api.stu_se
 ##   &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
@@ -365,7 +365,8 @@
       <li><a href="#preparing-a-survey-dataset">Preparing a survey dataset</a></li>
       <li><a href="#data-manipulation">Data manipulation</a></li>
       <li>
-<a href="#summary-statistics">Summary statistics</a><ul class="nav nav-pills nav-stacked">
+<a href="#summary-statistics">Summary statistics</a>
+      <ul class="nav nav-pills nav-stacked">
 <li><a href="#of-the-entire-population">Of the entire population</a></li>
       <li><a href="#by-group">By group</a></li>
       <li><a href="#proportions-by-group">Proportions by group</a></li>
@@ -374,7 +375,8 @@
 </li>
       <li><a href="#back-to-the-example">Back to the example</a></li>
       <li>
-<a href="#grab-bag">Grab Bag</a><ul class="nav nav-pills nav-stacked">
+<a href="#grab-bag">Grab Bag</a>
+      <ul class="nav nav-pills nav-stacked">
 <li><a href="#using-survey-functions-on-srvyr-objects">Using <code>survey</code> functions on <code>srvyr</code> objects</a></li>
       <li><a href="#standard-evaluation">Standard evaluation</a></li>
       <li><a href="#scoped-functions">Scoped functions</a></li>

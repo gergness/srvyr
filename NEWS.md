@@ -1,4 +1,4 @@
-# srvyr (development version)
+# srvyr 0.3.7
 * `filter`ing on grouped survey designs now works correctly (#54, thanks for reporting @dcaseykc)
 
 * Added function `pull` (#63, thanks @dcaseykc)

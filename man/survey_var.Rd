@@ -10,7 +10,7 @@ survey_var(
   na.rm = FALSE,
   vartype = c("se", "ci", "var"),
   level = 0.95,
-  df = Inf,
+  df = NULL,
   .svy = current_svy(),
   ...
 )

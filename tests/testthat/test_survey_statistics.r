@@ -653,6 +653,40 @@ test_that(
 )
 
 test_that(
+  "unweighted works evaluates in correct environment", {
+    data(api, package = "survey")
+    dclus1 <- as_survey_design(apiclus1, id = dnum, weights = pw, fpc = fpc)
+
+    wrong_wrapper <- function(x) {
+      unweighted(length(x))
+    }
+
+    expect_error(
+      test <- dclus1 %>%
+        group_by(sch.wide) %>%
+        summarize(n = wrong_wrapper(api99))
+    )
+
+    right_wrapper <- function(x) {
+      x <- rlang::enquo(x)
+      unweighted(length(!!x))
+    }
+
+    test1 <- dclus1 %>%
+      group_by(sch.wide) %>%
+      summarize(n = right_wrapper(api99))
+
+    test2 <- dclus1 %>%
+      group_by(sch.wide) %>%
+      summarize(n = unweighted(length(api99)))
+
+
+    expect_equal(test1, test2)
+  }
+)
+
+
+test_that(
   "Can groupby before or after a filter (#59)", {
     data(api, package = "survey")
 

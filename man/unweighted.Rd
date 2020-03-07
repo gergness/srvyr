@@ -18,6 +18,13 @@ the default automatically sets the survey to the current survey.}
 Calculate unweighted summaries from a survey dataset, just as on
 a normal data.frame with \code{\link[dplyr]{summarise}}.
 }
+\details{
+Uses tidy evaluation semantics and so if you want to use
+wrapper functions based on variable names, you must use
+tidy evaluation, see the examples here, documentation in
+\link[rlang]{nse-force}, or the dplyr vignette called
+'programming' for more information.
+}
 \examples{
 library(survey)
 library(dplyr)
@@ -33,5 +40,16 @@ dstrata \%>\%
 dstrata \%>\%
   group_by(stype) \%>\%
   summarise(api_diff_unw = unweighted(mean(api00 - api99)))
+
+
+# If you want to use a wrapper function, be sure to treat
+# non-standard evaluation correctly
+umean <- function(x) {
+  unweighted(mean({{x}}))
+}
+ dstrata \%>\%
+   group_by(stype) \%>\%
+   summarize(api_diff_unw = umean(api00 - api99))
+
 
 }

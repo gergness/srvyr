@@ -676,6 +676,12 @@ survey_sd <- function(
 #' Calculate unweighted summaries from a survey dataset, just as on
 #' a normal data.frame with \code{\link[dplyr]{summarise}}.
 #'
+#' Uses tidy evaluation semantics and so if you want to use
+#' wrapper functions based on variable names, you must use
+#' tidy evaluation, see the examples here, documentation in
+#' \link[rlang]{nse-force}, or the dplyr vignette called
+#' 'programming' for more information.
+#'
 #' @param x A variable or expression
 #' @param .svy A \code{tbl_svy} object. When called from inside a summarize function
 #'   the default automatically sets the survey to the current survey.
@@ -696,9 +702,25 @@ survey_sd <- function(
 #'   group_by(stype) %>%
 #'   summarise(api_diff_unw = unweighted(mean(api00 - api99)))
 #'
+#'
+#' # If you want to use a wrapper function, be sure to treat
+#' # non-standard evaluation correctly
+#' umean <- function(x) {
+#'   unweighted(mean({{x}}))
+#' }
+#'  dstrata %>%
+#'    group_by(stype) %>%
+#'    summarize(api_diff_unw = umean(api00 - api99))
+#'
+#'
 #' @export
 unweighted <- function(x, .svy = current_svy(), ...) {
   dots <- rlang::enquo(x)
+  # unweighted needs to be evaluated in grandparent environment (in
+  # the caller of summarise) because we don't want the same kind of
+  # vector retrieval from the survey's variables as we do for other
+  # survey statistics
+  dots <- rlang::quo_set_env(dots, rlang::env_parent(n = 2))
 
   out <- summarize(.svy[["variables"]], !!dots)
   names(out)[length(names(out))] <- ""

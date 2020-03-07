@@ -1,4 +1,6 @@
 # srvyr (development version)
+* `unweighted` now evaluates in the right context and so will provide correct error
+  when an incorrectly interpolated function is used (#70, thanks for reporting @tlmcmurry)
 
 # srvyr 0.3.7
 * `filter`ing on grouped survey designs now works correctly (#54, thanks for reporting @dcaseykc)

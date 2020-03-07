@@ -4,6 +4,8 @@
   
 * `filter_at` works now, (#57, thanks for reporting @dcaseykc & helping @bschneidr).
 
+* Fix for upcoming version of tibble (#72).
+
 # srvyr 0.3.7
 * `filter`ing on grouped survey designs now works correctly (#54, thanks for reporting @dcaseykc)
 

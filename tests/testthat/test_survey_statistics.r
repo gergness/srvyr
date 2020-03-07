@@ -256,10 +256,11 @@ out_survey <- temp_survey %>%
          survey_ratio_upp = ci_u, survey_ratio_deff = `DEff`) %>%
   select(-se.api99.api00)
 
-out_survey[, c("survey_ratio_low", "survey_ratio_upp")] <-
-  confint(temp_survey, df = df_test)
+sv_ci <- confint(temp_survey, df = df_test)
+out_survey$survey_ratio_low <- unname(sv_ci[, 1])
+out_survey$survey_ratio_upp <- unname(sv_ci[, 2])
 
-test_that("deff and df work for grouped survey total",
+test_that("deff and df work for grouped survey ratio",
           expect_df_equal(out_srvyr, out_survey))
 
 out_survey <- svyquantile(~api99, dstrata, c(0.5), ci = TRUE, df = df_test)

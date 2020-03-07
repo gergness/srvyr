@@ -81,8 +81,10 @@ out_srvyr <- dstrata %>%
   group_by(stype) %>%
   summarise(survey_mean = survey_mean(api99, deff = TRUE, vartype = "ci", df = df_test))
 
-out_survey[, c("survey_mean_low", "survey_mean_upp")] <-
-  confint(temp_survey, df = df_test)
+sv_ci <- confint(temp_survey, df = df_test)
+out_survey$survey_mean_low <- unname(sv_ci[, 1])
+out_survey$survey_mean_upp <- unname(sv_ci[, 2])
+
 
 test_that("deff and df work for grouped survey mean",
           expect_df_equal(out_srvyr,
@@ -143,8 +145,9 @@ test_that("survey_total works for grouped surveys - with vartype=NULL",
           expect_df_equal(select(out_survey, stype, survey_total),
                           out_srvyr_vartypeNULL))
 
-out_survey[, c("survey_total_low", "survey_total_upp")] <-
-  confint(temp_survey, df = df_test)
+sv_ci <- confint(temp_survey, df = df_test)
+out_survey$survey_total_low <- unname(sv_ci[, 1])
+out_survey$survey_total_upp <- unname(sv_ci[, 2])
 
 out_srvyr <- dstrata %>%
   group_by(stype) %>%

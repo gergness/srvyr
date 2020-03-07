@@ -50,12 +50,12 @@ rename_.tbl_svy <- function(.data, ..., .dots) {
   rename(.data, !!!dots)}
 
 #' @export
-filter.tbl_svy <- function(.data, ...) {
+filter.tbl_svy <- function(.data, ..., .preserve = FALSE) {
   dots <- rlang::quos(...)
   if (is_lazy_svy(.data)) {
-    lazy_subset_svy_vars(.data, !!!dots)
+    lazy_subset_svy_vars(.data, !!!dots, .preserve = .preserve)
   } else {
-    subset_svy_vars(.data, !!!dots)
+    subset_svy_vars(.data, !!!dots, .preserve = .preserve)
   }
 }
 

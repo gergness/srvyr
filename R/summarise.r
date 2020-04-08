@@ -59,7 +59,7 @@ summarise.grouped_svy <- function(.data, ...) {
     out <- dplyr::left_join(out, ccc, by = groups)
   }
 
-  dplyr::tbl_df(out)
+  dplyr::tibble(out)
 }
 
 #' @export

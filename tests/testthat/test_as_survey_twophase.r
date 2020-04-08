@@ -56,7 +56,9 @@ survey_results <- list(
   as.data.frame(svyby(~bili, ~sex, d2pbc_survey, svytotal)),
   as.data.frame(suppressWarnings(svyby(~bili, ~sex, d2pbc_survey, svyquantile,
                                        quantiles = 0.5, ci = TRUE, df = NULL)))
-) %>% dplyr::bind_cols() %>%
+) %>%
+  as.data.frame() %>%
+  dplyr::bind_cols() %>%
   setNames(c("sex", "mean", "mean_se", "sex2", "total", "total_se",
              "sex3", "median", "median_se")) %>%
   select(-sex2, -sex3) %>%

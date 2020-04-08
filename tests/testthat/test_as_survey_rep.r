@@ -18,7 +18,7 @@ scd2brr <- as.svrepdesign(scdnofpc, type="BRR", compress = FALSE)
 scd2brr_srvyr <- scd2brr$repweights %>%
   unclass() %>% as.data.frame() %>%
   setNames(paste0("rep", 1:4)) %>%
-  dplyr::bind_cols(scd) %>%
+  dplyr::bind_cols(as.data.frame(scd)) %>%
   mutate(weights = 1) %>%
   as_survey_rep(repweights = starts_with("rep"),
                     type = "BRR",
@@ -42,7 +42,7 @@ scd2fay <- as.svrepdesign(scdnofpc, type="Fay", fay.rho = 0.3, compress = FALSE)
 scd2fay_srvyr <- scd2fay$repweights %>%
   unclass() %>% as.data.frame() %>%
   setNames(paste0("rep", 1:4)) %>%
-  dplyr::bind_cols(scd) %>%
+  dplyr::bind_cols(as.data.frame(scd)) %>%
   mutate(weights = 1) %>%
   as_survey_rep(repweights = starts_with("rep"),
                     type = "Fay", rho = 0.3,
@@ -66,7 +66,7 @@ scd2jkn <- as.svrepdesign(scdnofpc, type = "JKn", compress = FALSE)
 scd2jkn_srvyr <- scd2jkn$repweights %>%
   unclass() %>% as.data.frame() %>%
   setNames(paste0("rep", 1:6)) %>%
-  dplyr::bind_cols(scd) %>%
+  dplyr::bind_cols(as.data.frame(scd)) %>%
   mutate(weights = 1) %>%
   as_survey_rep(repweights = starts_with("rep"),
                     type = "JKn",
@@ -91,7 +91,7 @@ scd2jknf <- as.svrepdesign(scddes, type = "JKn", compress = FALSE)
 scd2jknf_srvyr <- scd2jknf$repweights %>%
   unclass() %>% as.data.frame() %>%
   setNames(paste0("rep", 1:6)) %>%
-  dplyr::bind_cols(scd) %>%
+  dplyr::bind_cols(as.data.frame(scd)) %>%
   mutate(weights = 1) %>%
   as_survey_rep(repweights = starts_with("rep"),
                     type = "JKn",
@@ -117,7 +117,7 @@ scd2brr1 <- as.svrepdesign(scdnofpc, type="BRR", hadamard.matrix = paley(11),
 scd2brr1_srvyr <- scd2brr1$repweights %>%
   unclass() %>% as.data.frame() %>%
   setNames(paste0("rep", 1:12)) %>%
-  dplyr::bind_cols(scd) %>%
+  dplyr::bind_cols(as.data.frame(scd)) %>%
   mutate(weights = 1) %>%
   as_survey_rep(repweights = starts_with("rep"),
                     type = "JKn",
@@ -142,7 +142,7 @@ scd2brr <- as.svrepdesign(scdnofpc, type="BRR", compress = FALSE)
 scd2brr_base <- scd2brr$repweights %>%
   unclass() %>% as.data.frame() %>%
   setNames(paste0("rep", 1:4)) %>%
-  dplyr::bind_cols(scd) %>%
+  dplyr::bind_cols(as.data.frame(scd)) %>%
   mutate(weights = 1)
 
 test_that("works with character", {

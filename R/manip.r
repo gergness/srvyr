@@ -31,9 +31,10 @@ select_.tbl_svy <- function(.data, ..., .dots) {
 }
 
 #' @export
-pull.tbl_svy <- function(.data, var = -1){
+pull.tbl_svy <- function(.data, var = -1, name = NULL){
   var <- rlang::enquo(var)
-  dplyr::pull(.data$variables, !!var)
+  name <- rlang::enquo(name)
+  dplyr::pull(.data$variables, !!var, !!name)
 }
 
 #' @export

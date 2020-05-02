@@ -161,6 +161,7 @@ get_var_est_quantile <- function(stat, vartype, q, grps = "", level = 0.95, df =
 
   coef <- data.frame(matrix(coef(stat), ncol = out_width))
   names(coef) <- qnames
+  out <- lapply(out, as.data.frame)
   out <- c(list(coef), out)
 
   if (!identical(grps, "")) {

@@ -31,13 +31,6 @@ select_.tbl_svy <- function(.data, ..., .dots) {
 }
 
 #' @export
-pull.tbl_svy <- function(.data, var = -1, name = NULL){
-  var <- rlang::enquo(var)
-  name <- rlang::enquo(name)
-  dplyr::pull(.data$variables, !!var, !!name)
-}
-
-#' @export
 rename.tbl_svy <- function(.data, ...) {
   dots <- rlang::quos(...)
   .data$variables <- rename(.data$variables, !!!dots)
@@ -360,3 +353,18 @@ NULL
 #' @importFrom dplyr any_vars
 #' @rdname summarise_all
 NULL
+
+
+# pull method's arguments are changing in dplyr 1.
+
+
+pull.tbl_svy.new <- function(.data, var = -1, name = NULL) {
+  var <- rlang::enquo(var)
+  name <- rlang::enquo(name)
+  dplyr::pull(.data$variables, !!var, !!name)
+}
+
+pull.tbl_svy.old <- function(.data, var = -1) {
+  var <- rlang::enquo(var)
+  dplyr::pull(.data$variables, !!var)
+}

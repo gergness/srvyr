@@ -15,7 +15,7 @@ BugReports: https://github.com/gergness/srvyr/issues
 Depends:
     R (>= 3.1.2)
 Imports:
-    dplyr (>= 0.8.99.9002),
+    dplyr (>= 0.7),
     magrittr,
     rlang,
     survey,

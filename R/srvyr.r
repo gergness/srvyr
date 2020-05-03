@@ -49,3 +49,12 @@
 #' @docType package
 #' @name srvyr
 NULL
+
+# Support for change in method signature for dplyr::pull in 1.0
+.onLoad <- function(...) {
+  if (utils::packageVersion("dplyr") >= "0.8.99.9002") {
+    s3_register("dplyr::pull", "tbl_svy", pull.tbl_svy.new)
+  } else {
+    s3_register("dplyr::pull", "tbl_svy", pull.tbl_svy.old)
+  }
+}

@@ -1,4 +1,4 @@
-# srvyr (development version)
+# srvyr 0.3.9
 * Fix for upcoming version of dplyr (thanks @romainfrancois)
 
 # srvyr 0.3.8

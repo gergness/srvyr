@@ -71,7 +71,7 @@ a summary statistics for the total of a group in addition to each group." />
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.9</span>
       </span>
     </div>
 
@@ -174,12 +174,14 @@ a summary statistics for the total of a group in addition to each group.</p>
   <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span>(<span class='kw'>strata</span> <span class='kw'>=</span> <span class='no'>stype</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>pw</span>)
 
 <span class='no'>dstrata_grp</span> <span class='kw'>&lt;-</span> <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>stype</span>)
-
+  <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>stype</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: The `add` argument of `group_by()` is deprecated as of dplyr 1.0.0.</span>
+#&gt; <span class='warning'>Please use the `.add` argument instead.</span>
+#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
+#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='input'>
 <span class='no'>dstrata_grp</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>cascade</span>(<span class='kw'>api99</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>api99</span>),
             <span class='kw'>api00</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>api00</span>),
-            <span class='kw'>api_diff</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>api00</span> - <span class='no'>api99</span>))</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 4 x 7</span><span>
+            <span class='kw'>api_diff</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>api00</span> - <span class='no'>api99</span>))</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 4 x 7</span><span>
 #&gt;   stype api99 api99_se api00 api00_se api_diff api_diff_se
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>1</span><span> E      636.     13.3  674.    12.5     38.6         2.76

@@ -32,7 +32,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.9</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
       <h1>Extending srvyr</h1>
                         <h4 class="author">Greg Freedman Ellis</h4>
             
-            <h4 class="date">2020-03-09</h4>
+            <h4 class="date">2020-05-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/extending-srvyr.Rmd"><code>vignettes/extending-srvyr.Rmd</code></a></small>
       <div class="hidden name"><code>extending-srvyr.Rmd</code></div>
@@ -243,19 +243,23 @@
 <span id="cb7-53"><a href="#cb7-53"></a></span>
 <span id="cb7-54"><a href="#cb7-54"></a><span class="co"># With our new function</span></span>
 <span id="cb7-55"><a href="#cb7-55"></a><span class="kw">survey_gini</span>(srvyr_eusilc<span class="op">$</span>variables<span class="op">$</span>eqincome, <span class="dt">.svy =</span> <span class="kw"><a href="../reference/group_by.html">group_by</a></span>(srvyr_eusilc, rb090))</span>
-<span id="cb7-56"><a href="#cb7-56"></a><span class="co">#&gt;    rb090 __SRVYR_COEF__         _se</span></span>
-<span id="cb7-57"><a href="#cb7-57"></a><span class="co">#&gt; 1   male      0.2578983 0.002617279</span></span>
-<span id="cb7-58"><a href="#cb7-58"></a><span class="co">#&gt; 2 female      0.2702080 0.002892713</span></span>
-<span id="cb7-59"><a href="#cb7-59"></a></span>
-<span id="cb7-60"><a href="#cb7-60"></a><span class="co"># And finally, the more typical way through summarize</span></span>
-<span id="cb7-61"><a href="#cb7-61"></a>srvyr_eusilc <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb7-62"><a href="#cb7-62"></a><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(rb090) <span class="op">%&gt;%</span></span>
-<span id="cb7-63"><a href="#cb7-63"></a><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">eqincome =</span> <span class="kw">survey_gini</span>(eqincome))</span>
-<span id="cb7-64"><a href="#cb7-64"></a><span class="co">#&gt; # A tibble: 2 x 3</span></span>
-<span id="cb7-65"><a href="#cb7-65"></a><span class="co">#&gt;   rb090  eqincome eqincome_se</span></span>
-<span id="cb7-66"><a href="#cb7-66"></a><span class="co">#&gt;   &lt;fct&gt;     &lt;dbl&gt;       &lt;dbl&gt;</span></span>
-<span id="cb7-67"><a href="#cb7-67"></a><span class="co">#&gt; 1 male      0.258     0.00262</span></span>
-<span id="cb7-68"><a href="#cb7-68"></a><span class="co">#&gt; 2 female    0.270     0.00289</span></span></code></pre></div>
+<span id="cb7-56"><a href="#cb7-56"></a><span class="co">#&gt; Warning: The `add` argument of `group_by()` is deprecated as of dplyr 1.0.0.</span></span>
+<span id="cb7-57"><a href="#cb7-57"></a><span class="co">#&gt; Please use the `.add` argument instead.</span></span>
+<span id="cb7-58"><a href="#cb7-58"></a><span class="co">#&gt; This warning is displayed once every 8 hours.</span></span>
+<span id="cb7-59"><a href="#cb7-59"></a><span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span></span>
+<span id="cb7-60"><a href="#cb7-60"></a><span class="co">#&gt;         rb090 __SRVYR_COEF__         _se</span></span>
+<span id="cb7-61"><a href="#cb7-61"></a><span class="co">#&gt; male     male      0.2578983 0.002617279</span></span>
+<span id="cb7-62"><a href="#cb7-62"></a><span class="co">#&gt; female female      0.2702080 0.002892713</span></span>
+<span id="cb7-63"><a href="#cb7-63"></a></span>
+<span id="cb7-64"><a href="#cb7-64"></a><span class="co"># And finally, the more typical way through summarize</span></span>
+<span id="cb7-65"><a href="#cb7-65"></a>srvyr_eusilc <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-66"><a href="#cb7-66"></a><span class="st">  </span><span class="kw"><a href="../reference/group_by.html">group_by</a></span>(rb090) <span class="op">%&gt;%</span></span>
+<span id="cb7-67"><a href="#cb7-67"></a><span class="st">  </span><span class="kw"><a href="../reference/summarise.html">summarize</a></span>(<span class="dt">eqincome =</span> <span class="kw">survey_gini</span>(eqincome))</span>
+<span id="cb7-68"><a href="#cb7-68"></a><span class="co">#&gt; # A tibble: 2 x 3</span></span>
+<span id="cb7-69"><a href="#cb7-69"></a><span class="co">#&gt;   rb090  eqincome eqincome_se</span></span>
+<span id="cb7-70"><a href="#cb7-70"></a><span class="co">#&gt;   &lt;fct&gt;     &lt;dbl&gt;       &lt;dbl&gt;</span></span>
+<span id="cb7-71"><a href="#cb7-71"></a><span class="co">#&gt; 1 male      0.258     0.00262</span></span>
+<span id="cb7-72"><a href="#cb7-72"></a><span class="co">#&gt; 2 female    0.270     0.00289</span></span></code></pre></div>
 </div>
   </div>
 

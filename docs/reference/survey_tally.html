@@ -74,7 +74,7 @@ before calculating the count and then returns the data to the original groupings
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.9</span>
       </span>
     </div>
 
@@ -140,7 +140,7 @@ before calculating the count and then returns the data to the original groupings
     </div>
 
     <div class="ref-description">
-    <p>Analogous to <code><a href='https://dplyr.tidyverse.org/reference/tally.html'>tally</a></code> and count, calculates the survey weighted
+    <p>Analogous to <code><a href='https://dplyr.tidyverse.org/reference/count.html'>tally</a></code> and count, calculates the survey weighted
 count of observations. <code>survey_tally</code> will call <code><a href='survey_total.html'>survey_total</a></code> empty (resulting
 in the count of each group) or on <code>wt</code> if it is specified (resulting in the
 survey weighted total of <code>wt</code>). <code>survey_count</code> is similar, but calls <code>group_by</code>

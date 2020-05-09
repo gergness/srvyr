@@ -4,14 +4,12 @@
 \alias{summarise}
 \alias{summarize}
 \title{Summarise multiple values to a single value.}
-\usage{
-summarise(.data, ...)
-summarize(.data, ...)
-}
 \arguments{
-\item{.data, }{tbl A \code{tbl_svy} object}
+\item{.data}{tbl A \code{tbl_svy} object}
 
 \item{...}{Name-value pairs of summary functions}
+
+\item{.groups}{Experimental in dplyr 1.0, currently ignored by srvyr}
 }
 \description{
 Summarise multiple values to a single value.

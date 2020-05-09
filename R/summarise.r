@@ -1,6 +1,9 @@
 #' @export
-summarise.tbl_svy <- function(.data, ...) {
+summarise.tbl_svy <- function(.data, ..., .groups = NULL) {
   .dots <- rlang::quos(...)
+  if (!(is.null(.groups) || .groups == "drop_last")) {
+    warning(".groups other than 'drop_last' not yet supported by srvyr.")
+  }
 
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
 
@@ -28,7 +31,7 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
 }
 
 #' @export
-summarise.grouped_svy <- function(.data, ...) {
+summarise.grouped_svy <- function(.data, ..., .groups = NULL) {
   .dots <- rlang::quos(...)
 
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
@@ -72,11 +75,10 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'
 #' Summarise multiple values to a single value.
 #'
-#' @usage summarise(.data, ...)
-#' summarize(.data, ...)
 #'
-#' @param .data, tbl A \code{tbl_svy} object
+#' @param .data tbl A \code{tbl_svy} object
 #' @param ... Name-value pairs of summary functions
+#' @param .groups Experimental in dplyr 1.0, currently ignored by srvyr
 #'
 #' @details
 #' Summarise for \code{tbl_svy} objects accepts several specialized functions.

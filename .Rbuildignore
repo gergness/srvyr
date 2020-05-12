@@ -11,3 +11,4 @@
 ^dev-misc$
 ^CODE_OF_CONDUCT\.md$
 ^revdep$
+^\.github$

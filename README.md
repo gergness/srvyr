@@ -3,7 +3,10 @@
 
 # srvyr <img src="tools/logo.png" align="right" height="149" width="149"/>
 
+<!-- badges: start -->
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/srvyr)](https://CRAN.R-project.org/package=srvyr)
+[![R build
+status](https://github.com/gergness/srvyr/workflows/R-CMD-check/badge.svg)](https://github.com/gergness/srvyr/actions)
 [![Travis-CI Build
 Status](https://travis-ci.org/gergness/srvyr.svg?branch=master)](https://travis-ci.org/gergness/srvyr)
 [![AppVeyor Build
@@ -12,6 +15,7 @@ Status](https://ci.appveyor.com/api/projects/status/github/gergness/srvyr?branch
 Status](https://codecov.io/gh/gergness/srvyr/master.svg)](https://codecov.io/github/gergness/srvyr?branch=master)
 [![Documentation via
 pkgdown](tools/pkgdownshield.svg)](http://gdfe.co/srvyr)
+<!-- badges: end -->
 
 srvyr brings parts of [dplyr’s](https://github.com/hadley/dplyr/) syntax
 to survey analysis, using the
@@ -79,6 +83,10 @@ dstrata %>%
 dstrata %>% 
   group_by(stype) %>%
   summarise(api_diff = survey_mean(api_diff, vartype = "ci"))
+#> Warning: The `add` argument of `group_by()` is deprecated as of dplyr 1.0.0.
+#> Please use the `.add` argument instead.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_warnings()` to see where this warning was generated.
 #> # A tibble: 3 x 4
 #>   stype api_diff api_diff_low api_diff_upp
 #>   <fct>    <dbl>        <dbl>        <dbl>

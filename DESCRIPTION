@@ -29,13 +29,13 @@ Suggests:
     dbplyr,
     ggplot2,
     knitr,
+    laeken,
     Matrix,
     rmarkdown,
     pander,
     RSQLite,
     survival,
-    testthat,
-    vardpoor
+    testthat
 Encoding: UTF-8
 VignetteBuilder: knitr
 RoxygenNote: 7.1.0

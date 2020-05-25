@@ -1,4 +1,6 @@
 # srvyr (development version)
+* Another fix for upcoming dplyr
+* Fix in vignette for changes to vardpoor package
 
 # srvyr 0.3.9
 * Fix for upcoming version of dplyr (thanks @romainfrancois)

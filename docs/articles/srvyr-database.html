@@ -105,9 +105,6 @@
     
     
 <pre><code>## Loading required package: RSQLite</code></pre>
-<pre><code>## Warning in library(package, lib.loc = lib.loc, character.only = TRUE,
-## logical.return = TRUE, : there is no package called 'RSQLite'</code></pre>
-<pre><code>## Could not find RSQLite so could not run vignette.</code></pre>
 <p>Srvyr 0.3 has a completely rewritten database backend. Using databases that are already stored dplyr’s <code>tbl_lazy</code> objects is now just as easy as working with data stored in regular R data.frames as you don’t need to have a unique identifier. Additionally, it now works more similarly to the survey package’s database code and so shouldn’t be any slower.</p>
 <p>During development, I have tested using SQLite (and the now defunct MonetDBLite) databases, but in theory other database backends should work as well.</p>
 <p>This vignette shows the basics of how to use srvyr with databases. It is based on analysis from the wonderful resource asdfree ( <a href="http://asdfree.com/">website</a> and <a href="https://github.com/ajdamico/asdfree">github</a> ). Many thanks to <a href="http://github.com/ajdamico">ajdamico</a> and collaborators. Specifically, I have adapted code from <a href="https://github.com/ajdamico/asdfree/blob/d0b965e9672161da086e30471760d08281b74343/American%20Community%20Survey/2011%20single-year%20-%20analysis%20examples.R">American Community Survey - 2011 single year analysis</a> and the associated data preparation scripts.</p>
@@ -121,7 +118,7 @@
 <li><p>Selects only a few variables that will be used in this analysis to save space, but again it could easily be adapted to keep all of the variables.</p></li>
 </ul>
 <p>For more information on the specifics of the American Community Survey, see the asdfree site. Now, our code loads this prepared dataset, initiates a SQLite database, and puts the data into the dataset.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span>({
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span>({
   <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">survey</span>)
   <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">srvyr</span>)
   <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
@@ -136,30 +133,50 @@
 <span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span>(<span class="st">"acs_m.Rdata"</span>) <span class="co"># acs_m data</span>
 
 <span class="co"># Set up database and table</span>
-<span class="no">db</span> <span class="kw">&lt;-</span> <span class="kw pkg">DBI</span><span class="kw ns">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html">dbConnect</a></span>(<span class="kw pkg">RSQLite</span><span class="kw ns">::</span><span class="fu">SQLite</span>(), <span class="st">":memory:"</span>)
+<span class="no">db</span> <span class="kw">&lt;-</span> <span class="kw pkg">DBI</span><span class="kw ns">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html">dbConnect</a></span>(<span class="kw pkg">RSQLite</span><span class="kw ns">::</span><span class="fu"><a href="https://rsqlite.r-dbi.org/reference/SQLite.html">SQLite</a></span>(), <span class="st">":memory:"</span>)
 <span class="no">acs_m_db</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/copy_to.html">copy_to</a></span>(<span class="no">db</span>, <span class="no">acs_m</span>, <span class="st">"acs_m"</span>, <span class="kw">temporary</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
 
 <span class="co"># Or, if the data was already stored in the database, you could do this</span>
 <span class="co"># acs_m_data &lt;- tbl(db, sql("SELECT * FROM acs_m")) </span></pre></body></html></div>
 <p>Now that we have the data in the database, we can interact with the database directly using sql commands, or we can use dplyr’s functionality to treat it mostly the same as a local <code>data.frame</code>. However, the data is not stored in memory, so we could work with much larger datasets (though in this case, the data is too small for this to be a problem).</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co"># Same results</span>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># Same results</span>
 <span class="no">acs_m</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="no">sex</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">hicov</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">hicov</span>))
-
-<span class="no">acs_m_db</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">hicov</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">hicov</span>))</pre></body></html></div>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##     sex hicov
+##   &lt;int&gt; &lt;dbl&gt;
+## 1     1  1.14
+## 2     2  1.10</code></pre>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">acs_m_db</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="no">sex</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">hicov</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">hicov</span>))
-
-<span class="co"># But smaller object size</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(<span class="no">acs_m</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(<span class="no">acs_m_db</span>)</pre></body></html></div>
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">hicov</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">hicov</span>))</pre></body></html></div>
+<pre><code>## Warning: Missing values are always removed in SQL.
+## Use `mean(x, na.rm = TRUE)` to silence this warning
+## This warning is displayed only once per session.</code></pre>
+<pre><code>## # Source:   lazy query [?? x 2]
+## # Database: sqlite 3.30.1 [:memory:]
+##     sex hicov
+##   &lt;int&gt; &lt;dbl&gt;
+## 1     1  1.14
+## 2     2  1.10</code></pre>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="co"># But smaller object size</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(<span class="no">acs_m</span>)</pre></body></html></div>
+<pre><code>## 7777312 bytes</code></pre>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(<span class="no">acs_m_db</span>)</pre></body></html></div>
+<pre><code>## 10376 bytes</code></pre>
 <p>Note that though many commands behave exactly the same whether on a local data.frame or database, sometimes more advanced / complicated syntax around variable modification allowed in dplyr does not work on a particular database and so it is better to be more explicit. For example, creating a variable inside of a summarize call does not work in some databases. .</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">acs_m</span> <span class="kw">%&gt;%</span>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">acs_m</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="no">sex</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">hicov</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">hicov</span> <span class="kw">==</span> <span class="fl">1</span>))
-
-<span class="co"># Works in RSQlite, but didn't in the now defunct MonetDB</span>
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">hicov</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">hicov</span> <span class="kw">==</span> <span class="fl">1</span>))</pre></body></html></div>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##     sex hicov
+##   &lt;int&gt; &lt;dbl&gt;
+## 1     1 0.858
+## 2     2 0.895</code></pre>
+<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="co"># Works in RSQlite, but didn't in the now defunct MonetDB</span>
 <span class="co"># acs_m_db %&gt;% </span>
 <span class="co">#   group_by(sex) %&gt;%</span>
 <span class="co">#   summarize(hicov = mean(hicov == 1))</span>
@@ -173,13 +190,28 @@
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="no">sex</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/dplyr_single.html">mutate</a></span>(<span class="kw">hicov</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="no">hicov</span> <span class="kw">==</span> <span class="fl">1</span>, <span class="fl">1L</span>, <span class="fl">0L</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">hicov</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">hicov</span>))</pre></body></html></div>
+<pre><code>## # Source:   lazy query [?? x 2]
+## # Database: sqlite 3.30.1 [:memory:]
+##     sex hicov
+##   &lt;int&gt; &lt;dbl&gt;
+## 1     1 0.858
+## 2     2 0.895</code></pre>
 <p>Further, sometimes working with variable types can get difficult if you are used to working in R. Notice how in the above, instead of <code>hicov = (hicov == 1)</code>, I wrote out the ifelse statement. If I hadn’t RSQLite would be unable to calculate the mean of the boolean variable created.</p>
 <p>Finally, a major difference when transitioning from dplyr on local data.frames is that not all R functions are translated to SQL. For example, <code><a href="https://rdrr.io/r/base/cut.html">cut()</a></code> isn’t implemented in SQL, so you can’t create a new variable in the data.frame using it.</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">acs_m</span> <span class="kw">%&gt;%</span>
+<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="no">acs_m</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="kw">agecat</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span>(<span class="no">agep</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fl">19</span>, <span class="fl">35</span>, <span class="fl">50</span>, <span class="fl">65</span>, <span class="fl">200</span>))) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">hicov</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">hicov</span> <span class="kw">==</span> <span class="fl">1</span>))
-
-<span class="co"># acs_m_db %&gt;% </span>
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">hicov</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">hicov</span> <span class="kw">==</span> <span class="fl">1</span>))</pre></body></html></div>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   agecat   hicov
+##   &lt;fct&gt;    &lt;dbl&gt;
+## 1 (0,19]   0.908
+## 2 (19,35]  0.795
+## 3 (35,50]  0.837
+## 4 (50,65]  0.873
+## 5 (65,200] 0.992
+## 6 &lt;NA&gt;     0.953</code></pre>
+<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="co"># acs_m_db %&gt;% </span>
 <span class="co">#   group_by(agecat = cut(agep, c(0, 19, 35, 50, 65, 200))) %&gt;%</span>
 <span class="co">#   summarize(hicov = mean(hicov == 1))</span>
 <span class="co">#</span>
@@ -195,13 +227,22 @@
                                               <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="no">agep</span> <span class="kw">&gt;=</span> <span class="fl">65</span>, <span class="st">"65+"</span>, <span class="fl">NA</span>)))))) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="no">agecat</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">hicov</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">hicov</span>))</pre></body></html></div>
+<pre><code>## # Source:   lazy query [?? x 2]
+## # Database: sqlite 3.30.1 [:memory:]
+##   agecat hicov
+##   &lt;chr&gt;  &lt;dbl&gt;
+## 1 0-18    1.09
+## 2 19-34   1.20
+## 3 35-49   1.17
+## 4 50-64   1.13
+## 5 65+     1.01</code></pre>
 <p>For more information on the specifics of databases with dplyr, see <code>vignette("database", package = "dplyr")</code>, the <code>DBI</code> package or the specific database packages, like <code>RSQLite</code>.</p>
 </div>
 <div id="srvyr-setup" class="section level2">
 <h2 class="hasAnchor">
 <a href="#srvyr-setup" class="anchor"></a>Srvyr Setup</h2>
 <p>Srvyr commands are nearly identical to old. The only difference for setup is that you need a variable that uniquely identifies each row in the database (uid).</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">acs_m_db_svy</span> <span class="kw">&lt;-</span> <span class="no">acs_m_db</span> <span class="kw">%&gt;%</span>
+<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="no">acs_m_db_svy</span> <span class="kw">&lt;-</span> <span class="no">acs_m_db</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/as_survey_rep.html">as_survey_rep</a></span>(
     <span class="kw">weight</span> <span class="kw">=</span> <span class="no">pwgtp</span>,
     <span class="kw">repweights</span> <span class="kw">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/reexports.html">matches</a></span>(<span class="st">"pwgtp[0-9]+"</span>) ,
@@ -213,49 +254,99 @@
   )
 
 <span class="no">acs_m_db_svy</span></pre></body></html></div>
+<pre><code>## Call: Called via srvyr
+## Unstratified cluster jacknife (JK1) with 80 replicates and MSE variances.
+## Sampling variables:
+##  - repweights: `pwgtp1 + pwgtp2 + pwgtp3 + pwgtp4 + pwgtp5 + pwgtp6 + pwgtp7 + pwgtp8 + pwgtp9 + pwgtp10 + pwgtp11 + pwgtp12 + pwgtp13 + pwgtp14 + pwgtp15 + pwgtp16 + pwgtp17 + pwgtp18 + pwgtp19 + pwgtp20 + pwgtp21 + pwgtp22 + pwgtp23 + pwgtp24 + pwgtp25 + pwgtp26 + pwgtp27 + pwgtp28 + pwgtp29 + pwgtp30 + pwgtp31 + pwgtp32 + pwgtp33 + pwgtp34 + pwgtp35 + pwgtp36 + pwgtp37 + pwgtp38 + pwgtp39 + pwgtp40 + pwgtp41 + pwgtp42 + pwgtp43 + pwgtp44 + pwgtp45 + pwgtp46 + pwgtp47 + pwgtp48 + pwgtp49 + pwgtp50 + pwgtp51 + \n    pwgtp52 + pwgtp53 + pwgtp54 + pwgtp55 + pwgtp56 + pwgtp57 + pwgtp58 + pwgtp59 + pwgtp60 + pwgtp61 + pwgtp62 + pwgtp63 + pwgtp64 + pwgtp65 + pwgtp66 + pwgtp67 + pwgtp68 + pwgtp69 + pwgtp70 + pwgtp71 + pwgtp72 + pwgtp73 + pwgtp74 + pwgtp75 + pwgtp76 + pwgtp77 + pwgtp78 + pwgtp79 + pwgtp80`
+##  - weights: pwgtp
+## Data variables: serialno (int), sporder (chr), pwgtp (int), pwgtp1 (int),
+##   pwgtp2 (int), pwgtp3 (int), pwgtp4 (int), pwgtp5 (int), pwgtp6 (int), pwgtp7
+##   (int), pwgtp8 (int), pwgtp9 (int), pwgtp10 (int), pwgtp11 (int), pwgtp12
+##   (int), pwgtp13 (int), pwgtp14 (int), pwgtp15 (int), pwgtp16 (int), pwgtp17
+##   (int), pwgtp18 (int), pwgtp19 (int), pwgtp20 (int), pwgtp21 (int), pwgtp22
+##   (int), pwgtp23 (int), pwgtp24 (int), pwgtp25 (int), pwgtp26 (int), pwgtp27
+##   (int), pwgtp28 (int), pwgtp29 (int), pwgtp30 (int), pwgtp31 (int), pwgtp32
+##   (int), pwgtp33 (int), pwgtp34 (int), pwgtp35 (int), pwgtp36 (int), pwgtp37
+##   (int), pwgtp38 (int), pwgtp39 (int), pwgtp40 (int), pwgtp41 (int), pwgtp42
+##   (int), pwgtp43 (int), pwgtp44 (int), pwgtp45 (int), pwgtp46 (int), pwgtp47
+##   (int), pwgtp48 (int), pwgtp49 (int), pwgtp50 (int), pwgtp51 (int), pwgtp52
+##   (int), pwgtp53 (int), pwgtp54 (int), pwgtp55 (int), pwgtp56 (int), pwgtp57
+##   (int), pwgtp58 (int), pwgtp59 (int), pwgtp60 (int), pwgtp61 (int), pwgtp62
+##   (int), pwgtp63 (int), pwgtp64 (int), pwgtp65 (int), pwgtp66 (int), pwgtp67
+##   (int), pwgtp68 (int), pwgtp69 (int), pwgtp70 (int), pwgtp71 (int), pwgtp72
+##   (int), pwgtp73 (int), pwgtp74 (int), pwgtp75 (int), pwgtp76 (int), pwgtp77
+##   (int), pwgtp78 (int), pwgtp79 (int), pwgtp80 (int), agep (int), hicov (int),
+##   sex (int), st (chr), rt (chr)</code></pre>
 <p>Because srvyr stores the survey variables locally, the srvyr object takes up much more memory than the dplyr one. However, this object would not grow in size if you added more data variables to your survey, so if your survey is very wide, it will save a lot space.</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(<span class="no">acs_m_db_svy</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(<span class="no">acs_m_db_svy</span>)</pre></body></html></div>
+<pre><code>## 8391408 bytes</code></pre>
 </div>
 <div id="analysis" class="section level1">
 <h1 class="hasAnchor">
 <a href="#analysis" class="anchor"></a>Analysis</h1>
 <p>Analysis commands from srvyr are also similar to ones that work on local data.frames. The main differences come from the issues discussed above about explicitly creating variables difficulties in translating R commands, and variable types.</p>
 <p>The following analysis is based on the asdfree analysis and shows some basic analysis on the total population, insurance coverage, age and sex.</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="co"># You can calculate the population of the united states #</span>
+<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="co"># You can calculate the population of the united states #</span>
 <span class="co"># by state</span>
 <span class="no">acs_m_db_svy</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/dplyr_single.html">mutate</a></span>(<span class="kw">one</span> <span class="kw">=</span> <span class="fl">1L</span>) <span class="kw">%&gt;%</span> <span class="co"># Note that because of weird behavior of MonetDB, need to use 1L not just 1</span>
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="no">st</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">count</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_total.html">survey_total</a></span>(<span class="no">one</span>))
-
-<span class="co"># Or the average age of downloaded states</span>
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">count</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_total.html">survey_total</a></span>(<span class="no">one</span>))</pre></body></html></div>
+<pre><code>## Warning: The `add` argument of `group_by()` is deprecated as of dplyr 1.0.0.
+## Please use the `.add` argument instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   st      count count_se
+##   &lt;chr&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+## 1 02     722718        0
+## 2 15    1374810        0</code></pre>
+<div class="sourceCode" id="cb30"><html><body><pre class="r"><span class="co"># Or the average age of downloaded states</span>
 <span class="no">acs_m_db_svy</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="no">agep</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
-
-<span class="co"># Average age by state</span>
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="no">agep</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))</pre></body></html></div>
+<pre><code>## # A tibble: 1 x 2
+##    agep agep_se
+##   &lt;dbl&gt;   &lt;dbl&gt;
+## 1  37.4  0.0532</code></pre>
+<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="co"># Average age by state</span>
 <span class="no">acs_m_db_svy</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="no">st</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="no">agep</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
-
-<span class="co"># percent uninsured - nationwide (of downloaded states)</span>
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="no">agep</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))</pre></body></html></div>
+<pre><code>## # A tibble: 2 x 3
+##   st     agep agep_se
+##   &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt;
+## 1 02     34.6  0.133 
+## 2 15     38.8  0.0404</code></pre>
+<div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="co"># percent uninsured - nationwide (of downloaded states)</span>
 <span class="no">acs_m_db_svy</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/dplyr_single.html">mutate</a></span>(<span class="kw">hicov</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="no">hicov</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="no">hicov</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">pct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
-
-<span class="co"># by state</span>
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">pct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))</pre></body></html></div>
+<pre><code>## # A tibble: 2 x 3
+##   hicov   pct  pct_se
+##   &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt;
+## 1 1     0.885 0.00339
+## 2 2     0.115 0.00339</code></pre>
+<div class="sourceCode" id="cb36"><html><body><pre class="r"><span class="co"># by state</span>
 <span class="no">acs_m_db_svy</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/dplyr_single.html">mutate</a></span>(<span class="kw">hicov</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="no">hicov</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="no">st</span>, <span class="no">hicov</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">pct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
-
-
-<span class="co"># 25th, median, and 75th percentile of age of residents of the united states (downloaded states)</span>
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">pct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))</pre></body></html></div>
+<pre><code>## # A tibble: 4 x 4
+##   st    hicov    pct  pct_se
+##   &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+## 1 02    1     0.802  0.00793
+## 2 02    2     0.198  0.00793
+## 3 15    1     0.928  0.00383
+## 4 15    2     0.0719 0.00383</code></pre>
+<div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="co"># 25th, median, and 75th percentile of age of residents of the united states (downloaded states)</span>
 <span class="no">acs_m_db_svy</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_quantile.html">survey_quantile</a></span>(<span class="no">agep</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>), <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
-
-
-<span class="co"># Filter works, so we can restrict the acs_m object to females only</span>
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_quantile.html">survey_quantile</a></span>(<span class="no">agep</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>), <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))</pre></body></html></div>
+<pre><code>## # A tibble: 1 x 6
+##   agep_q25 agep_q50 agep_q75 agep_q25_se agep_q50_se agep_q75_se
+##      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+## 1       19       36       55       0.251       0.251       0.251</code></pre>
+<div class="sourceCode" id="cb40"><html><body><pre class="r"><span class="co"># Filter works, so we can restrict the acs_m object to females only</span>
 <span class="no">acs_m_db_svy_female</span> <span class="kw">&lt;-</span> <span class="no">acs_m_db_svy</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/dplyr_single.html">filter</a></span>(<span class="no">sex</span> <span class="kw">==</span> <span class="fl">2</span>)
 
@@ -266,14 +357,19 @@
 
 <span class="co"># average age - nationwide (of downloaded states), restricted to females</span>
 <span class="no">acs_m_db_svy_female</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="no">agep</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
-
-<span class="co"># median age - nationwide (of downloaded states), restricted to females</span>
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="no">agep</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))</pre></body></html></div>
+<pre><code>## # A tibble: 1 x 2
+##    agep agep_se
+##   &lt;dbl&gt;   &lt;dbl&gt;
+## 1  38.2   0.103</code></pre>
+<div class="sourceCode" id="cb42"><html><body><pre class="r"><span class="co"># median age - nationwide (of downloaded states), restricted to females</span>
 <span class="no">acs_m_db_svy_female</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_quantile.html">survey_median</a></span>(<span class="no">agep</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
-
-
-<span class="co"># Note that though some R functions are translated by dplyr into SQL, not</span>
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_quantile.html">survey_median</a></span>(<span class="no">agep</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))</pre></body></html></div>
+<pre><code>## # A tibble: 1 x 2
+##    agep agep_se
+##   &lt;dbl&gt;   &lt;dbl&gt;
+## 1    37   0.251</code></pre>
+<div class="sourceCode" id="cb44"><html><body><pre class="r"><span class="co"># Note that though some R functions are translated by dplyr into SQL, not</span>
 <span class="co"># all of them are. For example, when constructing a new age category </span>
 <span class="co"># variable in the dataset neither findIntervals nor cut work on databases, </span>
 <span class="co"># so we have to spell out groups with ifelse()</span>
@@ -285,6 +381,14 @@
                                               <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="no">agep</span> <span class="kw">&gt;=</span> <span class="fl">65</span>, <span class="st">"65+"</span>, <span class="fl">NA</span>)))))) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="no">agecat</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">pct</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))</pre></body></html></div>
+<pre><code>## # A tibble: 5 x 3
+##   agecat   pct   pct_se
+##   &lt;chr&gt;  &lt;dbl&gt;    &lt;dbl&gt;
+## 1 0-18   0.248 0.00101 
+## 2 19-34  0.228 0.00172 
+## 3 35-49  0.198 0.00176 
+## 4 50-64  0.202 0.00134 
+## 5 65+    0.126 0.000980</code></pre>
 <div id="advanced-topics" class="section level2">
 <h2 class="hasAnchor">
 <a href="#advanced-topics" class="anchor"></a>Advanced Topics</h2>
@@ -292,11 +396,80 @@
 <h3 class="hasAnchor">
 <a href="#running-survey-commands-with-collect" class="anchor"></a>Running survey commands with collect</h3>
 <p>If you’d like to run a command from the survey package, you’ll need to collect the data locally first. You can select only the variables you’ll need for the analysis so that you don’t have to store the whole dataset in memory.</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">acs_m_db_svy</span> <span class="kw">%&gt;%</span>
+<div class="sourceCode" id="cb46"><html><body><pre class="r"><span class="no">acs_m_db_svy</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/dplyr_single.html">select</a></span>(<span class="no">agep</span>, <span class="no">hicov</span>, <span class="no">sex</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/collect.html">collect</a></span>() <span class="kw">%&gt;%</span>
   {<span class="kw pkg">survey</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/survey/man/svyglm.html">svyglm</a></span>(<span class="no">hicov</span> ~ <span class="no">sex</span> + <span class="no">agep</span>, <span class="no">.</span>)} <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>()</pre></body></html></div>
+<pre><code>## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced
+
+## Warning in log(wt): NaNs produced</code></pre>
+<pre><code>## 
+## Call:
+## survey::svyglm(formula = hicov ~ sex + agep, .)
+## 
+## Survey design:
+## Called via srvyr
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.1882942  0.0101068 117.573  &lt; 2e-16 ***
+## sex         -0.0309300  0.0048065  -6.435 9.56e-09 ***
+## agep        -0.0007165  0.0001143  -6.269 1.94e-08 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for gaussian family taken to be 2165.145)
+## 
+## Number of Fisher Scoring iterations: 2</code></pre>
 </div>
 <div id="write-access" class="section level3">
 <h3 class="hasAnchor">

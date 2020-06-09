@@ -31,7 +31,7 @@ Suggests:
     knitr,
     laeken,
     Matrix,
-    rmarkdown,
+    rmarkdown (>= 2.2.2),
     pander,
     RSQLite,
     survival,
@@ -39,3 +39,5 @@ Suggests:
 Encoding: UTF-8
 VignetteBuilder: knitr
 RoxygenNote: 7.1.0
+Remotes:  
+    rstudio/rmarkdown

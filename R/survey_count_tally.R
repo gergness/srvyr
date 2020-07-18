@@ -77,7 +77,7 @@ survey_tally <- function(
 
 #' @export
 #' @rdname survey_tally
-survey_count <- function (
+survey_count <- function(
   x, ..., wt = NULL, sort = FALSE, name = "n", .drop = dplyr::group_by_drop_default(x),
   vartype =  c("se", "ci", "var", "cv")
 ) {
@@ -86,37 +86,16 @@ survey_count <- function (
   }
   groups <- dplyr::group_vars(x)
   if (dots_n(...)) {
-    x <- .group_by_static_drop(x, ..., add = TRUE, .drop = .drop)
+    x <- group_by(x, ..., .add = TRUE, .drop = .drop)
   }
   x <- survey_tally(x, wt = !!enquo(wt), sort = sort, name = name, vartype = vartype)
-  x <- .group_by_static_drop(x, !!!syms(groups), add = FALSE,
-                             .drop = .drop)
+  x <- group_by(x, !!!syms(groups), .add = FALSE, .drop = .drop)
   x
 }
 
 
 
 # from dplyr https://github.com/tidyverse/dplyr/blob/master/R/compat-future-group_by.R
-# Including comments
-
-# workaround so that methods that do not have the .drop argument yet
-# don't create the auto mutate .drop column
-#
-# things like count() and group_by_all()
-# can call .group_by_static_drop() instead of group_by()
-# so that .drop is only part of the group_by() call if it is FALSE
-#
-# this is only meant to stay in dplyr until 0.8.0 to give
-# implementers of group_by() methods a chance to add .drop in their
-# arguments
-.group_by_static_drop <- function(..., .drop) {
-  if(.drop) {
-    group_by(...)
-  } else {
-    group_by(..., .drop = FALSE)
-  }
-}
-
 n_name <- function(x, name = "n") {
   while (name %in% x) {
     name <- paste0("n", name)

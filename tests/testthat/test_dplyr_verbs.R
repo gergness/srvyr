@@ -16,3 +16,10 @@ test_that('srvyr::pull works like dplyr::pull',{
   expect_equal(pull(dstrata, -4), pull(apistrat, -4))
 
 })
+
+test_that('transmute works',{
+  expect_equal(
+    dstrata %>% transmute(test = 1),
+    dstrata %>% mutate(test = 1) %>% select(test)
+  )
+})

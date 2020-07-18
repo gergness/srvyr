@@ -722,7 +722,13 @@ unweighted <- function(x, .svy = current_svy(), ...) {
   # survey statistics
   dots <- rlang::quo_set_env(dots, rlang::env_parent(n = 2))
 
-  out <- summarize(.svy[["variables"]], !!dots)
+  if (is.calibrated(.svy) | is.pps(.svy)) {
+    excluded_rows <- is.infinite(.svy[['prob']])
+    out <- summarize(.svy[["variables"]][!excluded_rows,], !!dots)
+  } else {
+    out <- summarize(.svy[["variables"]], !!dots)
+  }
+
   names(out)[length(names(out))] <- ""
   out
 }

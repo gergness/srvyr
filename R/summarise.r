@@ -1,10 +1,6 @@
 #' @export
 summarise.tbl_svy <- function(.data, ..., .groups = NULL) {
   .dots <- rlang::quos(...)
-  if (!(is.null(.groups) || .groups == "drop_last")) {
-    warning(".groups other than 'drop_last' not yet supported by srvyr.")
-  }
-
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
 
   # Set current_svy so available to svy stat functions
@@ -17,11 +13,22 @@ summarise.tbl_svy <- function(.data, ..., .groups = NULL) {
     var_names <- names(out)
     vname_is_coef <- var_names == "__SRVYR_COEF__"
     if (any(vname_is_coef)) var_names[vname_is_coef] <- ""
-    stats::setNames(out, paste0(names(.dots)[x], var_names))
+    if (!is.data.frame(out)) {
+      dplyr::tibble(!!names(.dots[x]) := out)
+    } else {
+      stats::setNames(out, paste0(names(.dots)[x], var_names))
+    }
   })
+  summarise_result_nrow_check(out, names(.dots))
+  # since there are no groups, .groups="drop_last" is equivalent to .groups="keep"
+  if (is.null(.groups)) {
+    .groups <- "drop_last"
+  }
+  end_grouping_func <- finalize_grouping(.data, .groups)
 
   out <- dplyr::bind_cols(out)
-  tibble::as_tibble(out)
+  out <- tibble::as_tibble(out)
+  end_grouping_func(out)
 }
 
 #' @export
@@ -33,7 +40,6 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
 #' @export
 summarise.grouped_svy <- function(.data, ..., .groups = NULL) {
   .dots <- rlang::quos(...)
-
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
 
   # Set current_svy so available to svy stat functions
@@ -50,25 +56,102 @@ summarise.grouped_svy <- function(.data, ..., .groups = NULL) {
     changed_names[which(changed_names_is_coef)] <- ""
     results <- stats::setNames(out, c(unchanged_names, paste0(names(.dots)[x], changed_names)))
     results <- dplyr::arrange(results, !!!rlang::syms(unchanged_names))
+    # In case there are multi-row results, make a within group ID
+    results <- dplyr::group_by_at(results, groups)
+    results <- dplyr::mutate(results, `__SRVYR_WITHIN_GRP_ID__` = row_number())
+    results <- dplyr::ungroup(results)
 
     results
   })
+
+  # if all arguments return length 1 data.frames for each group then we drop_last,
+  # otherwise we keep
+  if (is.null(.groups)) {
+    if (all(vapply(calculations, function(x) max(x[["__SRVYR_WITHIN_GRP_ID__"]]) == 1, logical(1)))) {
+      .groups <- "drop_last"
+    } else {
+      .groups <- "keep"
+    }
+  }
+  end_grouping_func <- finalize_grouping(.data, .groups)
 
   # Create a skeleton of a summary using dplyr:::summarize.tbl_df
   # So that we handle the .drop cases. See https://github.com/gergness/srvyr/issues/49
   out <- dplyr::summarize((.data$variables), `___SRVYR_DROP___` = 1)
   out[["___SRVYR_DROP___"]] <- NULL
-  for (ccc in calculations) {
-    out <- dplyr::left_join(out, ccc, by = groups)
-  }
+  out <- dplyr::ungroup(out)
 
-  dplyr::tibble(out)
+  # In order to handle multi-row returns, go row by row in the skeleton so we
+  # can check that the return sizes are valid for each group
+  out <- lapply(seq_len(nrow(out)), function(grp_id) {
+    grp_slice <- dplyr::slice(out, grp_id)
+    merged_slice <- Reduce(
+      function(merged_slice, calc_num) {
+        calc <- calculations[[calc_num]]
+
+        calc_slice <- dplyr::semi_join(calc, merged_slice, by = groups)
+        if (nrow(calc_slice) == 1) {
+          calc_slice[["__SRVYR_WITHIN_GRP_ID__"]] <- NULL
+          merged_slice <- dplyr::left_join(merged_slice, calc_slice, by = groups)
+        } else if (nrow(merged_slice) == 1) {
+          merged_slice <- dplyr::left_join(merged_slice, calc_slice, by = groups)
+        } else if (nrow(calc_slice) == nrow(merged_slice)) {
+          merged_slice <- dplyr::left_join(merged_slice, calc_slice, by = c(groups, "__SRVYR_WITHIN_GRP_ID__"))
+        } else {
+          arg_name <- names(.dots)[calc_num]
+          grp_ids <- paste0(names(grp_slice), " = ", unname(grp_slice), collapse = ", ")
+          stop(paste0(
+            "summarise results for argument `", arg_name, "` must be size 1 or ",
+            nrow(merged_slice), " but it is ", nrow(calc_slice), " for group: ",
+            grp_ids
+          ))
+        }
+      },
+      seq_along(calculations),
+      grp_slice
+    )
+    merged_slice[["__SRVYR_WITHIN_GRP_ID__"]] <- NULL
+    merged_slice
+  })
+
+  out <- dplyr::bind_rows(out)
+  end_grouping_func(out)
 }
 
 #' @export
 summarise_.grouped_svy <- function(.data, ..., .dots) {
   dots <- compat_lazy_dots(.dots, caller_env(), ...)
   summarise(.data, !!!dots)
+}
+
+finalize_grouping <- function(x, .groups) {
+  orig_groups <- group_vars(x)
+
+  switch(
+    .groups,
+    "drop" = identity,
+    "drop_last" = function(x) group_by_at(x, orig_groups[-length(orig_groups)]),
+    "keep" = function(x) group_by_at(x, orig_groups),
+    "rowwise" = rowwise
+  )
+}
+
+summarise_result_nrow_check <- function(results, names) {
+  allowed_row_nums <- 1
+  lapply(seq_along(results), function(iii) {
+    res_name <- names[[iii]]
+    cur_rows <- nrow(results[[iii]])
+    if (!cur_rows %in% c(1, allowed_row_nums)) {
+      if (allowed_row_nums != 1) {
+        stop(paste0(
+          "summarise results for argument `", res_name, "` must be size 1 or ",
+          allowed_row_nums, " but it is ", cur_rows
+        ))
+      } else {
+        allowed_row_nums <<- cur_rows
+      }
+    }
+  })
 }
 
 #' Summarise multiple values to a single value.
@@ -78,7 +161,10 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'
 #' @param .data tbl A \code{tbl_svy} object
 #' @param ... Name-value pairs of summary functions
-#' @param .groups Experimental in dplyr 1.0, currently ignored by srvyr
+#' @param .groups Defaults to "drop_last" in srvyr meaning that the last group is peeled
+#' off, but if there are more groups they will be preserved. Other options are "drop", which
+#' drops all groups, "keep" which keeps all of them and "rowwise" which converts the object
+#' to a rowwise object (meaning calculations will be performed on each row).
 #'
 #' @details
 #' Summarise for \code{tbl_svy} objects accepts several specialized functions.

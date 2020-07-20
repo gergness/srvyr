@@ -741,7 +741,12 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
 
   if (is.numeric(.svy$variables[[peel_name]])) {
     warning("Coercing ", peel_name, " to character.", call. = FALSE)
-    .svy$variables[[peel_name]] <- as.character(.svy$variables[[peel_name]])
+    peel_var_coerced_to_char <- TRUE
+    peel_var_orig_type <- typeof(.svy$variables[[peel_name]])
+    .svy$variables[[peel_name]] <- format(.svy$variables[[peel_name]],
+                                          nsmall = 20, digits = 22)
+  } else {
+    peel_var_coerced_to_char <- FALSE
   }
 
   if (length(level) > 1) {
@@ -778,6 +783,11 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
       stat, vartype, grps = "", peel = peel_name, peel_levels = peel_levels,
        peel_is_factor = peel_is_factor, df = df, deff = deff
     )
+
+    if (peel_var_coerced_to_char) {
+      out[[peel_name]] <- as(out[[peel_name]], peel_var_orig_type)
+    }
+
     out
   }
 }

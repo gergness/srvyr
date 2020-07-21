@@ -1,5 +1,5 @@
 #' @export
-summarise.tbl_svy <- function(.data, ..., .groups = NULL) {
+summarise.tbl_svy <- function(.data, ..., .groups = NULL, .smoosh = TRUE) {
   .dots <- rlang::quos(...)
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
 
@@ -7,28 +7,21 @@ summarise.tbl_svy <- function(.data, ..., .groups = NULL) {
   old <- set_current_svy(.data)
   on.exit(set_current_svy(old), add = TRUE)
 
-  # use the argument names to name the output
-  out <- lapply(seq_along(.dots), function(x) {
-    out <- rlang::eval_tidy(.dots[[x]], .data$variables)
-    var_names <- names(out)
-    vname_is_coef <- var_names == "__SRVYR_COEF__"
-    if (any(vname_is_coef)) var_names[vname_is_coef] <- ""
-    if (!is.data.frame(out)) {
-      dplyr::tibble(!!names(.dots[x]) := out)
-    } else {
-      stats::setNames(out, paste0(names(.dots)[x], var_names))
-    }
-  })
-  summarise_result_nrow_check(out, names(.dots))
-  # since there are no groups, .groups="drop_last" is equivalent to .groups="keep"
-  if (is.null(.groups)) {
-    .groups <- "drop_last"
-  }
-  end_grouping_func <- finalize_grouping(.data, .groups)
+  out <- dplyr::summarise(.data$variables, ..., .groups = .groups)
 
-  out <- dplyr::bind_cols(out)
-  out <- tibble::as_tibble(out)
-  end_grouping_func(out)
+  # srvyr predates dplyr's data.frame columns so default to smooshing
+  # them wide
+  if (.smoosh) {
+    out <- lapply(names(out), function(col_name) {
+      col <- out[[col_name]]
+      if (is.data.frame(col)) {
+        names(col) <- ifelse(names(col) == "__SRVYR_COEF__", col_name, paste0(col_name, names(col)))
+      }
+      col
+    })
+    out <- dplyr::bind_cols(out)
+  }
+  out
 }
 
 #' @export

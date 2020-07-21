@@ -805,8 +805,9 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
     stat <- func(survey::make.formula(peel_name), .svy, na.rm = na.rm, deff = deff)
 
     out <- get_var_est_factor(
-      stat, vartype, grps = "", peel = peel_name, peel_levels = peel_levels, peel_is_ordered = peel_is_ordered,
-       peel_is_factor = peel_is_factor, df = df, deff = deff
+        stat, vartype, grps = "", peel = peel_name, peel_levels = peel_levels,
+        peel_is_ordered = peel_is_ordered, peel_is_factor = peel_is_factor,
+        df = df, deff = deff
     )
   }
 

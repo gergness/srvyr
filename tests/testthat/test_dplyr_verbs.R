@@ -25,16 +25,12 @@ test_that('transmute works',{
 })
 
 test_that("summarize `.groups` argument matches dplyr behavior (0 groups case)", {
-  lapply(c("keep", "drop_last", "drop"), function(group_type) {
+  lapply(c("keep", "drop_last", "drop", "rowwise"), function(group_type) {
     expect_equal(
       dstrata %>% summarize(x = unweighted(n()), .groups = !!group_type),
       as_tibble(apistrat) %>% summarize(x = n(), .groups = !!group_type)
     )
   })
-
-  # rowwise doesn't match dplyr's behavior for 0 groups. for now assuming this will be changed in dplyr
-  # https://github.com/tidyverse/dplyr/issues/5422
-  expect_is(dstrata %>% summarize(x = unweighted(n()), .groups = "rowwise"), "rowwise_df")
 })
 
 test_that("summarize `.groups` argument matches dplyr behavior (1 groups case)", {
@@ -111,7 +107,8 @@ test_that("ungrouped summarize errors when multi row results of different number
         y = survey_mean(api00),
         z = unweighted(quantile(api00, c(0.05, 0.5, 0.75, 0.95)))
       ),
-    "summarise results for argument `z` must be size 1 or 3 but it is 4"
+    "Input `z` must be size 3 or 1, not 4",
+    class = "error"
   )
 })
 

@@ -9,7 +9,10 @@
 
 \item{...}{Name-value pairs of summary functions}
 
-\item{.groups}{Experimental in dplyr 1.0, currently ignored by srvyr}
+\item{.groups}{Defaults to "drop_last" in srvyr meaning that the last group is peeled
+off, but if there are more groups they will be preserved. Other options are "drop", which
+drops all groups, "keep" which keeps all of them and "rowwise" which converts the object
+to a rowwise object (meaning calculations will be performed on each row).}
 }
 \description{
 Summarise multiple values to a single value.

@@ -412,4 +412,120 @@ source("utilities.R")
           )
         })
 
+# filter_if ----
 
+      is_yes_no_factor <- function(x) {
+        is.factor(x) && any(c("Yes", "No") %in% levels(x))
+      }
+
+      test_that(
+        "filter_if works with all_vars() predicate", {
+          # Stratified design
+          expect_equal(
+            # Survey design object
+            object = stratified_design %>%
+              filter_if(is_yes_no_factor,
+                        all_vars(. == "Yes")) %>%
+              nrow(),
+            # Underlying data frame (not a survey design object)
+            expected = apistrat %>%
+              filter_if(is_yes_no_factor,
+                        all_vars(. == "Yes")) %>%
+              nrow()
+          )
+
+          # Cluster design
+          expect_equal(
+            # Survey design object
+            object = cluster_design %>%
+              filter_if(is_yes_no_factor,
+                        all_vars(. == "Yes")) %>%
+              nrow(),
+            # Underlying data frame (not a survey design object)
+            expected = apiclus1 %>%
+              filter_if(is_yes_no_factor,
+                        all_vars(. == "Yes")) %>%
+              nrow()
+          )
+
+          # Calibration weighted design
+          ## First check that the correct number of rows are retained
+          expect_equal(
+            object =  raked_design %>%
+              filter_if(is_yes_no_factor,
+                        all_vars(. == "Yes")) %>%
+              nrow(),
+            expected = subset(raked_design,
+                              sch.wide == "Yes" & comp.imp == "Yes" & both == "Yes" & awards == "Yes" & yr.rnd == "Yes") %>%
+              nrow()
+          )
+          ## Next check that calculation results match behavior of survey package
+          expect_equal(
+            object = raked_design %>%
+              filter_if(is_yes_no_factor,
+                        all_vars(. == "Yes")) %>%
+              summarize(api_ratio = survey_ratio(api00, api99, vartype = NULL)) %>%
+              dplyr::pull("api_ratio"),
+            expected = svyratio(
+              numerator = ~ api00, denominator = ~ api99,
+              design = subset(raked_design,
+                              sch.wide == "Yes" & comp.imp == "Yes" & both == "Yes" & awards == "Yes" & yr.rnd == "Yes")
+            )[['ratio']][1]
+          )
+        })
+
+      test_that(
+        "filter_if works with any_vars() predicate", {
+          # Stratified design
+          expect_equal(
+            # Survey design object
+            object = stratified_design %>%
+              filter_if(is_yes_no_factor,
+                        any_vars(. == "Yes")) %>%
+              nrow(),
+            # Underlying data frame (not a survey design object)
+            expected = apistrat %>%
+              filter_if(is_yes_no_factor,
+                        any_vars(. == "Yes")) %>%
+              nrow()
+          )
+
+          # Cluster design
+          expect_equal(
+            # Survey design object
+            object = cluster_design %>%
+              filter_if(is_yes_no_factor,
+                        any_vars(. == "Yes")) %>%
+              nrow(),
+            # Underlying data frame (not a survey design object)
+            expected = apiclus1 %>%
+              filter_if(is_yes_no_factor,
+                        any_vars(. == "Yes")) %>%
+              nrow()
+          )
+
+          # Calibration weighted design
+          ## First check that the correct number of rows are retained
+          expect_equal(
+            object =  raked_design %>%
+              filter_if(is_yes_no_factor,
+                        any_vars(. == "Yes")) %>%
+              nrow(),
+            expected = subset(raked_design,
+                              sch.wide == "Yes" | comp.imp == "Yes" | both == "Yes" | awards == "Yes" | yr.rnd == "Yes") %>%
+              nrow()
+          )
+          ## Next check that calculation results match behavior of survey package
+          expect_equal(
+            object = raked_design %>%
+              filter_if(is_yes_no_factor,
+                        any_vars(. == "Yes")) %>%
+              summarize(api_ratio = survey_ratio(api00, api99, vartype = NULL)) %>%
+              dplyr::pull("api_ratio"),
+            expected = svyratio(
+              numerator = ~ api00, denominator = ~ api99,
+              design = subset(raked_design,
+                              sch.wide == "Yes" | comp.imp == "Yes" | both == "Yes" | awards == "Yes" | yr.rnd == "Yes")
+            )[['ratio']][1]
+          )
+        })

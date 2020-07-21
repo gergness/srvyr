@@ -58,7 +58,7 @@ summarise.grouped_svy <- function(.data, ..., .groups = NULL) {
     results <- dplyr::arrange(results, !!!rlang::syms(unchanged_names))
     # In case there are multi-row results, make a within group ID
     results <- dplyr::group_by_at(results, groups)
-    results <- dplyr::mutate(results, `__SRVYR_WITHIN_GRP_ID__` = row_number())
+    results <- dplyr::mutate(results, `__SRVYR_WITHIN_GRP_ID__` = dplyr::row_number())
     results <- dplyr::ungroup(results)
 
     results
@@ -132,7 +132,7 @@ finalize_grouping <- function(x, .groups) {
     "drop" = identity,
     "drop_last" = function(x) group_by_at(x, orig_groups[-length(orig_groups)]),
     "keep" = function(x) group_by_at(x, orig_groups),
-    "rowwise" = rowwise
+    "rowwise" = dplyr::rowwise
   )
 }
 

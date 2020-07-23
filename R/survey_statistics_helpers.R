@@ -174,7 +174,7 @@ get_var_est_quantile <- function(stat, vartype, q, grps = "", level = 0.95, df =
 # Again a fair amount of overlap with the other get_var_ests, but handles the way
 # factors are peeled off
 get_var_est_factor <- function(
-  stat, vartype, grps, peel, peel_levels, peel_is_factor, level = 0.95, df = Inf, deff = FALSE
+  stat, vartype, grps, peel, peel_levels, peel_is_factor, peel_is_ordered, level = 0.95, df = Inf, deff = FALSE
 ) {
   var_names <- if (length(grps) > 0) peel_levels else ""
   out_width <- length(var_names)
@@ -234,11 +234,11 @@ get_var_est_factor <- function(
     names(out) <- names_out
   }
   if (!peel_is_factor) peel_levels <- NULL
-  out <- factor_stat_reshape(out, peel, var_names, peel_levels)
+  out <- factor_stat_reshape(out, peel, var_names, peel_levels, peel_is_ordered)
   out
 }
 
-factor_stat_reshape <- function(stat, peel, var_names, peel_levels) {
+factor_stat_reshape <- function(stat, peel, var_names, peel_levels, peel_is_ordered) {
   out <- lapply(seq_along(stat), function(iii) {
     stat_name <- names(stat)[iii]
     stat_df <- stat[[iii]]
@@ -268,7 +268,7 @@ factor_stat_reshape <- function(stat, peel, var_names, peel_levels) {
   # peel's factor was created by stack, but is just alphabetic
   out[[peel]] <- as.character(out[[peel]])
   if (!is.null(peel_levels)) {
-    out[[peel]] <- factor(out[[peel]], peel_levels)
+    out[[peel]] <- factor(out[[peel]], peel_levels, ordered = peel_is_ordered)
   }
 
   out

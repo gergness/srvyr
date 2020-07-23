@@ -752,8 +752,10 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
   peel_is_factor <- is.factor(.svy[["variables"]][[peel_name]])
   if (peel_is_factor) {
     peel_levels <- levels(.svy[["variables"]][[peel_name]])
+    peel_is_ordered <- is.ordered(.svy[["variables"]][[peel_name]])
   } else {
     peel_levels <- sort(unique(.svy[["variables"]][[peel_name]]))
+    peel_is_ordered <- FALSE
   }
   if (length(grps_names) > 0) {
     stat <- survey::svyby(survey::make.formula(peel_name),
@@ -766,7 +768,7 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
 
     out <- get_var_est_factor(
       stat, vartype, grps = grps_names, peel = peel_name,
-      peel_is_factor = peel_is_factor, peel_levels = peel_levels,
+      peel_is_factor = peel_is_factor, peel_levels = peel_levels, peel_is_ordered = peel_is_ordered,
       level = level, df = df, deff = deff
     )
 
@@ -775,7 +777,7 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
     stat <- func(survey::make.formula(peel_name), .svy, na.rm = na.rm, deff = deff)
 
     out <- get_var_est_factor(
-      stat, vartype, grps = "", peel = peel_name, peel_levels = peel_levels,
+      stat, vartype, grps = "", peel = peel_name, peel_levels = peel_levels, peel_is_ordered = peel_is_ordered,
        peel_is_factor = peel_is_factor, df = df, deff = deff
     )
     out

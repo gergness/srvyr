@@ -1,4 +1,5 @@
 # srvyr (development version)
+* Fix to ensure that ordered factors can be used as grouping variables or as inputs to `survey_count` and `survey_tally` (#92).
 
 # srvyr 0.3.10
 * Another fix for upcoming dplyr

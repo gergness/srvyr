@@ -88,6 +88,18 @@ test_that("survey_* preserves character when calculating a statistic (multi grps
           expect_true(class(out_srvyr$stype2) == "character")
 )
 
+# Preserves factor's status as ordered or unordered
+
+out_srvyr <- dstrata %>%
+  mutate(stype2 = as.ordered(stype)) %>%
+  group_by(stype2) %>%
+  summarize(tot = survey_total())
+
+test_that("survey_* preserves factor's status as ordered or unordered",
+          expect_true("factor" %in% class(out_srvyr$stype2) &
+                      "ordered" %in% class(out_srvyr$stype2))
+)
+
 
 # confidence intervals
 out_survey_mn <- svymean(~awards, dstrata)

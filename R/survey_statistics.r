@@ -801,7 +801,7 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
   }
 
   if (peel_var_coerced_to_char) {
-    out[[peel_name]] <- as(out[[peel_name]], peel_var_orig_type)
+    out[[peel_name]] <- methods::as(out[[peel_name]], peel_var_orig_type)
   }
 
   out

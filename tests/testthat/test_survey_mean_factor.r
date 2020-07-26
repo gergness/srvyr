@@ -101,6 +101,101 @@ test_that("survey_* preserves factor's status as ordered or unordered",
 )
 
 
+out_srvyr <- dstrata %>%
+  mutate(stype2 = as.ordered(stype)) %>%
+  group_by(awards, stype2) %>%
+  summarize(tot = survey_total())
+
+test_that("survey_* preserves factor's status as ordered or unordered (multi-group)",
+          expect_true("factor" %in% class(out_srvyr$stype2) &
+                        "ordered" %in% class(out_srvyr$stype2))
+)
+
+# setup missing group data
+apistrat_na <- apistrat %>%
+  mutate(
+    make_missing = dplyr::row_number() %in% 1:5
+  ) %>%
+  mutate(
+    awards_na = factor(
+      ifelse(make_missing, NA, as.character(awards)),
+      levels = levels(awards)
+    ),
+    awards_na_level = factor(
+      ifelse(make_missing, NA, as.character(awards)),
+      levels = c(levels(awards), NA), exclude = NULL
+    ),
+    awards_exp_na = factor(
+      ifelse(make_missing, "EXPLICIT NA", as.character(awards)),
+      levels = c(levels(awards), "EXPLICIT NA")
+    )
+  )
+
+dstrata_na <- apistrat_na %>%
+  as_survey_design(strata = stype, weights = pw)
+
+test_that("missing group vars work as expected", {
+  expect_equal(levels(apistrat_na$awards_na), c("No", "Yes"))
+  expect_equal(as.character(apistrat_na$awards_na[1]), NA_character_)
+  expect_equal(levels(apistrat_na$awards_na_level), c("No", "Yes", NA))
+  expect_equal(as.character(apistrat_na$awards_na[1]), NA_character_)
+  expect_equal(levels(apistrat_na$awards_exp_na), c("No", "Yes", "EXPLICIT NA"))
+  expect_equal(as.character(apistrat_na$awards_exp_na[1]), "EXPLICIT NA")
+})
+
+# Preserves NA groups (single group)
+test_that("unpeeling mean of group with NAs works (single group)", {
+  has_na <- dstrata_na %>%
+    group_by(awards_na) %>%
+    summarize(x = survey_mean())
+
+  has_na_level <- dstrata_na %>%
+    group_by(awards_na_level)  %>%
+    summarize(x = survey_mean())
+
+  exp_na <- dstrata_na %>%
+    group_by(awards_exp_na)  %>%
+    summarize(x = survey_mean())
+
+
+  expect_equal(has_na$x, has_na_level$x)
+  expect_equal(has_na$x, exp_na$x)
+})
+
+# Preserve NA groups (multi group)
+test_that("unpeeling mean of group with NAs works (multi group)", {
+  has_na <- dstrata_na %>%
+    group_by(stype, awards_na) %>%
+    summarize(x = survey_mean())
+
+  has_na_level <- dstrata_na %>%
+    group_by(stype, awards_na_level)  %>%
+    summarize(x = survey_mean())
+
+  exp_na <- dstrata_na %>%
+    group_by(stype, awards_exp_na)  %>%
+    summarize(x = survey_mean())
+
+  expect_equal(has_na$x, has_na_level$x)
+  expect_equal(has_na$x, exp_na$x)
+
+
+  has_na <- dstrata_na %>%
+    group_by(awards_na, stype) %>%
+    summarize(x = survey_mean())
+
+  has_na_level <- dstrata_na %>%
+    group_by(awards_na_level, stype)  %>%
+    summarize(x = survey_mean())
+
+  exp_na <- dstrata_na %>%
+    group_by(awards_exp_na, stype)  %>%
+    summarize(x = survey_mean())
+
+  expect_equal(has_na$x, has_na_level$x)
+  expect_equal(has_na$x, exp_na$x)
+})
+
 # confidence intervals
 out_survey_mn <- svymean(~awards, dstrata)
 out_survey_tot <- svytotal(~awards, dstrata)

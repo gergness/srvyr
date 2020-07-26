@@ -268,7 +268,8 @@ factor_stat_reshape <- function(stat, peel, var_names, peel_levels, peel_is_orde
   # peel's factor was created by stack, but is just alphabetic
   out[[peel]] <- as.character(out[[peel]])
   if (!is.null(peel_levels)) {
-    out[[peel]] <- factor(out[[peel]], peel_levels, ordered = peel_is_ordered)
+
+    out[[peel]] <- factor(out[[peel]], peel_levels, ordered = peel_is_ordered, exclude = NULL)
   }
 
   out

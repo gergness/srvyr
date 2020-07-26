@@ -743,10 +743,20 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
     warning("Coercing ", peel_name, " to character.", call. = FALSE)
     peel_var_coerced_to_char <- TRUE
     peel_var_orig_type <- typeof(.svy$variables[[peel_name]])
-    .svy$variables[[peel_name]] <- format(.svy$variables[[peel_name]],
-                                          nsmall = 20, digits = 22)
+    .svy$variables[[peel_name]] <- format(.svy$variables[[peel_name]], nsmall = 20, digits = 22)
   } else {
     peel_var_coerced_to_char <- FALSE
+  }
+
+  # If any groups have NAs the survey package will drop them, so convert to
+  # explicit levels that will get dropped
+  for (grp_var_name in c(peel_name, grps_names)) {
+    if (any(is.na(.svy$variables[[grp_var_name]]))) {
+      if (is.factor(.svy$variables[[grp_var_name]])) {
+        levels(.svy$variables[[grp_var_name]]) <- c(levels(.svy$variables[[grp_var_name]]), "__SRVYR_NA_LEVEL__")
+      }
+      .svy$variables[[grp_var_name]][is.na(.svy$variables[[grp_var_name]])] <- "__SRVYR_NA_LEVEL__"
+    }
   }
 
   if (length(level) > 1) {
@@ -776,8 +786,6 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
       peel_is_factor = peel_is_factor, peel_levels = peel_levels, peel_is_ordered = peel_is_ordered,
       level = level, df = df, deff = deff
     )
-
-    out
   } else {
     stat <- func(survey::make.formula(peel_name), .svy, na.rm = na.rm, deff = deff)
 
@@ -785,11 +793,16 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
       stat, vartype, grps = "", peel = peel_name, peel_levels = peel_levels, peel_is_ordered = peel_is_ordered,
        peel_is_factor = peel_is_factor, df = df, deff = deff
     )
-
-    if (peel_var_coerced_to_char) {
-      out[[peel_name]] <- as(out[[peel_name]], peel_var_orig_type)
-    }
-
-    out
   }
+
+  # set back to NA the NAs that were forced to be explicit
+  for (grp_var_name in c(peel_name, grps_names)) {
+    out[[grp_var_name]][out[[grp_var_name]] == "__SRVYR_NA_LEVEL__"] <- NA
+  }
+
+  if (peel_var_coerced_to_char) {
+    out[[peel_name]] <- as(out[[peel_name]], peel_var_orig_type)
+  }
+
+  out
 }

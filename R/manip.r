@@ -373,16 +373,9 @@ NULL
 NULL
 
 
-# pull method's arguments are changing in dplyr 1.
-
-
-pull.tbl_svy.new <- function(.data, var = -1, name = NULL) {
+#' @export
+pull.tbl_svy <- function(.data, var = -1, name = NULL, ...) {
   var <- rlang::enquo(var)
   name <- rlang::enquo(name)
   dplyr::pull(.data$variables, !!var, !!name)
-}
-
-pull.tbl_svy.old <- function(.data, var = -1) {
-  var <- rlang::enquo(var)
-  dplyr::pull(.data$variables, !!var)
 }

@@ -453,8 +453,8 @@ survey_quantile.tbl_svy <- function(
   .svy <- set_survey_vars(.svy, x)
 
   # TODO: switch to improved svyquantile
-  if (packageVersion("survey") >= "4.1") {
-    svyq_func <- survey::oldsvyquantile
+  if (utils::packageVersion("survey") >= "4.1") {
+    svyq_func <- get("oldsvyquantile", asNamespace("survey"))
   } else {
     svyq_func <- survey::svyquantile
   }
@@ -502,8 +502,8 @@ survey_quantile.grouped_svy <- function(
   .svy <- set_survey_vars(.svy, x)
 
   # TODO: switch to improved svyquantile
-  if (packageVersion("survey") >= "4.1") {
-    svyq_func <- survey::oldsvyquantile
+  if (utils::packageVersion("survey") >= "4.1") {
+    svyq_func <- get("oldsvyquantile", asNamespace("survey"))
   } else {
     svyq_func <- survey::svyquantile
   }

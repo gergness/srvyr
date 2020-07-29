@@ -1,5 +1,9 @@
 # srvyr (development version)
-* Fix to ensure that ordered factors can be used as grouping variables or as inputs to `survey_count` and `survey_tally` (#92).
+* Fix to ensure that ordered factors can be used as grouping variables or as inputs to `survey_count` and `survey_tally` (#92, thanks for reporting @szimmer & @walkerke & for fixing @bschneidr).
+
+* Fix to ensure that numeric values can be used in grouping variables (#78 & #74, thanks for reporting @tzoltak & fix @bschneidr)
+
+* Some improvements for dplyr 1.0 (#79) `transmute()` now works (thanks for reporting @caayala), `summarise()`'s `.groups` argument is respected, and multi-row returns to `summarise()` work. (Unfortunately the new `across()` function isn't quite supported in `summarise()` yet, it will hopefully come soon)
 
 # srvyr 0.3.10
 * Another fix for upcoming dplyr

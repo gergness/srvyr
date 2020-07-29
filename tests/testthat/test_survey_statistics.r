@@ -1,5 +1,12 @@
 context("Quick tests for summary stats (ratio / quantile)")
 
+# TODO: switch to improved svyquantile
+if (packageVersion("survey") >= "4.1") {
+  svyq_func <- survey::oldsvyquantile
+} else {
+  svyq_func <- survey::svyquantile
+}
+
 library(srvyr)
 library(survey)
 source("utilities.R")
@@ -49,7 +56,7 @@ test_that("survey_ratio works for grouped surveys - with vartype=NULL",
 
 ################################################################################
 # survey_quantile
-out_survey <- svyquantile(~api00, dstrata, c(0.5, 0.75), ci = TRUE, df = NULL) %>%
+out_survey <- svyq_func(~api00, dstrata, c(0.5, 0.75), ci = TRUE, df = NULL) %>%
   {cbind(as.data.frame(.$quantiles),
          SE(.) %>%
            as.list() %>%
@@ -71,7 +78,7 @@ test_that("survey_quantile works for ungrouped surveys - with vartype=NULL",
           expect_equal(unname(unlist(select(out_survey, -ends_with("_se")))),
                        unname(unlist(out_srvyr_vartypeNULL))))
 
-out_survey <- svyquantile(~api00, dstrata, c(0.5, 0.75), ci = TRUE, df = NULL)
+out_survey <- svyq_func(~api00, dstrata, c(0.5, 0.75), ci = TRUE, df = NULL)
 
 out_srvyr <- dstrata %>%
   summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75),
@@ -83,7 +90,7 @@ test_that("survey_quantile works for ungrouped surveys - with ci",
                          out_srvyr[["api00_q50_upp"]][[1]])))
 
 out_survey <- suppressWarnings(
-  svyby(~api00, ~stype, dstrata, svyquantile,
+  svyby(~api00, ~stype, dstrata, svyq_func,
         quantiles = c(0.5, 0.75), ci = TRUE, df = NULL))
 
 out_srvyr <- suppressWarnings(
@@ -108,7 +115,7 @@ test_that("survey_quantile works for grouped surveys - with vartype=NULL",
                            unname(unlist(out_srvyr_vartypeNULL))))
 
 out_survey <- suppressWarnings(
-  svyby(~api00, ~stype + awards, dstrata, svyquantile,
+  svyby(~api00, ~stype + awards, dstrata, svyq_func,
         quantiles = c(0.5, 0.75), ci = TRUE, df = NULL))
 
 out_srvyr <- suppressWarnings(
@@ -124,7 +131,7 @@ test_that(
 
 ################################################################################
 # survey_median
-out_survey <- svyquantile(~api00, dstrata, c(0.5), ci = TRUE, df = NULL) %>%
+out_survey <- svyq_func(~api00, dstrata, c(0.5), ci = TRUE, df = NULL) %>%
   {cbind(as.data.frame(.$quantiles),
          SE(.) %>%
            as.list() %>%
@@ -146,7 +153,7 @@ test_that("survey_median works for ungrouped surveys - with vartype=NULL",
                        unname(unlist(out_srvyr_vartypeNULL))))
 
 out_survey <- suppressWarnings(
-  svyby(~api00, ~stype, dstrata, svyquantile,
+  svyby(~api00, ~stype, dstrata, svyq_func,
         quantiles = 0.5, ci = TRUE, df = NULL))
 
 out_srvyr <- suppressWarnings(
@@ -177,7 +184,7 @@ out_srvyr <- dstrata %>%
 
 ratio <- svyratio(~api00, ~api99, dstrata)
 ratio <- confint(ratio, level = 0.9, df = degf(dstrata))
-mdn <- svyquantile(~api00, dstrata, quantile = 0.5, ci = TRUE, alpha = 0.1, df = NULL)
+mdn <- svyq_func(~api00, dstrata, quantile = 0.5, ci = TRUE, alpha = 0.1, df = NULL)
 mdn <- confint(mdn)
 out_survey <- c(ratio[1], ratio[2], mdn[1], mdn[2])
 names(out_survey) <- c("ratio_low", "ratio_upp", "mdn_low", "mdn_upp")
@@ -196,7 +203,7 @@ ratio <- svyby(~api00, ~stype, denominator = ~api99, dstrata, svyratio)
 ratio <- confint(ratio, level = 0.9, df = degf(dstrata))
 
 mdn <- suppressWarnings(
-  svyby(~api00, ~stype, dstrata, svyquantile,
+  svyby(~api00, ~stype, dstrata, svyq_func,
         quantile = 0.5, ci = TRUE, alpha = 0.1, vartype = "ci", df = NULL) %>%
     data.frame() %>%
     select(-api00, -stype))
@@ -263,7 +270,7 @@ out_survey$survey_ratio_upp <- unname(sv_ci[, 2])
 test_that("deff and df work for grouped survey ratio",
           expect_df_equal(out_srvyr, out_survey))
 
-out_survey <- svyquantile(~api99, dstrata, c(0.5), ci = TRUE, df = df_test)
+out_survey <- svyq_func(~api99, dstrata, c(0.5), ci = TRUE, df = df_test)
 
 out_srvyr <- dstrata %>%
   summarise(survey = survey_median(api99, vartype = "ci", df = df_test))
@@ -278,7 +285,7 @@ out_srvyr <- suppressWarnings(
     summarise(survey = survey_median(api99, vartype = "ci", df = df_test)))
 
 temp_survey <- suppressWarnings(
-  svyby(~api99, ~stype, dstrata, svyquantile, quantiles = c(0.5), ci = TRUE,
+  svyby(~api99, ~stype, dstrata, svyq_func, quantiles = c(0.5), ci = TRUE,
         vartype = c("se", "ci"), df = df_test))
 
 out_survey <- temp_survey %>%
@@ -307,7 +314,7 @@ suppressWarnings(mysvy <- scd %>%
 results_srvyr <- mysvy %>%
   summarize(x = survey_median(arrests, interval_type = "probability"))
 
-results_survey <- svyquantile(~arrests, mysvy, quantiles = 0.5,
+results_survey <- svyq_func(~arrests, mysvy, quantiles = 0.5,
                               interval_type = "probability")
 
 test_that("srvyr allows you to select probability for interval_type of replicate weights",
@@ -316,7 +323,7 @@ test_that("srvyr allows you to select probability for interval_type of replicate
 results_srvyr <- mysvy %>%
   summarize(x = survey_median(arrests))
 
-results_survey <- svyquantile(~arrests, mysvy, quantiles = 0.5)
+results_survey <- svyq_func(~arrests, mysvy, quantiles = 0.5)
 
 test_that("srvyr does the right thing by default for quantiles of replicate surveys",
           expect_equal(results_srvyr[[1]], results_survey[[1]]))
@@ -334,7 +341,7 @@ test_that(
                                           vartype = c("se", "ci"), df = NULL)))
 
     survey <- suppressWarnings(
-      svyby( ~api99, ~awards, dstrata, svyquantile,
+      svyby( ~api99, ~awards, dstrata, svyq_func,
              quantiles = c(0.25, 0.5, 0.75), ci = TRUE, vartype = c("se", "ci"), df = NULL))
 
     expect_equal(srvyr$api99_q25, survey$`0.25`)

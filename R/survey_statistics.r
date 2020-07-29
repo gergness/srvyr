@@ -452,7 +452,14 @@ survey_quantile.tbl_svy <- function(
   stop_for_factor(x)
   .svy <- set_survey_vars(.svy, x)
 
-  stat <- survey::svyquantile(
+  # TODO: switch to improved svyquantile
+  if (packageVersion("survey") >= "4.1") {
+    svyq_func <- survey::oldsvyquantile
+  } else {
+    svyq_func <- survey::svyquantile
+  }
+
+  stat <- svyq_func(
     ~`__SRVYR_TEMP_VAR__`, .svy, quantiles = quantiles, na.rm = na.rm,
     ci = TRUE, alpha = alpha, method = q_method, f = f,
     interval.type = interval_type, ties = ties, df = df
@@ -494,9 +501,17 @@ survey_quantile.grouped_svy <- function(
   stop_for_factor(x)
   .svy <- set_survey_vars(.svy, x)
 
+  # TODO: switch to improved svyquantile
+  if (packageVersion("survey") >= "4.1") {
+    svyq_func <- survey::oldsvyquantile
+  } else {
+    svyq_func <- survey::svyquantile
+  }
+
+
   stat <- survey::svyby(
     formula = ~`__SRVYR_TEMP_VAR__`, survey::make.formula(grp_names), .svy,
-    survey::svyquantile, quantiles = quantiles, na.rm = na.rm,
+    svyq_func, quantiles = quantiles, na.rm = na.rm,
     ci = TRUE, alpha = alpha, method = q_method,
     f = f, interval.type = interval_type, ties = ties,
     df = df, vartype = vartype

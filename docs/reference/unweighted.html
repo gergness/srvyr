@@ -74,7 +74,7 @@ a normal data.frame with summarise." />
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -182,18 +182,18 @@ tidy evaluation, see the examples here, documentation in
 
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api99_unw</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>api99</span>)),
-            <span class='kw'>n</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/context.html'>n</a></span>()))</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 2</span><span>
+            <span class='kw'>n</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/context.html'>n</a></span>()))</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 2</span><span>
 #&gt;   api99_unw     n
-#&gt;       </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>      625.   200</div><div class='input'>
+#&gt;       </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>      625.   200</div><div class='input'>
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>stype</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api_diff_unw</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>api00</span> - <span class='no'>api99</span>)))</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 3 x 2</span><span>
+  <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api_diff_unw</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>api00</span> - <span class='no'>api99</span>)))</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 3 x 2</span><span>
 #&gt;   stype api_diff_unw
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> E            38.6 
-#&gt; </span><span style='color: #555555;'>2</span><span> H             8.46
-#&gt; </span><span style='color: #555555;'>3</span><span> M            26.4 </div><div class='input'>
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> E            38.6 
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span> H             8.46
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span> M            26.4 </div><div class='input'>
 
 <span class='co'># If you want to use a wrapper function, be sure to treat</span>
 <span class='co'># non-standard evaluation correctly</span>
@@ -202,12 +202,12 @@ tidy evaluation, see the examples here, documentation in
 }
  <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
    <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>stype</span>) <span class='kw'>%&gt;%</span>
-   <span class='fu'><a href='summarise.html'>summarize</a></span>(<span class='kw'>api_diff_unw</span> <span class='kw'>=</span> <span class='fu'>umean</span>(<span class='no'>api00</span> - <span class='no'>api99</span>))</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 3 x 2</span><span>
+   <span class='fu'><a href='summarise.html'>summarize</a></span>(<span class='kw'>api_diff_unw</span> <span class='kw'>=</span> <span class='fu'>umean</span>(<span class='no'>api00</span> - <span class='no'>api99</span>))</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 3 x 2</span><span>
 #&gt;   stype api_diff_unw
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> E            38.6 
-#&gt; </span><span style='color: #555555;'>2</span><span> H             8.46
-#&gt; </span><span style='color: #555555;'>3</span><span> M            26.4 </div><div class='input'>
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> E            38.6 
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span> H             8.46
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span> M            26.4 </div><div class='input'>
 
 </div></span></pre>
   </div>
@@ -221,7 +221,7 @@ tidy evaluation, see the examples here, documentation in
 
       <footer>
       <div class="copyright">
-  <p>Developed by Greg Freedman Ellis.</p>
+  <p>Developed by Greg Freedman Ellis, Ben Schneider.</p>
 </div>
 
 <div class="pkgdown">

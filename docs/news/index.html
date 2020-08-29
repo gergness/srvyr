@@ -72,7 +72,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -136,6 +136,16 @@
       <small>Source: <a href='https://github.com/gergness/srvyr/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="srvyr-development-version" class="section level1">
+<h1 class="page-header" data-toc-text="development version">
+<a href="#srvyr-development-version" class="anchor"></a>srvyr (development version)<small> Unreleased </small>
+</h1>
+<ul>
+<li><p>Fix to ensure that ordered factors can be used as grouping variables or as inputs to <code>survey_count</code> and <code>survey_tally</code> (<a href='https://github.com/gergness/srvyr/issues/92'>#92</a>, thanks for reporting <a href='https://github.com/szimmer'>@szimmer</a> &amp; <a href='https://github.com/walkerke'>@walkerke</a> &amp; for fixing <a href='https://github.com/bschneidr'>@bschneidr</a>).</p></li>
+<li><p>Fix to ensure that numeric values can be used in grouping variables (<a href='https://github.com/gergness/srvyr/issues/78'>#78</a> &amp; <a href='https://github.com/gergness/srvyr/issues/74'>#74</a>, thanks for reporting <a href='https://github.com/tzoltak'>@tzoltak</a> &amp; fix <a href='https://github.com/bschneidr'>@bschneidr</a>)</p></li>
+<li><p>Some improvements for dplyr 1.0 (<a href='https://github.com/gergness/srvyr/issues/79'>#79</a>) <code><a href="../reference/dplyr_single.html">transmute()</a></code> now works (thanks for reporting <a href='https://github.com/caayala'>@caayala</a>), <code><a href="../reference/summarise.html">summarise()</a></code>’s <code>.groups</code> argument is respected, and multi-row returns to <code><a href="../reference/summarise.html">summarise()</a></code> work. (Unfortunately the new <code>across()</code> function isn’t quite supported in <code><a href="../reference/summarise.html">summarise()</a></code> yet, it will hopefully come soon)</p></li>
+</ul>
+</div>
     <div id="srvyr-0310" class="section level1">
 <h1 class="page-header" data-toc-text="0.3.10">
 <a href="#srvyr-0310" class="anchor"></a>srvyr 0.3.10<small> 2020-05-26 </small>
@@ -298,7 +308,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Greg Freedman Ellis.</p>
+  <p>Developed by Greg Freedman Ellis, Ben Schneider.</p>
 </div>
 
 <div class="pkgdown">

@@ -32,7 +32,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -89,14 +89,14 @@
 
       
 
-      </header><script src="srvyr-vs-survey_files/header-attrs-2.2.2/header-attrs.js"></script><div class="row">
+      </header><script src="srvyr-vs-survey_files/header-attrs-2.3.2/header-attrs.js"></script><script src="srvyr-vs-survey_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>
 <code>srvyr</code> compared to the <code>survey</code> package</h1>
                         <h4 class="author">Greg Freedman</h4>
             
-            <h4 class="date">2020-06-09</h4>
+            <h4 class="date">2020-08-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/srvyr-vs-survey.Rmd"><code>vignettes/srvyr-vs-survey.Rmd</code></a></small>
       <div class="hidden name"><code>srvyr-vs-survey.Rmd</code></div>
@@ -125,8 +125,9 @@
             <span class="kw">n</span> <span class="kw">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span>())
 
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">out</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">stype</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">api_diff</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">hs_grad_pct</span>, <span class="kw">fill</span> <span class="kw">=</span> <span class="no">hs_grad_pct</span>)) +
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span>(<span class="kw">stat</span> <span class="kw">=</span> <span class="st">"identity"</span>, <span class="kw">position</span> <span class="kw">=</span> <span class="st">"dodge"</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_col</a></span>(<span class="kw">stat</span> <span class="kw">=</span> <span class="st">"identity"</span>, <span class="kw">position</span> <span class="kw">=</span> <span class="st">"dodge"</span>) +
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">y</span> <span class="kw">=</span> <span class="fl">0</span>, <span class="kw">label</span> <span class="kw">=</span> <span class="no">n</span>), <span class="kw">position</span> <span class="kw">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span>(<span class="kw">width</span> <span class="kw">=</span> <span class="fl">0.9</span>), <span class="kw">vjust</span> <span class="kw">=</span> -<span class="fl">1</span>)</pre></body></html></div>
+<pre><code>## Warning: Ignoring unknown parameters: stat</code></pre>
 <p><img src="srvyr-vs-survey_files/figure-html/unnamed-chunk-1-1.png" width="576"></p>
 <p>However, if we wanted to add error bars to the graph to capture the uncertainty due to sampling variation, we have to completely rewrite the <code>dplyr</code> code for the <code>survey</code> package. <code>srvyr</code> allows a more direct translation.</p>
 </div>
@@ -134,14 +135,14 @@
 <h1 class="hasAnchor">
 <a href="#preparing-a-survey-dataset" class="anchor"></a>Preparing a survey dataset</h1>
 <p><code><a href="../reference/as_survey_design.html">as_survey_design()</a></code>, <code><a href="../reference/as_survey_rep.html">as_survey_rep()</a></code> and <code><a href="../reference/as_survey_twophase.html">as_survey_twophase()</a></code> are analogous to <code><a href="https://rdrr.io/pkg/survey/man/svydesign.html">survey::svydesign()</a></code>, <code><a href="https://rdrr.io/pkg/survey/man/svrepdesign.html">survey::svrepdesign()</a></code> and <code><a href="https://rdrr.io/pkg/survey/man/twophase.html">survey::twophase()</a></code> respectively. Because they are designed to match <code>dplyr</code>’s style of non-standard evaluation, they accept bare column names instead of formulas (~). They also move the data argument first, so that it is easier to use <code>magrittr</code> pipes (<code><a href="../reference/pipe.html">%&gt;%</a></code>).</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">srvyr</span>)
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">srvyr</span>)
 
 <span class="co"># simple random sample</span>
 <span class="no">srs_design_srvyr</span> <span class="kw">&lt;-</span> <span class="no">apisrs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="kw">ids</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">fpc</span> <span class="kw">=</span> <span class="no">fpc</span>)
 
 <span class="no">srs_design_survey</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span>(<span class="kw">ids</span> <span class="kw">=</span> ~<span class="fl">1</span>, <span class="kw">fpc</span> <span class="kw">=</span> ~<span class="no">fpc</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">apisrs</span>)</pre></body></html></div>
 <p>The <code>srvyr</code> functions also accept <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code>’s special selection functions (such as <code><a href="https://dplyr.tidyverse.org/reference/reexports.html">starts_with()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/reexports.html">one_of()</a></code>, etc.), so these functions are analogous:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># selecting variables to keep in the survey object (stratified example)</span>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># selecting variables to keep in the survey object (stratified example)</span>
 <span class="no">strat_design_srvyr</span> <span class="kw">&lt;-</span> <span class="no">apistrat</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="fl">1</span>, <span class="kw">strata</span> <span class="kw">=</span> <span class="no">stype</span>, <span class="kw">fpc</span> <span class="kw">=</span> <span class="no">fpc</span>, <span class="kw">weight</span> <span class="kw">=</span> <span class="no">pw</span>,
                 <span class="kw">variables</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">stype</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/reexports.html">starts_with</a></span>(<span class="st">"api"</span>)))
@@ -150,14 +151,14 @@
                                  <span class="kw">variables</span> <span class="kw">=</span> ~<span class="no">stype</span> + <span class="no">api99</span> + <span class="no">api00</span> + <span class="no">api.stu</span>,
                                  <span class="kw">weight</span> <span class="kw">=</span> ~<span class="no">pw</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">apistrat</span>)</pre></body></html></div>
 <p>The function <code><a href="../reference/as_survey.html">as_survey()</a></code> will automatically choose between the three <code>as_survey_*</code> functions based on the arguments, so you can save a few keystrokes.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># simple random sample (again)</span>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co"># simple random sample (again)</span>
 <span class="no">srs_design_srvyr2</span> <span class="kw">&lt;-</span> <span class="no">apisrs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/as_survey.html">as_survey</a></span>(<span class="kw">ids</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">fpc</span> <span class="kw">=</span> <span class="no">fpc</span>)</pre></body></html></div>
 </div>
 <div id="data-manipulation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#data-manipulation" class="anchor"></a>Data manipulation</h1>
 <p>Once you’ve set up your survey data, you can use <code>dplyr</code> verbs such as <code><a href="../reference/dplyr_single.html">mutate()</a></code>, <code><a href="../reference/dplyr_single.html">select()</a></code>, <code><a href="../reference/dplyr_single.html">filter()</a></code> and <code><a href="../reference/dplyr_single.html">rename()</a></code>.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">strat_design_srvyr</span> <span class="kw">&lt;-</span> <span class="no">strat_design_srvyr</span> <span class="kw">%&gt;%</span>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">strat_design_srvyr</span> <span class="kw">&lt;-</span> <span class="no">strat_design_srvyr</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/dplyr_single.html">mutate</a></span>(<span class="kw">api_diff</span> <span class="kw">=</span> <span class="no">api00</span> - <span class="no">api99</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/dplyr_single.html">rename</a></span>(<span class="kw">api_students</span> <span class="kw">=</span> <span class="no">api.stu</span>)
 
@@ -173,7 +174,7 @@
 <h2 class="hasAnchor">
 <a href="#of-the-entire-population" class="anchor"></a>Of the entire population</h2>
 <p><code>srvyr</code> also provides <code><a href="../reference/summarise.html">summarize()</a></code> and several survey-specific functions that calculate summary statistics on numeric variables: <code><a href="../reference/survey_mean.html">survey_mean()</a></code>, <code><a href="../reference/survey_total.html">survey_total()</a></code>, <code><a href="../reference/survey_quantile.html">survey_quantile()</a></code> and <code><a href="../reference/survey_ratio.html">survey_ratio()</a></code>. These functions differ from their counterparts in <code>survey</code> because they always return a data.frame in a consistent format. As such, they do not return the variance-covariance matrix, and so are not as flexible.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="co"># Using srvyr</span>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co"># Using srvyr</span>
 <span class="no">out</span> <span class="kw">&lt;-</span> <span class="no">strat_design_srvyr</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">api_diff</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="no">api_diff</span>, <span class="kw">vartype</span> <span class="kw">=</span> <span class="st">"ci"</span>))
 
@@ -182,13 +183,13 @@
 ##   api_diff api_diff_low api_diff_upp
 ##      &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
 ## 1     32.9         28.8         36.9</code></pre>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="co"># Using survey</span>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="co"># Using survey</span>
 <span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/surveysummary.html">svymean</a></span>(~<span class="no">api_diff</span>, <span class="no">strat_design_survey</span>)
 
 <span class="no">out</span></pre></body></html></div>
 <pre><code>##            mean     SE
 ## api_diff 32.893 2.0511</code></pre>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span>(<span class="no">out</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span>(<span class="no">out</span>)</pre></body></html></div>
 <pre><code>##             2.5 %   97.5 %
 ## api_diff 28.87241 36.91262</code></pre>
 </div>
@@ -196,15 +197,11 @@
 <h2 class="hasAnchor">
 <a href="#by-group" class="anchor"></a>By group</h2>
 <p><code>srvyr</code> also allows you to calculate statistics on numeric variables by group, using <code><a href="../reference/group_by.html">group_by()</a></code>.</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="co"># Using srvyr</span>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="co"># Using srvyr</span>
 <span class="no">strat_design_srvyr</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="no">stype</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">api_increase</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_total.html">survey_total</a></span>(<span class="no">api_diff</span> <span class="kw">&gt;=</span> <span class="fl">0</span>),
             <span class="kw">api_decrease</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_total.html">survey_total</a></span>(<span class="no">api_diff</span> <span class="kw">&lt;</span> <span class="fl">0</span>))</pre></body></html></div>
-<pre><code>## Warning: The `add` argument of `group_by()` is deprecated as of dplyr 1.0.0.
-## Please use the `.add` argument instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <pre><code>## # A tibble: 3 x 5
 ##   stype api_increase api_increase_se api_decrease api_decrease_se
 ##   &lt;fct&gt;        &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;
@@ -284,9 +281,10 @@
 
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">out</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">stype</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">api_diff</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">hs_grad_pct</span>, <span class="kw">fill</span> <span class="kw">=</span> <span class="no">hs_grad_pct</span>,
                        <span class="kw">ymax</span> <span class="kw">=</span> <span class="no">api_diff_upp</span>, <span class="kw">ymin</span> <span class="kw">=</span> <span class="no">api_diff_low</span>)) +
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span>(<span class="kw">stat</span> <span class="kw">=</span> <span class="st">"identity"</span>, <span class="kw">position</span> <span class="kw">=</span> <span class="st">"dodge"</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_col</a></span>(<span class="kw">stat</span> <span class="kw">=</span> <span class="st">"identity"</span>, <span class="kw">position</span> <span class="kw">=</span> <span class="st">"dodge"</span>) +
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span>(<span class="kw">position</span> <span class="kw">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span>(<span class="kw">width</span> <span class="kw">=</span> <span class="fl">0.9</span>), <span class="kw">width</span> <span class="kw">=</span> <span class="fl">0.1</span>) +
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">y</span> <span class="kw">=</span> <span class="fl">0</span>, <span class="kw">label</span> <span class="kw">=</span> <span class="no">n</span>), <span class="kw">position</span> <span class="kw">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span>(<span class="kw">width</span> <span class="kw">=</span> <span class="fl">0.9</span>), <span class="kw">vjust</span> <span class="kw">=</span> -<span class="fl">1</span>)</pre></body></html></div>
+<pre><code>## Warning: Ignoring unknown parameters: stat</code></pre>
 <p><img src="srvyr-vs-survey_files/figure-html/unnamed-chunk-10-1.png" width="576"></p>
 </div>
 <div id="grab-bag" class="section level1">
@@ -296,7 +294,7 @@
 <h2 class="hasAnchor">
 <a href="#using-survey-functions-on-srvyr-objects" class="anchor"></a>Using <code>survey</code> functions on <code>srvyr</code> objects</h2>
 <p>Because <code>srvyr</code> objects are just <code>survey</code> objects with some extra structure, all of the functions from <code>survey</code> will still work with them. If you need to calculate something beyond simple summary statistics, you can use <code>survey</code> functions.</p>
-<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="no">glm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/svyglm.html">svyglm</a></span>(<span class="no">api00</span> ~ <span class="no">ell</span> + <span class="no">meals</span> + <span class="no">mobility</span>, <span class="kw">design</span> <span class="kw">=</span> <span class="no">strat_design</span>)
+<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="no">glm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/svyglm.html">svyglm</a></span>(<span class="no">api00</span> ~ <span class="no">ell</span> + <span class="no">meals</span> + <span class="no">mobility</span>, <span class="kw">design</span> <span class="kw">=</span> <span class="no">strat_design</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">glm</span>)</pre></body></html></div>
 <pre><code>## 
 ## Call:
@@ -322,8 +320,8 @@
 <h2 class="hasAnchor">
 <a href="#standard-evaluation" class="anchor"></a>Standard evaluation</h2>
 <p>Srvyr now supports the standard evaluation conventions introduced in dplyr version 0.7 and rlang. If you’d like to use a function programmatically, you can use the functions from rlang like <code><a href="https://rlang.r-lib.org/reference/nse-defuse.html">rlang::quo()</a></code> or <code><a href="https://rlang.r-lib.org/reference/sym.html">rlang::sym()</a></code> to capture the expression and <code>rlang::!!</code> to unquote it. All of these functions are re-exported by srvyr, so you don’t need to load the rlang library to use them.</p>
-<p>Here’s a quick example, but please see the dplyr vignette <a href="http://dplyr.tidyverse.org/articles/programming.html"><code><a href="https://dplyr.tidyverse.org/articles/programming.html">vignette("programming", package = "dplyr")</a></code></a> for more details.</p>
-<div class="sourceCode" id="cb30"><html><body><pre class="r"><span class="no">fpc_var</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/rlang-tidyeval.html">sym</a></span>(<span class="st">"fpc"</span>)
+<p>Here’s a quick example, but please see the dplyr vignette <a href="http://dplyr.tidyverse.org/articles/programming.html"><code>vignette("programming", package = "dplyr")</code></a> for more details.</p>
+<div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="no">fpc_var</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/rlang-tidyeval.html">sym</a></span>(<span class="st">"fpc"</span>)
 <span class="no">srs_design_srvyr</span> <span class="kw">&lt;-</span> <span class="no">apisrs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="kw">fpc</span> <span class="kw">=</span> !!<span class="no">fpc_var</span>)
 
 <span class="no">grouping_var</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/rlang-tidyeval.html">sym</a></span>(<span class="st">"stype"</span>)
@@ -347,7 +345,7 @@
 <h2 class="hasAnchor">
 <a href="#scoped-functions" class="anchor"></a>Scoped functions</h2>
 <p>Srvyr has also been able to take advantage of the new-ish dplyr “scoped” variants of the main manipulation functions like <code><a href="../reference/summarise_all.html">summarize_at()</a></code>. These functions allow you to quickly calculate summary statistics for multiple variables. For example:</p>
-<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="co"># Calculate survey mean for all variables that have names starting with "api"</span>
+<div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="co"># Calculate survey mean for all variables that have names starting with "api"</span>
 <span class="no">strat_design</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise_all.html">summarize_at</a></span>(<span class="fu"><a href="../reference/summarise_all.html">vars</a></span>(<span class="fu"><a href="https://dplyr.tidyverse.org/reference/reexports.html">starts_with</a></span>(<span class="st">"api"</span>)), <span class="no">survey_mean</span>)</pre></body></html></div>
 <pre><code>## # A tibble: 1 x 6
@@ -370,7 +368,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Greg Freedman Ellis.</p>
+  <p>Developed by Greg Freedman Ellis, Ben Schneider.</p>
 </div>
 
 <div class="pkgdown">

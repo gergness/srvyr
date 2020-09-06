@@ -33,6 +33,30 @@ group_vars.tbl_svy <- function(x) {
   group_vars(x$variables)
 }
 
+#' @export
+group_data.tbl_svy <- function(.data) {
+  group_data(.data$variables)
+}
+
+#' @export
+group_keys.tbl_svy <- function(.tbl) {
+  group_keys(.tbl$variables)
+}
+
+#' @export
+group_indices.tbl_svy <- function(.data, ...) {
+  group_indices(.data$variables)
+}
+
+#' @export
+group_size.tbl_svy <- function(x) {
+  group_size(x$variables)
+}
+
+#' @export
+n_groups.tbl_svy <- function(x) {
+  n_groups(x$variables)
+}
 
 #' Group a (survey) dataset by one or more variables.
 #'
@@ -101,4 +125,41 @@ NULL
 #' @name group_vars
 #' @export
 #' @importFrom dplyr group_vars
+NULL
+
+
+#' @rdname groups
+#' @name group_data
+#' @export
+#' @importFrom dplyr group_data
+NULL
+
+#' @rdname groups
+#' @name group_keys
+#' @export
+#' @importFrom dplyr group_keys
+NULL
+
+#' @rdname groups
+#' @name group_rows
+#' @export
+#' @importFrom dplyr group_rows
+NULL
+
+#' @rdname groups
+#' @name group_indices
+#' @export
+#' @importFrom dplyr group_indices
+NULL
+
+#' @rdname groups
+#' @name group_size
+#' @export
+#' @importFrom dplyr group_size
+NULL
+
+#' @rdname groups
+#' @name n_groups
+#' @export
+#' @importFrom dplyr n_groups
 NULL

@@ -14,12 +14,10 @@ survey_mean(
   prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
   deff = FALSE,
   df = NULL,
-  .svy = cur_svy(),
   ...
 )
 
 survey_prop(
-  x,
   na.rm = FALSE,
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
@@ -57,10 +55,10 @@ for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
 but Inf is the usual survey package's default (except in
 \code{\link[survey]{svyciprop}}.}
 
+\item{...}{Ignored}
+
 \item{.svy}{A \code{tbl_svy} object. When called from inside a summarize function
 the default automatically sets the survey to the current survey.}
-
-\item{...}{Ignored}
 }
 \description{
 Calculate means and proportions from complex survey data. A wrapper

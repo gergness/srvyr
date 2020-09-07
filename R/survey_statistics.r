@@ -22,8 +22,6 @@
 #'           for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
 #'           but Inf is the usual survey package's default (except in
 #'           \code{\link[survey]{svyciprop}}.
-#' @param .svy A \code{tbl_svy} object. When called from inside a summarize function
-#'   the default automatically sets the survey to the current survey.
 #' @param ... Ignored
 #' @examples
 #' library(survey)
@@ -66,19 +64,18 @@
 #'
 #' @export
 survey_mean <- function(
-  x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
-  proportion = FALSE, prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
-  deff = FALSE, df = NULL, .svy = cur_svy(), ...
+  x,
+  na.rm = FALSE,
+  vartype = c("se", "ci", "var", "cv"),
+  level = 0.95,
+  proportion = FALSE,
+  prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  deff = FALSE,
+  df = NULL,
+  ...
 ) {
-  UseMethod("survey_mean", .svy)
-}
+  .svy = cur_svy()
 
-#' @export
-survey_mean.tbl_svy <- function(
-  x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
-  proportion = FALSE, prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
-  deff = FALSE, df = NULL, .svy = cur_svy(), ...
-) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
@@ -109,19 +106,16 @@ survey_mean.tbl_svy <- function(
 #' @rdname survey_mean
 #' @export
 survey_prop <- function(
-  na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
-  proportion = FALSE, prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
-  deff = FALSE, df = NULL, .svy = cur_svy(), ...
+  na.rm = FALSE,
+  vartype = c("se", "ci", "var", "cv"),
+  level = 0.95,
+  proportion = FALSE,
+  prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  deff = FALSE,
+  df = NULL,
+  ...
 ) {
-  UseMethod("survey_prop", .svy)
-}
-
-#' @export
-survey_prop.tbl_svy <- function(
-  na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
-  proportion = TRUE, prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
-  deff = FALSE, df = NULL, .svy = cur_svy()
-) {
+  .svy = cur_svy()
   .full_svy <- cur_svy_full()
 
   if (!is.null(vartype)) {

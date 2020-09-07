@@ -29,11 +29,19 @@
 #' @export
 #'
 
+quality<-sample(c("sweet","sour","mealy"),1000,replace=T)
+status<- sample(c("1 week old", "1 month old"),1000,replace=T)
+appledf<-srvyr::as_survey(data.frame(apple_status= status, apple_taste=quality))
+library(tidyverse)
+svychisq_posthoc_test(design=appledf, independent_var="apple_taste",dependent_var="apple_status")
 
+
+#simulate datasets
+pt_data<-data.frame(lon=lon, lat=lat, strata=sample(strata_options,1000, replace=TRUE))
 
 
 svychisq_posthoc_test <-
-  function(design, independent_var=ind_temp, dependent_var=dep_temp,
+  function(design, independent_var, dependent_var,
            method = "bonferroni",
            round = 4,
            alpha = 0.05,

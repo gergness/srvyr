@@ -20,6 +20,20 @@ set_survey_vars <- function(
   .svy, x, name = "__SRVYR_TEMP_VAR__", add = FALSE
 ) {
   out <- .svy
+
+  # Sometimes survey package sets probability to Infinite to indicate
+  # that an observation has been dropped rather than actually dropping
+  # it. In these cases, we want to stretch x out to fit the actual
+  # data
+  if (length(x) != nrow(.svy)) {
+    included_rows <- !is.infinite(.svy[["prob"]])
+    if (length(x) == sum(included_rows)) {
+      x_stretched <- rep(FALSE, nrow(.svy))
+      x_stretched[included_rows] <- x
+      x <- x_stretched
+    }
+  }
+
   if (inherits(.svy, "twophase2")) {
     if (!add) {
       out$phase1$sample$variables <- select(out$phase1$sample$variables, dplyr::one_of(group_vars(out)))

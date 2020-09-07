@@ -68,7 +68,7 @@
 survey_mean <- function(
   x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
   proportion = FALSE, prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
-  deff = FALSE, df = NULL, .svy = current_svy(), ...
+  deff = FALSE, df = NULL, .svy = cur_svy(), ...
 ) {
   UseMethod("survey_mean", .svy)
 }
@@ -77,14 +77,16 @@ survey_mean <- function(
 survey_mean.tbl_svy <- function(
   x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
   proportion = FALSE, prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
-  deff = FALSE, df = NULL, .svy = current_svy(), ...
+  deff = FALSE, df = NULL, .svy = cur_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
   prop_method <- match.arg(prop_method)
   if (is.null(df)) df <- survey::degf(.svy)
-  if (missing(x)) stop("Variable should be provided as an argument to survey_mean() or grouped survey object should be used.")
+  if (missing(x)) return(survey_prop(na.rm = na.rm, vartype = vartype, level = level,
+                                     proportion = proportion, prop_method = prop_method,
+                                     deff = deff, df = df, .svy = cur_svy()))
   stop_for_factor(x)
   if (!proportion) {
     if (is.logical(x)) x <- as.integer(x)
@@ -104,49 +106,44 @@ survey_mean.tbl_svy <- function(
   }
 }
 
+#' @rdname survey_mean
 #' @export
-survey_mean.grouped_svy <- function(
-  x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
+survey_prop <- function(
+  na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
   proportion = FALSE, prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
-  deff = FALSE, df = NULL, .svy = current_svy(), ...
+  deff = FALSE, df = NULL, .svy = cur_svy(), ...
 ) {
+  UseMethod("survey_prop", .svy)
+}
+
+#' @export
+survey_prop.tbl_svy <- function(
+  na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
+  proportion = TRUE, prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  deff = FALSE, df = NULL, .svy = cur_svy()
+) {
+  .full_svy <- cur_svy_full()
+
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
+  prop_method <- match.arg(prop_method)
   if (is.null(df)) df <- survey::degf(.svy)
 
-  if (missing(prop_method)) prop_method <- "logit"
-  prop_method <- match.arg(prop_method, several.ok = TRUE)
+  x <- as.integer(group_indices(.full_svy) == cur_group_id())
+  .full_svy <- set_survey_vars(.full_svy, x)
 
-  if (missing(x) & proportion) {
-    stop("proportion does not work with factors.")
-  } else if (missing(x)) {
-    survey_stat_factor(.svy, survey::svymean, na.rm, vartype, level, deff, df)
+  if (!proportion) {
+    stat <- survey::svymean(~`__SRVYR_TEMP_VAR__`, .full_svy, na.rm = na.rm, deff = deff)
+    out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
+    out
   } else {
-    stop_for_factor(x)
-    if (is.logical(x)) x <- as.integer(x)
-    .svy <- set_survey_vars(.svy, x)
-    grps_formula <- survey::make.formula(group_vars(.svy))
+    if (!isFALSE(deff)) warning("Cannot calculate design effects on proportions.", call. = FALSE)
 
-    if (proportion) {
-      if (!isFALSE(deff)) {
-        warning("Cannot calculate design effects on proportions.", call. = FALSE)
-        deff <- FALSE
-      }
-      stat <- survey::svyby(
-        ~`__SRVYR_TEMP_VAR__`, grps_formula, .svy, survey::svyciprop, na.rm = na.rm,
-        se = TRUE, vartype = c("se", "ci"), method = prop_method, level = level
-      )
-    } else {
-      stat <- survey::svyby(
-        ~`__SRVYR_TEMP_VAR__`, grps_formula, .svy, survey::svymean,
-        deff = deff, na.rm = na.rm
-      )
-    }
-    out <- get_var_est(
-      stat, vartype, grps = group_vars(.svy), level = level, df = df,
-      pre_calc_ci = proportion, deff = deff
+    stat <- survey::svyciprop(
+      ~`__SRVYR_TEMP_VAR__`, .full_svy, na.rm = na.rm, level = level, method = prop_method
     )
+    out <- get_var_est(stat, vartype, pre_calc_ci = TRUE, df = df)
     out
   }
 }
@@ -208,7 +205,7 @@ survey_mean.grouped_svy <- function(
 #' @export
 survey_total <- function(
   x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
-  deff = FALSE, df = NULL, .svy = current_svy(), ...
+  deff = FALSE, df = NULL, .svy = cur_svy(), ...
 ) {
   UseMethod("survey_total", .svy)
 }
@@ -216,7 +213,7 @@ survey_total <- function(
 #' @export
 survey_total.tbl_svy <- function(
   x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
-  deff = FALSE, df = NULL, .svy = current_svy(), ...
+  deff = FALSE, df = NULL, .svy = cur_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
@@ -238,7 +235,7 @@ survey_total.tbl_svy <- function(
 #' @export
 survey_total.grouped_svy <- function(
   x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
-  deff = FALSE, df = NULL, .svy = current_svy(), ...
+  deff = FALSE, df = NULL, .svy = cur_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
@@ -317,7 +314,7 @@ survey_total.grouped_svy <- function(
 #' @export
 survey_ratio <- function(
   numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
-  level = 0.95, deff = FALSE, df = NULL, .svy  = current_svy(), ...
+  level = 0.95, deff = FALSE, df = NULL, .svy  = cur_svy(), ...
 ) {
   UseMethod("survey_ratio", .svy)
 }
@@ -325,7 +322,7 @@ survey_ratio <- function(
 #' @export
 survey_ratio.tbl_svy <- function(
   numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
-  level = 0.95, deff = FALSE, df = NULL, .svy = current_svy(), ...
+  level = 0.95, deff = FALSE, df = NULL, .svy = cur_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
@@ -349,7 +346,7 @@ survey_ratio.tbl_svy <- function(
 #' @export
 survey_ratio.grouped_svy <- function(
   numerator, denominator, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"),
-  level = 0.95, deff = FALSE, df = NULL, .svy = current_svy(), ...
+  level = 0.95, deff = FALSE, df = NULL, .svy = cur_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
@@ -416,7 +413,7 @@ survey_quantile <- function(
   x, quantiles, na.rm = FALSE, vartype = NULL,
   level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"), df = NULL, .svy = current_svy(), ...
+  ties = c("discrete", "rounded"), df = NULL, .svy = cur_svy(), ...
 ) {
   UseMethod("survey_quantile", .svy)
 }
@@ -426,7 +423,7 @@ survey_quantile.tbl_svy <- function(
   x, quantiles, na.rm = FALSE, vartype = c("se", "ci"),
   level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"), df = NULL, .svy = current_svy(), ...
+  ties = c("discrete", "rounded"), df = NULL, .svy = cur_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
@@ -474,7 +471,7 @@ survey_quantile.grouped_svy <- function(
   x, quantiles, na.rm = FALSE, vartype = c("se", "ci"),
   level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"), df = NULL, .svy = current_svy(), ...
+  ties = c("discrete", "rounded"), df = NULL, .svy = cur_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
@@ -528,7 +525,7 @@ survey_median <- function(
   x, na.rm = FALSE, vartype = c("se", "ci"),
   level = 0.95, q_method = "linear", f = 1,
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"), df = NULL, .svy = current_svy(), ...
+  ties = c("discrete", "rounded"), df = NULL, .svy = cur_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
@@ -617,7 +614,7 @@ survey_median <- function(
 
 survey_var <- function(
   x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95, df = NULL,
-  .svy = current_svy(), ...
+  .svy = cur_svy(), ...
 ) {
   UseMethod("survey_var", .svy)
 }
@@ -625,7 +622,7 @@ survey_var <- function(
 #' @export
 survey_var.tbl_svy <- function(
   x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95, df = NULL,
-  .svy = current_svy(), ...
+  .svy = cur_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
@@ -646,7 +643,7 @@ survey_var.tbl_svy <- function(
 #' @export
 survey_var.grouped_svy <- function(
   x, na.rm = FALSE, vartype = c("se", "ci", "var"), level = 0.95, df = NULL,
-  .svy = current_svy(), ...
+  .svy = cur_svy(), ...
 ) {
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
@@ -674,7 +671,7 @@ survey_var.grouped_svy <- function(
 #' @export
 #' @rdname survey_var
 survey_sd <- function(
-  x, na.rm = FALSE, .svy = current_svy(), ...
+  x, na.rm = FALSE, .svy = cur_svy(), ...
 ) {
   out <- survey_var(
     x, na.rm = na.rm, vartype = NULL, .svy = .svy
@@ -729,7 +726,7 @@ survey_sd <- function(
 #'
 #'
 #' @export
-unweighted <- function(x, .svy = current_svy(), ...) {
+unweighted <- function(x, .svy = cur_svy(), ...) {
   dots <- rlang::enquo(x)
   # unweighted needs to be evaluated in grandparent environment (in
   # the caller of summarise) because we don't want the same kind of

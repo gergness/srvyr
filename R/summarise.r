@@ -4,23 +4,14 @@ summarise.tbl_svy <- function(.data, ..., .groups = NULL, .smoosh = TRUE) {
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
 
   # Set current_svy so available to svy stat functions
-  old <- set_current_svy(.data)
+  old <- set_current_svy(list(full = .data, split = list(.data)))
   on.exit(set_current_svy(old), add = TRUE)
 
   out <- dplyr::summarise(.data$variables, ..., .groups = .groups)
 
   # srvyr predates dplyr's data.frame columns so default to smooshing
   # them wide
-  if (.smoosh) {
-    out <- lapply(names(out), function(col_name) {
-      col <- out[[col_name]]
-      if (is.data.frame(col)) {
-        names(col) <- ifelse(names(col) == "__SRVYR_COEF__", col_name, paste0(col_name, names(col)))
-      }
-      col
-    })
-    out <- dplyr::bind_cols(out)
-  }
+  if (.smoosh) out <- smoosh_cols(out)
   out
 }
 
@@ -31,84 +22,34 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
 }
 
 #' @export
-summarise.grouped_svy <- function(.data, ..., .groups = NULL) {
+summarise.grouped_svy <- function(.data, ..., .groups = NULL, .smoosh = TRUE) {
   .dots <- rlang::quos(...)
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
 
   # Set current_svy so available to svy stat functions
-  old <- set_current_svy(.data)
+  old <- set_current_svy(list(full = .data, split = group_split(.data)))
   on.exit(set_current_svy(old), add = TRUE)
 
-  groups <- group_vars(.data)
-  # use the argument names to name the output
-  calculations <- lapply(seq_along(.dots), function(x) {
-    out <- rlang::eval_tidy(.dots[[x]], .data$variables)
-    unchanged_names <- groups
-    changed_names <- setdiff(names(out), groups)
-    changed_names_is_coef <- changed_names == "__SRVYR_COEF__"
-    changed_names[which(changed_names_is_coef)] <- ""
-    results <- stats::setNames(out, c(unchanged_names, paste0(names(.dots)[x], changed_names)))
-    results <- dplyr::arrange(results, !!!rlang::syms(unchanged_names))
-    # In case there are multi-row results, make a within group ID
-    results <- dplyr::group_by_at(results, groups)
-    results <- dplyr::mutate(results, `__SRVYR_WITHIN_GRP_ID__` = dplyr::row_number())
-    results <- dplyr::ungroup(results)
+  out <- dplyr::summarise(.data$variables, !!!.dots, .groups = .groups)
 
-    results
-  })
+  # srvyr predates dplyr's data.frame columns so default to smooshing
+  # them wide
+  if (.smoosh) out <- smoosh_cols(out)
+  out
+}
 
-  # if all arguments return length 1 data.frames for each group then we drop_last,
-  # otherwise we keep
-  if (is.null(.groups)) {
-    if (all(vapply(calculations, function(x) max(x[["__SRVYR_WITHIN_GRP_ID__"]]) == 1, logical(1)))) {
-      .groups <- "drop_last"
-    } else {
-      .groups <- "keep"
+# TODO: rename to unpack to match dplyr blog
+# https://www.tidyverse.org/blog/2020/03/dplyr-1-0-0-summarise/#data-frame-columns
+smoosh_cols <- function(results) {
+  out <- lapply(names(results), function(col_name) {
+    col <- results[col_name]
+    if (is.data.frame(col[[1]])) {
+      col <- col[[1]]
+      names(col) <- ifelse(names(col) == "__SRVYR_COEF__", col_name, paste0(col_name, names(col)))
     }
-  }
-  end_grouping_func <- finalize_grouping(.data, .groups)
-
-  # Create a skeleton of a summary using dplyr:::summarize.tbl_df
-  # So that we handle the .drop cases. See https://github.com/gergness/srvyr/issues/49
-  out <- dplyr::summarize((.data$variables), `___SRVYR_DROP___` = 1)
-  out[["___SRVYR_DROP___"]] <- NULL
-  out <- dplyr::ungroup(out)
-
-  # In order to handle multi-row returns, go row by row in the skeleton so we
-  # can check that the return sizes are valid for each group
-  out <- lapply(seq_len(nrow(out)), function(grp_id) {
-    grp_slice <- dplyr::slice(out, grp_id)
-    merged_slice <- Reduce(
-      function(merged_slice, calc_num) {
-        calc <- calculations[[calc_num]]
-
-        calc_slice <- dplyr::semi_join(calc, merged_slice, by = groups)
-        if (nrow(calc_slice) == 1) {
-          calc_slice[["__SRVYR_WITHIN_GRP_ID__"]] <- NULL
-          merged_slice <- dplyr::left_join(merged_slice, calc_slice, by = groups)
-        } else if (nrow(merged_slice) == 1) {
-          merged_slice <- dplyr::left_join(merged_slice, calc_slice, by = groups)
-        } else if (nrow(calc_slice) == nrow(merged_slice)) {
-          merged_slice <- dplyr::left_join(merged_slice, calc_slice, by = c(groups, "__SRVYR_WITHIN_GRP_ID__"))
-        } else {
-          arg_name <- names(.dots)[calc_num]
-          grp_ids <- paste0(names(grp_slice), " = ", unname(grp_slice), collapse = ", ")
-          stop(paste0(
-            "summarise results for argument `", arg_name, "` must be size 1 or ",
-            nrow(merged_slice), " but it is ", nrow(calc_slice), " for group: ",
-            grp_ids
-          ))
-        }
-      },
-      seq_along(calculations),
-      grp_slice
-    )
-    merged_slice[["__SRVYR_WITHIN_GRP_ID__"]] <- NULL
-    merged_slice
+    col
   })
-
-  out <- dplyr::bind_rows(out)
-  end_grouping_func(out)
+  dplyr::bind_cols(out)
 }
 
 #' @export

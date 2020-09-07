@@ -11,11 +11,11 @@ survey_var(
   vartype = c("se", "ci", "var"),
   level = 0.95,
   df = NULL,
-  .svy = current_svy(),
+  .svy = cur_svy(),
   ...
 )
 
-survey_sd(x, na.rm = FALSE, .svy = current_svy(), ...)
+survey_sd(x, na.rm = FALSE, .svy = cur_svy(), ...)
 }
 \arguments{
 \item{x}{A variable or expression, or empty}

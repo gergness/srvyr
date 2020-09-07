@@ -68,10 +68,10 @@ svychisq_posthoc_test <-
     even_rows <- seq(2, nrow(results), 2)
     results[odd_rows, c(3:ncol(results))] <- stdres
     results[even_rows, c(3:ncol(results))] <- adjusted_p_values
-    results[odd_rows, 2] <- "Residuals"
-    results[even_rows, 2] <- "p values"
-    colnames <- dimnames(stdres)[[2]]
-    colnames <- append(colnames, c("Dimension", "Value"), after = 0)
+    results[odd_rows, 2] <- "residuals"
+    results[even_rows, 2] <- "p_value"
+    colnames <- paste0(dependent_var,"_",dimnames(stdres)[[2]])
+    colnames <- append(colnames, c("indep_var", "value"), after = 0)
     colnames(results) <- colnames
     rownames <- dimnames(stdres)[[1]]
     results[odd_rows, 1] <- rownames

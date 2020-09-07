@@ -27,6 +27,10 @@
 #' https://github.com/ebbertd/chisq.posthoc.test/blob/master/R/chisq_posthoc_test.R
 #' @importFrom stats chisq.test p.adjust pchisq
 #' @export
+#'
+
+
+
 
 svychisq_posthoc_test <-
   function(design, independent_var=ind_temp, dependent_var=dep_temp,
@@ -35,7 +39,7 @@ svychisq_posthoc_test <-
            alpha = 0.05,
            ...) {
     # Perform the chi square test and save the residuals
-    svy_chisq_result<-survey::svychisq(formula = formula(paste0("~",independent_var,"+",dependent_var)),design=design)
+    svy_chisq_result<-survey::svychisq(formula = formula(paste0("~",dependent_var,"+",independent_var)),design=design)
 
     stdres<-svy_chisq_result$stdres
     if(!is.nan(svy_chisq_result$p.value)){
@@ -86,7 +90,9 @@ svychisq_posthoc_test <-
       results[odd_rows, 1] <- rownames
       results[even_rows, 1] <- rownames
       # Return the results
-      results
+      results %>%
+        mutate(ind_var_name=independent_var) %>%
+        select(ind_var_name,everything())
     }
     else{
       results <-
@@ -108,12 +114,17 @@ svychisq_posthoc_test <-
       rownames <- dimnames(stdres)[[1]]
       results[odd_rows, 1] <- rownames
       results[even_rows, 1] <- rownames
+      results %>%
+        mutate(ind_var_name=independent_var) %>%
+        select(ind_var_name,everything())
 
 
       # Return the results
-      results
+
 
 
     }
 
   }
+
+

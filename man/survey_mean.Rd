@@ -2,6 +2,7 @@
 % Please edit documentation in R/survey_statistics.r
 \name{survey_mean}
 \alias{survey_mean}
+\alias{survey_prop}
 \title{Calculate the mean and its variation using survey methods}
 \usage{
 survey_mean(
@@ -13,7 +14,20 @@ survey_mean(
   prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
   deff = FALSE,
   df = NULL,
-  .svy = current_svy(),
+  .svy = cur_svy(),
+  ...
+)
+
+survey_prop(
+  x,
+  na.rm = FALSE,
+  vartype = c("se", "ci", "var", "cv"),
+  level = 0.95,
+  proportion = FALSE,
+  prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  deff = FALSE,
+  df = NULL,
+  .svy = cur_svy(),
   ...
 )
 }

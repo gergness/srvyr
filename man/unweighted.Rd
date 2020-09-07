@@ -4,7 +4,7 @@
 \alias{unweighted}
 \title{Calculate the an unweighted summary statistic from a survey}
 \usage{
-unweighted(x, .svy = current_svy(), ...)
+unweighted(x, .svy = cur_svy(), ...)
 }
 \arguments{
 \item{x}{A variable or expression}

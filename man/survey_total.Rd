@@ -11,7 +11,7 @@ survey_total(
   level = 0.95,
   deff = FALSE,
   df = NULL,
-  .svy = current_svy(),
+  .svy = cur_svy(),
   ...
 )
 }

@@ -16,7 +16,7 @@ survey_quantile(
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
   ties = c("discrete", "rounded"),
   df = NULL,
-  .svy = current_svy(),
+  .svy = cur_svy(),
   ...
 )
 
@@ -30,7 +30,7 @@ survey_median(
   interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
   ties = c("discrete", "rounded"),
   df = NULL,
-  .svy = current_svy(),
+  .svy = cur_svy(),
   ...
 )
 }

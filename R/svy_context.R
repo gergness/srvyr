@@ -2,14 +2,19 @@
 # summarize what the survey is. I think they are a little overly complex - I
 # can't really imagine having one already set and and setting another, but just
 # in case, I keep that code.
-
+#
+# As of Sept 2020 tidyselect functions no longer use this idiom, may be
+# worth investigating what they do instead at some point
 cur_svy_env <- rlang::child_env(NULL)
 
 set_current_svy <- function(x) {
-  stopifnot(inherits(x, "tbl_svy") || is_null(x))
+  stopifnot(inherits(x$full, "tbl_svy") || is_null(x$full))
+  stopifnot(is.list(x$split) || is_null(x$split))
 
-  old <- cur_svy_env$selected
-  cur_svy_env$selected <- x
+  old <- list(full = cur_svy_env$full, split = cur_svy_env$split)
+
+  cur_svy_env$full <- x$full
+  cur_svy_env$split <- x$split
 
   invisible(old)
 }
@@ -17,13 +22,30 @@ set_current_svy <- function(x) {
 #' Get the survey data for the current context
 #'
 #' This is a helper to allow srvyr's syntactic style. In particular, it tells
-#' functions inside of a summarize call what survey to use. In general, users
-#' will not have to worry about getting (or setting) the current conext's survey,
-#' unless they are trying to extend srvyr. See \code{vignette("extending-srvyr")}
-#' for more details.
+#' functions inside of a summarize call what survey to use (for the current
+#' group with \code{cur_svy()} or the complete survey for \code{cur_svy_full()}.
+#' In general, users will not have to worry about getting (or setting) the current
+#' conext's survey, unless they are trying to extend srvyr.
+#' See \code{vignette("extending-srvyr")} for more details. \code{current_svy()}
+#' is deprecated, but returns the same value as \code{cur_svy()}.
 #'
 #' @return a tbl_svy (or error if called with no survey context)
 #' @export
-current_svy <- function() {
-  cur_svy_env$selected %||% rlang::abort("Survey context not set")
+cur_svy <- function() {
+  cur_svy_env$split[[dplyr::cur_group_id()]] %||% rlang::abort("Survey context not set")
 }
+
+#' @export
+#' @rdname cur_svy
+cur_svy_full <- function() {
+  cur_svy_env$full %||% rlang::abort("Survey context not set")
+}
+
+#' @export
+#' @rdname cur_svy
+current_svy <- function() {
+  warning("`current_svy()` is deprecated, use `cur_svy()` instead")
+  cur_svy()
+}
+
+

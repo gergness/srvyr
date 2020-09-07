@@ -11,7 +11,6 @@ survey_total(
   level = 0.95,
   deff = FALSE,
   df = NULL,
-  .svy = cur_svy(),
   ...
 )
 }
@@ -31,9 +30,6 @@ confidence interval ("ci"), variance ("var") or coefficient of variation
 \item{df}{(For vartype = "ci" only) A numeric value indicating the degrees of freedom
 for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
 but Inf is the usual survey package's default.}
-
-\item{.svy}{A \code{tbl_svy} object. When called from inside a summarize function
-the default automatically sets the survey to the current survey.}
 
 \item{...}{Ignored}
 }

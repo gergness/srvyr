@@ -25,7 +25,6 @@ survey_prop(
   prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
   deff = FALSE,
   df = NULL,
-  .svy = cur_svy(),
   ...
 )
 }
@@ -56,9 +55,6 @@ but Inf is the usual survey package's default (except in
 \code{\link[survey]{svyciprop}}.}
 
 \item{...}{Ignored}
-
-\item{.svy}{A \code{tbl_svy} object. When called from inside a summarize function
-the default automatically sets the survey to the current survey.}
 }
 \description{
 Calculate means and proportions from complex survey data. A wrapper

@@ -80,7 +80,7 @@ survey_mean <- function(
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
   prop_method <- match.arg(prop_method)
-  if (is.null(df)) df <- survey::degf(.svy)
+  if (is.null(df)) df <- survey::degf(cur_svy_full())
   if (missing(x)) return(survey_prop(na.rm = na.rm, vartype = vartype, level = level,
                                      proportion = proportion, prop_method = prop_method,
                                      deff = deff, df = df, .svy = cur_svy()))
@@ -122,7 +122,7 @@ survey_prop <- function(
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
   prop_method <- match.arg(prop_method)
-  if (is.null(df)) df <- survey::degf(.svy)
+  if (is.null(df)) df <- survey::degf(.full_svy)
 
   x <- as.integer(group_indices(.full_svy) == cur_group_id())
   .full_svy <- set_survey_vars(.full_svy, x)
@@ -210,7 +210,7 @@ survey_total <- function(
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
 
-  if (is.null(df)) df <- survey::degf(.svy)
+  if (is.null(df)) df <- survey::degf(cur_svy_full())
 
   if (missing(x)) {
     x <- rep(1L, nrow(.svy))

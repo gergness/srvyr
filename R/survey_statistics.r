@@ -297,7 +297,7 @@ survey_ratio <- function(
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
-  if (is.null(df)) df <- survey::degf(.svy)
+  if (is.null(df)) df <- survey::degf(cur_svy_full())
   stop_for_factor(numerator)
   stop_for_factor(denominator)
 
@@ -523,7 +523,7 @@ survey_var <- function(
   if (length(x) < 2) stop("survey_var() can't be used with regards to the grouping variable.")
   if (is.logical(x)) x <- as.integer(x)
 
-  if (is.null(df)) df <- survey::degf(.svy)
+  if (is.null(df)) df <- survey::degf(cur_svy_full())
 
   .svy <- set_survey_vars(.svy, x)
   stat <- survey::svyvar(~`__SRVYR_TEMP_VAR__`, .svy, na.rm = na.rm)

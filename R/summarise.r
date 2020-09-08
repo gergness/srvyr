@@ -40,6 +40,7 @@ summarise.grouped_svy <- function(.data, ..., .groups = NULL, .unpack = TRUE) {
 
 unpack_cols <- function(results) {
   old_groups <- group_vars(results)
+  is_rowwise <- inherits(results, "rowwise_df")
   out <- lapply(names(results), function(col_name) {
     col <- results[col_name]
     if (is.data.frame(col[[1]])) {
@@ -49,7 +50,15 @@ unpack_cols <- function(results) {
     col
   })
   out <- dplyr::bind_cols(out)
-  if (length(old_groups) > 0) out <- group_by(out, !!!rlang::syms(old_groups))
+
+  # restore grouping/rowwise
+  if (length(old_groups) > 0 & !is_rowwise) {
+    out <- group_by(out, !!!rlang::syms(old_groups))
+  } else if (length(old_groups) > 0 & is_rowwise) {
+    out <- rowwise(out, !!!rlang::syms(old_groups))
+  } else if (is_rowwise) {
+    out <- rowwise(out)
+  }
   out
 }
 

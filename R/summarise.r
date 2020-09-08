@@ -1,5 +1,5 @@
 #' @export
-summarise.tbl_svy <- function(.data, ..., .groups = NULL, .smoosh = TRUE) {
+summarise.tbl_svy <- function(.data, ..., .groups = NULL, .unpack = TRUE) {
   .dots <- rlang::quos(...)
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
 
@@ -9,9 +9,9 @@ summarise.tbl_svy <- function(.data, ..., .groups = NULL, .smoosh = TRUE) {
 
   out <- dplyr::summarise(.data$variables, ..., .groups = .groups)
 
-  # srvyr predates dplyr's data.frame columns so default to smooshing
+  # srvyr predates dplyr's data.frame columns so default to unpacking
   # them wide
-  if (.smoosh) out <- smoosh_cols(out)
+  if (.unpack) out <- unpack_cols(out)
   out
 }
 
@@ -22,7 +22,7 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
 }
 
 #' @export
-summarise.grouped_svy <- function(.data, ..., .groups = NULL, .smoosh = TRUE) {
+summarise.grouped_svy <- function(.data, ..., .groups = NULL, .unpack = TRUE) {
   .dots <- rlang::quos(...)
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
 
@@ -32,15 +32,13 @@ summarise.grouped_svy <- function(.data, ..., .groups = NULL, .smoosh = TRUE) {
 
   out <- dplyr::summarise(.data$variables, !!!.dots, .groups = .groups)
 
-  # srvyr predates dplyr's data.frame columns so default to smooshing
+  # srvyr predates dplyr's data.frame columns so default to unpacking
   # them wide
-  if (.smoosh) out <- smoosh_cols(out)
+  if (.unpack) out <- unpack_cols(out)
   out
 }
 
-# TODO: rename to unpack to match dplyr blog
-# https://www.tidyverse.org/blog/2020/03/dplyr-1-0-0-summarise/#data-frame-columns
-smoosh_cols <- function(results) {
+unpack_cols <- function(results) {
   old_groups <- group_vars(results)
   out <- lapply(names(results), function(col_name) {
     col <- results[col_name]

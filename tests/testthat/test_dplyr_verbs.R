@@ -98,20 +98,6 @@ test_that("ungrouped summarize accepts mix of 1 row & multi row results", {
   expect_equal(direct, round_about)
 })
 
-test_that("ungrouped summarize errors when multi row results of different number of rows", {
-  expect_error(
-    direct <- dstrata %>%
-      summarize(
-        w = survey_mean(api99),
-        x = unweighted(quantile(api99, c(0.05, 0.5, 0.95))),
-        y = survey_mean(api00),
-        z = unweighted(quantile(api00, c(0.05, 0.5, 0.75, 0.95)))
-      ),
-    "Input `z` must be size 3 or 1, not 4",
-    class = "error"
-  )
-})
-
 test_that("grouped summarize accepts mix of 1 row & multi row results", {
   direct <- dstrata %>%
     group_by(both) %>%
@@ -158,18 +144,4 @@ test_that("grouped summarize accepts mix of 1 row & multi row results", {
     group_by(both)
 
   expect_equal(direct, round_about)
-})
-
-test_that("grouped summarize errors when multi row results of different number of rows", {
-  expect_error(
-    dstrata %>%
-      group_by(both) %>%
-      summarize(
-        w = survey_mean(api99),
-        x = unweighted(quantile(api99, c(0.05, 0.5, 0.95))),
-        y = survey_mean(api00),
-        z = unweighted(quantile(api00, c(0.05, 0.5, 0.75, 0.95)))
-      ),
-    "summarise results for argument `z` must be size 1 or 3 but it is 4 for group: both = 1"
-  )
 })

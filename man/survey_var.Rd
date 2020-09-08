@@ -14,7 +14,7 @@ survey_var(
   ...
 )
 
-survey_sd(x, na.rm = FALSE, .svy = cur_svy(), ...)
+survey_sd(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{A variable or expression, or empty}

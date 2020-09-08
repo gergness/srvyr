@@ -43,7 +43,7 @@ group_nest.tbl_svy <- function(.tbl, ..., .key = "data", keep = FALSE) {
     group_nest_impl(group_by(.tbl, ...), .key = .key, keep = keep)
   }
   else {
-    tibble(`:=`(!!.key, list(.tbl)))
+    dplyr::tibble(`:=`(!!.key, list(.tbl)))
   }
 }
 
@@ -85,5 +85,5 @@ nest_by.grouped_svy <- function(.data, ..., .key = "data", .keep = FALSE) {
   vars <- group_vars(.data)
   keys <- group_keys(.data)
   keys <- mutate(keys, `:=`(!!.key, group_split(.env$.data, .keep = .keep)))
-  rowwise(keys, tidyselect::all_of(vars))
+  dplyr::rowwise(keys, tidyselect::all_of(vars))
 }

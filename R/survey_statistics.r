@@ -31,7 +31,7 @@
 #'   as_survey_design(strata = stype, weights = pw)
 #'
 #' dstrata %>%
-#'   summarise(api99 = survey_mean(api99),
+#'   summarise(api99_mn = survey_mean(api99),
 #'             api_diff = survey_mean(api00 - api99, vartype = c("ci", "cv")))
 #'
 #' dstrata %>%
@@ -167,7 +167,7 @@ survey_prop <- function(
 #'   as_survey_design(strata = stype, weights = pw)
 #'
 #' dstrata %>%
-#'   summarise(enroll = survey_total(enroll),
+#'   summarise(enroll_tot = survey_total(enroll),
 #'             tot_meals = survey_total(enroll * meals / 100, vartype = c("ci", "cv")))
 #'
 #' dstrata %>%
@@ -223,14 +223,6 @@ survey_total <- function(
 
   out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
   out
-}
-
-#' @export
-survey_total.tbl_svy <- function(
-  x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), level = 0.95,
-  deff = FALSE, df = NULL, ...
-) {
-
 }
 
 #' Calculate the ratio and its variation using survey methods
@@ -535,11 +527,9 @@ survey_var <- function(
 #' @export
 #' @rdname survey_var
 survey_sd <- function(
-  x, na.rm = FALSE, .svy = cur_svy(), ...
+  x, na.rm = FALSE, ...
 ) {
-  out <- survey_var(
-    x, na.rm = na.rm, vartype = NULL, .svy = .svy
-  )
+  out <- survey_var(x, na.rm = na.rm, vartype = NULL)
   out <- mutate(
     out,
     `__SRVYR_COEF__` = sqrt(.data$`__SRVYR_COEF__`)

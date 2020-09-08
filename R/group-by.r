@@ -39,7 +39,7 @@ group_data.tbl_svy <- function(.data) {
 }
 
 #' @export
-group_keys.tbl_svy <- function(.tbl) {
+group_keys.tbl_svy <- function(.tbl, ...) {
   group_keys(.tbl$variables)
 }
 

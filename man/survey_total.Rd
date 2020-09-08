@@ -46,7 +46,7 @@ dstrata <- apistrat \%>\%
   as_survey_design(strata = stype, weights = pw)
 
 dstrata \%>\%
-  summarise(enroll = survey_total(enroll),
+  summarise(enroll_tot = survey_total(enroll),
             tot_meals = survey_total(enroll * meals / 100, vartype = c("ci", "cv")))
 
 dstrata \%>\%

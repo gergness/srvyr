@@ -24,12 +24,14 @@ set_survey_vars <- function(
   # Sometimes survey package sets probability to Infinite to indicate
   # that an observation has been dropped rather than actually dropping
   # it. In these cases, we want to stretch x out to fit the actual
-  # data
+  # data.
+  # In order to work when a group has a factor with a level with no
+  # data in it, we check what the current row group is
   if (length(x) != nrow(.svy)) {
-    included_rows <- !is.infinite(.svy[["prob"]])
-    if (length(x) == sum(included_rows)) {
+    cur_group_rows <- group_rows(cur_svy_full())[[cur_group_id()]]
+    if (length(x) == length(cur_group_rows)) {
       x_stretched <- rep(FALSE, nrow(.svy))
-      x_stretched[included_rows] <- x
+      x_stretched[cur_group_rows] <- x
       x <- x_stretched
     }
   }

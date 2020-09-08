@@ -451,7 +451,8 @@ test_that(
           group_by(dname) %>%
           summarise(api99 = survey_var(api99))
       },
-      "^Population variance can't be computed because some groups contain less than 2 observations.$"
+      class = "error",
+      "Population variance can't be computed because some groups contain less than 2 observations"
     )
   }
 )
@@ -471,10 +472,6 @@ test_that(
 test_that("survey_STATISTIC functions fail on ungrouped surveys with no x provided",
           {
             errorPattern = "Variable should be provided as an argument to survey_STATISTIC() or grouped survey object should be used."
-            expect_error(summarise(dstrata, survey_mean()),
-                         sub("STATISTIC", "mean", errorPattern), fixed = TRUE, class = "error")
-            expect_error(summarise(dstrata, survey_total()),
-                         sub("STATISTIC", "total", errorPattern), fixed = TRUE, class = "error")
             errorPattern = "Variable should be provided as an argument to survey_STATISTIC()."
             expect_error(summarise(dstrata, survey_quantile()),
                          sub("STATISTIC", "quantile", errorPattern), fixed = TRUE, class = "error")
@@ -601,9 +598,6 @@ test_that("some other errors and warnings",
                                                         proportion = TRUE, deff = TRUE)),
                            "Cannot calculate design effects on proportions.",
                            fixed = TRUE)
-            expect_error(summarise(dstrataGrp, none = survey_mean(proportion = TRUE)),
-                         "proportion does not work with factors.",
-                         fixed = TRUE)
           }
 )
 

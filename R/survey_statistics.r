@@ -520,7 +520,7 @@ survey_var <- function(
   }
   if (missing(x)) stop("Variable should be provided as an argument to survey_var().")
   stop_for_factor(x)
-  if (length(x) < 2) stop("survey_var() can't be used with regards to the grouping variable.")
+  if (length(x) < 2) stop("Population variance can't be computed because some groups contain less than 2 observations.")
   if (is.logical(x)) x <- as.integer(x)
 
   if (is.null(df)) df <- survey::degf(cur_svy_full())

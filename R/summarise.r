@@ -41,6 +41,7 @@ summarise.grouped_svy <- function(.data, ..., .groups = NULL, .smoosh = TRUE) {
 # TODO: rename to unpack to match dplyr blog
 # https://www.tidyverse.org/blog/2020/03/dplyr-1-0-0-summarise/#data-frame-columns
 smoosh_cols <- function(results) {
+  old_groups <- group_vars(results)
   out <- lapply(names(results), function(col_name) {
     col <- results[col_name]
     if (is.data.frame(col[[1]])) {
@@ -49,7 +50,9 @@ smoosh_cols <- function(results) {
     }
     col
   })
-  dplyr::bind_cols(out)
+  out <- dplyr::bind_cols(out)
+  if (length(old_groups) > 0) out <- group_by(out, !!!rlang::syms(old_groups))
+  out
 }
 
 #' @export

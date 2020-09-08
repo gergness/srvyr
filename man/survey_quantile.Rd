@@ -9,7 +9,7 @@ survey_quantile(
   x,
   quantiles,
   na.rm = FALSE,
-  vartype = NULL,
+  vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
   q_method = "linear",
   f = 1,

@@ -100,6 +100,9 @@ summarise_result_nrow_check <- function(results, names) {
 #' off, but if there are more groups they will be preserved. Other options are "drop", which
 #' drops all groups, "keep" which keeps all of them and "rowwise" which converts the object
 #' to a rowwise object (meaning calculations will be performed on each row).
+#' @param .unpack Whether to "unpack" named \code{data.frame} columns. \code{srvyr} predates
+#' \code{dplyr}'s support for data.frame columns so it does not treat them the same way by
+#' default.
 #'
 #' @details
 #' Summarise for \code{tbl_svy} objects accepts several specialized functions.

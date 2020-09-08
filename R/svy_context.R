@@ -48,4 +48,30 @@ current_svy <- function() {
   cur_svy()
 }
 
+#' @export
+#' @importFrom dplyr n
+dplyr::n
 
+#' @export
+#' @importFrom dplyr cur_data
+dplyr::cur_data
+
+#' @export
+#' @importFrom dplyr cur_group
+dplyr::cur_group
+
+#' @export
+#' @importFrom dplyr cur_group_id
+dplyr::cur_group_id
+
+#' @export
+#' @importFrom dplyr cur_column
+dplyr::cur_column
+
+#' @export
+#' @importFrom dplyr across
+dplyr::across
+
+#' @export
+#' @importFrom dplyr c_across
+dplyr::c_across

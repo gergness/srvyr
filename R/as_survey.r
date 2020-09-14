@@ -118,7 +118,10 @@ as_survey.twophase2 <- function(.data, ...) {
 as_survey_ <- function(.data, ...) {
   warn_underscored()
   dots <- rlang::quos(...)
-  if ("repweights" %in% names(dots)) {
+  if (inherits(.data, "tbl_svy")) {
+    if(dots_n(...) > 0) warn("Object is already a survey design and will be returned unchanged. The extra design arguments will be ignored. To reinitialise the design, convert to a tibble first.")
+    .data
+  } else if ("repweights" %in% names(dots)) {
     as_survey_rep_(.data, ...)
   } else if ("id" %in% names(dots) | "ids" %in% names(dots)) {
     # twophase has a list of 2 groups for id, while regular id is

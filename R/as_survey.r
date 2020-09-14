@@ -57,6 +57,12 @@ as_survey <- function(.data, ...) {
 
 #' @export
 #' @rdname as_survey
+as_survey.tbl_svy <- function(.data, ...) {
+  .data
+}
+
+#' @export
+#' @rdname as_survey
 as_survey.data.frame <- function(.data, ...) {
   dots <- rlang::quos(...)
   if ("repweights" %in% names(dots)) {

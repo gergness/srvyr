@@ -58,6 +58,7 @@ as_survey <- function(.data, ...) {
 #' @export
 #' @rdname as_survey
 as_survey.tbl_svy <- function(.data, ...) {
+  if(dots_n(...) > 0) warn("Object is already a survey design and will be returned unchanged. The extra design arguments will be ignored. To reinitialise the design, convert to a tibble first.")
   .data
 }
 

@@ -7,6 +7,7 @@
 \alias{select}
 \alias{pull}
 \alias{rename}
+\alias{rename_with}
 \alias{filter}
 \title{Single table verbs from dplyr}
 \description{
@@ -16,7 +17,7 @@ These are data manipulation functions designed to work on \code{tbl_svy} objects
 \code{mutate} and \code{transmute} can add or modify variables. See
 \code{\link[dplyr]{mutate}} for more details.
 
-\code{select} and \code{rename} keep or rename variables. See
+\code{select}, \code{rename}, and \code{rename_with} keep or rename variables. See
 \code{\link[dplyr]{select}} for more details.
 
 \code{pull} extracts a variable as a vector (whereas \code{select} returns a \code{tbl_svy}).

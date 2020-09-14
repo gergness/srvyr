@@ -56,6 +56,15 @@ rename.tbl_svy <- function(.data, ...) {
   .data
 }
 
+#' @method rename_with tbl_svy
+#' @export
+rename_with.tbl_svy <- function(.data, .fn, .cols = everything(), ...) {
+  dots <- rlang::quos(...)
+  .data$variables <- rename_with(.data$variables, .fn = .fn, .cols = .cols, !!!dots)
+
+  .data
+}
+
 #' @export
 rename_.tbl_svy <- function(.data, ..., .dots) {
   dots <- compat_lazy_dots(.dots, caller_env(), ...)
@@ -90,7 +99,7 @@ filter_.tbl_svy <- function(.data, ..., .dots) {
 #' \code{mutate} and \code{transmute} can add or modify variables. See
 #' \code{\link[dplyr]{mutate}} for more details.
 #'
-#' \code{select} and \code{rename} keep or rename variables. See
+#' \code{select}, \code{rename}, and \code{rename_with} keep or rename variables. See
 #' \code{\link[dplyr]{select}} for more details.
 #'
 #' \code{pull} extracts a variable as a vector (whereas \code{select} returns a \code{tbl_svy}).
@@ -161,6 +170,12 @@ NULL
 #' @export
 #' @importFrom dplyr rename_
 #' @rdname srvyr-se-deprecated
+NULL
+
+#' @name rename_with
+#' @rdname dplyr_single
+#' @export
+#' @importFrom dplyr rename_with
 NULL
 
 #' @name filter

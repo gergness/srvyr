@@ -57,6 +57,7 @@ rename.tbl_svy <- function(.data, ...) {
 }
 
 #' @method rename_with tbl_svy
+#' @importFrom tidyselect everything
 #' @export
 rename_with.tbl_svy <- function(.data, .fn, .cols = everything(), ...) {
   dots <- rlang::quos(...)

@@ -759,15 +759,17 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
   # peel variable always must be a factor or a character vector
   grp_vars_orig_type = list()
   for (grp_var_name in c(peel_name, grps_names)) {
-    if (any(is.na(.svy$variables[[grp_var_name]])) || grp_var_name == peel_name) {
+    if (any(is.na(.svy$variables[[grp_var_name]])) ||
+        (grp_var_name == peel_name && !is.factor(.svy$variables[[grp_var_name]]))) {
       if (is.numeric(.svy$variables[[grp_var_name]]) || is.logical(.svy$variables[[grp_var_name]])) {
         grp_vars_orig_type[[grp_var_name]] <- typeof(.svy$variables[[grp_var_name]])
         if (is.logical(.svy$variables[[grp_var_name]])) {
           .svy$variables[[grp_var_name]] <- as.character(.svy$variables[[grp_var_name]])
         } else {
-          unique_values <- unique(.svy$variables[[grp_var_name]])
+          unique_values <- setdiff(unique(.svy$variables[[grp_var_name]]), NA)
           .svy$variables[[grp_var_name]] <- format(.svy$variables[[grp_var_name]], nsmall = 20, digits = 22)
-          if (!all(unique_values == as.numeric(unique(.svy$variables[[grp_var_name]])))) {
+          new_unique_values <- setdiff(unique(.svy$variables[[grp_var_name]]), "NA")
+          if (!all(unique_values == as.numeric(new_unique_values))) {
             warning("Coercing ", grp_var_name, " to character. Some precision is lost.", call. = FALSE)
           }
         }
@@ -820,7 +822,9 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
   for (grp_var_name in c(peel_name, grps_names)) {
     out[[grp_var_name]][out[[grp_var_name]] %in% "__SRVYR_NA_LEVEL__"] <- NA
     if (is.factor(out[[grp_var_name]])) {
-      levels(out[[grp_var_name]]) <-setdiff(out[[grp_var_name]], "__SRVYR_NA_LEVEL__")
+      if ("__SRVYR_NA_LEVEL__" %in% levels(levels(out[[grp_var_name]]))) {
+        levels(out[[grp_var_name]]) <- setdiff(out[[grp_var_name]], "__SRVYR_NA_LEVEL__")
+      }
     }
   }
 

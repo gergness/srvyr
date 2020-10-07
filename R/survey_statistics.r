@@ -754,23 +754,29 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
   peel_name <- grps_names[length(grps_names)]
   grps_names <- setdiff(grps_names, peel_name)
 
-  if (is.numeric(.svy$variables[[peel_name]])) {
-    warning("Coercing ", peel_name, " to character.", call. = FALSE)
-    peel_var_coerced_to_char <- TRUE
-    peel_var_orig_type <- typeof(.svy$variables[[peel_name]])
-    .svy$variables[[peel_name]] <- format(.svy$variables[[peel_name]], nsmall = 20, digits = 22)
-  } else {
-    peel_var_coerced_to_char <- FALSE
-  }
-
-  # If any groups have NAs the survey package will drop them, so convert to
-  # explicit levels that will get dropped
+  # If any groups have NAs the survey package will try to drop them, so convert
+  # to explicit levels that will get dropped
+  # peel variable always must be a factor or a character vector
+  grp_vars_orig_type = list()
   for (grp_var_name in c(peel_name, grps_names)) {
-    if (any(is.na(.svy$variables[[grp_var_name]]))) {
-      if (is.factor(.svy$variables[[grp_var_name]])) {
+    if (any(is.na(.svy$variables[[grp_var_name]])) || grp_var_name == peel_name) {
+      if (is.numeric(.svy$variables[[grp_var_name]]) || is.logical(.svy$variables[[grp_var_name]])) {
+        grp_vars_orig_type[[grp_var_name]] <- typeof(.svy$variables[[grp_var_name]])
+        if (is.logical(.svy$variables[[grp_var_name]])) {
+          .svy$variables[[grp_var_name]] <- as.character(.svy$variables[[grp_var_name]])
+        } else {
+          unique_values <- unique(.svy$variables[[grp_var_name]])
+          .svy$variables[[grp_var_name]] <- format(.svy$variables[[grp_var_name]], nsmall = 20, digits = 22)
+          if (!all(unique_values == as.numeric(unique(.svy$variables[[grp_var_name]])))) {
+            warning("Coercing ", grp_var_name, " to character. Some precision is lost.", call. = FALSE)
+          }
+        }
+      } else if (is.factor(.svy$variables[[grp_var_name]])) {
         levels(.svy$variables[[grp_var_name]]) <- c(levels(.svy$variables[[grp_var_name]]), "__SRVYR_NA_LEVEL__")
       }
-      .svy$variables[[grp_var_name]][is.na(.svy$variables[[grp_var_name]])] <- "__SRVYR_NA_LEVEL__"
+      tryCatch(
+        .svy$variables[[grp_var_name]][is.na(.svy$variables[[grp_var_name]])] <- "__SRVYR_NA_LEVEL__",
+        error = function(e) {warning("Can't set explicit NA value for ", grp_var_name, ". There will be no group with this variable equals NA in results.")})
     }
   }
 
@@ -812,11 +818,14 @@ survey_stat_factor <- function(.svy, func, na.rm, vartype, level, deff, df) {
 
   # set back to NA the NAs that were forced to be explicit
   for (grp_var_name in c(peel_name, grps_names)) {
-    out[[grp_var_name]][out[[grp_var_name]] == "__SRVYR_NA_LEVEL__"] <- NA
+    out[[grp_var_name]][out[[grp_var_name]] %in% "__SRVYR_NA_LEVEL__"] <- NA
+    if (is.factor(out[[grp_var_name]])) {
+      levels(out[[grp_var_name]]) <-setdiff(out[[grp_var_name]], "__SRVYR_NA_LEVEL__")
+    }
   }
 
-  if (peel_var_coerced_to_char) {
-    out[[peel_name]] <- methods::as(out[[peel_name]], peel_var_orig_type)
+  for (grp_var_name in names(grp_vars_orig_type)) {
+    out[[grp_var_name]] <- methods::as(out[[grp_var_name]], grp_vars_orig_type[[grp_var_name]])
   }
 
   out

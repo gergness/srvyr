@@ -8,7 +8,8 @@
 \alias{pull}
 \alias{rename}
 \alias{filter}
-\title{Single table verbs from dplyr}
+\alias{drop_na}
+\title{Single table verbs from dplyr and tidyr}
 \description{
 These are data manipulation functions designed to work on \code{tbl_svy} objects.
 }
@@ -24,6 +25,9 @@ See \code{\link[dplyr]{pull}} for more details.
 
 \code{filter} keeps certain observations. See \code{\link[dplyr]{filter}}
 for more details.
+
+#' \code{drop_na} drops observations containing missing values.
+See \code{\link[tidyr]{drop_na}} for more details.
 
 \code{arrange} is not implemented for \code{tbl_svy} objects. Nor are any
 two table verbs such as \code{bind_rows}, \code{bind_cols} or any of the

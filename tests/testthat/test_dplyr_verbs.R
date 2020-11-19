@@ -24,6 +24,22 @@ test_that('transmute works',{
   )
 })
 
+test_that('drop_na works',{
+  expect_equal(
+    dstrata %>% select(!flag) %>% drop_na(),
+    dstrata %>% select(!flag) %>%
+      filter(!is.na(acs.k3) & !is.na(acs.46) & !is.na(acs.core))
+  )
+  expect_equal(
+    dstrata %>% drop_na(acs.core),
+    dstrata %>% filter(!is.na(acs.core))
+  )
+  expect_equal(
+    dstrata %>% drop_na(acs.core, acs.k3),
+    dstrata %>% filter(!is.na(acs.core) & !is.na(acs.k3))
+  )
+})
+
 test_that("summarize `.groups` argument matches dplyr behavior (0 groups case)", {
   lapply(c("keep", "drop_last", "drop"), function(group_type) {
     expect_equal(

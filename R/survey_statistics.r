@@ -81,7 +81,7 @@ survey_mean <- function(
   }
   prop_method <- match.arg(prop_method)
   if (is.null(df)) df <- survey::degf(cur_svy_full())
-  if (missing(x)) return(survey_prop(na.rm = na.rm, vartype = vartype, level = level,
+  if (missing(x)) return(survey_prop(vartype = vartype, level = level,
                                      proportion = proportion, prop_method = prop_method,
                                      deff = deff, df = df, .svy = cur_svy()))
   stop_for_factor(x)
@@ -106,7 +106,6 @@ survey_mean <- function(
 #' @rdname survey_mean
 #' @export
 survey_prop <- function(
-  na.rm = FALSE,
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
   proportion = FALSE,
@@ -128,14 +127,14 @@ survey_prop <- function(
   .full_svy <- set_survey_vars(.full_svy, x)
 
   if (!proportion) {
-    stat <- survey::svymean(~`__SRVYR_TEMP_VAR__`, .full_svy, na.rm = na.rm, deff = deff)
+    stat <- survey::svymean(~`__SRVYR_TEMP_VAR__`, .full_svy, na.rm = TRUE, deff = deff)
     out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
     out
   } else {
     if (!isFALSE(deff)) warning("Cannot calculate design effects on proportions.", call. = FALSE)
 
     stat <- survey::svyciprop(
-      ~`__SRVYR_TEMP_VAR__`, .full_svy, na.rm = na.rm, level = level, method = prop_method
+      ~`__SRVYR_TEMP_VAR__`, .full_svy, na.rm = TRUE, level = level, method = prop_method
     )
     out <- get_var_est(stat, vartype, pre_calc_ci = TRUE, df = df)
     out

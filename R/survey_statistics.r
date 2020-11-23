@@ -123,7 +123,7 @@ survey_prop <- function(
   prop_method <- match.arg(prop_method)
   if (is.null(df)) df <- survey::degf(.full_svy)
 
-  x <- as.integer(group_indices(.full_svy) == cur_group_id())
+  x <- peeled_cur_group_id(.full_svy, cur_group())
   .full_svy <- set_survey_vars(.full_svy, x)
 
   if (!proportion) {

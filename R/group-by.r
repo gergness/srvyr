@@ -172,12 +172,12 @@ NULL
 NULL
 
 #' @export
-group_trim.tbl_svy <- function(.tbl, .drop = group_by_drop_default(.tbl)) {
+group_trim.tbl_svy <- function(.tbl, .drop = dplyr::group_by_drop_default(.tbl)) {
   .tbl
 }
 
 #' @export
-group_trim.grouped_svy <- function (.tbl, .drop = group_by_drop_default(.tbl)) {
+group_trim.grouped_svy <- function (.tbl, .drop = dplyr::group_by_drop_default(.tbl)) {
   vars <- group_vars(.tbl)
   ungrouped <- ungroup(.tbl)
   fgroups <- dplyr::tbl_vars(select_if(select_at(ungrouped, vars), is.factor))

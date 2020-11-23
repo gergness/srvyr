@@ -163,3 +163,24 @@ NULL
 #' @export
 #' @importFrom dplyr n_groups
 NULL
+
+
+#' @name group_trim
+#' @rdname dplyr_single
+#' @export
+#' @importFrom dplyr group_trim
+NULL
+
+#' @export
+group_trim.tbl_svy <- function(.tbl, .drop = group_by_drop_default(.tbl)) {
+  .tbl
+}
+
+#' @export
+group_trim.grouped_svy <- function (.tbl, .drop = group_by_drop_default(.tbl)) {
+  vars <- group_vars(.tbl)
+  ungrouped <- ungroup(.tbl)
+  fgroups <- dplyr::tbl_vars(select_if(select_at(ungrouped, vars), is.factor))
+  dropped <- mutate_at(ungrouped, fgroups, droplevels)
+  group_by_at(dropped, vars, .drop = .drop)
+}

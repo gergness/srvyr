@@ -55,9 +55,9 @@ unpack_cols <- function(results) {
   if (length(old_groups) > 0 & !is_rowwise) {
     out <- group_by(out, !!!rlang::syms(old_groups))
   } else if (length(old_groups) > 0 & is_rowwise) {
-    out <- rowwise(out, !!!rlang::syms(old_groups))
+    out <- dplyr::rowwise(out, !!!rlang::syms(old_groups))
   } else if (is_rowwise) {
-    out <- rowwise(out)
+    out <- dplyr::rowwise(out)
   }
   out
 }

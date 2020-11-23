@@ -19,6 +19,31 @@ set_current_svy <- function(x) {
   invisible(old)
 }
 
+peeled_cur_group_id <- function(svy, cur_group) {
+  # TODO: This seems like we should do it less frequently, it seems
+  # really redundant to do per group, maybe it could be done once and
+  # the calculation stored somewhere?
+  cur_group_info <- dplyr::inner_join(
+    group_data(svy),
+    cur_group,
+    by = names(cur_group)
+  )
+
+  # remove last column to unpeel it
+  peel_groups <- cur_group[-ncol(cur_group)]
+  peel_groups_info <- dplyr::inner_join(
+    group_data(svy),
+    peel_groups,
+    by = names(peel_groups)
+  )
+
+  out <- rep(NA_integer_, nrow(svy))
+  out[unlist(peel_groups_info$.rows)] <- 0L
+  out[cur_group_info$.rows[[1]]] <- 1L
+  out
+}
+
+
 #' Get the survey data for the current context
 #'
 #' This is a helper to allow srvyr's syntactic style. In particular, it tells

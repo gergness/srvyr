@@ -18,7 +18,6 @@ survey_mean(
 )
 
 survey_prop(
-  na.rm = FALSE,
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
   proportion = FALSE,

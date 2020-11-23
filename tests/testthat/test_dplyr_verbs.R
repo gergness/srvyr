@@ -145,3 +145,14 @@ test_that("grouped summarize accepts mix of 1 row & multi row results", {
 
   expect_equal(direct, round_about)
 })
+
+test_that("group_trim works", {
+  before_trim <- dstrata %>%
+    group_by(both, .drop = FALSE) %>%
+    filter(both == "No")
+
+  expect_equal(group_keys(before_trim)[[1]], factor(c("No", "Yes"), c("No", "Yes")))
+
+  after_trim <- before_trim %>% group_trim()
+  expect_equal(group_keys(after_trim)[[1]], factor(c("No"), c("No")))
+})

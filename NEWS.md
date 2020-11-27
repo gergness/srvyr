@@ -1,4 +1,5 @@
 # srvyr (development version)
+* Support `drop_na` from tidyr (#107).
 
 # srvyr 0.4.0
 * Fix to ensure that ordered factors can be used as grouping variables or as inputs to `survey_count` and `survey_tally` (#92, thanks for reporting @szimmer & @walkerke & for fixing @bschneidr).

@@ -14,7 +14,8 @@
       will now error because it calculates the mean of `api99` before using it inside of the
       calculation for `api_diff`. This behavior better matches `dplyr`'s so will likely be
       kept.
-* Support for `group_split()`, `group_nest()` and `nest_by()` were added for `tbl_svy` objects.
+* Support for `group_map()`/`group_walk()`/`group_map_dfr()`, `group_split()`, 
+  `group_nest()` and `nest_by()` were added for `tbl_svy` objects.
 
 # srvyr 0.4.0
 * Fix to ensure that ordered factors can be used as grouping variables or as inputs to `survey_count` and `survey_tally` (#92, thanks for reporting @szimmer & @walkerke & for fixing @bschneidr).

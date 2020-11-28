@@ -74,36 +74,6 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
   summarise(.data, !!!dots)
 }
 
-finalize_grouping <- function(x, .groups) {
-  orig_groups <- group_vars(x)
-
-  switch(
-    .groups,
-    "drop" = identity,
-    "drop_last" = function(x) group_by_at(x, orig_groups[-length(orig_groups)]),
-    "keep" = function(x) group_by_at(x, orig_groups),
-    "rowwise" = dplyr::rowwise
-  )
-}
-
-summarise_result_nrow_check <- function(results, names) {
-  allowed_row_nums <- 1
-  lapply(seq_along(results), function(iii) {
-    res_name <- names[[iii]]
-    cur_rows <- nrow(results[[iii]])
-    if (!cur_rows %in% c(1, allowed_row_nums)) {
-      if (allowed_row_nums != 1) {
-        stop(paste0(
-          "summarise results for argument `", res_name, "` must be size 1 or ",
-          allowed_row_nums, " but it is ", cur_rows
-        ))
-      } else {
-        allowed_row_nums <<- cur_rows
-      }
-    }
-  })
-}
-
 #' Summarise multiple values to a single value.
 #'
 #' Summarise multiple values to a single value.

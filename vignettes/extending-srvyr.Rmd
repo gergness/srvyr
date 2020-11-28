@@ -4,7 +4,7 @@ author: "Greg Freedman Ellis"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{extending-srvyr}
+  %\VignetteIndexEntry{Extending srvyr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -36,6 +36,9 @@ is mostly aimed at package authors who already have an understanding of how
 survey objects work. If you'd like more explanation, please let me know on
 [github](https://github.com/gergness/srvyr)!
 
+This guide has also been rewritten for srvyr 1.0, as I had to rework summarize and
+was unable to maintain backwards compatibility.
+
 ## Translating from survey to srvyr
 srvyr implements the "survey statistics" functions from the survey package. Some examples
 are the svymean, svytotal, svyciprop, svyquantile and svyratio all return a
@@ -46,13 +49,9 @@ specified at the same time.
 
 The combination of srvyr's group_by and summarize is analogous to the `svyby`
 function that performs one of the survey statistic function and performs it on
-multiple groups.
+multiple groups. However, as of srvyr 1.0, srvyr no longer uses `svyby`, instead
+the survey object is split into each group's 
 
-Note that srvyr does not implement many other types of calculations that the survey
-package can (notably the regressions). While some of these could be shoehorned into
-srvyr, I feel that they are outside the scope of what people usually expect to have 
-in a data.frame. In general, I think the broom package is better for tidying these
-kinds of calculations.
 
 ## What summarize expects
 srvyr's summarize expects that the survey statistics functions will return
@@ -61,22 +60,25 @@ functions that will help create these objects for you in most cases, but the ret
 should be:
 
 - A `data.frame` object
-- If ungrouped, 1 row long, otherwise 1 row per group
-- If grouped, include both the grouping variables and the estimates
+- Generally there should be 1 row for ungrouped, or 1 row per group, but this is no longer
+  required.
 - The names are based on the argument name from the summarize call but this name can't 
   provided to the functions. Instead, summarize does the renaming and your function should
-  name the variables "\_\_SRVYR_COEF\_\_" (which is renamed to the parameter name) or with a 
+  name the variables "coef" (which is renamed to the parameter name) or with a 
   suffix that will be appended after the parameter name. 
 
 ## Helper functions exported by srvyr
 srvyr now exports several functions that can help convert functions designed
 for the survey package to this format.
 
-- `current_svy()` - This function, modeled after `dplyr::current_vars()`,
+- `cur_svy()` - This function, modeled after `dplyr::current_vars()`,
   is a hidden way to send the survey object to the object (by hidden, I mean 
   that the user doesn't have to specify the survey in the arguments of their
-  function call). To use it, have an argument in your functions that
-  defaults to current_svy().
+  function call). To use it, you can now directly call `cur_svy()` from
+  inside your function. This survey includes only the current group's survey
+  data.
+- `cur_svy_full()` - Like `cur_svy()`, but includes the full survey data intead
+  of just the current group's data.
 - `set_survey_vars()` - Many survey functions have limited support for both
   supplying a formula indicating the variables to calculate a statistic on
   as well as a vector. However, oftentimes the vector version is less well
@@ -89,7 +91,7 @@ for the survey package to this format.
   there is a separate argument for design effects (to match survey's conventions).
 
 Note that these functions may not work in all cases. In srvyr, I've actually had to 
-write 3 versions of `get_var_est()` because of minor differences in the way survey
+write multiple versions of `get_var_est()` because of minor differences in the way survey
 objects are returned. Hopefully they will help in most situations, or at least give 
 you a good place to start.
 
@@ -106,27 +108,14 @@ example. The convey package provides several methods for analysis of inequality
 using survey data. The svygini function calculates the gini coefficient. Here,
 we'll write functions that make a srvyr version `survey_gini`.
 
-To distinguish between ungrouped and grouped survey objects, we'll make a generic.
-Also note the use of `.svy = current_svy()` to get the survey object from the 
-current summarize context.
 ```{r}
 # S3 generic function
 survey_gini <- function(
-  x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), .svy = current_svy(), ...
-) {
-  UseMethod("survey_gini", .svy)
-}
-```
-
-And here's the ungrouped version, which uses `set_survey_vars()`, `convey::svygini()` and
-`get_var_est()`. 
-```{r}
-survey_gini.tbl_svy <- function(
-  x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), .svy = current_svy(), ...
+  x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), ...
 ) {
   if (missing(vartype)) vartype <- "se"
   vartype <- match.arg(vartype, several.ok = TRUE)
-  .svy <- srvyr::set_survey_vars(.svy, x)
+  .svy <- srvyr::set_survey_vars(srvyr::cur_svy(), x)
   
   out <- convey::svygini(~`__SRVYR_TEMP_VAR__`, na.rm = na.rm, design = .svy)
   out <- srvyr::get_var_est(out, vartype)
@@ -134,25 +123,7 @@ survey_gini.tbl_svy <- function(
 }
 ```
 
-Finally, the grouped version which uses the above functions plus `survey::svyby()`.
-```{r}
-survey_gini.grouped_svy <- function(
-  x, na.rm = FALSE, vartype = c("se", "ci", "var", "cv"), .svy = current_svy(), ...
-) {
-  if (missing(vartype)) vartype <- "se"
-  vartype <- match.arg(vartype, several.ok = TRUE)
-  .svy <- srvyr::set_survey_vars(.svy, x)
-  grps_formula <- survey::make.formula(group_vars(.svy))
-  
-  out <- survey::svyby(
-    ~`__SRVYR_TEMP_VAR__`, grps_formula, convey::svygini, na.rm = na.rm, design = .svy
-  )
-  out <- srvyr::get_var_est(out, vartype, grps = group_vars(.svy))
-  out
-}
-```
-
-And here's what these functions look like in practice:
+And here's what this function looks like in practice:
 ```{r}
 # Example from ?convey::svygini
 suppressPackageStartupMessages({
@@ -185,10 +156,7 @@ srvyr_eusilc <- eusilc %>%
 # Calculate ungrouped for survey package
 svygini(~eqincome, design = des_eusilc)
 
-# With our new function
-survey_gini(srvyr_eusilc$variables$eqincome, .svy = srvyr_eusilc)
-
-# And finally, the more typical way through summarize
+# Use new function from summarize
 srvyr_eusilc %>% 
   summarize(eqincome = survey_gini(eqincome))
 
@@ -196,10 +164,7 @@ srvyr_eusilc %>%
 # Calculate by groups for survey
 survey::svyby(~eqincome, ~rb090, des_eusilc, convey::svygini)
 
-# With our new function
-survey_gini(srvyr_eusilc$variables$eqincome, .svy = group_by(srvyr_eusilc, rb090))
-
-# And finally, the more typical way through summarize
+# Use new function from summarize
 srvyr_eusilc %>% 
   group_by(rb090) %>%
   summarize(eqincome = survey_gini(eqincome))

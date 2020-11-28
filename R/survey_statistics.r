@@ -531,7 +531,7 @@ survey_sd <- function(
   out <- survey_var(x, na.rm = na.rm, vartype = NULL)
   out <- mutate(
     out,
-    `__SRVYR_COEF__` = sqrt(.data$`__SRVYR_COEF__`)
+    coef = sqrt(.data$coef)
   )
   out
 }

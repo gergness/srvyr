@@ -45,7 +45,13 @@ unpack_cols <- function(results) {
     col <- results[col_name]
     if (is.data.frame(col[[1]])) {
       col <- col[[1]]
-      names(col) <- ifelse(names(col) == "__SRVYR_COEF__", col_name, paste0(col_name, names(col)))
+      names(col) <- ifelse(
+        # __SRVYR_COEF__ for backwards compatibility if anyone actually
+        # used srvyr <1.0 extension capabilities
+        names(col) %in% c("coef", "__SRVYR_COEF__"),
+        col_name,
+        paste0(col_name, names(col))
+      )
     }
     col
   })

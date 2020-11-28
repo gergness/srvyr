@@ -123,7 +123,7 @@ get_var_est <- function(
   })
 
   coef <- data.frame(matrix(coef(stat), ncol = out_width))
-  names(coef) <- "__SRVYR_COEF__"
+  names(coef) <- "coef"
   out <- c(list(coef), out)
 
   if (!identical(grps, "")) {

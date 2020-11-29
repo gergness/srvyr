@@ -85,12 +85,33 @@ filter_.tbl_svy <- function(.data, ..., .dots) {
 drop_na.tbl_svy <- function(data, ...) {
   vars <- tidyselect::eval_select(expr(c(...)), data$variables)
   if (is_empty(vars)) {
-    f <- tidyr:::complete_cases(data$variables)
+    f <- complete_cases(data$variables)
   }
   else {
-    f <- tidyr:::complete_cases(data$variables[vars])
+    f <- complete_cases(data$variables[vars])
   }
   filter(data, f)
+}
+
+# from tidyr:::complete_cases
+complete_cases <- function (x, fun) {
+  ok <- vapply(x, is_complete, logical(nrow(x)))
+  if (is.vector(ok)) {
+    all(ok)
+  }
+  else {
+    rowSums(as.matrix(ok)) == ncol(x)
+  }
+}
+
+# from tidyr:::is_complete
+is_complete <- function (x) {
+  if (typeof(x) == "list") {
+    !vapply(x, rlang::is_empty, logical(1))
+  }
+  else {
+    !is.na(x)
+  }
 }
 
 # Import + export generics from dplyr and tidyr

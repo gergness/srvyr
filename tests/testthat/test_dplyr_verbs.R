@@ -24,6 +24,31 @@ test_that('transmute works',{
   )
 })
 
+test_that('rename works', {
+  new_names <- dstrata %>% `[[`("variables") %>% names
+  new_names <- ifelse(new_names=="target", "tgt", new_names)
+  expect_equal(
+    dstrata %>% rename(tgt = target) %>% `[[`("variables") %>% names,
+    new_names
+  )
+})
+
+test_that('rename_with works without the .cols= argument', {
+  new_names <- dstrata %>% `[[`("variables") %>% names
+  new_names <- paste0(new_names, ".x")
+  expect_equal(
+    dstrata %>% rename_with(~paste0(., ".x")) %>% `[[`("variables") %>% names,
+    new_names
+  )
+})
+
+test_that('rename_with works with the .cols= argument', {
+  new_names <- dstrata %>% `[[`("variables") %>% names
+  new_names <- ifelse(endsWith(new_names, "m"), paste0(new_names, ".x"), new_names)
+  expect_equal(
+    dstrata %>% rename_with(~paste0(., ".x"), ends_with("m")) %>% `[[`("variables") %>% names,
+    new_names
+
 test_that('drop_na works',{
   expect_equal(
     dstrata %>% select(!flag) %>% drop_na(),

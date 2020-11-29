@@ -32,8 +32,8 @@ cascade_.grouped_svy <- function(.data, ..., .dots, .fill = NA) {
 #'   group_by(stype)
 #'
 #' dstrata_grp %>%
-#'   cascade(api99 = survey_mean(api99),
-#'             api00 = survey_mean(api00),
+#'   cascade(api99_mn = survey_mean(api99),
+#'             api00_mn = survey_mean(api00),
 #'             api_diff = survey_mean(api00 - api99))
 #'
 #' @export

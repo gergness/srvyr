@@ -11,11 +11,10 @@ survey_var(
   vartype = c("se", "ci", "var"),
   level = 0.95,
   df = NULL,
-  .svy = current_svy(),
   ...
 )
 
-survey_sd(x, na.rm = FALSE, .svy = current_svy(), ...)
+survey_sd(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{A variable or expression, or empty}
@@ -33,9 +32,6 @@ the confidence level.}
 for t-distribution. The default (Inf) is equivalent to using normal
 distribution and in case of population variance statistics there is little
 reason to use any other values (see \emph{Details}).}
-
-\item{.svy}{A \code{tbl_svy} object. When called from inside a summarize function
-the default automatically sets the survey to the current survey.}
 
 \item{...}{Ignored}
 }

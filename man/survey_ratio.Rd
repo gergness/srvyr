@@ -12,7 +12,6 @@ survey_ratio(
   level = 0.95,
   deff = FALSE,
   df = NULL,
-  .svy = current_svy(),
   ...
 )
 }
@@ -35,9 +34,6 @@ confidence interval ("ci"), variance ("var") or coefficient of variation
 for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
 but Inf is the usual survey package's default (except in
 \code{\link[survey]{svyciprop}}.}
-
-\item{.svy}{A \code{tbl_svy} object. When called from inside a summarize function
-the default automatically sets the survey to the current survey.}
 
 \item{...}{Ignored}
 }

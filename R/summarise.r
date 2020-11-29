@@ -1,34 +1,18 @@
 #' @export
-summarise.tbl_svy <- function(.data, ..., .groups = NULL) {
+summarise.tbl_svy <- function(.data, ..., .groups = NULL, .unpack = TRUE) {
   .dots <- rlang::quos(...)
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
 
   # Set current_svy so available to svy stat functions
-  old <- set_current_svy(.data)
+  old <- set_current_svy(list(full = .data, split = list(.data)))
   on.exit(set_current_svy(old), add = TRUE)
 
-  # use the argument names to name the output
-  out <- lapply(seq_along(.dots), function(x) {
-    out <- rlang::eval_tidy(.dots[[x]], .data$variables)
-    var_names <- names(out)
-    vname_is_coef <- var_names == "__SRVYR_COEF__"
-    if (any(vname_is_coef)) var_names[vname_is_coef] <- ""
-    if (!is.data.frame(out)) {
-      dplyr::tibble(!!names(.dots[x]) := out)
-    } else {
-      stats::setNames(out, paste0(names(.dots)[x], var_names))
-    }
-  })
-  summarise_result_nrow_check(out, names(.dots))
-  # since there are no groups, .groups="drop_last" is equivalent to .groups="keep"
-  if (is.null(.groups)) {
-    .groups <- "drop_last"
-  }
-  end_grouping_func <- finalize_grouping(.data, .groups)
+  out <- dplyr::summarise(.data$variables, ..., .groups = .groups)
 
-  out <- dplyr::bind_cols(out)
-  out <- tibble::as_tibble(out)
-  end_grouping_func(out)
+  # srvyr predates dplyr's data.frame columns so default to unpacking
+  # them wide
+  if (.unpack) out <- unpack_cols(out)
+  out
 }
 
 #' @export
@@ -38,120 +22,56 @@ summarise_.tbl_svy <- function(.data, ..., .dots) {
 }
 
 #' @export
-summarise.grouped_svy <- function(.data, ..., .groups = NULL) {
+summarise.grouped_svy <- function(.data, ..., .groups = NULL, .unpack = TRUE) {
   .dots <- rlang::quos(...)
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
 
   # Set current_svy so available to svy stat functions
-  old <- set_current_svy(.data)
+  old <- set_current_svy(list(full = .data, split = group_split(.data)))
   on.exit(set_current_svy(old), add = TRUE)
 
-  groups <- group_vars(.data)
-  # use the argument names to name the output
-  calculations <- lapply(seq_along(.dots), function(x) {
-    out <- rlang::eval_tidy(.dots[[x]], .data$variables)
-    unchanged_names <- groups
-    changed_names <- setdiff(names(out), groups)
-    changed_names_is_coef <- changed_names == "__SRVYR_COEF__"
-    changed_names[which(changed_names_is_coef)] <- ""
-    results <- stats::setNames(out, c(unchanged_names, paste0(names(.dots)[x], changed_names)))
-    results <- dplyr::arrange(results, !!!rlang::syms(unchanged_names))
-    # In case there are multi-row results, make a within group ID
-    results <- dplyr::group_by_at(results, groups)
-    results <- dplyr::mutate(results, `__SRVYR_WITHIN_GRP_ID__` = dplyr::row_number())
-    results <- dplyr::ungroup(results)
+  out <- dplyr::summarise(.data$variables, !!!.dots, .groups = .groups)
 
-    results
-  })
+  # srvyr predates dplyr's data.frame columns so default to unpacking
+  # them wide
+  if (.unpack) out <- unpack_cols(out)
+  out
+}
 
-  # if all arguments return length 1 data.frames for each group then we drop_last,
-  # otherwise we keep
-  if (is.null(.groups)) {
-    if (all(vapply(calculations, function(x) max(x[["__SRVYR_WITHIN_GRP_ID__"]]) == 1, logical(1)))) {
-      .groups <- "drop_last"
-    } else {
-      .groups <- "keep"
+unpack_cols <- function(results) {
+  old_groups <- group_vars(results)
+  is_rowwise <- inherits(results, "rowwise_df")
+  out <- lapply(names(results), function(col_name) {
+    col <- results[col_name]
+    if (is.data.frame(col[[1]])) {
+      col <- col[[1]]
+      names(col) <- ifelse(
+        # __SRVYR_COEF__ for backwards compatibility if anyone actually
+        # used srvyr <1.0 extension capabilities
+        names(col) %in% c("coef", "__SRVYR_COEF__"),
+        col_name,
+        paste0(col_name, names(col))
+      )
     }
-  }
-  end_grouping_func <- finalize_grouping(.data, .groups)
-
-  # Create a skeleton of a summary using dplyr:::summarize.tbl_df
-  # So that we handle the .drop cases. See https://github.com/gergness/srvyr/issues/49
-  out <- dplyr::summarize((.data$variables), `___SRVYR_DROP___` = 1)
-  out[["___SRVYR_DROP___"]] <- NULL
-  out <- dplyr::ungroup(out)
-
-  # In order to handle multi-row returns, go row by row in the skeleton so we
-  # can check that the return sizes are valid for each group
-  out <- lapply(seq_len(nrow(out)), function(grp_id) {
-    grp_slice <- dplyr::slice(out, grp_id)
-    merged_slice <- Reduce(
-      function(merged_slice, calc_num) {
-        calc <- calculations[[calc_num]]
-
-        calc_slice <- dplyr::semi_join(calc, merged_slice, by = groups)
-        if (nrow(calc_slice) == 1) {
-          calc_slice[["__SRVYR_WITHIN_GRP_ID__"]] <- NULL
-          merged_slice <- dplyr::left_join(merged_slice, calc_slice, by = groups)
-        } else if (nrow(merged_slice) == 1) {
-          merged_slice <- dplyr::left_join(merged_slice, calc_slice, by = groups)
-        } else if (nrow(calc_slice) == nrow(merged_slice)) {
-          merged_slice <- dplyr::left_join(merged_slice, calc_slice, by = c(groups, "__SRVYR_WITHIN_GRP_ID__"))
-        } else {
-          arg_name <- names(.dots)[calc_num]
-          grp_ids <- paste0(names(grp_slice), " = ", unname(grp_slice), collapse = ", ")
-          stop(paste0(
-            "summarise results for argument `", arg_name, "` must be size 1 or ",
-            nrow(merged_slice), " but it is ", nrow(calc_slice), " for group: ",
-            grp_ids
-          ))
-        }
-      },
-      seq_along(calculations),
-      grp_slice
-    )
-    merged_slice[["__SRVYR_WITHIN_GRP_ID__"]] <- NULL
-    merged_slice
+    col
   })
+  out <- dplyr::bind_cols(out)
 
-  out <- dplyr::bind_rows(out)
-  end_grouping_func(out)
+  # restore grouping/rowwise
+  if (length(old_groups) > 0 & !is_rowwise) {
+    out <- group_by(out, !!!rlang::syms(old_groups))
+  } else if (length(old_groups) > 0 & is_rowwise) {
+    out <- dplyr::rowwise(out, !!!rlang::syms(old_groups))
+  } else if (is_rowwise) {
+    out <- dplyr::rowwise(out)
+  }
+  out
 }
 
 #' @export
 summarise_.grouped_svy <- function(.data, ..., .dots) {
   dots <- compat_lazy_dots(.dots, caller_env(), ...)
   summarise(.data, !!!dots)
-}
-
-finalize_grouping <- function(x, .groups) {
-  orig_groups <- group_vars(x)
-
-  switch(
-    .groups,
-    "drop" = identity,
-    "drop_last" = function(x) group_by_at(x, orig_groups[-length(orig_groups)]),
-    "keep" = function(x) group_by_at(x, orig_groups),
-    "rowwise" = dplyr::rowwise
-  )
-}
-
-summarise_result_nrow_check <- function(results, names) {
-  allowed_row_nums <- 1
-  lapply(seq_along(results), function(iii) {
-    res_name <- names[[iii]]
-    cur_rows <- nrow(results[[iii]])
-    if (!cur_rows %in% c(1, allowed_row_nums)) {
-      if (allowed_row_nums != 1) {
-        stop(paste0(
-          "summarise results for argument `", res_name, "` must be size 1 or ",
-          allowed_row_nums, " but it is ", cur_rows
-        ))
-      } else {
-        allowed_row_nums <<- cur_rows
-      }
-    }
-  })
 }
 
 #' Summarise multiple values to a single value.
@@ -165,6 +85,9 @@ summarise_result_nrow_check <- function(results, names) {
 #' off, but if there are more groups they will be preserved. Other options are "drop", which
 #' drops all groups, "keep" which keeps all of them and "rowwise" which converts the object
 #' to a rowwise object (meaning calculations will be performed on each row).
+#' @param .unpack Whether to "unpack" named \code{data.frame} columns. \code{srvyr} predates
+#' \code{dplyr}'s support for data.frame columns so it does not treat them the same way by
+#' default.
 #'
 #' @details
 #' Summarise for \code{tbl_svy} objects accepts several specialized functions.
@@ -210,16 +133,16 @@ summarise_result_nrow_check <- function(results, names) {
 #'   as_survey_design(strata = stype, weights = pw)
 #'
 #' dstrata %>%
-#'   summarise(api99 = survey_mean(api99),
-#'             api00 = survey_mean(api00),
+#'   summarise(api99_mn = survey_mean(api99),
+#'             api00_mn = survey_mean(api00),
 #'             api_diff = survey_mean(api00 - api99))
 #'
 #' dstrata_grp <- dstrata %>%
 #'   group_by(stype)
 #'
 #' dstrata_grp %>%
-#'   summarise(api99 = survey_mean(api99),
-#'             api00 = survey_mean(api00),
+#'   summarise(api99_mn = survey_mean(api99),
+#'             api00_mn = survey_mean(api00),
 #'             api_diff = survey_mean(api00 - api99))
 #'
 #' @name summarise

@@ -20,6 +20,22 @@ set_survey_vars <- function(
   .svy, x, name = "__SRVYR_TEMP_VAR__", add = FALSE
 ) {
   out <- .svy
+
+  # Sometimes survey package sets probability to Infinite to indicate
+  # that an observation has been dropped rather than actually dropping
+  # it. In these cases, we want to stretch x out to fit the actual
+  # data.
+  # In order to work when a group has a factor with a level with no
+  # data in it, we check what the current row group is
+  if (length(x) != nrow(.svy)) {
+    cur_group_rows <- group_rows(cur_svy_full())[[cur_group_id()]]
+    if (length(x) == length(cur_group_rows)) {
+      x_stretched <- rep(FALSE, nrow(.svy))
+      x_stretched[cur_group_rows] <- x
+      x <- x_stretched
+    }
+  }
+
   if (inherits(.svy, "twophase2")) {
     if (!add) {
       out$phase1$sample$variables <- select(out$phase1$sample$variables, dplyr::one_of(group_vars(out)))
@@ -107,7 +123,7 @@ get_var_est <- function(
   })
 
   coef <- data.frame(matrix(coef(stat), ncol = out_width))
-  names(coef) <- "__SRVYR_COEF__"
+  names(coef) <- "coef"
   out <- c(list(coef), out)
 
   if (!identical(grps, "")) {
@@ -169,110 +185,6 @@ get_var_est_quantile <- function(stat, vartype, q, grps = "", level = 0.95, df =
   }
 
   dplyr::bind_cols(out)
-}
-
-# Again a fair amount of overlap with the other get_var_ests, but handles the way
-# factors are peeled off
-get_var_est_factor <- function(
-  stat, vartype, grps, peel, peel_levels, peel_is_factor, peel_is_ordered, level = 0.95, df = Inf, deff = FALSE
-) {
-  var_names <- if (length(grps) > 0) peel_levels else ""
-  out_width <- length(var_names)
-  out <- lapply(vartype, function(vvv) {
-    if (vvv == "se") {
-      se <- survey::SE(stat)
-      # Needed for grouped quantile
-      if (!inherits(se, "data.frame")) {
-        se <- data.frame(matrix(se, ncol = out_width))
-      }
-      names(se) <- paste0(var_names, "_se")
-      se
-    } else if (vvv == "ci") {
-      if (length(level) == 1) {
-        ci <- data.frame(matrix(
-          stats::confint(stat, level = level, df = df),
-          ncol = 2 * out_width
-        ))
-        names(ci) <- paste0(var_names, rep(c("_low", "_upp"), each = length(var_names)))
-      } else {
-        lci <- lapply(level, function(x) {as.data.frame(stats::confint(stat,level = x, df = df))})
-        ci <- dplyr::bind_cols(lci)
-        names(ci) <- paste0(c("_low", "_upp"), rep(level, each = 2) * 100)
-      }
-      ci
-    } else if (vvv == "var") {
-      var <- data.frame(matrix(survey::SE(stat) ^ 2, ncol = out_width))
-      names(var) <- paste0(var_names, "_var")
-      var
-    } else if (vvv == "cv") {
-      cv <- data.frame((matrix(survey::cv(stat), ncol = out_width)))
-      names(cv) <- paste0(var_names, "_cv")
-      cv
-    } else {
-      stop(paste0("Unexpected vartype ", vvv))
-    }
-  })
-
-  coef <- data.frame(matrix(coef(stat), ncol = out_width))
-  names(coef) <- var_names
-  out <- c(list(coef), out)
-
-  if (!isFALSE(deff)) {
-    deff <- data.frame(matrix(survey::deff(stat), ncol = out_width))
-    names(deff) <- paste0(var_names, "_deff")
-    out <- c(out, list(deff))
-  }
-
-  if (length(grps) == 0  || grps == "") {
-    names_out <- c("coef", vartype)
-    if (!isFALSE(deff)) names_out <- c(names_out, "deff")
-    names(out) <- names_out
-  } else {
-    out <- c(list(stat[grps]), out)
-    names_out <- c("grps", "coef", vartype)
-    if (!isFALSE(deff)) names_out <- c(names_out, "deff")
-    names(out) <- names_out
-  }
-  if (!peel_is_factor) peel_levels <- NULL
-  out <- factor_stat_reshape(out, peel, var_names, peel_levels, peel_is_ordered)
-  out
-}
-
-factor_stat_reshape <- function(stat, peel, var_names, peel_levels, peel_is_ordered) {
-  out <- lapply(seq_along(stat), function(iii) {
-    stat_name <- names(stat)[iii]
-    stat_df <- stat[[iii]]
-    if (stat_name == "grps") {
-      stat_df <- tibble::as_tibble(stat_df)
-      stat_df[rep(seq_len(nrow(stat_df)), length(var_names)), ]
-    } else if(stat_name == "ci") {
-      out <- utils::stack(stat_df)
-      out <- data.frame(
-        `_low` = out[substr_right(out$ind, 4) == "_low", "values"],
-        `_upp` = out[substr_right(out$ind, 4) == "_upp", "values"],
-        check.names = FALSE, stringsAsFactors = FALSE
-      )
-    } else if(stat_name == "coef") {
-      out <- utils::stack(stat_df)
-      names(out) <- c("__SRVYR_COEF__", peel)
-      out[, c(2, 1)]
-    } else {
-      out <- utils::stack(stat_df)
-      out <- select(out, -.data$ind)
-      names(out) <- paste0("_", stat_name)
-      out
-    }
-  })
-  out <- dplyr::bind_cols(out)
-
-  # peel's factor was created by stack, but is just alphabetic
-  out[[peel]] <- as.character(out[[peel]])
-  if (!is.null(peel_levels)) {
-
-    out[[peel]] <- factor(out[[peel]], peel_levels, ordered = peel_is_ordered, exclude = NULL)
-  }
-
-  out
 }
 
 stop_for_factor <- function(x) {

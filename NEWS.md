@@ -1,4 +1,21 @@
 # srvyr (development version)
+* `summarize` has been rearchitected, 
+  * main user facing improvements are:
+    * `dplyr::across()` now works within it
+    * dplyr functions like `dplyr::cur_group()`, `dplyr::cur_group_id()`, `dplyr::cur_data()`
+    work in it (as well as new anlagous functions srvyr-specific `cur_svy()` and 
+    `cur_svy_full()`)
+  * The only known breaking change is:
+    * objects in the `summarize` will refer to the output of `summarize` before the input.
+      Meaning code that looks like this:
+      ```r
+      dstrata %>% summarize(api99 = survey_mean(api99), api_diff = survey_mean(api00 - api99)) 
+      ```
+      will now error because it calculates the mean of `api99` before using it inside of the
+      calculation for `api_diff`. This behavior better matches `dplyr`'s so will likely be
+      kept.
+* Support for `group_map()`/`group_walk()`/`group_map_dfr()`, `group_split()`, 
+  `group_nest()` and `nest_by()` were added for `tbl_svy` objects.
 * Support `drop_na` from tidyr (#107).
 
 # srvyr 0.4.0

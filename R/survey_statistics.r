@@ -543,7 +543,10 @@ survey_sd <- function(
 #' Calculate the an unweighted summary statistic from a survey
 #'
 #' Calculate unweighted summaries from a survey dataset, just as on
-#' a normal data.frame with \code{\link[dplyr]{summarise}}.
+#' a normal data.frame with \code{\link[dplyr]{summarise}}. Though it is
+#' possible to use regular functions directly, because the survey package
+#' doesn't always remove rows when filtering (instead setting the weight to 0),
+#' this can sometimes give bad results. See examples for more details.
 #'
 #' Uses tidy evaluation semantics and so if you want to use
 #' wrapper functions based on variable names, you must use
@@ -570,26 +573,43 @@ survey_sd <- function(
 #'   summarise(api_diff_unw = unweighted(mean(api00 - api99)))
 #'
 #'
-#' # If you want to use a wrapper function, be sure to treat
-#' # non-standard evaluation correctly
-#' umean <- function(x) {
-#'   unweighted(mean({{x}}))
-#' }
-#'  dstrata %>%
-#'    group_by(stype) %>%
-#'    summarize(api_diff_unw = umean(api00 - api99))
+#' # Some survey designs, like ones with raked weights, are not removed
+#' # when filtered to preserve the structure. So if you don't use `unweighted()`
+#' # your results can be wrong.
+#' # Declare basic clustered design ----
+#' cluster_design <- as_survey_design(
+#'   .data = apiclus1,
+#'   id = dnum,
+#'   weights = pw,
+#'   fpc = fpc
+#' )
 #'
+#' # Add raking weights for school type ----
+#' pop.types <- data.frame(stype=c("E","H","M"), Freq=c(4421,755,1018))
+#' pop.schwide <- data.frame(sch.wide=c("No","Yes"), Freq=c(1072,5122))
+#'
+#' raked_design <- rake(
+#'   cluster_design,
+#'   sample.margins = list(~stype,~sch.wide),
+#'   population.margins = list(pop.types, pop.schwide)
+#' )
+#'
+#' raked_design %>%
+#' filter(cname != "Alameda") %>%
+#'   group_by(cname) %>%
+#'   summarize(
+#'     direct_unw_mean = mean(api99),
+#'     wrapped_unw_mean = unweighted(mean(api99))
+#'   ) %>%
+#'   filter(cname == "Alameda")
+#'
+#' # Notice how the results are different when using `unweighted()`
 #'
 #' @export
 unweighted <- function(x, ...) {
   .svy <- cur_svy()
 
   dots <- rlang::enquo(x)
-  # unweighted needs to be evaluated in grandparent environment (in
-  # the caller of summarise) because we don't want the same kind of
-  # vector retrieval from the survey's variables as we do for other
-  # survey statistics
-  dots <- rlang::quo_set_env(dots, rlang::env_parent(n = 2))
 
   if (is.calibrated(.svy) | is.pps(.svy)) {
     excluded_rows <- is.infinite(.svy[['prob']])

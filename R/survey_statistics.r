@@ -585,11 +585,6 @@ unweighted <- function(x, ...) {
   .svy <- cur_svy()
 
   dots <- rlang::enquo(x)
-  # unweighted needs to be evaluated in grandparent environment (in
-  # the caller of summarise) because we don't want the same kind of
-  # vector retrieval from the survey's variables as we do for other
-  # survey statistics
-  dots <- rlang::quo_set_env(dots, rlang::env_parent(n = 2))
 
   if (is.calibrated(.svy) | is.pps(.svy)) {
     excluded_rows <- is.infinite(.svy[['prob']])

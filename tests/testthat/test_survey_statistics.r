@@ -655,35 +655,52 @@ test_that(
 )
 
 test_that(
-  "unweighted works evaluates in correct environment", {
+  "unweighted allows passing functions from environment", {
     data(api, package = "survey")
     dclus1 <- as_survey_design(apiclus1, id = dnum, weights = pw, fpc = fpc)
 
-    wrong_wrapper <- function(x) {
+    test_reference <- dclus1 %>%
+      group_by(sch.wide) %>%
+      summarize(n = unweighted(length(api99)))
+
+
+    no_quo_wrapper <- function(x) {
       unweighted(length(x))
     }
 
-    expect_error(
-      test <- dclus1 %>%
-        group_by(sch.wide) %>%
-        summarize(n = wrong_wrapper(api99))
-    )
+    test1 <- dclus1 %>%
+      group_by(sch.wide) %>%
+      summarize(n = no_quo_wrapper(api99))
+
+    expect_equal(test1, test_reference)
+
 
     right_wrapper <- function(x) {
       x <- rlang::enquo(x)
       unweighted(length(!!x))
     }
 
-    test1 <- dclus1 %>%
+    test2 <- dclus1 %>%
       group_by(sch.wide) %>%
       summarize(n = right_wrapper(api99))
 
-    test2 <- dclus1 %>%
-      group_by(sch.wide) %>%
-      summarize(n = unweighted(length(api99)))
+    expect_equal(test2, test_reference)
 
+    # see issue https://github.com/gergness/srvyr/issues/103
+    func_of_svy <- function(svy) {
+      func_inside_func <- function(x) {
+        length(x)
+      }
 
-    expect_equal(test1, test2)
+      svy %>%
+        group_by(sch.wide) %>%
+        summarize(n = srvyr::unweighted(func_inside_func(api99)))
+    }
+
+    test3 <- dclus1 %>%
+      func_of_svy()
+
+    expect_equal(test3, test_reference)
   }
 )
 

@@ -48,6 +48,8 @@ test_that('rename_with works with the .cols= argument', {
   expect_equal(
     dstrata %>% rename_with(~paste0(., ".x"), ends_with("m")) %>% `[[`("variables") %>% names,
     new_names
+  )
+})
 
 test_that('drop_na works',{
   expect_equal(

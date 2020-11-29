@@ -148,3 +148,7 @@ is.pps <- function(x) {
 
 # From base (for backward compatibility)
 isFALSE <- function (x) is.logical(x) && length(x) == 1L && !is.na(x) && !x
+
+equal_or_both_na <- function(x, y) {
+  x == y | (is.na(x) & is.na(y))
+}

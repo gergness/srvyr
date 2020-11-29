@@ -123,15 +123,19 @@ survey_prop <- function(
   prop_method <- match.arg(prop_method)
   if (is.null(df)) df <- survey::degf(.full_svy)
 
-  x <- peeled_cur_group_id(.full_svy, cur_group())
-  .full_svy <- set_survey_vars(.full_svy, x)
-
   if (!proportion) {
+    # TODO: This could be faster if we actually use survey::svyby()
+    x <- peeled_cur_group_id(.full_svy, cur_group())
+    .full_svy <- set_survey_vars(.full_svy, x)
+
     stat <- survey::svymean(~`__SRVYR_TEMP_VAR__`, .full_svy, na.rm = TRUE, deff = deff)
     out <- get_var_est(stat, vartype, level = level, df = df, deff = deff)
     out
   } else {
     if (!isFALSE(deff)) warning("Cannot calculate design effects on proportions.", call. = FALSE)
+    # (Not possible to use svyby here, so I think this is as fast as it can be)
+    x <- peeled_cur_group_id(.full_svy, cur_group())
+    .full_svy <- set_survey_vars(.full_svy, x)
 
     stat <- survey::svyciprop(
       ~`__SRVYR_TEMP_VAR__`, .full_svy, na.rm = TRUE, level = level, method = prop_method

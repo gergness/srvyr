@@ -2,6 +2,7 @@
 % Please edit documentation in R/as_survey.r
 \name{as_survey}
 \alias{as_survey}
+\alias{as_survey.tbl_svy}
 \alias{as_survey.data.frame}
 \alias{as_survey.tbl_lazy}
 \alias{as_survey.survey.design2}
@@ -10,6 +11,8 @@
 \title{Create a tbl_svy from a data.frame}
 \usage{
 as_survey(.data, ...)
+
+\method{as_survey}{tbl_svy}(.data, ...)
 
 \method{as_survey}{data.frame}(.data, ...)
 

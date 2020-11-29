@@ -2,6 +2,7 @@
 % Please edit documentation in R/survey_statistics.r
 \name{survey_mean}
 \alias{survey_mean}
+\alias{survey_prop}
 \title{Calculate the mean and its variation using survey methods}
 \usage{
 survey_mean(
@@ -13,7 +14,16 @@ survey_mean(
   prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
   deff = FALSE,
   df = NULL,
-  .svy = current_svy(),
+  ...
+)
+
+survey_prop(
+  vartype = c("se", "ci", "var", "cv"),
+  level = 0.95,
+  proportion = FALSE,
+  prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  deff = FALSE,
+  df = NULL,
   ...
 )
 }
@@ -43,9 +53,6 @@ for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
 but Inf is the usual survey package's default (except in
 \code{\link[survey]{svyciprop}}.}
 
-\item{.svy}{A \code{tbl_svy} object. When called from inside a summarize function
-the default automatically sets the survey to the current survey.}
-
 \item{...}{Ignored}
 }
 \description{
@@ -62,7 +69,7 @@ dstrata <- apistrat \%>\%
   as_survey_design(strata = stype, weights = pw)
 
 dstrata \%>\%
-  summarise(api99 = survey_mean(api99),
+  summarise(api99_mn = survey_mean(api99),
             api_diff = survey_mean(api00 - api99, vartype = c("ci", "cv")))
 
 dstrata \%>\%

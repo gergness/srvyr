@@ -91,9 +91,20 @@ filter_.tbl_svy <- function(.data, ..., .dots) {
   }
 }
 
+#' @export
+drop_na.tbl_svy <- function(data, ...) {
+  vars <- tidyselect::eval_select(expr(c(...)), data$variables)
+  if (is_empty(vars)) {
+    f <- tidyr:::complete_cases(data$variables)
+  }
+  else {
+    f <- tidyr:::complete_cases(data$variables[vars])
+  }
+  filter(data, f)
+}
 
-# Import + export generics from dplyr
-#' Single table verbs from dplyr
+# Import + export generics from dplyr and tidyr
+#' Single table verbs from dplyr and tidyr
 #'
 #' These are data manipulation functions designed to work on \code{tbl_svy} objects.
 #'
@@ -108,6 +119,9 @@ filter_.tbl_svy <- function(.data, ..., .dots) {
 #'
 #' \code{filter} keeps certain observations. See \code{\link[dplyr]{filter}}
 #' for more details.
+#'
+#' #' \code{drop_na} drops observations containing missing values.
+#' See \code{\link[tidyr]{drop_na}} for more details.
 #'
 #' \code{arrange} is not implemented for \code{tbl_svy} objects. Nor are any
 #' two table verbs such as \code{bind_rows}, \code{bind_cols} or any of the
@@ -189,6 +203,12 @@ NULL
 #' @export
 #' @importFrom dplyr filter_
 #' @rdname srvyr-se-deprecated
+NULL
+
+#' @name drop_na
+#' @export
+#' @importFrom tidyr drop_na
+#' @rdname dplyr_single
 NULL
 
 #' Manipulate multiple columns.

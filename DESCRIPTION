@@ -18,10 +18,10 @@ Depends:
 Imports:
     dplyr (>= 0.7),
     magrittr,
-    methods,
     rlang,
     survey,
     tibble,
+    tidyr,
     tidyselect
 License: GPL-2 | GPL-3
 LazyData: TRUE

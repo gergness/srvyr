@@ -11,7 +11,6 @@ survey_total(
   level = 0.95,
   deff = FALSE,
   df = NULL,
-  .svy = current_svy(),
   ...
 )
 }
@@ -32,9 +31,6 @@ confidence interval ("ci"), variance ("var") or coefficient of variation
 for t-distribution. The default (NULL) uses \code{\link[survey]{degf}},
 but Inf is the usual survey package's default.}
 
-\item{.svy}{A \code{tbl_svy} object. When called from inside a summarize function
-the default automatically sets the survey to the current survey.}
-
 \item{...}{Ignored}
 }
 \description{
@@ -50,7 +46,7 @@ dstrata <- apistrat \%>\%
   as_survey_design(strata = stype, weights = pw)
 
 dstrata \%>\%
-  summarise(enroll = survey_total(enroll),
+  summarise(enroll_tot = survey_total(enroll),
             tot_meals = survey_total(enroll * meals / 100, vartype = c("ci", "cv")))
 
 dstrata \%>\%

@@ -4,13 +4,10 @@
 \alias{unweighted}
 \title{Calculate the an unweighted summary statistic from a survey}
 \usage{
-unweighted(x, .svy = current_svy(), ...)
+unweighted(x, ...)
 }
 \arguments{
 \item{x}{A variable or expression}
-
-\item{.svy}{A \code{tbl_svy} object. When called from inside a summarize function
-the default automatically sets the survey to the current survey.}
 
 \item{...}{Ignored}
 }

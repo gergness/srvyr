@@ -13,6 +13,10 @@
 off, but if there are more groups they will be preserved. Other options are "drop", which
 drops all groups, "keep" which keeps all of them and "rowwise" which converts the object
 to a rowwise object (meaning calculations will be performed on each row).}
+
+\item{.unpack}{Whether to "unpack" named \code{data.frame} columns. \code{srvyr} predates
+\code{dplyr}'s support for data.frame columns so it does not treat them the same way by
+default.}
 }
 \description{
 Summarise multiple values to a single value.
@@ -62,16 +66,16 @@ dstrata <- apistrat \%>\%
   as_survey_design(strata = stype, weights = pw)
 
 dstrata \%>\%
-  summarise(api99 = survey_mean(api99),
-            api00 = survey_mean(api00),
+  summarise(api99_mn = survey_mean(api99),
+            api00_mn = survey_mean(api00),
             api_diff = survey_mean(api00 - api99))
 
 dstrata_grp <- dstrata \%>\%
   group_by(stype)
 
 dstrata_grp \%>\%
-  summarise(api99 = survey_mean(api99),
-            api00 = survey_mean(api00),
+  summarise(api99_mn = survey_mean(api99),
+            api00_mn = survey_mean(api00),
             api_diff = survey_mean(api00 - api99))
 
 }

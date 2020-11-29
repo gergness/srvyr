@@ -4,6 +4,12 @@
 \alias{groups}
 \alias{ungroup}
 \alias{group_vars}
+\alias{group_data}
+\alias{group_keys}
+\alias{group_rows}
+\alias{group_indices}
+\alias{group_size}
+\alias{n_groups}
 \title{Get/set the grouping variables for tbl.}
 \arguments{
 \item{x}{data \code{\link[dplyr]{tbl_df}} or \code{\link{tbl_svy}} object.}

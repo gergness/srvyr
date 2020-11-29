@@ -18,6 +18,21 @@ test_that("as_survey_ correctly uses survey design's arguments",
                               strata = "repwt1", variables = "x", pps = pps)))
 
 
+# Idempotency
+test_that("as_survey and as_survey_ are idempotent and warn on extraneous arguments",
+          {
+            s <- as_survey(data, ids = c(id1, id2), weights = wt,
+                           strata = repwt1, variables = x, pps = pps)
+
+            expect_equal(as_survey(s), s)
+            expect_warning(s2 <- as_survey(s, ids = c(id1, id2)))
+            expect_equal(s2, s)
+
+            expect_equal(as_survey_(s), s)
+            expect_warning(s2 <- as_survey_(s, ids = c("id1", "id2")))
+            expect_equal(s2, s)
+          })
+
 # Replicates
 test_that("as_survey correctly uses replicate's arguments",
           expect_equal(

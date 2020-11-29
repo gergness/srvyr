@@ -5,11 +5,12 @@ Description: Use piping, verbs like 'group_by' and 'summarize', and other
     'dplyr' inspired syntactic style when calculating summary statistics on survey
     data using functions from the 'survey' package.
 Version: 0.4.0.9000
-Date: 2020-07-29
+Date: 2020-09-15
 Authors@R: c(person("Greg", "Freedman Ellis", email = "greg.freedman@gmail.com", role = c("aut", "cre")),
   person("Thomas", "Lumley", role = "ctb"),
   person("Tomasz", "\u017b\u00F3\u0142tak", role = "ctb"),
-  person("Ben", "Schneider", role = c("aut", "ctb")))
+  person("Ben", "Schneider", role = c("aut", "ctb")),
+  person("Pavel N.", "Krivitsky", email = "pavel@statnet.org", role = c("ctb")))
 URL: http://gdfe.co/srvyr, https://github.com/gergness/srvyr
 BugReports: https://github.com/gergness/srvyr/issues
 Depends:

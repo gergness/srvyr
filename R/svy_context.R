@@ -48,9 +48,13 @@ peeled_cur_group_id <- function(svy, cur_group) {
     by = names(cur_group[, -ncol(cur_group)])
   )
   cur_peel_all <- cur_peel_group$grp_rows[[1]]
-  cur_peel_sel <- cur_peel_group$peel[[1]]$.rows[[
-    which(cur_peel_group$peel[[1]]$peel_name == cur_group[[ncol(cur_group)]])
-  ]]
+  # x == y doesn't work for NAs, so use this awkward vapply
+  cur_group_pos <- vapply(
+    cur_peel_group$peel[[1]]$peel_name,
+    function(x) identical(x, cur_group[[ncol(cur_group)]]),
+    TRUE
+  )
+  cur_peel_sel <- cur_peel_group$peel[[1]]$.rows[[which(cur_group_pos)]]
 
   out <- rep(NA_integer_, nrow(svy))
   out[cur_peel_all] <- 0L

@@ -15,31 +15,46 @@ set_current_svy <- function(x) {
 
   cur_svy_env$full <- x$full
   cur_svy_env$split <- x$split
+  cur_svy_env$peel_groups <- NULL
 
   invisible(old)
 }
 
 peeled_cur_group_id <- function(svy, cur_group) {
-  # TODO: This seems like we should do it less frequently, it seems
-  # really redundant to do per group, maybe it could be done once and
-  # the calculation stored somewhere?
-  cur_group_info <- dplyr::inner_join(
-    group_data(svy),
-    cur_group,
-    by = names(cur_group)
-  )
+  # TODO: This is significantly slower than survey package
+  # because it performs survey calculation on each group
+  # whereas survey can do one for the final peel. Maybe
+  # srvyr could store the `svyby` results and use that?
+  if (is.null(cur_svy_env$peel_groups)) {
+    grp_names <- group_vars(svy)
+    peel <- grp_names[length(grp_names)]
 
-  # remove last column to unpeel it
-  peel_groups <- cur_group[-ncol(cur_group)]
-  peel_groups_info <- dplyr::inner_join(
-    group_data(svy),
+    peel_groups <- group_data(svy)
+    peel_groups <- group_by_at(peel_groups, setdiff(grp_names, peel))
+    peel_groups <- summarize(
+      peel_groups,
+      grp_rows = list(unlist(.data[[".rows"]])),
+      peel = list(data.frame(peel_name = .data[[peel]], .rows = .data[[".rows"]]))
+    )
+    cur_svy_env$peel_groups <- peel_groups
+  } else {
+    peel_groups <- cur_svy_env$peel_groups
+  }
+  cur_group <- cur_group()
+
+  cur_peel_group <- dplyr::inner_join(
     peel_groups,
-    by = names(peel_groups)
+    cur_group[, -ncol(cur_group)],
+    by = names(cur_group[, -ncol(cur_group)])
   )
+  cur_peel_all <- cur_peel_group$grp_rows[[1]]
+  cur_peel_sel <- cur_peel_group$peel[[1]]$.rows[[
+    which(cur_peel_group$peel[[1]]$peel_name == cur_group[[ncol(cur_group)]])
+  ]]
 
   out <- rep(NA_integer_, nrow(svy))
-  out[unlist(peel_groups_info$.rows)] <- 0L
-  out[cur_group_info$.rows[[1]]] <- 1L
+  out[cur_peel_all] <- 0L
+  out[cur_peel_sel] <- 1L
   out
 }
 

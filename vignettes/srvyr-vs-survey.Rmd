@@ -232,7 +232,7 @@ to unquote it. All of these functions are re-exported by srvyr, so you don't nee
 to load the rlang library to use them.
 
 Here's a quick example, but please see the dplyr vignette 
-[`vignette("programming", package = "dplyr")`](http://dplyr.tidyverse.org/articles/programming.html)
+[`vignette("programming", package = "dplyr")`](https://dplyr.tidyverse.org/articles/programming.html)
 for more details.
 
 ```{r, message = FALSE}

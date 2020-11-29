@@ -113,7 +113,7 @@ so that the entire list is inside quotation.
 require a unique identifier. You also can now convert survey db-backed surveys
 to srvyr with as_survey.
 
-* srvyr now has a pkgdown site, check it out at <http://gdfe.co/srvyr>
+* srvyr now has a pkgdown site, check it out at <http://gdfe.co/srvyr/>
 
 # srvyr 0.2.2
 * Remove test blocking survey update

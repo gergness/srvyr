@@ -14,11 +14,11 @@ Status](https://ci.appveyor.com/api/projects/status/github/gergness/srvyr?branch
 [![Coverage
 Status](https://codecov.io/gh/gergness/srvyr/master.svg)](https://codecov.io/github/gergness/srvyr?branch=master)
 [![Documentation via
-pkgdown](tools/pkgdownshield.svg)](http://gdfe.co/srvyr)
+pkgdown](tools/pkgdownshield.svg)](http://gdfe.co/srvyr/)
 <!-- badges: end -->
 
-srvyr brings parts of [dplyr’s](https://github.com/hadley/dplyr/) syntax
-to survey analysis, using the
+srvyr brings parts of [dplyr’s](https://github.com/tidyverse/dplyr/)
+syntax to survey analysis, using the
 [survey](https://CRAN.R-project.org/package=survey) package.
 
 srvyr focuses on calculating summary statistics from survey data, such
@@ -69,10 +69,8 @@ dstrata <- dstrata %>%
 ``` r
 dstrata %>% 
   summarise(api_diff = survey_mean(api_diff, vartype = "ci"))
-#> # A tibble: 1 x 3
 #>   api_diff api_diff_low api_diff_upp
-#>      <dbl>        <dbl>        <dbl>
-#> 1     32.9         28.8         37.0
+#> 1 32.89252     28.79413     36.99091
 ```
 
   - `group_by()` and then `summarise()` creates summaries by groups.
@@ -83,10 +81,6 @@ dstrata %>%
 dstrata %>% 
   group_by(stype) %>%
   summarise(api_diff = survey_mean(api_diff, vartype = "ci"))
-#> Warning: The `add` argument of `group_by()` is deprecated as of dplyr 1.0.0.
-#> Please use the `.add` argument instead.
-#> This warning is displayed once every 8 hours.
-#> Call `lifecycle::last_warnings()` to see where this warning was generated.
 #> # A tibble: 3 x 4
 #>   stype api_diff api_diff_low api_diff_upp
 #>   <fct>    <dbl>        <dbl>        <dbl>

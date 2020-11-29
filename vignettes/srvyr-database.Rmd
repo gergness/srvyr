@@ -32,7 +32,7 @@ databases, but in theory other database backends should work as well.
 This vignette shows the basics of how to use srvyr with databases. 
 It is based on analysis from the wonderful resource asdfree 
 ( [website](http://asdfree.com/) and [github](https://github.com/ajdamico/asdfree) ). 
-Many thanks to [ajdamico](http://github.com/ajdamico) and collaborators. 
+Many thanks to [ajdamico](https://github.com/ajdamico) and collaborators. 
 Specifically, I have adapted code from [American Community Survey - 2011 single year analysis](https://github.com/ajdamico/asdfree/blob/d0b965e9672161da086e30471760d08281b74343/American%20Community%20Survey/2011%20single-year%20-%20analysis%20examples.R) and the associated data preparation scripts. 
 
 ## Database Setup ##

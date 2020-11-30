@@ -1,4 +1,4 @@
-# srvyr (development version)
+# srvyr 1.0.0
 * `summarize` has been rearchitected, 
   * main user facing improvements are:
     * `dplyr::across()` now works within it

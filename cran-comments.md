@@ -1,7 +1,7 @@
 ## Test environments
 * local OS X install, R 4.0.2
 * ubuntu 16.04 R 4.0.2, 3.6.3 and R devel
-* win-builder (release)
+* win-builder (devel & release)
 * ubuntu 16.04 Rdevel with -nold flag (fixes outstanding issue in checks)
 
 ## R CMD check results

@@ -122,7 +122,7 @@ summary(my_model)
 > analysis pipeline in a familiar way.
 > 
 > – <cite>Kieran Healy, in [Data Visualization: A practical
-> introduction](http://socviz.co/modeling.html#plots-from-complex-surveys)
+> introduction](https://socviz.co/modeling.html#plots-from-complex-surveys)
 > </cite>
 
 > 1.  Yay\!
@@ -141,5 +141,5 @@ as all participants are required to abide by its terms.
 
 If you’re unfamiliar with contributing to an R package, I recommend the
 guides provided by Rstudio’s tidyverse team, such as Jim Hester’s [blog
-post](https://www.tidyverse.org/articles/2017/08/contributing/) or
-Hadley Wickham’s [R packages book](http://r-pkgs.had.co.nz).
+post](https://www.tidyverse.org/blog/2017/08/contributing/) or Hadley
+Wickham’s [R packages book](https://r-pkgs.org/).

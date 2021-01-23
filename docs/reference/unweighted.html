@@ -41,7 +41,10 @@
 
 <meta property="og:title" content="Calculate the an unweighted summary statistic from a survey — unweighted" />
 <meta property="og:description" content="Calculate unweighted summaries from a survey dataset, just as on
-a normal data.frame with summarise." />
+a normal data.frame with summarise. Though it is
+possible to use regular functions directly, because the survey package
+doesn't always remove rows when filtering (instead setting the weight to 0),
+this can sometimes give bad results. See examples for more details." />
 
 
 
@@ -74,7 +77,7 @@ a normal data.frame with summarise." />
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -82,7 +85,7 @@ a normal data.frame with summarise." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
@@ -117,7 +120,7 @@ a normal data.frame with summarise." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/gergness/srvyr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -141,10 +144,13 @@ a normal data.frame with summarise." />
 
     <div class="ref-description">
     <p>Calculate unweighted summaries from a survey dataset, just as on
-a normal data.frame with <code><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></code>.</p>
+a normal data.frame with <code><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></code>. Though it is
+possible to use regular functions directly, because the survey package
+doesn't always remove rows when filtering (instead setting the weight to 0),
+this can sometimes give bad results. See examples for more details.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>unweighted</span>(<span class='no'>x</span>, <span class='kw'>.svy</span> <span class='kw'>=</span> <span class='fu'><a href='current_svy.html'>current_svy</a></span>(), <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>unweighted</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,11 +158,6 @@ a normal data.frame with <code><a href='https://dplyr.tidyverse.org/reference/su
     <tr>
       <th>x</th>
       <td><p>A variable or expression</p></td>
-    </tr>
-    <tr>
-      <th>.svy</th>
-      <td><p>A <code>tbl_svy</code> object. When called from inside a summarize function
-the default automatically sets the survey to the current survey.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -195,19 +196,39 @@ tidy evaluation, see the examples here, documentation in
 #&gt; </span><span style='color: #BCBCBC;'>2</span><span> H             8.46
 #&gt; </span><span style='color: #BCBCBC;'>3</span><span> M            26.4 </div><div class='input'>
 
-<span class='co'># If you want to use a wrapper function, be sure to treat</span>
-<span class='co'># non-standard evaluation correctly</span>
-<span class='no'>umean</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>x</span>) {
-  <span class='fu'>unweighted</span>(<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>({{<span class='no'>x</span>}}))
-}
- <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
-   <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>stype</span>) <span class='kw'>%&gt;%</span>
-   <span class='fu'><a href='summarise.html'>summarize</a></span>(<span class='kw'>api_diff_unw</span> <span class='kw'>=</span> <span class='fu'>umean</span>(<span class='no'>api00</span> - <span class='no'>api99</span>))</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 3 x 2</span><span>
-#&gt;   stype api_diff_unw
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> E            38.6 
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> H             8.46
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span> M            26.4 </div><div class='input'>
+<span class='co'># Some survey designs, like ones with raked weights, are not removed</span>
+<span class='co'># when filtered to preserve the structure. So if you don't use `unweighted()`</span>
+<span class='co'># your results can be wrong.</span>
+<span class='co'># Declare basic clustered design ----</span>
+<span class='no'>cluster_design</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span>(
+  <span class='kw'>.data</span> <span class='kw'>=</span> <span class='no'>apiclus1</span>,
+  <span class='kw'>id</span> <span class='kw'>=</span> <span class='no'>dnum</span>,
+  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>pw</span>,
+  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='no'>fpc</span>
+)
+
+<span class='co'># Add raking weights for school type ----</span>
+<span class='no'>pop.types</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>stype</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"E"</span>,<span class='st'>"H"</span>,<span class='st'>"M"</span>), <span class='kw'>Freq</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4421</span>,<span class='fl'>755</span>,<span class='fl'>1018</span>))
+<span class='no'>pop.schwide</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>sch.wide</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"No"</span>,<span class='st'>"Yes"</span>), <span class='kw'>Freq</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1072</span>,<span class='fl'>5122</span>))
+
+<span class='no'>raked_design</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/survey/man/rake.html'>rake</a></span>(
+  <span class='no'>cluster_design</span>,
+  <span class='kw'>sample.margins</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(~<span class='no'>stype</span>,~<span class='no'>sch.wide</span>),
+  <span class='kw'>population.margins</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>pop.types</span>, <span class='no'>pop.schwide</span>)
+)
+
+<span class='no'>raked_design</span> <span class='kw'>%&gt;%</span>
+<span class='fu'><a href='dplyr_single.html'>filter</a></span>(<span class='no'>cname</span> <span class='kw'>!=</span> <span class='st'>"Alameda"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>cname</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='summarise.html'>summarize</a></span>(
+    <span class='kw'>direct_unw_mean</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>api99</span>),
+    <span class='kw'>wrapped_unw_mean</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>api99</span>))
+  ) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='dplyr_single.html'>filter</a></span>(<span class='no'>cname</span> <span class='kw'>==</span> <span class='st'>"Alameda"</span>)</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 1 x 3</span><span>
+#&gt;   cname   direct_unw_mean wrapped_unw_mean
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>             </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> Alameda             609              </span><span style='color: #BB0000;'>NaN</span><span></div><div class='input'>
+# Notice how the results are different when using `unweighted()`
 
 </div></span></pre>
   </div>

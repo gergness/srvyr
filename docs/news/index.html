@@ -72,7 +72,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
@@ -115,7 +115,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/gergness/srvyr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -136,14 +136,46 @@
       <small>Source: <a href='https://github.com/gergness/srvyr/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="srvyr-development-version" class="section level1">
-<h1 class="page-header" data-toc-text="development version">
-<a href="#srvyr-development-version" class="anchor"></a>srvyr (development version)<small> Unreleased </small>
+    <div id="srvyr-100" class="section level1">
+<h1 class="page-header" data-toc-text="1.0.0">
+<a href="#srvyr-100" class="anchor"></a>srvyr 1.0.0<small> 2020-12-01 </small>
+</h1>
+<ul>
+<li>
+<p><code>summarize</code> has been rearchitected,</p>
+<ul>
+<li>main user facing improvements are:
+<ul>
+<li>
+<code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across()</a></code> now works within it</li>
+<li>dplyr functions like <code><a href="https://dplyr.tidyverse.org/reference/context.html">dplyr::cur_group()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/context.html">dplyr::cur_group_id()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/context.html">dplyr::cur_data()</a></code> work in it (as well as new anlagous functions srvyr-specific <code><a href="../reference/cur_svy.html">cur_svy()</a></code> and <code><a href="../reference/cur_svy.html">cur_svy_full()</a></code>)</li>
+</ul>
+</li>
+<li>The only known breaking change is:
+<ul>
+<li>
+<p>objects in the <code>summarize</code> will refer to the output of <code>summarize</code> before the input. Meaning code that looks like this:</p>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="no">dstrata</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">api99</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="no">api99</span>), <span class="kw">api_diff</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="no">api00</span> - <span class="no">api99</span>))</pre></div>
+<p>will now error because it calculates the mean of <code>api99</code> before using it inside of the calculation for <code>api_diff</code>. This behavior better matches <code>dplyr</code>’s so will likely be kept.</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Support for <code><a href="https://dplyr.tidyverse.org/reference/group_map.html">group_map()</a></code>/<code><a href="https://dplyr.tidyverse.org/reference/group_map.html">group_walk()</a></code>/<code><a href="../reference/group_map_dfr.html">group_map_dfr()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/nest_by.html">nest_by()</a></code> were added for <code>tbl_svy</code> objects.</p></li>
+<li><p>Support <code>drop_na</code> from tidyr (<a href='https://github.com/gergness/srvyr/issues/107'>#107</a>).</p></li>
+<li><p><code><a href="../reference/as_survey.html">as_survey()</a></code> and <code><a href="../reference/srvyr-se-deprecated.html">as_survey_()</a></code> are now idempotent: given a <code>srvyr</code> survey object (a <code>tbl_srv</code>), they return it unchanged. If extra arguments are provided, they are ignored with a warning (<a href='https://github.com/gergness/srvyr/issues/97'>#97</a>, thanks <a href='https://github.com/krivit'>@krivit</a>).</p></li>
+<li><p><code><a href="../reference/dplyr_single.html">rename_with()</a></code> now works with surveys (<a href='https://github.com/gergness/srvyr/issues/96'>#96</a>, thanks <a href='https://github.com/krivit'>@krivit</a>).</p></li>
+</ul>
+</div>
+    <div id="srvyr-040" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.0">
+<a href="#srvyr-040" class="anchor"></a>srvyr 0.4.0<small> 2020-07-30 </small>
 </h1>
 <ul>
 <li><p>Fix to ensure that ordered factors can be used as grouping variables or as inputs to <code>survey_count</code> and <code>survey_tally</code> (<a href='https://github.com/gergness/srvyr/issues/92'>#92</a>, thanks for reporting <a href='https://github.com/szimmer'>@szimmer</a> &amp; <a href='https://github.com/walkerke'>@walkerke</a> &amp; for fixing <a href='https://github.com/bschneidr'>@bschneidr</a>).</p></li>
 <li><p>Fix to ensure that numeric values can be used in grouping variables (<a href='https://github.com/gergness/srvyr/issues/78'>#78</a> &amp; <a href='https://github.com/gergness/srvyr/issues/74'>#74</a>, thanks for reporting <a href='https://github.com/tzoltak'>@tzoltak</a> &amp; fix <a href='https://github.com/bschneidr'>@bschneidr</a>)</p></li>
-<li><p>Some improvements for dplyr 1.0 (<a href='https://github.com/gergness/srvyr/issues/79'>#79</a>) <code><a href="../reference/dplyr_single.html">transmute()</a></code> now works (thanks for reporting <a href='https://github.com/caayala'>@caayala</a>), <code><a href="../reference/summarise.html">summarise()</a></code>’s <code>.groups</code> argument is respected, and multi-row returns to <code><a href="../reference/summarise.html">summarise()</a></code> work. (Unfortunately the new <code>across()</code> function isn’t quite supported in <code><a href="../reference/summarise.html">summarise()</a></code> yet, it will hopefully come soon)</p></li>
+<li><p>Some improvements for dplyr 1.0 (<a href='https://github.com/gergness/srvyr/issues/79'>#79</a>) <code><a href="../reference/dplyr_single.html">transmute()</a></code> now works (thanks for reporting <a href='https://github.com/caayala'>@caayala</a>), <code><a href="../reference/summarise.html">summarise()</a></code>’s <code>.groups</code> argument is respected, and multi-row returns to <code><a href="../reference/summarise.html">summarise()</a></code> work. (Unfortunately the new <code><a href="https://dplyr.tidyverse.org/reference/across.html">across()</a></code> function isn’t quite supported in <code><a href="../reference/summarise.html">summarise()</a></code> yet, it will hopefully come soon)</p></li>
 </ul>
 </div>
     <div id="srvyr-0310" class="section level1">
@@ -247,7 +279,7 @@
 <ul>
 <li><p>srvyr now uses tidy evaluation from rlang. The “underscore” functions have been soft deprecated in favor of quosure splicing. See dplyr’s vignette “programming” for more details. In almost all cases, the old syntax will still work, with one exception: the standard evaluation function <code><a href="../reference/srvyr-se-deprecated.html">as_survey_twophase_()</a></code> had to be changed slightly so that the entire list is inside quotation.</p></li>
 <li><p>Datbase support has been rewritten. It should be faster now and doesn’t require a unique identifier. You also can now convert survey db-backed surveys to srvyr with as_survey.</p></li>
-<li><p>srvyr now has a pkgdown site, check it out at <a href="http://gdfe.co/srvyr" class="uri">http://gdfe.co/srvyr</a></p></li>
+<li><p>srvyr now has a pkgdown site, check it out at <a href="http://gdfe.co/srvyr/" class="uri">http://gdfe.co/srvyr/</a></p></li>
 </ul>
 </div>
     <div id="srvyr-022" class="section level1">

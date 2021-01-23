@@ -75,7 +75,7 @@ survey_median should always be called from summarise." />
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ survey_median should always be called from summarise." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
@@ -118,7 +118,7 @@ survey_median should always be called from summarise." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/gergness/srvyr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -150,14 +150,13 @@ around <code><a href='https://rdrr.io/pkg/survey/man/svyquantile.html'>svyquanti
   <span class='no'>x</span>,
   <span class='no'>quantiles</span>,
   <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"se"</span>, <span class='st'>"ci"</span>, <span class='st'>"var"</span>, <span class='st'>"cv"</span>),
   <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>,
   <span class='kw'>q_method</span> <span class='kw'>=</span> <span class='st'>"linear"</span>,
   <span class='kw'>f</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>interval_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Wald"</span>, <span class='st'>"score"</span>, <span class='st'>"betaWald"</span>, <span class='st'>"probability"</span>, <span class='st'>"quantile"</span>),
   <span class='kw'>ties</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"discrete"</span>, <span class='st'>"rounded"</span>),
   <span class='kw'>df</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>.svy</span> <span class='kw'>=</span> <span class='fu'><a href='current_svy.html'>current_svy</a></span>(),
   <span class='no'>...</span>
 )
 
@@ -171,7 +170,6 @@ around <code><a href='https://rdrr.io/pkg/survey/man/svyquantile.html'>svyquanti
   <span class='kw'>interval_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Wald"</span>, <span class='st'>"score"</span>, <span class='st'>"betaWald"</span>, <span class='st'>"probability"</span>, <span class='st'>"quantile"</span>),
   <span class='kw'>ties</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"discrete"</span>, <span class='st'>"rounded"</span>),
   <span class='kw'>df</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>.svy</span> <span class='kw'>=</span> <span class='fu'><a href='current_svy.html'>current_svy</a></span>(),
   <span class='no'>...</span>
 )</pre>
 
@@ -223,11 +221,6 @@ default, Inf uses the normal distribution (matches the survey package).
 Also, has no effect for <code>type = "betaWald"</code>.</p></td>
     </tr>
     <tr>
-      <th>.svy</th>
-      <td><p>A <code>tbl_svy</code> object. When called from inside a summarize function
-the default automatically sets the survey to the current survey.</p></td>
-    </tr>
-    <tr>
       <th>...</th>
       <td><p>Ignored</p></td>
     </tr>
@@ -243,14 +236,13 @@ the default automatically sets the survey to the current survey.</p></td>
 
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api99</span> <span class='kw'>=</span> <span class='fu'>survey_quantile</span>(<span class='no'>api99</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.25</span>, <span class='fl'>0.5</span>, <span class='fl'>0.75</span>)),
-            <span class='kw'>api00</span> <span class='kw'>=</span> <span class='fu'>survey_median</span>(<span class='no'>api00</span>, <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ci"</span>)))</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 9</span><span>
-#&gt;   api99_q25 api99_q50 api99_q75 api99_q25_se api99_q50_se api99_q75_se api00
-#&gt;       </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>      525.       631      727.         12.5         18.4         17.9  667.
-#&gt; </span><span style='color: #949494;'># … with 2 more variables: api00_low </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #949494;'>, api00_upp </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span></div><div class='input'>
+            <span class='kw'>api00</span> <span class='kw'>=</span> <span class='fu'>survey_median</span>(<span class='no'>api00</span>, <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ci"</span>)))</div><div class='output co'>#&gt;   api99_q25 api99_q50 api99_q75 api99_q25_se api99_q50_se api99_q75_se    api00
+#&gt; 1    525.48       631  726.7813     12.49138     18.39529     17.89185 667.2358
+#&gt;   api00_low api00_upp
+#&gt; 1  635.8324  681.7236</div><div class='input'>
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>awards</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api00</span> <span class='kw'>=</span> <span class='fu'>survey_median</span>(<span class='no'>api00</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: Only diagonal of vcov() available</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Only diagonal of vcov() available</span></div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 2 x 3</span><span>
+  <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api00</span> <span class='kw'>=</span> <span class='fu'>survey_median</span>(<span class='no'>api00</span>))</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 x 3</span><span>
 #&gt;   awards api00 api00_se
 #&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #BCBCBC;'>1</span><span> No      641.     23.4

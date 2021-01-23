@@ -75,7 +75,7 @@ summarise. Create a tbl_svy using as_survey_design." />
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ summarise. Create a tbl_svy using as_survey_design." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
@@ -118,7 +118,7 @@ summarise. Create a tbl_svy using as_survey_design." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/gergness/srvyr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -201,10 +201,8 @@ dplyr single-table verbs like <code>mutate</code>, <code>group_by</code> and
 #&gt;  - ids: `1`
 #&gt;  - strata: stype
 #&gt;  - weights: pw
-#&gt; Data variables: acs.k3 (int), acs.46 (int), acs.core (int)</div><div class='input'><span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='no'>svy</span>, <span class='kw'>col.grad</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>col.grad</span>))</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 2</span><span>
-#&gt;   col.grad col.grad_se
-#&gt;      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     19.9        1.06</div><div class='input'><span class='fu'><a href='dplyr_single.html'>mutate</a></span>(<span class='no'>svy</span>, <span class='kw'>api_diff</span> <span class='kw'>=</span> <span class='no'>api00</span> - <span class='no'>api99</span>)</div><div class='output co'>#&gt; Stratified Independent Sampling design (with replacement)
+#&gt; Data variables: acs.k3 (int), acs.46 (int), acs.core (int)</div><div class='input'><span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='no'>svy</span>, <span class='kw'>col.grad</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>col.grad</span>))</div><div class='output co'>#&gt;   col.grad col.grad_se
+#&gt; 1 19.86719    1.055931</div><div class='input'><span class='fu'><a href='dplyr_single.html'>mutate</a></span>(<span class='no'>svy</span>, <span class='kw'>api_diff</span> <span class='kw'>=</span> <span class='no'>api00</span> - <span class='no'>api99</span>)</div><div class='output co'>#&gt; Stratified Independent Sampling design (with replacement)
 #&gt; Called via srvyr
 #&gt; Sampling variables:
 #&gt;  - ids: `1`
@@ -223,10 +221,8 @@ dplyr single-table verbs like <code>mutate</code>, <code>group_by</code> and
 <span class='no'>svy_group</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>svy</span>, <span class='no'>dname</span>)
 
 <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='no'>svy</span>, <span class='kw'>col.grad</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>col.grad</span>),
-          <span class='kw'>api00</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>api00</span>, <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='st'>"ci"</span>))</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 1 x 5</span><span>
-#&gt;   col.grad col.grad_se api00 api00_low api00_upp
-#&gt;      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     19.9        1.06  662.      643.      681.</div></span></pre>
+          <span class='kw'>api00</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>api00</span>, <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='st'>"ci"</span>))</div><div class='output co'>#&gt;   col.grad col.grad_se    api00 api00_low api00_upp
+#&gt; 1 19.86719    1.055931 662.2874  643.4814  681.0934</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

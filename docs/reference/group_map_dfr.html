@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>srvyr: A package for 'dplyr'-Like Syntax for Summary Statistics of Survey Data. — srvyr • srvyr</title>
+<title>Apply a function to each group — group_map_dfr • srvyr</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,11 @@
 
 
 
-<meta property="og:title" content="srvyr: A package for 'dplyr'-Like Syntax for Summary Statistics of Survey Data. — srvyr" />
-<meta property="og:description" content="The srvyr package provides a new way of calculating summary statistics
-on survey data, based on the dplyr package. There are three stages to using
-srvyr functions, creating a survey object, manipulating the data, and
-calculating survey statistics." />
+<meta property="og:title" content="Apply a function to each group — group_map_dfr" />
+<meta property="og:description" content="group_map(), group_walk and group_map_dfr are purrr-style
+functions that can be used to iterate on grouped survey objects (note that
+group_map_dfr replaces dplyr::group_modify because we are changing
+the data from a tbl_svy to a regular tibble)." />
 
 
 
@@ -136,64 +136,70 @@ calculating survey statistics." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>srvyr: A package for 'dplyr'-Like Syntax for Summary Statistics of Survey Data.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/srvyr.r'><code>R/srvyr.r</code></a></small>
-    <div class="hidden name"><code>srvyr.Rd</code></div>
+    <h1>Apply a function to each group</h1>
+    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/group_map.R'><code>R/group_map.R</code></a></small>
+    <div class="hidden name"><code>group_map_dfr.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The srvyr package provides a new way of calculating summary statistics
-on survey data, based on the dplyr package. There are three stages to using
-srvyr functions, creating a survey object, manipulating the data, and
-calculating survey statistics.</p>
+    <p><code><a href='https://dplyr.tidyverse.org/reference/group_map.html'>group_map()</a></code>, <code>group_walk</code> and <code>group_map_dfr</code> are purrr-style
+functions that can be used to iterate on grouped survey objects (note that
+<code>group_map_dfr</code> replaces <code><a href='https://dplyr.tidyverse.org/reference/group_map.html'>dplyr::group_modify</a></code> because we are changing
+the data from a <code>tbl_svy</code> to a regular tibble).</p>
     </div>
 
+    <pre class="usage"><span class='fu'>group_map_dfr</span>(<span class='no'>.data</span>, <span class='no'>.f</span>, <span class='no'>...</span>, <span class='kw'>.keep</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
+<span class='co'># S3 method for tbl_svy</span>
+<span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_map.html'>group_map</a></span>(<span class='no'>.data</span>, <span class='no'>.f</span>, <span class='no'>...</span>, <span class='kw'>.keep</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-    <h2 class="hasAnchor" id="functions-to-create-a-survey-object"><a class="anchor" href="#functions-to-create-a-survey-object"></a>Functions to create a survey object</h2>
+<span class='fu'>group_map_dfr</span>(<span class='no'>.data</span>, <span class='no'>.f</span>, <span class='no'>...</span>, <span class='kw'>.keep</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
-    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>.data</th>
+      <td><p>A <code>tbl_svy object</code></p></td>
+    </tr>
+    <tr>
+      <th>.f</th>
+      <td><p>A function or purrr-style formula to apply to each group</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Other arguments passed to <code>.f</code></p></td>
+    </tr>
+    <tr>
+      <th>.keep</th>
+      <td><p>Whether the grouping variables are kept when passed into <code>.f</code></p></td>
+    </tr>
+    </table>
 
-<p><code><a href='as_survey_design.html'>as_survey_design</a></code>, <code><a href='as_survey_rep.html'>as_survey_rep</a></code>,
-and <code><a href='as_survey_twophase.html'>as_survey_twophase</a></code> are used to create surveys based on
-a data.frame and design variables, replicate weights or two phase design
-respectively. Each is based on a function in the survey package
-(<code><a href='https://rdrr.io/pkg/survey/man/svydesign.html'>svydesign</a></code>, <code><a href='https://rdrr.io/pkg/survey/man/svrepdesign.html'>svrepdesign</a></code>,
-<code><a href='https://rdrr.io/pkg/survey/man/twophase.html'>twophase</a></code>), and it is easy to modify code that uses
-the survey package so that it works with the srvyr package. See
-<code>vignette("srvyr_vs_survey")</code> for more details.</p>
-<p>The function <code><a href='as_survey.html'>as_survey</a></code> will choose between the other three
-functions based on the arguments given to save some typing.</p>
-    <h2 class="hasAnchor" id="functions-to-manipulate-data-in-a-survey-object"><a class="anchor" href="#functions-to-manipulate-data-in-a-survey-object"></a>Functions to manipulate data in a survey object</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
+    <p>For <code>group_map</code> a list, for <code>group_map_dfr</code> a `tbl_df`, and for
+  <code>group_walk</code> invisibly the original <code>tbl_svy</code>.</p>
 
-<p>Once you've created a survey object, you can manipulate the data as you would
-using dplyr with a data.frame. <code><a href='dplyr_single.html'>mutate</a></code> modifies or creates a variable,
-<code><a href='dplyr_single.html'>select</a></code> and <code><a href='dplyr_single.html'>rename</a></code> select or rename variables, and
-<code><a href='dplyr_single.html'>filter</a></code> keeps certain observations.</p>
-<p>Note that <code>arrange</code> and two table verbs such as <code>bind_rows</code>,
-<code>bind_cols</code>, or any of the joins are not usable on survey objects
-because they might require modifications to the definition of your survey. If
-you need to use these functions, you should do so before you convert the
-data.frame to a survey object.</p>
-    <h2 class="hasAnchor" id="functions-to-summarize-a-survey-object"><a class="anchor" href="#functions-to-summarize-a-survey-object"></a>Functions to summarize a survey object</h2>
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>api</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"survey"</span>)
+<span class='no'>dstrata</span> <span class='kw'>&lt;-</span> <span class='no'>apistrat</span> <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span>(<span class='kw'>strata</span> <span class='kw'>=</span> <span class='no'>stype</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>pw</span>)
 
-    
+<span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>both</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_map.html'>group_map</a></span>(~<span class='kw pkg'>survey</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/survey/man/svyglm.html'>svyglm</a></span>(<span class='no'>api00</span>~<span class='no'>api99</span> + <span class='no'>stype</span>, <span class='no'>.</span>))
 
-<p>Now that you have your data set up correctly, you can calculate summary
-statistics. To get the statistic over the whole population, use
-<code><a href='summarise.html'>summarise</a></code>, or to calculate it over a set of groups, use
-<code><a href='group_by.html'>group_by</a></code> first.</p>
-<p>You can calculate the mean, (with <code><a href='survey_mean.html'>survey_mean</a></code>), the total
-(<code><a href='survey_total.html'>survey_total</a></code>), the quantile (<code><a href='survey_quantile.html'>survey_quantile</a></code>),
-or a ratio (<code><a href='survey_ratio.html'>survey_ratio</a></code>). By default, srvyr will return the
-statistic and the standard error around it in a data.frame, but with the
-<code>vartype</code> parameter, you can also get a confidence interval ("ci"),
-variance ("var"), or coefficient of variation ("cv").</p>
-<p>Within summarise, you can also use <code><a href='unweighted.html'>unweighted</a></code>, which calculates
-a function without taking into consideration the survey weighting.</p>
-
+<span class='co'># group_map_dfr calls `bind_rows` on the list returned and includes</span>
+<span class='co'># grouping variables. This is most useful with a package like `broom`</span>
+<span class='co'># but could also be used with survey package functions.</span>
+<span class='no'>result_coef</span> <span class='kw'>&lt;-</span> <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>both</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'>group_map_dfr</span>(
+    ~<span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
+      <span class='kw'>api99_coef</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw pkg'>survey</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/survey/man/svyglm.html'>svyglm</a></span>(<span class='no'>api00</span>~<span class='no'>api99</span> + <span class='no'>stype</span>, <span class='no'>.</span>))<span class='kw'>[[</span><span class='st'>"api99"</span>]]
+    )
+  )</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

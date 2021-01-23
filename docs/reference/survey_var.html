@@ -75,7 +75,7 @@ called from summarise." />
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ called from summarise." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
@@ -118,7 +118,7 @@ called from summarise." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/gergness/srvyr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -152,11 +152,10 @@ called from <code><a href='summarise.html'>summarise</a></code>.</p>
   <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"se"</span>, <span class='st'>"ci"</span>, <span class='st'>"var"</span>),
   <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>,
   <span class='kw'>df</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>.svy</span> <span class='kw'>=</span> <span class='fu'><a href='current_svy.html'>current_svy</a></span>(),
   <span class='no'>...</span>
 )
 
-<span class='fu'>survey_sd</span>(<span class='no'>x</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>.svy</span> <span class='kw'>=</span> <span class='fu'><a href='current_svy.html'>current_svy</a></span>(), <span class='no'>...</span>)</pre>
+<span class='fu'>survey_sd</span>(<span class='no'>x</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -186,11 +185,6 @@ the confidence level.</p></td>
 for t-distribution. The default (Inf) is equivalent to using normal
 distribution and in case of population variance statistics there is little
 reason to use any other values (see <em>Details</em>).</p></td>
-    </tr>
-    <tr>
-      <th>.svy</th>
-      <td><p>A <code>tbl_svy</code> object. When called from inside a summarize function
-the default automatically sets the survey to the current survey.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -226,14 +220,12 @@ freedom).</p>
 
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api99_var</span> <span class='kw'>=</span> <span class='fu'>survey_var</span>(<span class='no'>api99</span>),
-            <span class='kw'>api99_sd</span> <span class='kw'>=</span> <span class='fu'>survey_sd</span>(<span class='no'>api99</span>))</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 3</span><span>
-#&gt;   api99_var api99_var_se api99_sd
-#&gt;       </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>    </span><span style='text-decoration: underline;'>16</span><span>518.        </span><span style='text-decoration: underline;'>1</span><span>336.     129.</div><div class='input'>
+            <span class='kw'>api99_sd</span> <span class='kw'>=</span> <span class='fu'>survey_sd</span>(<span class='no'>api99</span>))</div><div class='output co'>#&gt;   api99_var api99_var_se api99_sd
+#&gt; 1  16518.24     1336.322 128.5233</div><div class='input'>
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>awards</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api00_var</span> <span class='kw'>=</span> <span class='fu'>survey_var</span>(<span class='no'>api00</span>),
-            <span class='kw'>api00_sd</span> <span class='kw'>=</span> <span class='fu'>survey_sd</span>(<span class='no'>api00</span>))</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 2 x 4</span><span>
+            <span class='kw'>api00_sd</span> <span class='kw'>=</span> <span class='fu'>survey_sd</span>(<span class='no'>api00</span>))</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 x 4</span><span>
 #&gt;   awards api00_var api00_var_se api00_sd
 #&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #BCBCBC;'>1</span><span> No        </span><span style='text-decoration: underline;'>15</span><span>669.        </span><span style='text-decoration: underline;'>2</span><span>021.     125.
@@ -242,10 +234,8 @@ freedom).</p>
 <span class='co'># are available with vartype argument</span>
 <span class='co'># (but not for the population standard deviation estimator)</span>
 <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api99_variance</span> <span class='kw'>=</span> <span class='fu'>survey_var</span>(<span class='no'>api99</span>, <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"se"</span>, <span class='st'>"var"</span>)))</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 1 x 3</span><span>
-#&gt;   api99_variance api99_variance_se api99_variance_var
-#&gt;            </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>             </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>         </span><span style='text-decoration: underline;'>16</span><span>518.             </span><span style='text-decoration: underline;'>1</span><span>336.           1</span><span style='text-decoration: underline;'>785</span><span>755.</div></span></pre>
+  <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api99_variance</span> <span class='kw'>=</span> <span class='fu'>survey_var</span>(<span class='no'>api99</span>, <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"se"</span>, <span class='st'>"var"</span>)))</div><div class='output co'>#&gt;   api99_variance api99_variance_se api99_variance_var
+#&gt; 1       16518.24          1336.322            1785755</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

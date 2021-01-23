@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Single table verbs from dplyr — dplyr_single • srvyr</title>
+<title>Single table verbs from dplyr and tidyr — group_trim • srvyr</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Single table verbs from dplyr — dplyr_single" />
+<meta property="og:title" content="Single table verbs from dplyr and tidyr — group_trim" />
 <meta property="og:description" content="These are data manipulation functions designed to work on tbl_svy objects." />
 
 
@@ -73,7 +73,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
@@ -116,7 +116,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/gergness/srvyr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -133,8 +133,8 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Single table verbs from dplyr</h1>
-    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/manip.r'><code>R/manip.r</code></a></small>
+    <h1>Single table verbs from dplyr and tidyr</h1>
+    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/group-by.r'><code>R/group-by.r</code></a>, <a href='https://github.com/gergness/srvyr/blob/master/R/manip.r'><code>R/manip.r</code></a></small>
     <div class="hidden name"><code>dplyr_single.Rd</code></div>
     </div>
 
@@ -148,12 +148,14 @@
 
     <p><code>mutate</code> and <code>transmute</code> can add or modify variables. See
 <code><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></code> for more details.</p>
-<p><code>select</code> and <code>rename</code> keep or rename variables. See
+<p><code>select</code>, <code>rename</code>, and <code>rename_with</code> keep or rename variables. See
 <code><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></code> for more details.</p>
 <p><code>pull</code> extracts a variable as a vector (whereas <code>select</code> returns a <code>tbl_svy</code>).
 See <code><a href='https://dplyr.tidyverse.org/reference/pull.html'>pull</a></code> for more details.</p>
 <p><code>filter</code> keeps certain observations. See <code><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></code>
 for more details.</p>
+<p>#' <code>drop_na</code> drops observations containing missing values.
+See <code><a href='https://tidyr.tidyverse.org/reference/drop_na.html'>drop_na</a></code> for more details.</p>
 <p><code>arrange</code> is not implemented for <code>tbl_svy</code> objects. Nor are any
 two table verbs such as <code>bind_rows</code>, <code>bind_cols</code> or any of the
 joins (<code>full_join</code>, <code>left_join</code>, etc.). These data manipulations

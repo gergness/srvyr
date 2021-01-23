@@ -32,7 +32,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -40,7 +40,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
@@ -75,7 +75,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/gergness/srvyr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -89,14 +89,14 @@
 
       
 
-      </header><script src="srvyr-vs-survey_files/header-attrs-2.3.2/header-attrs.js"></script><script src="srvyr-vs-survey_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="srvyr-vs-survey_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>
 <code>srvyr</code> compared to the <code>survey</code> package</h1>
                         <h4 class="author">Greg Freedman</h4>
             
-            <h4 class="date">2020-08-29</h4>
+            <h4 class="date">2021-01-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/srvyr-vs-survey.Rmd"><code>vignettes/srvyr-vs-survey.Rmd</code></a></small>
       <div class="hidden name"><code>srvyr-vs-survey.Rmd</code></div>
@@ -179,10 +179,8 @@
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">api_diff</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="no">api_diff</span>, <span class="kw">vartype</span> <span class="kw">=</span> <span class="st">"ci"</span>))
 
 <span class="no">out</span></pre></body></html></div>
-<pre><code>## # A tibble: 1 x 3
-##   api_diff api_diff_low api_diff_upp
-##      &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
-## 1     32.9         28.8         36.9</code></pre>
+<pre><code>##   api_diff api_diff_low api_diff_upp
+## 1 32.89252     28.84756     36.93747</code></pre>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="co"># Using survey</span>
 <span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/surveysummary.html">svymean</a></span>(~<span class="no">api_diff</span>, <span class="no">strat_design_survey</span>)
 
@@ -320,7 +318,7 @@
 <h2 class="hasAnchor">
 <a href="#standard-evaluation" class="anchor"></a>Standard evaluation</h2>
 <p>Srvyr now supports the standard evaluation conventions introduced in dplyr version 0.7 and rlang. If you’d like to use a function programmatically, you can use the functions from rlang like <code><a href="https://rlang.r-lib.org/reference/nse-defuse.html">rlang::quo()</a></code> or <code><a href="https://rlang.r-lib.org/reference/sym.html">rlang::sym()</a></code> to capture the expression and <code>rlang::!!</code> to unquote it. All of these functions are re-exported by srvyr, so you don’t need to load the rlang library to use them.</p>
-<p>Here’s a quick example, but please see the dplyr vignette <a href="http://dplyr.tidyverse.org/articles/programming.html"><code>vignette("programming", package = "dplyr")</code></a> for more details.</p>
+<p>Here’s a quick example, but please see the dplyr vignette <a href="https://dplyr.tidyverse.org/articles/programming.html"><code>vignette("programming", package = "dplyr")</code></a> for more details.</p>
 <div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="no">fpc_var</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/rlang-tidyeval.html">sym</a></span>(<span class="st">"fpc"</span>)
 <span class="no">srs_design_srvyr</span> <span class="kw">&lt;-</span> <span class="no">apisrs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/as_survey_design.html">as_survey_design</a></span>(<span class="kw">fpc</span> <span class="kw">=</span> !!<span class="no">fpc_var</span>)
 
@@ -348,10 +346,8 @@
 <div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="co"># Calculate survey mean for all variables that have names starting with "api"</span>
 <span class="no">strat_design</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise_all.html">summarize_at</a></span>(<span class="fu"><a href="../reference/summarise_all.html">vars</a></span>(<span class="fu"><a href="https://dplyr.tidyverse.org/reference/reexports.html">starts_with</a></span>(<span class="st">"api"</span>)), <span class="no">survey_mean</span>)</pre></body></html></div>
-<pre><code>## # A tibble: 1 x 6
-##   api00 api00_se api99 api99_se api.stu api.stu_se
-##   &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
-## 1  662.     9.41  629.     9.96    498.       16.1</code></pre>
+<pre><code>##      api00 api00_se    api99 api99_se  api.stu api.stu_se
+## 1 662.2874 9.408941 629.3948 9.963947 498.2255   16.06028</code></pre>
 <p>The dplyr documentation <code><a href="https://dplyr.tidyverse.org/reference/scoped.html">dplyr::scoped</a></code> provides more details.</p>
 </div>
 </div>

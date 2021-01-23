@@ -32,7 +32,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -40,7 +40,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
@@ -75,7 +75,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/gergness/srvyr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -89,13 +89,13 @@
 
       
 
-      </header><script src="srvyr-database_files/header-attrs-2.3.2/header-attrs.js"></script><script src="srvyr-database_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="srvyr-database_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Databases in srvyr</h1>
                         <h4 class="author">Greg Freedman Ellis</h4>
             
-            <h4 class="date">2020-08-29</h4>
+            <h4 class="date">2021-01-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/srvyr-database.Rmd"><code>vignettes/srvyr-database.Rmd</code></a></small>
       <div class="hidden name"><code>srvyr-database.Rmd</code></div>
@@ -107,7 +107,7 @@
 <pre><code>## Loading required package: RSQLite</code></pre>
 <p>Srvyr 0.3 has a completely rewritten database backend. Using databases that are already stored dplyr’s <code>tbl_lazy</code> objects is now just as easy as working with data stored in regular R data.frames as you don’t need to have a unique identifier. Additionally, it now works more similarly to the survey package’s database code and so shouldn’t be any slower.</p>
 <p>During development, I have tested using SQLite (and the now defunct MonetDBLite) databases, but in theory other database backends should work as well.</p>
-<p>This vignette shows the basics of how to use srvyr with databases. It is based on analysis from the wonderful resource asdfree ( <a href="http://asdfree.com/">website</a> and <a href="https://github.com/ajdamico/asdfree">github</a> ). Many thanks to <a href="http://github.com/ajdamico">ajdamico</a> and collaborators. Specifically, I have adapted code from <a href="https://github.com/ajdamico/asdfree/blob/d0b965e9672161da086e30471760d08281b74343/American%20Community%20Survey/2011%20single-year%20-%20analysis%20examples.R">American Community Survey - 2011 single year analysis</a> and the associated data preparation scripts.</p>
+<p>This vignette shows the basics of how to use srvyr with databases. It is based on analysis from the wonderful resource asdfree ( <a href="http://asdfree.com/">website</a> and <a href="https://github.com/ajdamico/asdfree">github</a> ). Many thanks to <a href="https://github.com/ajdamico">ajdamico</a> and collaborators. Specifically, I have adapted code from <a href="https://github.com/ajdamico/asdfree/blob/d0b965e9672161da086e30471760d08281b74343/American%20Community%20Survey/2011%20single-year%20-%20analysis%20examples.R">American Community Survey - 2011 single year analysis</a> and the associated data preparation scripts.</p>
 <div id="database-setup" class="section level2">
 <h2 class="hasAnchor">
 <a href="#database-setup" class="anchor"></a>Database Setup</h2>
@@ -300,10 +300,8 @@
 <div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="co"># Or the average age of downloaded states</span>
 <span class="no">acs_m_db_svy</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="no">agep</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))</pre></body></html></div>
-<pre><code>## # A tibble: 1 x 2
-##    agep agep_se
-##   &lt;dbl&gt;   &lt;dbl&gt;
-## 1  37.4  0.0532</code></pre>
+<pre><code>##       agep    agep_se
+## 1 37.35421 0.05315218</code></pre>
 <div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="co"># Average age by state</span>
 <span class="no">acs_m_db_svy</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="no">st</span>) <span class="kw">%&gt;%</span>
@@ -339,10 +337,8 @@
 <div class="sourceCode" id="cb37"><html><body><pre class="r"><span class="co"># 25th, median, and 75th percentile of age of residents of the united states (downloaded states)</span>
 <span class="no">acs_m_db_svy</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_quantile.html">survey_quantile</a></span>(<span class="no">agep</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>), <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))</pre></body></html></div>
-<pre><code>## # A tibble: 1 x 6
-##   agep_q25 agep_q50 agep_q75 agep_q25_se agep_q50_se agep_q75_se
-##      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
-## 1       19       36       55       0.251       0.251       0.251</code></pre>
+<pre><code>##   agep_q25 agep_q50 agep_q75 agep_q25_se agep_q50_se agep_q75_se
+## 1       19       36       55   0.2511995   0.2511995   0.2511995</code></pre>
 <div class="sourceCode" id="cb39"><html><body><pre class="r"><span class="co"># Filter works, so we can restrict the acs_m object to females only</span>
 <span class="no">acs_m_db_svy_female</span> <span class="kw">&lt;-</span> <span class="no">acs_m_db_svy</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/dplyr_single.html">filter</a></span>(<span class="no">sex</span> <span class="kw">==</span> <span class="fl">2</span>)
@@ -355,17 +351,13 @@
 <span class="co"># average age - nationwide (of downloaded states), restricted to females</span>
 <span class="no">acs_m_db_svy_female</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span>(<span class="no">agep</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))</pre></body></html></div>
-<pre><code>## # A tibble: 1 x 2
-##    agep agep_se
-##   &lt;dbl&gt;   &lt;dbl&gt;
-## 1  38.2   0.103</code></pre>
+<pre><code>##       agep   agep_se
+## 1 38.17239 0.1032008</code></pre>
 <div class="sourceCode" id="cb41"><html><body><pre class="r"><span class="co"># median age - nationwide (of downloaded states), restricted to females</span>
 <span class="no">acs_m_db_svy_female</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">agep</span> <span class="kw">=</span> <span class="fu"><a href="../reference/survey_quantile.html">survey_median</a></span>(<span class="no">agep</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))</pre></body></html></div>
-<pre><code>## # A tibble: 1 x 2
-##    agep agep_se
-##   &lt;dbl&gt;   &lt;dbl&gt;
-## 1    37   0.251</code></pre>
+<pre><code>##   agep   agep_se
+## 1   37 0.2511995</code></pre>
 <div class="sourceCode" id="cb43"><html><body><pre class="r"><span class="co"># Note that though some R functions are translated by dplyr into SQL, not</span>
 <span class="co"># all of them are. For example, when constructing a new age category </span>
 <span class="co"># variable in the dataset neither findIntervals nor cut work on databases, </span>

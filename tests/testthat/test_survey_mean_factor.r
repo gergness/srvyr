@@ -278,3 +278,13 @@ test_that("survey_mean gets percentage - each peel layer that adds up to one", {
   expect_equal(sum(results$pct), length(unique(results$stype)))
   expect_equal(results$pct, c(0.27, 0.73, 0.68, 0.32, 0.52, 0.48))
 })
+
+test_that("survey_mean returns 1 if no groups", {
+  dstrata <- apistrat %>%
+    as_survey_design(strata = stype, weights = pw)
+
+  results <- dstrata %>%
+    summarize(pct = survey_mean())
+
+  expect_equal(results$pct, 1)
+})

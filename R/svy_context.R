@@ -27,6 +27,10 @@ peeled_cur_group_id <- function(svy, cur_group) {
   # srvyr could store the `svyby` results and use that?
   if (is.null(cur_svy_env$peel_groups)) {
     grp_names <- group_vars(svy)
+    # no groups, so just return 1s (so eg cascade will have proportion=1)
+    if (length(grp_names) == 0) {
+      return(rep(1, nrow(svy)))
+    }
     peel <- grp_names[length(grp_names)]
 
     peel_groups <- group_data(svy)

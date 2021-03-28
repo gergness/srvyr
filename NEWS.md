@@ -1,4 +1,5 @@
 # srvyr (development version)
+* `survey_mean()` with no `x` no longer errors when there are no grouping variables (#117)
 
 # srvyr 1.0.0
 * `summarize` has been rearchitected, 

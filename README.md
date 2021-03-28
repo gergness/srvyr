@@ -7,12 +7,8 @@
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/srvyr)](https://CRAN.R-project.org/package=srvyr)
 [![R build
 status](https://github.com/gergness/srvyr/workflows/R-CMD-check/badge.svg)](https://github.com/gergness/srvyr/actions)
-[![Travis-CI Build
-Status](https://travis-ci.org/gergness/srvyr.svg?branch=master)](https://travis-ci.org/gergness/srvyr)
-[![AppVeyor Build
-Status](https://ci.appveyor.com/api/projects/status/github/gergness/srvyr?branch=master&svg=true)](https://ci.appveyor.com/project/gergness/srvyr)
 [![Coverage
-Status](https://codecov.io/gh/gergness/srvyr/master.svg)](https://codecov.io/github/gergness/srvyr?branch=master)
+Status](https://codecov.io/gh/gergness/srvyr/main)](https://codecov.io/github/gergness/srvyr?branch=master)
 [![Documentation via
 pkgdown](tools/pkgdownshield.svg)](http://gdfe.co/srvyr/)
 <!-- badges: end -->
@@ -52,19 +48,15 @@ dstrata <- apistrat %>%
 
 Now many of the dplyr verbs are available.
 
-  - `mutate()` adds or modifies a variable.
-
-<!-- end list -->
+-   `mutate()` adds or modifies a variable.
 
 ``` r
 dstrata <- dstrata %>%
   mutate(api_diff = api00 - api99)
 ```
 
-  - `summarise()` calculates summary statistics such as mean, total,
+-   `summarise()` calculates summary statistics such as mean, total,
     quantile or ratio.
-
-<!-- end list -->
 
 ``` r
 dstrata %>% 
@@ -73,9 +65,7 @@ dstrata %>%
 #> 1 32.89252     28.79413     36.99091
 ```
 
-  - `group_by()` and then `summarise()` creates summaries by groups.
-
-<!-- end list -->
+-   `group_by()` and then `summarise()` creates summaries by groups.
 
 ``` r
 dstrata %>% 
@@ -89,9 +79,7 @@ dstrata %>%
 #> 3 M        26.4         20.4          32.4
 ```
 
-  - Functions from the survey package are still available:
-
-<!-- end list -->
+-   Functions from the survey package are still available:
 
 ``` r
 my_model <- survey::svyglm(api99 ~ stype, dstrata)
@@ -120,19 +108,19 @@ summary(my_model)
 
 > \[srvyr\] lets us use the survey library’s functions within a data
 > analysis pipeline in a familiar way.
-> 
+>
 > – <cite>Kieran Healy, in [Data Visualization: A practical
 > introduction](https://socviz.co/modeling.html#plots-from-complex-surveys)
 > </cite>
 
-> 1.  Yay\!
-> 
+> 1.  Yay!
+>
 > –<cite>Thomas Lumley, [in the Biased and Inefficient
 > blog](http://notstatschat.tumblr.com/post/161225885311/pipeable-survey-analysis-in-r)</cite>
 
 ## Contributing
 
-I do appreciate bug reports, suggestions and pull requests\! I started
+I do appreciate bug reports, suggestions and pull requests! I started
 this as a way to learn about R package development, and am still
 learning, so you’ll have to bear with me. Please review the [Contributor
 Code of

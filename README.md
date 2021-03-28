@@ -8,7 +8,7 @@
 [![R build
 status](https://github.com/gergness/srvyr/workflows/R-CMD-check/badge.svg)](https://github.com/gergness/srvyr/actions)
 [![Coverage
-Status](https://codecov.io/gh/gergness/srvyr/main)](https://codecov.io/github/gergness/srvyr?branch=master)
+Status](https://codecov.io/gh/gergness/srvyr/main)](https://codecov.io/github/gergness/srvyr?branch=main)
 [![Documentation via
 pkgdown](tools/pkgdownshield.svg)](http://gdfe.co/srvyr/)
 <!-- badges: end -->
@@ -124,7 +124,7 @@ I do appreciate bug reports, suggestions and pull requests! I started
 this as a way to learn about R package development, and am still
 learning, so you’ll have to bear with me. Please review the [Contributor
 Code of
-Conduct](https://github.com/gergness/srvyr/blob/master/CODE_OF_CONDUCT.md),
+Conduct](https://github.com/gergness/srvyr/blob/main/CODE_OF_CONDUCT.md),
 as all participants are required to abide by its terms.
 
 If you’re unfamiliar with contributing to an R package, I recommend the

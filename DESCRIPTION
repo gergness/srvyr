@@ -4,8 +4,8 @@ Title: 'dplyr'-Like Syntax for Summary Statistics of Survey Data
 Description: Use piping, verbs like 'group_by' and 'summarize', and other
     'dplyr' inspired syntactic style when calculating summary statistics on survey
     data using functions from the 'survey' package.
-Version: 1.0.0.9000
-Date: 2020-11-29
+Version: 1.0.1
+Date: 2021-03-28
 Authors@R: c(person("Greg", "Freedman Ellis", email = "greg.freedman@gmail.com", role = c("aut", "cre")),
   person("Thomas", "Lumley", role = "ctb"),
   person("Tomasz", "\u017b\u00F3\u0142tak", role = "ctb"),
@@ -24,7 +24,6 @@ Imports:
     tidyr,
     tidyselect
 License: GPL-2 | GPL-3
-LazyData: TRUE
 Suggests:
     convey,
     DBI,

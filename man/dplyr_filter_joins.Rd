@@ -3,8 +3,8 @@
 \name{dplyr_filter_joins}
 \alias{dplyr_filter_joins}
 \alias{semi_join}
-\title{Filtering joins from dplyr and tidyr}
-
+\alias{anti_join}
+\title{Filtering joins from dplyr}
 \description{
 These are data manipulation functions designed to work on a \code{tbl_svy} object
 and another data frame or \code{tbl_svy} object.

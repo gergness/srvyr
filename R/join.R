@@ -21,9 +21,10 @@ semi_join.tbl_svy <- function(
                              na_matches = na_matches,
                              ...)
 
-  x <- mutate(x, `___retained` = `___row_number` %in% filtered_vars[['___row_number']])
-  x <- filter(x, .data$`___retained`)
-  x <- select(x, -.data$`___retained`)
+  x <- filter(x, .data$`___row_number` %in% filtered_vars[['___row_number']])
+  if ("___row_number" %in% tbl_vars(x)) {
+    x <- select(x, -`___row_number`)
+  }
 
   x
 
@@ -52,9 +53,10 @@ anti_join.tbl_svy <- function(
                              na_matches = na_matches,
                              ...)
 
-  x <- mutate(x, `___retained` = `___row_number` %in% filtered_vars[['___row_number']])
-  x <- filter(x, `___retained`)
-  x <- select(x, -`___retained`)
+  x <- filter(x, .data$`___row_number` %in% filtered_vars[['___row_number']])
+  if ("___row_number" %in% tbl_vars(x)) {
+    x <- select(x, -`___row_number`)
+  }
 
   x
 

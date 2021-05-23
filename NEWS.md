@@ -1,3 +1,6 @@
+# srvyr (development version)
+* "Filering joins"  (`anti_join` and `semi_join`) are now available for srvyr objects. You must put the `tbl_svy` object first. (#65, #120, @bschneidr)
+
 # srvyr 1.0.1
 * `survey_mean()` with no `x` no longer errors when there are no grouping variables (#117)
 

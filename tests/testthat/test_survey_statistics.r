@@ -1,11 +1,8 @@
+#library(testthat)
+#setwd("tests/testthat")
 context("Quick tests for summary stats (ratio / quantile)")
 
-# TODO: switch to improved svyquantile
-if (utils::packageVersion("survey") >= "4.1") {
-  svyq_func <- get("oldsvyquantile", asNamespace("survey"))
-} else {
-  svyq_func <- survey::svyquantile
-}
+svyq_func <- survey::svyquantile
 
 library(srvyr)
 library(survey)
@@ -56,42 +53,40 @@ test_that("survey_ratio works for grouped surveys - with vartype=NULL",
 
 ################################################################################
 # survey_quantile
-out_survey <- svyq_func(~api00, dstrata, c(0.5, 0.75), ci = TRUE, df = NULL) %>%
-  {cbind(as.data.frame(.$quantiles),
-         SE(.) %>%
-           as.list() %>%
-           setNames(paste0(names(.), "_se")) %>%
-           as.data.frame(check.names = FALSE))}
+out_survey <- svyq_func(~api00, dstrata, c(0.5, 0.75), df = NULL) %>%
+  {data.frame(
+    api00_q50 = .[[1]]['0.5','quantile'], api00_q75 = .[[1]]['0.75','quantile'],
+    api00_q50_se = .[[1]]['0.5', 'se'], api00_q75_se = .[[1]]['0.75', 'se'],
+    api00_q50_low = .[[1]]['0.5', 'ci.2.5'], api00_q75_low = .[[1]]['0.75', 'ci.2.5'],
+    api00_q50_upp = .[[1]]['0.5', 'ci.97.5'],  api00_q75_upp = .[[1]]['0.75', 'ci.97.5'],
+    api00_q50_var = vcov(.)[1,1], api00_q75_var = vcov(.)[2,2]
+  )} %>%
+  mutate(api00_q50_cv = api00_q50_se/api00_q50,
+         api00_q75_cv = api00_q75_se/api00_q75)
 
 out_srvyr <- dstrata %>%
-  summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75), df = NULL))
+  summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75),
+                                    vartype = c("se", "ci", "var", "cv"), df = NULL))
 
-test_that("survey_quantile works for ungrouped surveys - no ci (with se)",
-          expect_equal(unname(unlist(out_survey)),
-                       unname(unlist(out_srvyr))))
+test_that("survey_quantile works for ungrouped surveys",
+          expect_equal(unname(unlist(out_survey[colnames(out_survey)])),
+                       unname(unlist(out_srvyr[colnames(out_survey)]))))
 
 out_srvyr_vartypeNULL <- dstrata %>%
   summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75),
                                     vartype = NULL))
 
 test_that("survey_quantile works for ungrouped surveys - with vartype=NULL",
-          expect_equal(unname(unlist(select(out_survey, -ends_with("_se")))),
+          expect_equal(unname(unlist(select(out_survey, -matches("_(se|var|cv|low|upp)$")))),
                        unname(unlist(out_srvyr_vartypeNULL))))
-
-out_survey <- svyq_func(~api00, dstrata, c(0.5, 0.75), ci = TRUE, df = NULL)
-
-out_srvyr <- dstrata %>%
-  summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75),
-                                    vartype = "ci", df = NULL))
-
-test_that("survey_quantile works for ungrouped surveys - with ci",
-          expect_equal(c(out_survey$CIs[[1]], out_survey$CIs[[2]]),
-                       c(out_srvyr[["api00_q50_low"]][[1]],
-                         out_srvyr[["api00_q50_upp"]][[1]])))
 
 out_survey <- suppressWarnings(
   svyby(~api00, ~stype, dstrata, svyq_func,
-        quantiles = c(0.5, 0.75), ci = TRUE, df = NULL))
+        quantiles = c(0.5, 0.75), ci = TRUE, df = NULL,
+        vartype = c("se"))) %>%
+  as.data.frame() %>%
+  rename(api00_q50 = api00.0.5, api00_q75 = api00.0.75,
+         api00_q50_se = se.api00.0.5, api00_q75_se = se.api00.0.75)
 
 out_srvyr <- suppressWarnings(
   dstrata %>%
@@ -100,9 +95,8 @@ out_srvyr <- suppressWarnings(
                                       vartype = "se", df = NULL)))
 
 test_that("survey_quantile works for grouped surveys - with se",
-          expect_equal(c(out_survey$`0.5`[[1]], out_survey[["se.0.5"]][[1]]),
-                       c(out_srvyr[["api00_q50"]][[1]],
-                         out_srvyr[["api00_q50_se"]][[1]])))
+          expect_equal(unlist(out_survey[,colnames(out_survey)]),
+                       unlist(out_srvyr[,colnames(out_survey)])))
 
 out_srvyr_vartypeNULL <- suppressWarnings(
   dstrata %>%
@@ -111,23 +105,31 @@ out_srvyr_vartypeNULL <- suppressWarnings(
                                       vartype = NULL)))
 
 test_that("survey_quantile works for grouped surveys - with vartype=NULL",
-          expect_identical(unname(unlist(select(out_survey, -starts_with("se.")))),
+          expect_identical(unname(unlist(select(out_survey, -ends_with("_se")))),
                            unname(unlist(out_srvyr_vartypeNULL))))
 
 out_survey <- suppressWarnings(
   svyby(~api00, ~stype + awards, dstrata, svyq_func,
-        quantiles = c(0.5, 0.75), ci = TRUE, df = NULL))
+        quantiles = c(0.5, 0.75), ci = TRUE, df = NULL)) %>%
+  as.data.frame() %>%
+  rename(
+    api00_q50 = api00.0.5, api00_q75 = api00.0.75,
+    api00_q50_se = se.api00.0.5, api00_q75_se = se.api00.0.75
+  ) %>%
+  dplyr::arrange(stype, awards)
 
 out_srvyr <- suppressWarnings(
   dstrata %>%
     group_by(stype, awards) %>%
     summarise(api00 = survey_quantile(api00, quantiles = c(0.5, 0.75),
-                                      vartype = "se", df = NULL)))
+                                      vartype = "se", df = NULL))) %>%
+  ungroup() %>%
+  dplyr::arrange(stype, awards)
 
 test_that(
   "survey_quantile works for grouped surveys - multiple grouping variables",
-  expect_equal(c(out_survey$`0.5`[[1]], out_survey[["se.0.5"]][[1]]),
-               c(out_srvyr[["api00_q50"]][[1]], out_srvyr[["api00_q50_se"]][[1]])))
+  expect_equal(unlist(out_srvyr[,colnames(out_survey)]),
+               unlist(out_survey[,colnames(out_srvyr)])))
 
 ################################################################################
 # survey_median

@@ -321,12 +321,10 @@ survey_ratio <- function(
 #'                standard error ("se") confidence interval ("ci") (variance and coefficient
 #'                of variation not available).
 #' @param level A single number indicating the confidence level (only one level allowed)
-#' @param q_method See "method" in \code{\link[stats]{approxfun}}
-#' @param f See \code{\link[stats]{approxfun}}
-#' @param interval_type See \code{\link[survey]{svyquantile}}
-#' @param ties See \code{\link[survey]{svyquantile}}
+#' @param interval_type See \code{\link[survey]{svyquantile}}. Note that \code{interval_type = "quantile"} is only available for replicate designs, and \code{interval_type = "score"} is unavailable for replicate designs.
+#' @param qrule See \code{\link[survey]{svyquantile}}
 #' @param df A number indicating the degrees of freedom for t-distribution. The
-#'           default, Inf uses the normal distribution (matches the survey package).
+#'           default, NULL, uses the design degrees of freedom (matches the survey package).
 #'           Also, has no effect for \code{type = "betaWald"}.
 #' @param ... Ignored
 #' @examples
@@ -351,10 +349,9 @@ survey_quantile <- function(
   na.rm = FALSE,
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
-  q_method = "linear",
-  f = 1,
-  interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"),
+  interval_type = c("mean", "beta","xlogit", "asin", "score", "quantile"),
+  qrule = c("math","school","shahvaish","hf1","hf2","hf3",
+            "hf4","hf5","hf6","hf7","hf8","hf9"),
   df = NULL,
   ...
 ) {
@@ -363,11 +360,10 @@ survey_quantile <- function(
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
-  if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "Wald"
-  if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "probability"
+  if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "mean"
+  if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "mean"
   interval_type <- match.arg(interval_type, several.ok = TRUE)
-  if (missing(ties)) ties <- "discrete"
-  ties <- match.arg(ties, several.ok = TRUE)
+  if (missing(qrule)) qrule <- "math"
 
   if (length(level) > 1) {
     warning("Only the first confidence level will be used")
@@ -384,17 +380,11 @@ survey_quantile <- function(
   stop_for_factor(x)
   .svy <- set_survey_vars(.svy, x)
 
-  # TODO: switch to improved svyquantile
-  if (utils::packageVersion("survey") >= "4.1") {
-    svyq_func <- get("oldsvyquantile", asNamespace("survey"))
-  } else {
-    svyq_func <- survey::svyquantile
-  }
-
-  stat <- svyq_func(
-    ~`__SRVYR_TEMP_VAR__`, .svy, quantiles = quantiles, na.rm = na.rm,
-    ci = TRUE, alpha = alpha, method = q_method, f = f,
-    interval.type = interval_type, ties = ties, df = df
+  stat <- svyquantile(
+    x = ~`__SRVYR_TEMP_VAR__`, design = .svy,
+    quantiles = quantiles, na.rm = na.rm,
+    ci = TRUE, alpha = alpha,
+    interval.type = interval_type, qrule = qrule, df = df
   )
 
   out <- get_var_est_quantile(stat, vartype, q = quantiles, level = level)

@@ -396,12 +396,11 @@ survey_quantile <- function(
 survey_median <- function(
   x,
   na.rm = FALSE,
-  vartype = c("se", "ci"),
+  vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
-  q_method = "linear",
-  f = 1,
-  interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"),
+  interval_type = c("mean", "beta","xlogit", "asin", "score", "quantile"),
+  qrule = c("math","school","shahvaish","hf1","hf2","hf3",
+            "hf4","hf5","hf6","hf7","hf8","hf9"),
   df = NULL,
   ...
 ) {
@@ -410,11 +409,10 @@ survey_median <- function(
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
-  if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "Wald"
-  if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "probability"
+  if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "mean"
+  if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "mean"
   interval_type <- match.arg(interval_type, several.ok = TRUE)
-  if (missing(ties)) ties <- "discrete"
-  ties <- match.arg(ties, several.ok = TRUE)
+  if (missing(qrule)) qrule <- "math"
 
   if (length(level) > 1) {
     warning("Only the first confidence level will be used")
@@ -422,8 +420,9 @@ survey_median <- function(
   }
 
   out <- survey_quantile(
-    x, quantiles = 0.5, na.rm = na.rm, vartype = vartype, level = level, q_method = q_method,
-    f = f, interval_type = interval_type, ties = ties, df = df
+    x = x, quantiles = 0.5, na.rm = na.rm,
+    vartype = vartype, ci = TRUE, level = level,
+    qrule = qrule, interval_type = interval_type, df = df
   )
   names(out) = sub("^_q50", "", names(out))
   out

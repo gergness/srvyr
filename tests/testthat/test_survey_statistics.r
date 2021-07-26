@@ -1,5 +1,3 @@
-#library(testthat)
-#setwd("tests/testthat")
 context("Quick tests for summary stats (ratio / quantile)")
 
 svyq_func <- survey::svyquantile
@@ -133,25 +131,35 @@ test_that(
 
 ################################################################################
 # survey_median
-out_survey <- svyq_func(~api00, dstrata, c(0.5), ci = TRUE, df = NULL) %>%
-  {cbind(as.data.frame(.$quantiles),
-         SE(.) %>%
-           as.list() %>%
-           setNames(paste0(names(.), "_se")) %>%
-           as.data.frame(check.names = FALSE))}
+out_survey <- svyq_func(~api00, dstrata, c(0.5, 0.75), df = NULL) %>%
+  {data.frame(
+    api00 = .[[1]]['0.5','quantile'],
+    api00_se = .[[1]]['0.5', 'se'],
+    api00_low = .[[1]]['0.5', 'ci.2.5'],
+    api00_upp = .[[1]]['0.5', 'ci.97.5'],
+    api00_var = vcov(.)[1,1]
+  )} %>%
+  mutate(api00_cv = api00_se/api00)
+
+out_srvyr <- dstrata %>%
+  summarise(api00 = survey_median(api00, vartype = c("se", "ci", "var", "cv"), df = NULL))
+
+test_that("survey_median works for ungrouped surveys",
+          expect_equal(unname(unlist(out_survey[colnames(out_survey)])),
+                       unname(unlist(out_srvyr[colnames(out_survey)]))))
 
 out_srvyr <- dstrata %>%
   summarise(api00 = survey_median(api00, df = NULL))
 
 test_that("survey_median works for ungrouped surveys - no ci",
-          expect_equal(unname(unlist(out_survey)),
+          expect_equal(unname(unlist(out_survey[,c("api00", "api00_se")])),
                        unname(unlist(out_srvyr))))
 
 out_srvyr_vartypeNULL <- dstrata %>%
   summarise(api00 = survey_median(api00, vartype = NULL))
 
 test_that("survey_median works for ungrouped surveys - with vartype=NULL",
-          expect_equal(unname(unlist(select(out_survey, -ends_with("_se")))),
+          expect_equal(unname(unlist(select(out_survey, api00))),
                        unname(unlist(out_srvyr_vartypeNULL))))
 
 out_survey <- suppressWarnings(
@@ -294,7 +302,7 @@ out_survey <- temp_survey %>%
   data.frame() %>%
   tibble::as_tibble() %>%
   rename(survey = api99, survey_low = ci_l, survey_upp = ci_u) %>%
-  select(-se)
+  select(-starts_with("se."))
 
 test_that("df works for grouped survey quantile",
           expect_df_equal(out_srvyr, out_survey))
@@ -314,18 +322,18 @@ suppressWarnings(mysvy <- scd %>%
                 combined_weights = FALSE))
 
 results_srvyr <- mysvy %>%
-  summarize(x = survey_median(arrests, interval_type = "probability"))
+  summarize(x = survey_median(arrests, interval_type = "quantile"))
 
-results_survey <- svyq_func(~arrests, mysvy, quantiles = 0.5,
-                              interval_type = "probability")
+results_survey <- svyquantile(~arrests, mysvy, quantiles = 0.5,
+                              interval.type = "quantile")[[1]]
 
-test_that("srvyr allows you to select probability for interval_type of replicate weights",
+test_that("srvyr allows you to select `quantile` for interval_type of replicate weights",
           expect_equal(results_srvyr[[1]], results_survey[[1]]))
 
 results_srvyr <- mysvy %>%
   summarize(x = survey_median(arrests))
 
-results_survey <- svyq_func(~arrests, mysvy, quantiles = 0.5)
+results_survey <- svyquantile(~arrests, mysvy, quantiles = 0.5)[[1]]
 
 test_that("srvyr does the right thing by default for quantiles of replicate surveys",
           expect_equal(results_srvyr[[1]], results_survey[[1]]))
@@ -343,13 +351,13 @@ test_that(
                                           vartype = c("se", "ci"), df = NULL)))
 
     survey <- suppressWarnings(
-      svyby( ~api99, ~awards, dstrata, svyq_func,
+      svyby( ~api99, ~awards, dstrata, svyquantile,
              quantiles = c(0.25, 0.5, 0.75), ci = TRUE, vartype = c("se", "ci"), df = NULL))
 
-    expect_equal(srvyr$api99_q25, survey$`0.25`)
-    expect_equal(srvyr$api99_q25_se, survey$`se.0.25`)
-    expect_equal(srvyr$api99_q25_low, survey$`ci_l.0.25_api99`)
-    expect_equal(srvyr$api99_q25_upp, survey$`ci_u.0.25_api99`)
+    expect_equal(srvyr$api99_q25, survey$`api99.0.25`)
+    expect_equal(srvyr$api99_q25_se, survey$`se.api99.0.25`)
+    expect_equal(srvyr$api99_q25_low, survey$`ci_l.api99.0.25`)
+    expect_equal(srvyr$api99_q25_upp, survey$`ci_u.api99.0.25`)
   }
 )
 

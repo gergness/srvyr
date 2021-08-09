@@ -317,15 +317,14 @@ survey_ratio <- function(
 #' @param x A variable or expression
 #' @param na.rm A logical value to indicate whether missing values should be dropped
 #' @param quantiles A vector of quantiles to calculate
-#' @param vartype NULL to report no variability (default), otherwise one or more of:
-#'                standard error ("se") confidence interval ("ci") (variance and coefficient
-#'                of variation not available).
-#' @param level A single number indicating the confidence level (only one level allowed)
+#' @param vartype NULL to report no variability. Otherwise one or more of: standard error ("se", the default),
+#'                confidence interval ("ci"), variance ("var") or coefficient of variation
+#'                ("cv").
+#' @param level A single number indicating the confidence level (only one level allowed). Note that this may effect estimated standard errors (see \code{\link[survey]{svyquantile}} details on \code{alpha}, which equals \code{1-level}).
 #' @param interval_type See \code{\link[survey]{svyquantile}}. Note that \code{interval_type = "quantile"} is only available for replicate designs, and \code{interval_type = "score"} is unavailable for replicate designs.
 #' @param qrule See \code{\link[survey]{svyquantile}}
 #' @param df A number indicating the degrees of freedom for t-distribution. The
 #'           default, NULL, uses the design degrees of freedom (matches the survey package).
-#'           Also, has no effect for \code{type = "betaWald"}.
 #' @param ... Ignored
 #' @examples
 #' library(survey)
@@ -380,7 +379,7 @@ survey_quantile <- function(
   stop_for_factor(x)
   .svy <- set_survey_vars(.svy, x)
 
-  stat <- svyquantile(
+  stat <- survey::svyquantile(
     x = ~`__SRVYR_TEMP_VAR__`, design = .svy,
     quantiles = quantiles, na.rm = na.rm,
     ci = TRUE, alpha = alpha,

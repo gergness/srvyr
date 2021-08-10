@@ -359,8 +359,7 @@ survey_quantile <- function(
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
-  if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "mean"
-  if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "mean"
+  if (missing(interval_type)) interval_type <- "mean"
   interval_type <- match.arg(interval_type, several.ok = TRUE)
   if (missing(qrule)) qrule <- "math"
 
@@ -408,8 +407,7 @@ survey_median <- function(
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
-  if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "mean"
-  if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "mean"
+  if (missing(interval_type)) interval_type <- "mean"
   interval_type <- match.arg(interval_type, several.ok = TRUE)
   if (missing(qrule)) qrule <- "math"
 

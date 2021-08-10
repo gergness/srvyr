@@ -1,7 +1,5 @@
 context("Quick tests for summary stats (ratio / quantile)")
 
-svyq_func <- survey::svyquantile
-
 library(srvyr)
 library(survey)
 source("utilities.R")
@@ -51,7 +49,7 @@ test_that("survey_ratio works for grouped surveys - with vartype=NULL",
 
 ################################################################################
 # survey_quantile
-out_survey <- svyq_func(~api00, dstrata, c(0.5, 0.75), df = NULL) %>%
+out_survey <- svyquantile(~api00, dstrata, c(0.5, 0.75), df = NULL) %>%
   {data.frame(
     api00_q50 = .[[1]]['0.5','quantile'], api00_q75 = .[[1]]['0.75','quantile'],
     api00_q50_se = .[[1]]['0.5', 'se'], api00_q75_se = .[[1]]['0.75', 'se'],
@@ -79,7 +77,7 @@ test_that("survey_quantile works for ungrouped surveys - with vartype=NULL",
                        unname(unlist(out_srvyr_vartypeNULL))))
 
 out_survey <- suppressWarnings(
-  svyby(~api00, ~stype, dstrata, svyq_func,
+  svyby(~api00, ~stype, dstrata, svyquantile,
         quantiles = c(0.5, 0.75), ci = TRUE, df = NULL,
         vartype = c("se"))) %>%
   as.data.frame() %>%
@@ -107,7 +105,7 @@ test_that("survey_quantile works for grouped surveys - with vartype=NULL",
                            unname(unlist(out_srvyr_vartypeNULL))))
 
 out_survey <- suppressWarnings(
-  svyby(~api00, ~stype + awards, dstrata, svyq_func,
+  svyby(~api00, ~stype + awards, dstrata, svyquantile,
         quantiles = c(0.5, 0.75), ci = TRUE, df = NULL)) %>%
   as.data.frame() %>%
   rename(
@@ -131,7 +129,7 @@ test_that(
 
 ################################################################################
 # survey_median
-out_survey <- svyq_func(~api00, dstrata, c(0.5, 0.75), df = NULL) %>%
+out_survey <- svyquantile(~api00, dstrata, c(0.5, 0.75), df = NULL) %>%
   {data.frame(
     api00 = .[[1]]['0.5','quantile'],
     api00_se = .[[1]]['0.5', 'se'],
@@ -163,7 +161,7 @@ test_that("survey_median works for ungrouped surveys - with vartype=NULL",
                        unname(unlist(out_srvyr_vartypeNULL))))
 
 out_survey <- suppressWarnings(
-  svyby(~api00, ~stype, dstrata, svyq_func,
+  svyby(~api00, ~stype, dstrata, svyquantile,
         quantiles = 0.5, ci = TRUE, df = NULL))
 
 out_srvyr <- suppressWarnings(
@@ -194,7 +192,7 @@ out_srvyr <- dstrata %>%
 
 ratio <- svyratio(~api00, ~api99, dstrata)
 ratio <- confint(ratio, level = 0.9, df = degf(dstrata))
-mdn <- svyq_func(~api00, dstrata, quantile = 0.5, ci = TRUE, alpha = 0.1, df = NULL)
+mdn <- svyquantile(~api00, dstrata, quantile = 0.5, ci = TRUE, alpha = 0.1, df = NULL)
 mdn <- confint(mdn)
 out_survey <- c(ratio[1], ratio[2], mdn[1], mdn[2])
 names(out_survey) <- c("ratio_low", "ratio_upp", "mdn_low", "mdn_upp")
@@ -213,7 +211,7 @@ ratio <- svyby(~api00, ~stype, denominator = ~api99, dstrata, svyratio)
 ratio <- confint(ratio, level = 0.9, df = degf(dstrata))
 
 mdn <- suppressWarnings(
-  svyby(~api00, ~stype, dstrata, svyq_func,
+  svyby(~api00, ~stype, dstrata, svyquantile,
         quantile = 0.5, ci = TRUE, alpha = 0.1, vartype = "ci", df = NULL) %>%
     data.frame() %>%
     select(-api00, -stype))
@@ -280,7 +278,7 @@ out_survey$survey_ratio_upp <- unname(sv_ci[, 2])
 test_that("deff and df work for grouped survey ratio",
           expect_df_equal(out_srvyr, out_survey))
 
-out_survey <- svyq_func(~api99, dstrata, c(0.5), ci = TRUE, df = df_test)
+out_survey <- svyquantile(~api99, dstrata, c(0.5), ci = TRUE, df = df_test)
 
 out_srvyr <- dstrata %>%
   summarise(survey = survey_median(api99, vartype = "ci", df = df_test))
@@ -295,7 +293,7 @@ out_srvyr <- suppressWarnings(
     summarise(survey = survey_median(api99, vartype = "ci", df = df_test)))
 
 temp_survey <- suppressWarnings(
-  svyby(~api99, ~stype, dstrata, svyq_func, quantiles = c(0.5), ci = TRUE,
+  svyby(~api99, ~stype, dstrata, svyquantile, quantiles = c(0.5), ci = TRUE,
         vartype = c("se", "ci"), df = df_test))
 
 out_survey <- temp_survey %>%

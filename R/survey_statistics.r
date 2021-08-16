@@ -425,6 +425,132 @@ survey_median <- function(
   out
 }
 
+#' Calculate the quantile and its variation using survey methods
+#'
+#' Calculate quantiles from complex survey data. A wrapper
+#' around \code{\link[survey]{oldsvyquantile}}, which is a version of the function
+#' from before version 4.1 of the survey package, available for backwards compatibility.
+#' \code{survey_old_quantile} and \code{survey_old_median} should always be
+#' called from \code{\link{summarise}}.
+#'
+#' @param x A variable or expression
+#' @param na.rm A logical value to indicate whether missing values should be dropped
+#' @param quantiles A vector of quantiles to calculate
+#' @param vartype NULL to report no variability (default), otherwise one or more of:
+#'                standard error ("se") confidence interval ("ci") (variance and coefficient
+#'                of variation not available).
+#' @param level A single number indicating the confidence level (only one level allowed)
+#' @param q_method See "method" in \code{\link[stats]{approxfun}}
+#' @param f See \code{\link[stats]{approxfun}}
+#' @param interval_type See \code{\link[survey]{oldsvyquantile}}
+#' @param ties See \code{\link[survey]{oldsvyquantile}}
+#' @param df A number indicating the degrees of freedom for t-distribution. The
+#'           default, Inf uses the normal distribution (matches the survey package).
+#'           Also, has no effect for \code{type = "betaWald"}.
+#' @param ... Ignored
+#' @examples
+#' library(survey)
+#' data(api)
+#'
+#' dstrata <- apistrat %>%
+#'   as_survey_design(strata = stype, weights = pw)
+#'
+#' dstrata %>%
+#'   summarise(api99 = survey_old_quantile(api99, c(0.25, 0.5, 0.75)),
+#'             api00 = survey_old_median(api00, vartype = c("ci")))
+#'
+#' dstrata %>%
+#'   group_by(awards) %>%
+#'   summarise(api00 = survey_old_median(api00))
+#'
+#' @export
+survey_old_quantile <- function(
+  x,
+  quantiles,
+  na.rm = FALSE,
+  vartype = c("se", "ci", "var", "cv"),
+  level = 0.95,
+  q_method = "linear",
+  f = 1,
+  interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
+  ties = c("discrete", "rounded"),
+  df = NULL,
+  ...
+) {
+  .svy <- cur_svy()
+
+  if (!is.null(vartype)) {
+    vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
+  }
+  if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "Wald"
+  if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "probability"
+  interval_type <- match.arg(interval_type, several.ok = TRUE)
+  if (missing(ties)) ties <- "discrete"
+  ties <- match.arg(ties, several.ok = TRUE)
+
+  if (length(level) > 1) {
+    warning("Only the first confidence level will be used")
+    level <- level[1]
+  }
+
+  # Because of machine precision issues, 1 - 0.95 != 0.05...
+  # Here's a hacky way to force it, though it technically limits
+  # us to 7 digits of precision in alpha (seems like enough,
+  # we could go higher, but I worry about 32bit vs 64bit systems)
+  alpha = round(1 - level, 7)
+
+  if (missing(x)) stop("Variable should be provided as an argument to survey_quantile().")
+  stop_for_factor(x)
+  .svy <- set_survey_vars(.svy, x)
+
+  stat <- oldsvyquantile(
+    ~`__SRVYR_TEMP_VAR__`, .svy, quantiles = quantiles, na.rm = na.rm,
+    ci = TRUE, alpha = alpha, method = q_method, f = f,
+    interval.type = interval_type, ties = ties, df = df
+  )
+
+  out <- get_var_est_quantile(stat, vartype, q = quantiles, level = level)
+  out
+}
+
+#' @export
+#' @rdname survey_old_quantile
+survey_old_median <- function(
+  x,
+  na.rm = FALSE,
+  vartype = c("se", "ci"),
+  level = 0.95,
+  q_method = "linear",
+  f = 1,
+  interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
+  ties = c("discrete", "rounded"),
+  df = NULL,
+  ...
+) {
+  .svy <- cur_svy()
+
+  if (!is.null(vartype)) {
+    vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
+  }
+  if (missing(interval_type) & !inherits(.svy, "svyrep.design")) interval_type <- "Wald"
+  if (missing(interval_type) & inherits(.svy, "svyrep.design")) interval_type <- "probability"
+  interval_type <- match.arg(interval_type, several.ok = TRUE)
+  if (missing(ties)) ties <- "discrete"
+  ties <- match.arg(ties, several.ok = TRUE)
+
+  if (length(level) > 1) {
+    warning("Only the first confidence level will be used")
+    level <- level[1]
+  }
+
+  out <- survey_old_quantile(
+    x, quantiles = 0.5, na.rm = na.rm, vartype = vartype, level = level, q_method = q_method,
+    f = f, interval_type = interval_type, ties = ties, df = df
+  )
+  names(out) = sub("^_q50", "", names(out))
+  out
+}
+
 #' Calculate the population variance and its variation using survey methods
 #'
 #' Calculate population variance from complex survey data. A wrapper

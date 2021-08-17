@@ -11,10 +11,9 @@ survey_quantile(
   na.rm = FALSE,
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
-  q_method = "linear",
-  f = 1,
-  interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"),
+  interval_type = c("mean", "beta", "xlogit", "asin", "score", "quantile"),
+  qrule = c("math", "school", "shahvaish", "hf1", "hf2", "hf3", "hf4", "hf5", "hf6",
+    "hf7", "hf8", "hf9"),
   df = NULL,
   ...
 )
@@ -22,12 +21,11 @@ survey_quantile(
 survey_median(
   x,
   na.rm = FALSE,
-  vartype = c("se", "ci"),
+  vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
-  q_method = "linear",
-  f = 1,
-  interval_type = c("Wald", "score", "betaWald", "probability", "quantile"),
-  ties = c("discrete", "rounded"),
+  interval_type = c("mean", "beta", "xlogit", "asin", "score", "quantile"),
+  qrule = c("math", "school", "shahvaish", "hf1", "hf2", "hf3", "hf4", "hf5", "hf6",
+    "hf7", "hf8", "hf9"),
   df = NULL,
   ...
 )
@@ -39,23 +37,18 @@ survey_median(
 
 \item{na.rm}{A logical value to indicate whether missing values should be dropped}
 
-\item{vartype}{NULL to report no variability (default), otherwise one or more of:
-standard error ("se") confidence interval ("ci") (variance and coefficient
-of variation not available).}
+\item{vartype}{NULL to report no variability. Otherwise one or more of: standard error ("se", the default),
+confidence interval ("ci"), variance ("var") or coefficient of variation
+("cv").}
 
-\item{level}{A single number indicating the confidence level (only one level allowed)}
+\item{level}{A single number indicating the confidence level (only one level allowed). Note that this may effect estimated standard errors (see \code{\link[survey]{svyquantile}} details on \code{alpha}, which equals \code{1-level}).}
 
-\item{q_method}{See "method" in \code{\link[stats]{approxfun}}}
+\item{interval_type}{See \code{\link[survey]{svyquantile}}. Note that \code{interval_type = "quantile"} is only available for replicate designs, and \code{interval_type = "score"} is unavailable for replicate designs.}
 
-\item{f}{See \code{\link[stats]{approxfun}}}
-
-\item{interval_type}{See \code{\link[survey]{svyquantile}}}
-
-\item{ties}{See \code{\link[survey]{svyquantile}}}
+\item{qrule}{See \code{\link[survey]{svyquantile}}}
 
 \item{df}{A number indicating the degrees of freedom for t-distribution. The
-default, Inf uses the normal distribution (matches the survey package).
-Also, has no effect for \code{type = "betaWald"}.}
+default, NULL, uses the design degrees of freedom (matches the survey package).}
 
 \item{...}{Ignored}
 }

@@ -4,13 +4,6 @@ library(survey)
 library(dplyr)
 source("utilities.R")
 
-# TODO: switch to improved svyquantile
-if (utils::packageVersion("survey") >= "4.1") {
-  svyq_func <- get("oldsvyquantile", asNamespace("survey"))
-} else {
-  svyq_func <- survey::svyquantile
-}
-
 
 # From survey::twophase examples
 data(pbc, package="survival")
@@ -27,8 +20,8 @@ d2pbc_srvyr <- pbc %>%
 survey_results <- list(
   as.data.frame(svymean(~bili, d2pbc_survey)),
   as.data.frame(svytotal(~bili, d2pbc_survey)),
-  svyq_func(~bili, d2pbc_survey, quantiles = 0.5, ci = TRUE, df = NULL) %>%
-    {cbind(as.data.frame(.$quantile),
+  svyquantile(~bili, d2pbc_survey, quantiles = 0.5, ci = TRUE, df = NULL) %>%
+    {cbind(as.data.frame(.[[1]][,'quantile']),
            as.data.frame(SE(.)))},
   as.data.frame(svyvar(~bili, d2pbc_survey)),
   data.frame(albumin = svyratio(~bili, ~albumin, d2pbc_survey)[[1]],
@@ -62,7 +55,7 @@ test_that("as_survey_twophase gets same mean / total / median / var / ratio in s
 survey_results <- list(
   as.data.frame(svyby(~bili, ~sex, d2pbc_survey, svymean)),
   as.data.frame(svyby(~bili, ~sex, d2pbc_survey, svytotal)),
-  as.data.frame(suppressWarnings(svyby(~bili, ~sex, d2pbc_survey, svyq_func,
+  as.data.frame(suppressWarnings(svyby(~bili, ~sex, d2pbc_survey, svyquantile,
                                        quantiles = 0.5, ci = TRUE, df = NULL)))
 ) %>%
   as.data.frame() %>%

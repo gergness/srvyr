@@ -314,6 +314,13 @@ survey_ratio <- function(
 #' around \code{\link[survey]{svyquantile}}. \code{survey_quantile} and
 #' \code{survey_median} should always be called from \code{\link{summarise}}.
 #'
+#' Note that the behavior of these functions has changed in srvyr version 1.1,
+#' but the old functions are still (currently) supported as
+#' \code{\link{survey_old_quantile}} and \code{survey_old_median} if you need
+#' to replicate the old results. For more details about what has changed, see
+#' Thomas Lumley's blog post on the changes, available here:
+#' <https://notstatschat.rbind.io/2021/07/20/what-s-new-in-the-survey-package/>
+#'
 #' @param x A variable or expression
 #' @param na.rm A logical value to indicate whether missing values should be dropped
 #' @param quantiles A vector of quantiles to calculate
@@ -431,7 +438,9 @@ survey_median <- function(
 #' around \code{\link[survey]{oldsvyquantile}}, which is a version of the function
 #' from before version 4.1 of the survey package, available for backwards compatibility.
 #' \code{survey_old_quantile} and \code{survey_old_median} should always be
-#' called from \code{\link{summarise}}.
+#' called from \code{\link{summarise}}. See Thomas Lumley's blogpost
+#' <https://notstatschat.rbind.io/2021/07/20/what-s-new-in-the-survey-package/>
+#' for more details.
 #'
 #' @param x A variable or expression
 #' @param na.rm A logical value to indicate whether missing values should be dropped
@@ -503,7 +512,7 @@ survey_old_quantile <- function(
   stop_for_factor(x)
   .svy <- set_survey_vars(.svy, x)
 
-  stat <- oldsvyquantile(
+  stat <- survey::oldsvyquantile(
     ~`__SRVYR_TEMP_VAR__`, .svy, quantiles = quantiles, na.rm = na.rm,
     ci = TRUE, alpha = alpha, method = q_method, f = f,
     interval.type = interval_type, ties = ties, df = df

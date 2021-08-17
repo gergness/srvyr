@@ -57,6 +57,14 @@ Calculate quantiles from complex survey data. A wrapper
 around \code{\link[survey]{svyquantile}}. \code{survey_quantile} and
 \code{survey_median} should always be called from \code{\link{summarise}}.
 }
+\details{
+Note that the behavior of these functions has changed in srvyr version 1.1,
+but the old functions are still (currently) supported as
+\code{\link{survey_old_quantile}} and \code{survey_old_median} if you need
+to replicate the old results. For more details about what has changed, see
+Thomas Lumley's blog post on the changes, available here:
+<https://notstatschat.rbind.io/2021/07/20/what-s-new-in-the-survey-package/>
+}
 \examples{
 library(survey)
 data(api)

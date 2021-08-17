@@ -64,7 +64,9 @@ Calculate quantiles from complex survey data. A wrapper
 around \code{\link[survey]{oldsvyquantile}}, which is a version of the function
 from before version 4.1 of the survey package, available for backwards compatibility.
 \code{survey_old_quantile} and \code{survey_old_median} should always be
-called from \code{\link{summarise}}.
+called from \code{\link{summarise}}. See Thomas Lumley's blogpost
+<https://notstatschat.rbind.io/2021/07/20/what-s-new-in-the-survey-package/>
+for more details.
 }
 \examples{
 library(survey)

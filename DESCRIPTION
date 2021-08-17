@@ -19,7 +19,7 @@ Imports:
     dplyr (>= 1.0),
     magrittr,
     rlang,
-    survey,
+    survey (>= 4.1),
     tibble,
     tidyr,
     tidyselect

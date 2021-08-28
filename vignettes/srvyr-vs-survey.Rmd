@@ -9,11 +9,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The `srvyr` package aims to add `dplyr` like syntax to the `survey` package.
+The `srvyr` package adds `dplyr` like syntax to the `survey` package.
 This vignette focuses on how `srvyr` compares to the `survey` package, for more
 information about survey design and analysis, check out the vignettes in the `survey`
 package, or Thomas Lumley's book, [*Complex Surveys: A Guide to Analysis
-Using R*](http://r-survey.r-forge.r-project.org/svybook/).
+Using R*](http://r-survey.r-forge.r-project.org/svybook/). (Also see the bottom
+of this document for some more resources).
 
 Everything that `srvyr` can do, can also be done in `survey`. In fact, behind
 the scenes the `survey` package is doing all of the hard work for `srvyr`. 
@@ -22,7 +23,7 @@ especially if you are already used to the `dplyr` package.
 
 # Motivating example
 
-The `dplyr` package has made it fast and easy to write code to summarize data.
+The `dplyr` package has made it easy to write code to summarize data.
 For example, if we wanted to check how the year-to-year change in academic 
 progress indicator score varied by school level and percent of parents were 
 high school graduates, we can do this:
@@ -223,49 +224,77 @@ summary(glm)
 ```
 
 
-## Standard evaluation
+## Non-Standard evaluation
 
-Srvyr now supports the standard evaluation conventions introduced in dplyr version 0.7 and
-rlang. If you'd like to use a function programmatically, you can use the functions from 
-rlang like `rlang::quo()` or `rlang::sym()` to capture the expression and `rlang::!!`
-to unquote it. All of these functions are re-exported by srvyr, so you don't need
-to load the rlang library to use them.
+Srvyr supports the non-standard evaluation conventions that dplyr uses.
+If you'd like to use a function programmatically, you can use the functions from 
+rlang like the `{{` operator (aka "curly curly") from `rlang`. 
 
 Here's a quick example, but please see the dplyr vignette 
 [`vignette("programming", package = "dplyr")`](https://dplyr.tidyverse.org/articles/programming.html)
 for more details.
 
 ```{r, message = FALSE}
-fpc_var <- sym("fpc")
-srs_design_srvyr <- apisrs %>% as_survey_design(fpc = !!fpc_var)
+mean_with_ci <- function(.data, var) {
+  summarize(.data, mean = survey_mean({{var}}, vartype = "ci"))
+}
 
-grouping_var <- sym("stype")
-api_diff <- quo(api00 - api99)
+srs_design_srvyr <- apisrs %>% as_survey_design(fpc = fpc)
 
-srs_design_srvyr %>%
-  group_by(!!grouping_var) %>% 
-  summarize(
-    api_increase = survey_total((!!api_diff) >= 0),
-    api_decrease = survey_total((!!api_diff) < 0)
-  )
-
-
+mean_with_ci(srs_design_srvyr, api99)
 ```
 
-Srvyr will also follow dplyr's lead on deprecating the old method of NSE, the
-so-called "underscore functions" (like `summarize_`). Currently, they have been
-soft-deprecated, but I expect them to be removed altogether in some future version
-of srvyr.
+Srvyr will also follow dplyr's lead on deprecating the old methods of NSE, 
+such as `rlang::quo`, and `!!`, in addition to the so-called "underscore functions" 
+(like `summarize_`). Currently, they have been soft-deprecated, they may be
+removed altogether in some future version of srvyr.
 
-## Scoped functions
-Srvyr has also been able to take advantage of the new-ish dplyr "scoped" variants of 
-the main manipulation functions like `summarize_at()`. These functions allow you to 
-quickly calculate summary statistics for multiple variables. For example:
+## Working column-wise
+As of version 1.0 of srvyr, it supports dplyr's across function, so when you want
+to calculate a statistic on more than one variable, it is easy to do so.
+See [`vignette("colwise", package = "dplyr")`](https://dplyr.tidyverse.org/articles/colwise.html) for more details, but here is another quick example:
 
 ```{r}
 # Calculate survey mean for all variables that have names starting with "api"
 strat_design %>%
-  summarize_at(vars(starts_with("api")), survey_mean)
+  summarize(across(starts_with("api"), survey_mean))
 ```
 
-The dplyr documentation `dplyr::scoped` provides more details.
+Srvyr also supports older methods of working column-wise, the "scoped variants", such as
+`summarize_at`, `summarize_if`, `summarize_all` and `summarize_each`. Again, these are
+maintained for backwards compatibility, matching what the tidyverse team has done, but
+may be removed from a future version.
+
+# Learning More
+Here are some free resources put together by the community about srvyr:
+
+- **"How-to"s & examples of using srvyr**
+  - Stephanie Zimmer & Rebecca Powell's [2021 AAPOR Workshop "Tidy Survey Analysis in R using the srvyr Package"](https://github.com/szimmer/tidy-survey-aapor-2021)
+  - "The Epidemiologist R Handbook", by Neale Batra et al. has a [chapter on survey analysis](https://epirhandbook.com/survey-analysis.html) with srvyr and survey package examples
+  - Kieran Healy's book ["Data Visualization: A Practical Introduction"](https://socviz.co/modeling.html#plots-from-complex-surveys) has a section on using srvyr to visualize the ESS.
+  - The IPUMS PMA team's blog had a series showing examples of using the [PMA COVID survey panel with weights](https://ipums.github.io/pma-data-hub/index.html#category:COVID-19)
+  - ["Open Case Studies: Vaping Behaviors in American Youth"](https://www.opencasestudies.org/ocs-bp-vaping-case-study/) by Carrie Wright, Michael Ontiveros, Leah Jager, Margaret Taub, and Stephanie Hicks is a detailed case study that includes using srvyr to analyze the National Youth Tobacco Survey.
+  - ["How to plot Likert scales with a weighted survey in a dplyr friendly way"](https://towardsdatascience.com/how-to-plot-likert-scales-with-a-weighted-survey-in-a-dplyr-friendly-way-68df600881a) by Francisco Suárez Salas
+  - The tidycensus package vignette ["Working with Census microdata"](https://walker-data.com/tidycensus/articles/pums-data.html) includes information about using the weights from the ACS retrieved from the census API.
+  - ["The Joy of Calculating the Direct Standard Error for PUMS Estimates"](https://ldaly.github.io/giveinandblogit/) by GitHub user @ldaly
+- **About survey statistics**
+  - Thomas Lumley's book ["Complex Surveys: a guide to analysis using R"](http://r-survey.r-forge.r-project.org/svybook/)
+  - "Survey weighting is a mess" is the opening to Andrew Gelman's ["Struggles with Survey Weighting and Regression Modeling"](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf)
+  - Anthony Damico's website ["Analyze Survey Data for Free"](http://asdfree.com) has the weight specifications for a wide variety of public use survey datasets.
+- **Working programmatically and/or on multiple columns at once (eg `dplyr::across` and `rlang`'s "curly curly" `{{}}`)**
+  - dplyr's included package vignettes ["Column-wise operations"](https://dplyr.tidyverse.org/articles/colwise.html) & ["Programming with dplyr"](https://dplyr.tidyverse.org/articles/programming.html)
+- **Non-English resources**
+  - *Em português:* ["Análise de Dados Amostrais Complexos"](https://djalmapessoa.github.io/adac/) by Djalma Pessoa and Pedro Nascimento Silva
+  - *En español:* ["Usando R para jugar con los microdatos del INEGI"](https://medium.com/tacosdedatos/usando-r-para-sacar-información-de-los-microdatos-del-inegi-b21b6946cf4f) by Claudio Daniel Pacheco Castro
+- **Other cool stuff that uses srvyr**
+  - A (free) graphical interface allowing exploratory data analysis of survey data without writing code: [iNZight](https://inzight.nz/) (and [survey data instructions](https://inzight.nz/docs/survey-specification.html))
+  - ["serosurvey: Serological Survey Analysis For Prevalence Estimation Under Misclassification"](https://avallecam.github.io/serosurvey/) by Andree Valle Campos
+  - Several packages on CRAN depend on srvyr, you can see them by looking at the [reverse Imports/Suggestions on CRAN](https://cran.r-project.org/package=srvyr).
+
+**Still need help?**
+
+I think the best way to get help is to form a specific question and ask it in some place like [rstudio's community webiste](https://community.rstudio.com) (known for it's friendly community) or [stackoverflow.com](https://stackoverflow.com) (maybe not known for being quite as friendly, but probably has more people). If you think you've found a bug in srvyr's code, please file an [issue on GitHub](https://github.com/gergness/issue/new), but note that I'm not a great resource for helping specific issue, both because I have limited capacity but also because I do not consider myself an expert in the statistical methods behind survey analysis.
+
+**Have something to add?**
+
+These resources were mostly found via vanity searches on twitter & github. If you know of anything I missed, or have written something yourself, [please let me know in this GitHub issue](<https://github.com/gergness/srvyr/issues/127>)!

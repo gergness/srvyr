@@ -4,6 +4,7 @@
 \alias{uninteract}
 \alias{uninteract.srvyr_interaction}
 \alias{uninteract.data.frame}
+\alias{is.interaction}
 \title{Break interaction vectors back into component columns}
 \usage{
 uninteract(x)
@@ -11,6 +12,8 @@ uninteract(x)
 \method{uninteract}{srvyr_interaction}(x)
 
 \method{uninteract}{data.frame}(x)
+
+is.interaction(x)
 }
 \arguments{
 \item{x}{Either a \code{srvyr_interaction} column or a \code{data.frame}}

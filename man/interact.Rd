@@ -2,12 +2,9 @@
 % Please edit documentation in R/interaction.R
 \name{interact}
 \alias{interact}
-\alias{is.interaction}
 \title{Create interaction terms to group by when summarizing}
 \usage{
 interact(...)
-
-is.interaction(x)
 }
 \arguments{
 \item{...}{variables to group by. All tbls accept variable names, some will

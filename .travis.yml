@@ -1,9 +1,0 @@
-# Sample .travis.yml for R projects
-
-language: r
-cache: packages
-warnings_are_errors: true
-r:
-  - devel
-  - release
-  - oldrel

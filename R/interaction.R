@@ -68,7 +68,7 @@ uninteract <- function(x) {
 uninteract.srvyr_interaction <- function(x) {
   crosswalk <- crosswalk(x)
   out <- crosswalk[match(vctrs::vec_data(x), crosswalk[["___srvyr_cw_id"]]), ]
-  select(out, -one_of("___srvyr_cw_id"))
+  select(out, -dplyr::one_of("___srvyr_cw_id"))
 }
 
 #' @export
@@ -126,7 +126,7 @@ new_interaction <- function(x = integer(), crosswalk = NULL, ...) {
 setOldClass(c("srvyr_interaction", "vctrs_vctr"))
 
 #' @export
-#' @rdname interact
+#' @rdname uninteract
 is.interaction <- function(x) inherits(x, "srvyr_interaction")
 
 crosswalk <- function(x) attr(x, "crosswalk")

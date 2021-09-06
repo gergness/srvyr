@@ -18,6 +18,7 @@ Depends:
 Imports:
     dplyr (>= 1.0),
     magrittr,
+    methods,
     rlang,
     survey (>= 4.1),
     tibble,

@@ -1,3 +1,4 @@
+library(dplyr)
 interact_data <- data.frame(
   int_col = c(1, 1:3, 1),
   char_col = letters[c(1, 3:1, 1)],

@@ -22,7 +22,8 @@ Imports:
     survey (>= 4.1),
     tibble,
     tidyr,
-    tidyselect
+    tidyselect,
+    vctrs (>= 0.3.0)
 License: GPL-2 | GPL-3
 Suggests:
     convey,

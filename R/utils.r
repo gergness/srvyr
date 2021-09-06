@@ -1,8 +1,9 @@
 # Import all of rlang so we can use pronouns and compat files
 # In general, though, I'm still trying to use namespace declarations
-#'@import rlang
+# and the same thing with vctrs
+#' @import rlang
+#' @import vctrs
 NULL
-
 
 # For functions that use select style syntax, gets the variable names
 # from the user's input and data, and then returns a formula that

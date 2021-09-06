@@ -32,6 +32,9 @@ summarise.grouped_svy <- function(.data, ..., .groups = NULL, .unpack = TRUE) {
 
   out <- dplyr::summarise(.data$variables, !!!.dots, .groups = .groups)
 
+  # Remove interaction variables if present
+  out <- uninteract(out)
+
   # srvyr predates dplyr's data.frame columns so default to unpacking
   # them wide
   if (.unpack) out <- unpack_cols(out)

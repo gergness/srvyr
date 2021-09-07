@@ -4,7 +4,8 @@ interact_data <- data.frame(
   char_col = letters[c(1, 3:1, 1)],
   fct_col = factor(letters[1:5]),
   dbl_col = c(1.1, 2.2, 3.3, 4.4, 5.5),
-  ordered_col = ordered(letters[6:10])
+  ordered_col = ordered(letters[6:10]),
+  stringsAsFactors = FALSE
 )
 
 data(api, package = "survey")

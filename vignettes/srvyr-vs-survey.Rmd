@@ -210,6 +210,11 @@ ggplot(data = out, aes(x = stype, y = api_diff, group = hs_grad_pct, fill = hs_g
 ```
 
 
+# CAUTION! Difference in default degrees of freedom
+Though it should be possible to get the exact same results using `srvyr` as you would
+if you used the `survey` package, s
+
+
 # Grab Bag
 
 ## Using `survey` functions on `srvyr` objects

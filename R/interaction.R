@@ -7,12 +7,12 @@
 #' Behind the scenes, this function creates a special column type that is
 #' split back into the component columns automatically by \code{summarize}.
 #'
-#' @param ... variables to group by. All tbls accept variable names, some will
-#' also accept functions of variables.
+#' @param ... variables to group by. All types of tbls accept variable names, and
+#' most will also accept functions of variables (though some database-backed
+#' tbls do not allow creating variables).
 #'
-#' @return A vector of type \code{srvyr_interaction}, which is expected to be
-#' invisible to the user.
-#'
+#' @return A vector of type \code{\link{srvyr_interaction}}, which is generally
+#' expected to be automatically split apart.
 #' @export
 #'
 #' @examples
@@ -21,7 +21,7 @@
 #' dstrata <- apistrat %>%
 #'   as_survey_design(strata = stype, weights = pw)
 #'
-#' # The sum of prop is equal to 100%
+#' # The sum of the whole prop column is equal to 100%
 #' dstrata %>%
 #'   group_by(interact(stype, awards)) %>%
 #'   summarize(prop = survey_mean())
@@ -116,6 +116,17 @@ new_interaction <- function(x = integer(), crosswalk = NULL, ...) {
     class = "srvyr_interaction"
   )
 }
+
+
+#' srvyr interaction column
+#'
+#' \code{srvyr_interaction} columns help calculate proportions of the interaction of 2
+#' or more variables. They are created by \code{\link{interact}}, generally
+#' used as grouping variables in \code{\link{group_by}} and then automatically split
+#' apart by \code{\link{summarise}}.
+#'
+#' @name srvyr_interaction
+NULL
 
 # TODO: Formatting? (may not be necessary because user is unlikely to ever see it)
 

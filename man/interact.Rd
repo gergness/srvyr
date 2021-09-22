@@ -7,12 +7,13 @@
 interact(...)
 }
 \arguments{
-\item{...}{variables to group by. All tbls accept variable names, some will
-also accept functions of variables.}
+\item{...}{variables to group by. All types of tbls accept variable names, and
+most will also accept functions of variables (though some database-backed
+tbls do not allow creating variables).}
 }
 \value{
-A vector of type \code{srvyr_interaction}, which is expected to be
-invisible to the user.
+A vector of type \code{\link{srvyr_interaction}}, which is generally
+expected to be automatically split apart.
 }
 \description{
 Allows multiple grouping by multiple variables as if they were a single
@@ -29,7 +30,7 @@ data(api, package = "survey")
 dstrata <- apistrat \%>\%
   as_survey_design(strata = stype, weights = pw)
 
-# The sum of prop is equal to 100\%
+# The sum of the whole prop column is equal to 100\%
 dstrata \%>\%
   group_by(interact(stype, awards)) \%>\%
   summarize(prop = survey_mean())

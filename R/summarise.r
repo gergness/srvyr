@@ -110,27 +110,27 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'
 #'\describe{
 #' \item{\code{\link{survey_mean}}}{
-#'    Calculate the survey mean of the entire population or by \code{groups}.
-#'    Based on \code{\link[survey]{svymean}}.}
+#'    Calculate the mean of a numeric variable or the proportion falling into \code{groups}
+#'    for the entire population or by \code{groups}. Based on \code{\link[survey]{svymean}}
+#'    and \code{\link[survey]{svyciprop}}.}.
 #' \item{\code{\link{survey_total}}}{
 #'    Calculate the survey total of the entire population or by \code{groups}.
 #'    Based on \code{\link[survey]{svytotal}}.}
+#' \item{\code{\link{survey_prop}}}{
+#'    Calculate the proportion of the entire population or by \code{groups}.
+#'    Based on \code{\link[survey]{svyciprop}}.}
 #'  \item{\code{\link{survey_ratio}}}{
 #'    Calculate the ratio of 2 variables in the entire population or by \code{groups}.
 #'    Based on \code{\link[survey]{svyratio}}.}
-#' \item{\code{\link{survey_quantile}}}{
+#' \item{\code{\link{survey_quantile}} & \code{\link{survey_median}}}{
 #'    Calculate quantiles in the entire population or by \code{groups}. Based on
-#'    \code{\link[survey]{svyquantile}}.}
-#'  \item{\code{\link{survey_median}}}{
-#'    Calculate the median in the entire population or by \code{groups}.
 #'    \code{\link[survey]{svyquantile}}.}
 #'  \item{\code{\link{unweighted}}}{
 #'    Calculate an unweighted estimate as you would on a regular \code{tbl_df}.
 #'    Based on dplyr's \code{\link[dplyr]{summarise}}.}
 #'}
 #' @examples
-#' library(survey)
-#' data(api)
+#' data(api, package = "survey")
 #'
 #' dstrata <- apistrat %>%
 #'   as_survey_design(strata = stype, weights = pw)

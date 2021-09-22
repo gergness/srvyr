@@ -3,7 +3,7 @@
 \name{survey_mean}
 \alias{survey_mean}
 \alias{survey_prop}
-\title{Calculate the mean and its variation using survey methods}
+\title{Calculate mean/proportion and its variation using survey methods}
 \usage{
 survey_mean(
   x,
@@ -61,9 +61,14 @@ around \code{\link[survey]{svymean}}, or if \code{proportion = TRUE},
 \code{\link[survey]{svyciprop}}. \code{survey_mean} should always be
 called from \code{\link{summarise}}.
 }
+\details{
+Using \code{survey_prop} is equivalent to leaving out the \code{x} argument in
+\code{survey_mean} and this calculates the proportion represented within the
+data, with the last grouping variable "unpeeled". \code{\link{interact}}
+allows for "unpeeling" multiple variables at once.
+}
 \examples{
-library(survey)
-data(api)
+data(api, package = "survey")
 
 dstrata <- apistrat \%>\%
   as_survey_design(strata = stype, weights = pw)
@@ -76,10 +81,30 @@ dstrata \%>\%
   group_by(awards) \%>\%
   summarise(api00 = survey_mean(api00))
 
-# Leave x empty to calculate the proportion in each group
+# Use `survey_prop` calculate the proportion in each group
+dstrata \%>\%
+  group_by(awards) \%>\%
+  summarise(pct = survey_prop())
+
+# Or you can also leave  out `x` in `survey_mean`, so this is equivalent
 dstrata \%>\%
   group_by(awards) \%>\%
   summarise(pct = survey_mean())
+
+# When there's more than one group, the last group is "peeled" off and proportions are
+# calculated within that group, each adding up to 100\%.
+# So in this example, the sum of prop is 200\% (100\% for awards=="Yes" &
+# 100\% for awards=="No")
+dstrata \%>\%
+  group_by(stype, awards) \%>\%
+  summarize(prop = survey_prop())
+
+# The `interact` function can help you calculate the proportion over
+# the interaction of two or more variables
+# So in this example, the sum of prop is 100\%
+dstrata \%>\%
+  group_by(interact(stype, awards)) \%>\%
+  summarize(prop = survey_prop())
 
 # Setting proportion = TRUE uses a different method for calculating confidence intervals
 dstrata \%>\%

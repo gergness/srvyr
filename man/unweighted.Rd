@@ -4,12 +4,11 @@
 \alias{unweighted}
 \title{Calculate the an unweighted summary statistic from a survey}
 \usage{
-unweighted(x, ...)
+unweighted(...)
 }
 \arguments{
-\item{x}{A variable or expression}
-
-\item{...}{Ignored}
+\item{...}{variables or expressions, calculated on the unweighted data.frame
+behind the \code{tbl_svy} object.}
 }
 \description{
 Calculate unweighted summaries from a survey dataset, just as on

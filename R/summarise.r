@@ -41,23 +41,23 @@ summarise.grouped_svy <- function(.data, ..., .groups = NULL, .unpack = TRUE) {
 unpack_cols <- function(results) {
   old_groups <- group_vars(results)
   is_rowwise <- inherits(results, "rowwise_df")
-  out <- lapply(names(results), function(col_name) {
-    col <- results[col_name]
-    if (is.data.frame(col[[1]])) {
-      col <- col[[1]]
-      names(col) <- ifelse(
-        # __SRVYR_COEF__ for backwards compatibility if anyone actually
-        # used srvyr <1.0 extension capabilities
-        names(col) %in% c("coef", "__SRVYR_COEF__"),
-        col_name,
-        paste0(col_name, names(col))
-      )
-    }
-    col
-  })
-  out <- dplyr::bind_cols(out)
 
-  # restore grouping/rowwise
+  # Top level renames
+  var_names <- names(results)[vapply(results, is_srvyr_result_df, logical(1))]
+  out <- tidyr::unpack(
+    results,
+    dplyr::all_of(var_names),
+    # ugly regex hack to get around https://github.com/tidyverse/tidyr/issues/1161
+    # __SRVYR_COEF__ is to allow the possibility of legacy srvyr extensions
+    names_sep = "___SRVYR_SEP___",
+    names_repair = ~gsub("___SRVYR_SEP___(coef)?(__SRVYR_COEF__)?", "", .)
+  )
+
+  # Also check if there are some nested srvyr results (recursively)
+  var_names <- names(out)[vapply(out, is.data.frame, logical(1))]
+  out <- dplyr::mutate(out, dplyr::across(dplyr::all_of(var_names), unpack_cols))
+
+  # restore grouping/rowwise (dplyr unpacking can remove rowwise sometimes)
   if (length(old_groups) > 0 & !is_rowwise) {
     out <- group_by(out, !!!rlang::syms(old_groups))
   } else if (length(old_groups) > 0 & is_rowwise) {
@@ -65,6 +65,7 @@ unpack_cols <- function(results) {
   } else if (is_rowwise) {
     out <- dplyr::rowwise(out)
   }
+
   out
 }
 

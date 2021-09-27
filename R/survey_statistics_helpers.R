@@ -136,7 +136,7 @@ get_var_est <- function(
     out <- c(out, list(deff))
   }
 
-  dplyr::bind_cols(out)
+  as_srvyr_result_df(dplyr::bind_cols(out))
 }
 
 # Largely the same as get_var_est(), but need to handle the fact that there can be
@@ -184,7 +184,7 @@ get_var_est_quantile <- function(stat, vartype, q, grps = "", level = 0.95, df =
     out <- c(list(as.data.frame(stat[grps])), out)
   }
 
-  dplyr::bind_cols(out)
+  as_srvyr_result_df(dplyr::bind_cols(out))
 }
 
 stop_for_factor <- function(x) {
@@ -197,4 +197,19 @@ stop_for_factor <- function(x) {
       "Character vectors not allowed in survey functions, should be used as a grouping variable."
     ), call. = FALSE)
   }
+}
+
+
+as_srvyr_result_df <- function(x) {
+  class(x) <- c("srvyr_result_df", class(x))
+  x
+}
+
+is_srvyr_result_df <- function(x) {
+  inherits(x, "srvyr_result_df")
+}
+
+remove_srvyr_result_df_class <- function(x) {
+  class(x) <- setdiff(class(x), "srvyr_result_df")
+  x
 }

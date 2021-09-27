@@ -83,7 +83,8 @@ uninteract.data.frame <- function(x) {
         setdiff(names(crosswalk(x[[vname]])), "___srvyr_cw_id")
       }
     })
-    unlist(out)
+    # unique to do something reasonable when there are duplicated columns
+    unique(unlist(out))
   }
 
   new_col_order <- interaction_varname_expander(names(x), x)
@@ -93,7 +94,17 @@ uninteract.data.frame <- function(x) {
   interaction_vars <- names(x)[vapply(x, is.interaction, logical(1))]
   out <- dplyr::ungroup(x)
   out <- dplyr::mutate(out, dplyr::across(interaction_vars, uninteract))
-  out <- tidyr::unpack(out, interaction_vars)
+  # minimal repair so we don't choke on duplicates (which are taken care of by select)
+  out <- tidyr::unpack(out, interaction_vars, names_repair = "minimal")
+  dup_names <- duplicated(names(out))
+  if (any(dup_names)) {
+    warning(paste0(
+      "Duplicate names found (",
+      paste0(names(out)[dup_names], collapse = ", "),
+      ") keeping first instance."
+    ))
+    out <- out[, !dup_names]
+  }
   out <- dplyr::select(out, dplyr::all_of(new_col_order))
 
   # restore grouping/rowwise

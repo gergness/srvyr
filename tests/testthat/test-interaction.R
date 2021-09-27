@@ -58,7 +58,6 @@ test_that("Can make interactions in a srvyr pipeline", {
   )
 })
 
-
 test_that("A wide variety of column types are preserved in an interaction roundtrip", {
   x <- interact(!!!as.list(interact_data))
 
@@ -190,3 +189,18 @@ test_that("Interaction gets automatically undone in a summarize", {
   expect_equal(actual, alternate)
 })
 
+test_that("Duplicate names are okay when unpacking in summarize", {
+  expect_warning(
+    actual <- dstrata %>%
+      group_by(interact(stype, awards), stype) %>%
+      summarize(x = survey_mean()),
+    "Duplicate names found \\(stype\\) .+"
+  )
+
+  alternate <- dstrata %>%
+    group_by(interact(stype, awards), stype2 = stype) %>%
+    summarize(x = survey_mean()) %>%
+    select(-stype2)
+
+  expect_equal(actual, alternate)
+})

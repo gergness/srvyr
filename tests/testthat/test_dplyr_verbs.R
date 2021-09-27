@@ -199,3 +199,22 @@ test_that("group_trim works", {
   after_trim <- before_trim %>% group_trim()
   expect_equal(group_keys(after_trim)[[1]], factor(c("No"), c("No")))
 })
+
+test_that("summarize unpacks inside of across", {
+  unnamed <- dstrata %>% summarize(across(
+    matches("^api[0-9]+$"),
+    list(mn = ~survey_mean(., vartype = "var"), prop_over_700 = ~survey_mean(. > 700))
+  ))
+  named_df <- dstrata %>% summarize(z = across(
+    matches("^api[0-9]+$"),
+    list(mn = ~survey_mean(., vartype = "var"), prop_over_700 = ~survey_mean(. > 700))
+  ))
+
+  expect_equal(names(unnamed), c(
+    "api00_mn", "api00_mn_var", "api00_prop_over_700", "api00_prop_over_700_se",
+    "api99_mn", "api99_mn_var", "api99_prop_over_700", "api99_prop_over_700_se"
+  ))
+  expect_equal(names(named_df), "z")
+
+  expect_equal(unnamed, named_df$z)
+})

@@ -699,8 +699,8 @@ survey_sd <- function(
 #' \link[rlang]{nse-force}, or the dplyr vignette called
 #' 'programming' for more information.
 #'
-#' @param x A variable or expression
-#' @param ... Ignored
+#' @param ... variables or expressions, calculated on the unweighted data.frame
+#' behind the \code{tbl_svy} object.
 #' @examples
 #' library(survey)
 #' library(dplyr)
@@ -751,18 +751,19 @@ survey_sd <- function(
 #' # Notice how the results are different when using `unweighted()`
 #'
 #' @export
-unweighted <- function(x, ...) {
+unweighted <- function(...) {
   .svy <- cur_svy()
 
-  dots <- rlang::enquo(x)
+  dots <- rlang::enquos(...)
 
   if (is.calibrated(.svy) | is.pps(.svy)) {
     excluded_rows <- is.infinite(.svy[['prob']])
-    out <- summarize(.svy[["variables"]][!excluded_rows,], !!dots)
+    out <- summarize(.svy[["variables"]][!excluded_rows,], !!!dots)
   } else {
-    out <- summarize(.svy[["variables"]], !!dots)
+    out <- summarize(.svy[["variables"]], !!!dots)
   }
 
-  names(out)[length(names(out))] <- ""
-  out
+  # don't use default dplyr names for dots (but if explicitly named then do)
+  names(out) <- ifelse(names(dots) == "", "", names(out))
+  as_srvyr_result_df(out)
 }

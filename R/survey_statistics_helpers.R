@@ -230,8 +230,8 @@ Math.srvyr_result_df <- function(x, ...) {
 }
 
 #' @export
-Ops.srvyr_result_df <- function(x, ...) {
-  out <- NextMethod("Ops", x)
+Ops.srvyr_result_df <- function(e1, e2) {
+  out <- NextMethod()
   class(out) <- c("srvyr_result_df", class(out))
   out
 }

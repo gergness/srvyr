@@ -96,11 +96,11 @@ dstrata \%>\%
 # Here we can calculate binary variable on the fly and also multiply by 100 to
 # get percentages
 dstrata \%>\%
-  summarize(api99_over_700_pct = 100 * survey_mean(api99 > 700)
+  summarize(api99_over_700_pct = 100 * survey_mean(api99 > 700))
 
 # But be careful, the variance doesn't scale the same way, so this is wrong!
 dstrata \%>\%
-  summarize(api99_over_700_pct = 100 * survey_mean(api99 > 700, vartype = "var")
+  summarize(api99_over_700_pct = 100 * survey_mean(api99 > 700, vartype = "var"))
 # Wrong variance!
 
 }

@@ -209,12 +209,6 @@ ggplot(data = out, aes(x = stype, y = api_diff, group = hs_grad_pct, fill = hs_g
 
 ```
 
-
-# CAUTION! Difference in default degrees of freedom
-Though it should be possible to get the exact same results using `srvyr` as you would
-if you used the `survey` package, s
-
-
 # Grab Bag
 
 ## Using `survey` functions on `srvyr` objects
@@ -229,11 +223,49 @@ summary(glm)
 ```
 
 
+## Using expressions to create variables on the fly
+Like `dplyr`, `srvyr` allows you to use expressions in the arguments, 
+allowing you to create variables in a single step. For example, you can
+use expressions:
+
+1) as the arguments inside the survey statistic functions like `survey_mean`
+```{r, message = FALSE}
+strat_design %>%
+  summarize(prop_api99_over_700 = survey_mean(api99 > 700))
+```
+
+2) as an argument to `summarize`
+```{r, message = FALSE}
+strat_design %>%
+  group_by(awards) %>%
+  summarize(percentage = 100 * survey_mean())
+```
+
+3) and you can even create varables inside of `group_by`
+```{r, message = FALSE}
+strat_design %>%
+  group_by(api99_above_700 = api99 > 700) %>%
+  summarize(api00_mn = survey_mean(api00))
+```
+
+Though on-the-fly expressions are syntactically valid, it is possible to make statistically
+invalid numbers from them. For example, though the standard error and confidence intervals 
+can be multiplied by a scalar (like 100), the variance does not scale the same way, so the
+following is invalid:
+
+```{r, message = FALSE}
+# BAD DON'T DO THIS!
+strat_design %>%
+  group_by(awards) %>%
+  summarize(percentage = 100 * survey_mean(vartype = "var"))
+# VARIANCE IS WRONG
+```
+
 ## Non-Standard evaluation
 
 Srvyr supports the non-standard evaluation conventions that dplyr uses.
 If you'd like to use a function programmatically, you can use the functions from 
-rlang like the `{{` operator (aka "curly curly") from `rlang`. 
+rlang like the `{{` operator (aka "curly curly") from `rlang`.
 
 Here's a quick example, but please see the dplyr vignette 
 [`vignette("programming", package = "dplyr")`](https://dplyr.tidyverse.org/articles/programming.html)

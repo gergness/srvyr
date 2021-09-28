@@ -191,3 +191,13 @@ test_that("summarize unpacks inside of across", {
 
   expect_equal(unnamed, named_df$z)
 })
+
+test_that("summarize unpacks after on-the-fly expression", {
+  actual <- dstrata %>%
+    summarize(x = 100 * survey_mean(api99 > 700))
+  expected <- dstrata %>%
+    summarize(x = survey_mean(api99 > 700)) %>%
+    mutate(across(.fns = ~. * 100))
+
+  expect_equal(actual, expected)
+})

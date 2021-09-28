@@ -223,9 +223,46 @@ summary(glm)
 ```
 
 
-## Standard evaluation
+## Using expressions to create variables on the fly
+Like `dplyr`, `srvyr` allows you to use expressions in the arguments, 
+allowing you to create variables in a single step. For example, you can
+use expressions:
 
-Srvyr now supports the standard evaluation conventions introduced in dplyr version 0.7 and
+1) as the arguments inside the survey statistic functions like `survey_mean`
+```{r, message = FALSE}
+strat_design %>%
+  summarize(prop_api99_over_700 = survey_mean(api99 > 700))
+```
+
+2) as an argument to `summarize`
+```{r, message = FALSE}
+strat_design %>%
+  group_by(awards) %>%
+  summarize(percentage = 100 * survey_mean())
+```
+
+3) and you can even create varables inside of `group_by`
+```{r, message = FALSE}
+strat_design %>%
+  group_by(api99_above_700 = api99 > 700) %>%
+  summarize(api00_mn = survey_mean(api00))
+```
+
+Though on-the-fly expressions are syntactically valid, it is possible to make statistically
+invalid numbers from them. For example, though the standard error and confidence intervals 
+can be multiplied by a scalar (like 100), the variance does not scale the same way, so the
+following is invalid:
+
+```{r, message = FALSE}
+# BAD DON'T DO THIS!
+strat_design %>%
+  group_by(awards) %>%
+  summarize(percentage = 100 * survey_mean(vartype = "var"))
+# VARIANCE IS WRONG
+```
+
+## Non-standard evaluation
+Srvyr supports the non-standard evaluation conventions introduced in dplyr version 0.7 and
 rlang. If you'd like to use a function programmatically, you can use the functions from 
 rlang like `rlang::quo()` or `rlang::sym()` to capture the expression and `rlang::!!`
 to unquote it. All of these functions are re-exported by srvyr, so you don't need

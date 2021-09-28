@@ -199,9 +199,20 @@ stop_for_factor <- function(x) {
   }
 }
 
-# srvyr_result_df helpers
+# srvyr_result_df helpers ---
 
-# TODO: Export and mention in extending srvyr???
+#' Create a srvyr results data.frame which is automatically unpacked by srvyr
+#'
+#' srvyr uses data.frame columns wrapped by this function to know when to
+#' automatically unpack the results for the user. When developing extensions
+#' (see vignette \code{extending-srvyr}), use this function to wrap the result
+#' in so that \code{summarize} knows to unpack them.
+#'
+#' @param x A data.frame
+#'
+#' @return An object with the \code{srvyr_result_df} added
+#' @export
+#' @keywords internal
 as_srvyr_result_df <- function(x) {
   class(x) <- c("srvyr_result_df", class(x))
   x

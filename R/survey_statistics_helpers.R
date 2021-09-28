@@ -224,10 +224,3 @@ Ops.srvyr_result_df <- function(x, ...) {
   class(out) <- c("srvyr_result_df", class(out))
   out
 }
-
-#' @export
-Summary.srvyr_result_df <- function(x, ...) {
-  out <- NextMethod("Summary", x)
-  class(out) <- c("srvyr_result_df", class(out))
-  out
-}

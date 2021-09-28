@@ -199,7 +199,9 @@ stop_for_factor <- function(x) {
   }
 }
 
+# srvyr_result_df helpers
 
+# TODO: Export and mention in extending srvyr???
 as_srvyr_result_df <- function(x) {
   class(x) <- c("srvyr_result_df", class(x))
   x
@@ -209,7 +211,23 @@ is_srvyr_result_df <- function(x) {
   inherits(x, "srvyr_result_df")
 }
 
-remove_srvyr_result_df_class <- function(x) {
-  class(x) <- setdiff(class(x), "srvyr_result_df")
-  x
+#' @export
+Math.srvyr_result_df <- function(x, ...) {
+  out <- NextMethod("Math", x)
+  class(out) <- c("srvyr_result_df", class(out))
+  out
+}
+
+#' @export
+Ops.srvyr_result_df <- function(x, ...) {
+  out <- NextMethod("Ops", x)
+  class(out) <- c("srvyr_result_df", class(out))
+  out
+}
+
+#' @export
+Summary.srvyr_result_df <- function(x, ...) {
+  out <- NextMethod("Summary", x)
+  class(out) <- c("srvyr_result_df", class(out))
+  out
 }

@@ -209,6 +209,43 @@ ggplot(data = out, aes(x = stype, y = api_diff, group = hs_grad_pct, fill = hs_g
 
 ```
 
+
+# Comparison to the survey package (Degrees of freedom)
+For the most part, `srvyr` tries to be a drop-in replacement for the survey package, only
+changing the syntax that you wrote. However, the way that calculations of degrees of 
+freedom when calculating confidence intervals is different.
+
+`srvyr` assumes that you want to use the true degrees of freedom by default, but the `survey`
+package uses `Inf` as the default. You can use the argument `df` to get the same result
+as the survey package.
+
+```{r}
+# Set pillar print methods so tibble has more decimal places
+old_sigfig <- options("pillar.sigfig")
+options("pillar.sigfig" = 5)
+
+# survey default
+estimate <- svymean(~api99, strat_design)
+confint(estimate)
+
+# srvyr default
+strat_design %>%
+  summarize(x = survey_mean(api99, vartype = "ci"))
+
+# setting the degrees of freedom so srvyr matches survey default
+strat_design %>%
+  summarize(x = survey_mean(api99, vartype = "ci", df = Inf)) %>%
+  print()
+
+# setting the degrees of freedom so survey matches survey default
+confint(estimate, df = degf(strat_design))
+
+# reset significant figures
+options("pillar.sigfig" = old_sigfig)
+```
+
+
+
 # Grab Bag
 
 ## Using `survey` functions on `srvyr` objects

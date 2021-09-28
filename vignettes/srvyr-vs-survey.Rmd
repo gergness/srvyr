@@ -253,7 +253,7 @@ invalid numbers from them. For example, though the standard error and confidence
 can be multiplied by a scalar (like 100), the variance does not scale the same way, so the
 following is invalid:
 
-```{r, message = FALSE}
+```{r, message = FALSE, eval=FALSE}
 # BAD DON'T DO THIS!
 strat_design %>%
   group_by(awards) %>%
@@ -294,15 +294,23 @@ so-called "underscore functions" (like `summarize_`). Currently, they have been
 soft-deprecated, but I expect them to be removed altogether in some future version
 of srvyr.
 
-## Scoped functions
-Srvyr has also been able to take advantage of the new-ish dplyr "scoped" variants of 
-the main manipulation functions like `summarize_at()`. These functions allow you to 
-quickly calculate summary statistics for multiple variables. For example:
+## Column-wise functions
+`srvyr` allows for use of the `dplyr::across` function, which is explained in the 
+[dplyr vignette "Column-wise operations"](). A brief example with `srvyr` is:
+
+```{r}
+# Calculate survey mean for all variables that have names starting with "api"
+strat_design %>%
+  summarize(across(starts_with("api"), survey_mean))
+```
+
+For more details, please see the dplyr documentation.
+
+`srvyr` also supports the older scoped functions like `summarize_at`, `summarize_if`, 
+`summarize_all` and `summarize_each`. However, these have been deprecated.
 
 ```{r}
 # Calculate survey mean for all variables that have names starting with "api"
 strat_design %>%
   summarize_at(vars(starts_with("api")), survey_mean)
 ```
-
-The dplyr documentation `dplyr::scoped` provides more details.

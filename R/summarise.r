@@ -153,6 +153,14 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #'             api00_mn = survey_mean(api00),
 #'             api_diff = survey_mean(api00 - api99))
 #'
+#' # `dplyr::across` can be used to programmatically summarize multiple columns
+#' # See https://dplyr.tidyverse.org/articles/colwise.html for details
+#' # A basic example of working on 2 columns at once and then calculating the total
+#' # the mean
+#' total_vars <- c("enroll", "api.stu")
+#' dstrata %>%
+#'   summarize(across(c(all_of(total_vars)), survey_total))
+#'
 #' # Expressions are allowed in summarize arguments & inside functions
 #' # Here we can calculate binary variable on the fly and also multiply by 100 to
 #' # get percentages

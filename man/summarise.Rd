@@ -7,7 +7,7 @@
 \arguments{
 \item{.data}{tbl A \code{tbl_svy} object}
 
-\item{...}{Name-value pairs of summary functions}
+\item{...}{Name-value pairs of summarizing expressions, see details}
 
 \item{.groups}{Defaults to "drop_last" in srvyr meaning that the last group is peeled
 off, but if there are more groups they will be preserved. Other options are "drop", which
@@ -39,28 +39,34 @@ The available functions from srvyr are:
 
 \describe{
 \item{\code{\link{survey_mean}}}{
-   Calculate the survey mean of the entire population or by \code{groups}.
-   Based on \code{\link[survey]{svymean}}.}
+   Calculate the mean of a numeric variable or the proportion falling into \code{groups}
+   for the entire population or by \code{groups}. Based on \code{\link[survey]{svymean}}
+   and \code{\link[survey]{svyciprop}}.}.
 \item{\code{\link{survey_total}}}{
    Calculate the survey total of the entire population or by \code{groups}.
    Based on \code{\link[survey]{svytotal}}.}
+\item{\code{\link{survey_prop}}}{
+   Calculate the proportion of the entire population or by \code{groups}.
+   Based on \code{\link[survey]{svyciprop}}.}
  \item{\code{\link{survey_ratio}}}{
    Calculate the ratio of 2 variables in the entire population or by \code{groups}.
    Based on \code{\link[survey]{svyratio}}.}
-\item{\code{\link{survey_quantile}}}{
+\item{\code{\link{survey_quantile}} & \code{\link{survey_median}}}{
    Calculate quantiles in the entire population or by \code{groups}. Based on
-   \code{\link[survey]{svyquantile}}.}
- \item{\code{\link{survey_median}}}{
-   Calculate the median in the entire population or by \code{groups}.
    \code{\link[survey]{svyquantile}}.}
  \item{\code{\link{unweighted}}}{
    Calculate an unweighted estimate as you would on a regular \code{tbl_df}.
    Based on dplyr's \code{\link[dplyr]{summarise}}.}
 }
+
+You can use expressions both in the \code{...} of \code{summarize} and also
+in the arguments to the summarizing functions. Though this is valid syntactically
+it can also allow you to calculate incorrect results (for example if you multiply
+the mean by 100, the standard error is also multipled by 100, but the variance
+is not).
 }
 \examples{
-library(survey)
-data(api)
+data(api, package = "survey")
 
 dstrata <- apistrat \%>\%
   as_survey_design(strata = stype, weights = pw)
@@ -77,5 +83,24 @@ dstrata_grp \%>\%
   summarise(api99_mn = survey_mean(api99),
             api00_mn = survey_mean(api00),
             api_diff = survey_mean(api00 - api99))
+
+# `dplyr::across` can be used to programmatically summarize multiple columns
+# See https://dplyr.tidyverse.org/articles/colwise.html for details
+# A basic example of working on 2 columns at once and then calculating the total
+# the mean
+total_vars <- c("enroll", "api.stu")
+dstrata \%>\%
+  summarize(across(c(all_of(total_vars)), survey_total))
+
+# Expressions are allowed in summarize arguments & inside functions
+# Here we can calculate binary variable on the fly and also multiply by 100 to
+# get percentages
+dstrata \%>\%
+  summarize(api99_over_700_pct = 100 * survey_mean(api99 > 700))
+
+# But be careful, the variance doesn't scale the same way, so this is wrong!
+dstrata \%>\%
+  summarize(api99_over_700_pct = 100 * survey_mean(api99 > 700, vartype = "var"))
+# Wrong variance!
 
 }

@@ -136,7 +136,7 @@ get_var_est <- function(
     out <- c(out, list(deff))
   }
 
-  dplyr::bind_cols(out)
+  as_srvyr_result_df(dplyr::bind_cols(out))
 }
 
 # Largely the same as get_var_est(), but need to handle the fact that there can be
@@ -184,7 +184,7 @@ get_var_est_quantile <- function(stat, vartype, q, grps = "", level = 0.95, df =
     out <- c(list(as.data.frame(stat[grps])), out)
   }
 
-  dplyr::bind_cols(out)
+  as_srvyr_result_df(dplyr::bind_cols(out))
 }
 
 stop_for_factor <- function(x) {
@@ -197,4 +197,41 @@ stop_for_factor <- function(x) {
       "Character vectors not allowed in survey functions, should be used as a grouping variable."
     ), call. = FALSE)
   }
+}
+
+# srvyr_result_df helpers ---
+
+#' Create a srvyr results data.frame which is automatically unpacked by srvyr
+#'
+#' srvyr uses data.frame columns wrapped by this function to know when to
+#' automatically unpack the results for the user. When developing extensions
+#' (see vignette \code{extending-srvyr}), use this function to wrap the result
+#' in so that \code{summarize} knows to unpack them.
+#'
+#' @param x A data.frame
+#'
+#' @return An object with the \code{srvyr_result_df} added
+#' @export
+#' @keywords internal
+as_srvyr_result_df <- function(x) {
+  class(x) <- c("srvyr_result_df", class(x))
+  x
+}
+
+is_srvyr_result_df <- function(x) {
+  inherits(x, "srvyr_result_df")
+}
+
+#' @export
+Math.srvyr_result_df <- function(x, ...) {
+  out <- NextMethod("Math", x)
+  class(out) <- c("srvyr_result_df", class(out))
+  out
+}
+
+#' @export
+Ops.srvyr_result_df <- function(e1, e2) {
+  out <- NextMethod()
+  class(out) <- c("srvyr_result_df", class(out))
+  out
 }

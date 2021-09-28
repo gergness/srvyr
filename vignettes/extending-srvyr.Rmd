@@ -59,7 +59,7 @@ objects that are formatted in a particular way. Below, I'll explain some of the
 functions that will help create these objects for you in most cases, but the return
 should be:
 
-- A `data.frame` object
+- A `srvyr_result_df` object (which is just a wrapper around a `data.frame`)
 - Generally there should be 1 row for ungrouped, or 1 row per group, but this is no longer
   required.
 - The names are based on the argument name from the summarize call but this name can't 
@@ -89,6 +89,8 @@ for the survey package to this format.
   like standard error (se), confidence interval (ci), variance (var), 
   or coefficient of variance (cv). For functions that support it, 
   there is a separate argument for design effects (to match survey's conventions).
+- `as_srvyr_result_df()` - A helper function that adds the `srvyr_result_df` class
+  to a `data.frame`
 
 Note that these functions may not work in all cases. In srvyr, I've actually had to 
 write multiple versions of `get_var_est()` because of minor differences in the way survey
@@ -119,7 +121,7 @@ survey_gini <- function(
   
   out <- convey::svygini(~`__SRVYR_TEMP_VAR__`, na.rm = na.rm, design = .svy)
   out <- srvyr::get_var_est(out, vartype)
-  out
+  as_srvyr_result_df(out)
 }
 ```
 

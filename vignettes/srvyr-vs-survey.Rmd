@@ -209,7 +209,6 @@ ggplot(data = out, aes(x = stype, y = api_diff, group = hs_grad_pct, fill = hs_g
 
 ```
 
-
 # Grab Bag
 
 ## Using `survey` functions on `srvyr` objects
@@ -224,11 +223,49 @@ summary(glm)
 ```
 
 
+## Using expressions to create variables on the fly
+Like `dplyr`, `srvyr` allows you to use expressions in the arguments, 
+allowing you to create variables in a single step. For example, you can
+use expressions:
+
+1) as the arguments inside the survey statistic functions like `survey_mean`
+```{r, message = FALSE}
+strat_design %>%
+  summarize(prop_api99_over_700 = survey_mean(api99 > 700))
+```
+
+2) as an argument to `summarize`
+```{r, message = FALSE}
+strat_design %>%
+  group_by(awards) %>%
+  summarize(percentage = 100 * survey_mean())
+```
+
+3) and you can even create varables inside of `group_by`
+```{r, message = FALSE}
+strat_design %>%
+  group_by(api99_above_700 = api99 > 700) %>%
+  summarize(api00_mn = survey_mean(api00))
+```
+
+Though on-the-fly expressions are syntactically valid, it is possible to make statistically
+invalid numbers from them. For example, though the standard error and confidence intervals 
+can be multiplied by a scalar (like 100), the variance does not scale the same way, so the
+following is invalid:
+
+```{r, message = FALSE, eval=FALSE}
+# BAD DON'T DO THIS!
+strat_design %>%
+  group_by(awards) %>%
+  summarize(percentage = 100 * survey_mean(vartype = "var"))
+# VARIANCE IS WRONG
+```
+
 ## Non-Standard evaluation
 
 Srvyr supports the non-standard evaluation conventions that dplyr uses.
 If you'd like to use a function programmatically, you can use the functions from 
-rlang like the `{{` operator (aka "curly curly") from `rlang`. 
+rlang like the `{{` operator (aka "curly curly") from `rlang`.
 
 Here's a quick example, but please see the dplyr vignette 
 [`vignette("programming", package = "dplyr")`](https://dplyr.tidyverse.org/articles/programming.html)
@@ -264,6 +301,32 @@ Srvyr also supports older methods of working column-wise, the "scoped variants",
 `summarize_at`, `summarize_if`, `summarize_all` and `summarize_each`. Again, these are
 maintained for backwards compatibility, matching what the tidyverse team has done, but
 may be removed from a future version.
+
+## Calculating proportions in groups
+You can calculate the weighted proportion that falls into a group using the 
+`survey_prop()` function (or the `survey_mean()` function with no `x` argument).
+The proportion is calculated by "unpeeling" the last variable used in `group_by()`
+and then calculating the proportion within the other groups that fall into the last
+group (so that the proportion within each group that was unpeeled sums to 100%).
+
+```{r}
+# Calculate the proportion that falls into each category of `awards` per `stype`
+strat_design %>%
+  group_by(stype, awards) %>%
+  summarize(prop = survey_prop())
+```
+
+If you want to calculate the propotion for groups from multiple variables at the same
+time that add up to 100%, the `interact` function can help. The `interact` function
+creates a variable that is automatically split apart so that more than one variable 
+can be unpeeled.
+
+```{r}
+# Calculate the proportion that falls into each category of both `awards` and `stype`
+strat_design %>%
+  group_by(interact(stype, awards)) %>%
+  summarize(prop = survey_prop())
+```
 
 # Learning More
 Here are some free resources put together by the community about srvyr:

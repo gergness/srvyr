@@ -712,6 +712,21 @@ test_that(
   }
 )
 
+test_that("unweighted allows named arguments",  {
+  data(api, package = "survey")
+  dclus1 <- as_survey_design(apiclus1, id = dnum, weights = pw, fpc = fpc)
+
+  expect_equal(
+    dclus1 %>% summarize(n = unweighted(a = n())),
+    tibble(na = 183)
+  )
+
+  expect_equal(
+    dclus1 %>% summarize(unweighted(a = n())),
+    tibble(a = 183)
+  )
+})
+
 test_that(
   "unweighted works with filtered data in calibrated or PPS designs", {
     data(api, package = "survey")

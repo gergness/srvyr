@@ -253,7 +253,7 @@ invalid numbers from them. For example, though the standard error and confidence
 can be multiplied by a scalar (like 100), the variance does not scale the same way, so the
 following is invalid:
 
-```{r, message = FALSE}
+```{r, message = FALSE, eval=FALSE}
 # BAD DON'T DO THIS!
 strat_design %>%
   group_by(awards) %>%

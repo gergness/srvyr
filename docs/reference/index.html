@@ -72,7 +72,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home"></span>
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
@@ -207,6 +207,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="interact.html">interact()</a></code> </p>
+        </td>
+        <td><p>Create interaction terms to group by when summarizing</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="summarise.html">summarise</a></code> </p>
         </td>
         <td><p>Summarise multiple values to a single value.</p></td>
@@ -221,7 +227,7 @@
         <td>
           <p><code><a href="survey_mean.html">survey_mean()</a></code> <code><a href="survey_mean.html">survey_prop()</a></code> </p>
         </td>
-        <td><p>Calculate the mean and its variation using survey methods</p></td>
+        <td><p>Calculate mean/proportion and its variation using survey methods</p></td>
       </tr><tr>
         
         <td>
@@ -258,6 +264,12 @@
           <p><code><a href="unweighted.html">unweighted()</a></code> </p>
         </td>
         <td><p>Calculate the an unweighted summary statistic from a survey</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="survey_old_quantile.html">survey_old_quantile()</a></code> <code><a href="survey_old_quantile.html">survey_old_median()</a></code> </p>
+        </td>
+        <td><p>Calculate the quantile and its variation using survey methods</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -295,6 +307,24 @@
           <p><code><a href="tbl_vars.html">tbl_vars</a></code> </p>
         </td>
         <td><p>List variables produced by a tbl.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="group_map_dfr.html">group_map_dfr()</a></code> <code><a href="group_map_dfr.html">group_map(<i>&lt;tbl_svy&gt;</i>)</a></code> <code><a href="group_map_dfr.html">group_map_dfr()</a></code> </p>
+        </td>
+        <td><p>Apply a function to each group</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dplyr_filter_joins.html">dplyr_filter_joins</a></code> </p>
+        </td>
+        <td><p>Filtering joins from dplyr</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="collect.html">collect</a></code> </p>
+        </td>
+        <td><p>Force computation of a database query</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -326,6 +356,18 @@
           <p><code><a href="set_survey_vars.html">set_survey_vars()</a></code> </p>
         </td>
         <td><p>Set the variables for the current survey variable</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="uninteract.html">uninteract()</a></code> <code><a href="uninteract.html">is.interaction()</a></code> </p>
+        </td>
+        <td><p>Break interaction vectors back into component columns</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="srvyr_interaction.html">srvyr_interaction</a></code> </p>
+        </td>
+        <td><p>srvyr interaction column</p></td>
       </tr>
     </tbody>
     </table>
@@ -345,7 +387,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

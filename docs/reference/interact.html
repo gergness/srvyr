@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Summarise multiple values into cascading groups — cascade • srvyr</title>
+<title>Create interaction terms to group by when summarizing — interact • srvyr</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,10 @@
 
 
 
-<meta property="og:title" content="Summarise multiple values into cascading groups — cascade" />
-<meta property="og:description" content="cascade is similar to summarise, but calculates
-a summary statistics for the total of a group in addition to each group." />
+<meta property="og:title" content="Create interaction terms to group by when summarizing — interact" />
+<meta property="og:description" content="Allows multiple grouping by multiple variables as if they were a single
+variable, which allows calculating proportions that sum to 100
+more than a single grouping variable with survey_mean." />
 
 
 
@@ -134,63 +135,72 @@ a summary statistics for the total of a group in addition to each group." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Summarise multiple values into cascading groups</h1>
-    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/cascade.r'><code>R/cascade.r</code></a></small>
-    <div class="hidden name"><code>cascade.Rd</code></div>
+    <h1>Create interaction terms to group by when summarizing</h1>
+    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/interaction.R'><code>R/interaction.R</code></a></small>
+    <div class="hidden name"><code>interact.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>cascade</code> is similar to <code><a href='summarise.html'>summarise</a></code>, but calculates
-a summary statistics for the total of a group in addition to each group.</p>
+    <p>Allows multiple grouping by multiple variables as if they were a single
+variable, which allows calculating proportions that sum to 100<!-- % across -->
+more than a single grouping variable with <code>survey_mean</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cascade</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>...</span>, <span class='va'>.dots</span>, .fill <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>interact</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.data, </th>
-      <td><p>tbl A <code>tbl_svy</code> object</p></td>
-    </tr>
-    <tr>
       <th>...</th>
-      <td><p>Name-value pairs of summary functions</p></td>
-    </tr>
-    <tr>
-      <th>.dots</th>
-      <td><p>Used to work around non-standard evaluation. See
-<code>vignette("nse", package = "dplyr")</code> for details.</p></td>
-    </tr>
-    <tr>
-      <th>.fill</th>
-      <td><p>Value to fill in for group summaries</p></td>
+      <td><p>variables to group by. All types of tbls accept variable names, and
+most will also accept functions of variables (though some database-backed
+tbls do not allow creating variables).</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A vector of type <code><a href='srvyr_interaction.html'>srvyr_interaction</a></code>, which is generally
+expected to be automatically split apart.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Behind the scenes, this function creates a special column type that is
+split back into the component columns automatically by <code>summarize</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://r-survey.r-forge.r-project.org/survey/'>survey</a></span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>api</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>api</span>, package <span class='op'>=</span> <span class='st'>"survey"</span><span class='op'>)</span>
 
 <span class='va'>dstrata</span> <span class='op'>&lt;-</span> <span class='va'>apistrat</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span><span class='op'>(</span>strata <span class='op'>=</span> <span class='va'>stype</span>, weights <span class='op'>=</span> <span class='va'>pw</span><span class='op'>)</span>
 
-<span class='va'>dstrata_grp</span> <span class='op'>&lt;-</span> <span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>stype</span><span class='op'>)</span>
-
-<span class='va'>dstrata_grp</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>cascade</span><span class='op'>(</span>api99_mn <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api99</span><span class='op'>)</span>,
-            api00_mn <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api00</span><span class='op'>)</span>,
-            api_diff <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api00</span> <span class='op'>-</span> <span class='va'>api99</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 4 × 7</span>
-#&gt;   stype api99_mn api99_mn_se api00_mn api00_mn_se api_diff api_diff_se
-#&gt;   <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>1</span> E         636.        13.3     674.       12.5     38.6         2.76
-#&gt; <span style='color: #BCBCBC;'>2</span> H         617.        15.8     626.       15.5      8.46        3.41
-#&gt; <span style='color: #BCBCBC;'>3</span> M         610.        16.8     637.       16.6     26.4         3.05
-#&gt; <span style='color: #BCBCBC;'>4</span> <span style='color: #BB0000;'>NA</span>        629.        10.1     662.        9.54    32.9         2.08</div><div class='input'>
-</div></pre>
+<span class='co'># The sum of the whole prop column is equal to 100%</span>
+<span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='group_by.html'>group_by</a></span><span class='op'>(</span><span class='fu'>interact</span><span class='op'>(</span><span class='va'>stype</span>, <span class='va'>awards</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='summarise.html'>summarize</a></span><span class='op'>(</span>prop <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 6 × 4</span>
+#&gt;   stype awards   prop prop_se
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> E     No     0.193  0.031<span style='text-decoration: underline;'>8</span> 
+#&gt; <span style='color: #BCBCBC;'>2</span> E     Yes    0.521  0.031<span style='text-decoration: underline;'>8</span> 
+#&gt; <span style='color: #BCBCBC;'>3</span> H     No     0.082<span style='text-decoration: underline;'>9</span> 0.008<span style='text-decoration: underline;'>12</span>
+#&gt; <span style='color: #BCBCBC;'>4</span> H     Yes    0.039<span style='text-decoration: underline;'>0</span> 0.008<span style='text-decoration: underline;'>12</span>
+#&gt; <span style='color: #BCBCBC;'>5</span> M     No     0.085<span style='text-decoration: underline;'>5</span> 0.011<span style='text-decoration: underline;'>7</span> 
+#&gt; <span style='color: #BCBCBC;'>6</span> M     Yes    0.078<span style='text-decoration: underline;'>9</span> 0.011<span style='text-decoration: underline;'>7</span> </div><div class='input'>
+<span class='co'># But if you didn't interact, the sum of each stype's prop is 100%</span>
+<span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>stype</span>, <span class='va'>awards</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='summarise.html'>summarize</a></span><span class='op'>(</span>prop <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 6 × 4</span>
+#&gt; <span style='color: #949494;'># Groups:   stype [3]</span>
+#&gt;   stype awards  prop prop_se
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> E     No      0.27  0.044<span style='text-decoration: underline;'>6</span>
+#&gt; <span style='color: #BCBCBC;'>2</span> E     Yes     0.73  0.044<span style='text-decoration: underline;'>6</span>
+#&gt; <span style='color: #BCBCBC;'>3</span> H     No      0.68  0.066<span style='text-decoration: underline;'>6</span>
+#&gt; <span style='color: #BCBCBC;'>4</span> H     Yes     0.32  0.066<span style='text-decoration: underline;'>6</span>
+#&gt; <span style='color: #BCBCBC;'>5</span> M     No      0.52  0.071<span style='text-decoration: underline;'>4</span>
+#&gt; <span style='color: #BCBCBC;'>6</span> M     Yes     0.48  0.071<span style='text-decoration: underline;'>4</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

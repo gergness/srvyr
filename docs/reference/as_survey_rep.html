@@ -73,7 +73,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home"></span>
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
@@ -142,72 +142,72 @@
     <p>Create a survey object with replicate weights.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>as_survey_rep</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>as_survey_rep</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>as_survey_rep</span>(
-  <span class='no'>.data</span>,
-  <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>repweights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"BRR"</span>, <span class='st'>"Fay"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"other"</span>),
-  <span class='kw'>combined_weights</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>rho</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>bootstrap_average</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>rscales</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpctype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fraction"</span>, <span class='st'>"correction"</span>),
-  <span class='kw'>mse</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"survey.replicates.mse"</span>),
-  <span class='no'>...</span>
-)
+<span class='fu'>as_survey_rep</span><span class='op'>(</span>
+  <span class='va'>.data</span>,
+  variables <span class='op'>=</span> <span class='cn'>NULL</span>,
+  repweights <span class='op'>=</span> <span class='cn'>NULL</span>,
+  weights <span class='op'>=</span> <span class='cn'>NULL</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"BRR"</span>, <span class='st'>"Fay"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"other"</span><span class='op'>)</span>,
+  combined_weights <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  rho <span class='op'>=</span> <span class='cn'>NULL</span>,
+  bootstrap_average <span class='op'>=</span> <span class='cn'>NULL</span>,
+  scale <span class='op'>=</span> <span class='cn'>NULL</span>,
+  rscales <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fpc <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fpctype <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"fraction"</span>, <span class='st'>"correction"</span><span class='op'>)</span>,
+  mse <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"survey.replicates.mse"</span><span class='op'>)</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for tbl_lazy</span>
-<span class='fu'>as_survey_rep</span>(
-  <span class='no'>.data</span>,
-  <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>repweights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"BRR"</span>, <span class='st'>"Fay"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"other"</span>),
-  <span class='kw'>combined_weights</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>rho</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>bootstrap_average</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>rscales</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpctype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fraction"</span>, <span class='st'>"correction"</span>),
-  <span class='kw'>mse</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"survey.replicates.mse"</span>),
-  <span class='no'>...</span>
-)
+<span class='fu'>as_survey_rep</span><span class='op'>(</span>
+  <span class='va'>.data</span>,
+  variables <span class='op'>=</span> <span class='cn'>NULL</span>,
+  repweights <span class='op'>=</span> <span class='cn'>NULL</span>,
+  weights <span class='op'>=</span> <span class='cn'>NULL</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"BRR"</span>, <span class='st'>"Fay"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"other"</span><span class='op'>)</span>,
+  combined_weights <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  rho <span class='op'>=</span> <span class='cn'>NULL</span>,
+  bootstrap_average <span class='op'>=</span> <span class='cn'>NULL</span>,
+  scale <span class='op'>=</span> <span class='cn'>NULL</span>,
+  rscales <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fpc <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fpctype <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"fraction"</span>, <span class='st'>"correction"</span><span class='op'>)</span>,
+  mse <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"survey.replicates.mse"</span><span class='op'>)</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for svyrep.design</span>
-<span class='fu'>as_survey_rep</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
+<span class='fu'>as_survey_rep</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for survey.design2</span>
-<span class='fu'>as_survey_rep</span>(
-  <span class='no'>.data</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"auto"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"BRR"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"subbootstrap"</span>, <span class='st'>"mrbbootstrap"</span>,
-    <span class='st'>"Fay"</span>),
-  <span class='kw'>rho</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpctype</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>mse</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"survey.replicates.mse"</span>)
-)
+<span class='fu'>as_survey_rep</span><span class='op'>(</span>
+  <span class='va'>.data</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"auto"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"BRR"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"subbootstrap"</span>, <span class='st'>"mrbbootstrap"</span>,
+    <span class='st'>"Fay"</span><span class='op'>)</span>,
+  rho <span class='op'>=</span> <span class='fl'>0</span>,
+  fpc <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fpctype <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>,
+  compress <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  mse <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"survey.replicates.mse"</span><span class='op'>)</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for tbl_svy</span>
-<span class='fu'>as_survey_rep</span>(
-  <span class='no'>.data</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"auto"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"BRR"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"subbootstrap"</span>, <span class='st'>"mrbbootstrap"</span>,
-    <span class='st'>"Fay"</span>),
-  <span class='kw'>rho</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpctype</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>mse</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"survey.replicates.mse"</span>)
-)</pre>
+<span class='fu'>as_survey_rep</span><span class='op'>(</span>
+  <span class='va'>.data</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"auto"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"BRR"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"subbootstrap"</span>, <span class='st'>"mrbbootstrap"</span>,
+    <span class='st'>"Fay"</span><span class='op'>)</span>,
+  rho <span class='op'>=</span> <span class='fl'>0</span>,
+  fpc <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fpctype <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>,
+  compress <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  mse <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"survey.replicates.mse"</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -288,25 +288,27 @@ replicate weights.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Examples from ?survey::svrepdesign()</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survey</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scd</span>)
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://r-survey.r-forge.r-project.org/survey/'>survey</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scd</span><span class='op'>)</span>
 <span class='co'># use BRR replicate weights from Levy and Lemeshow</span>
-<span class='no'>scd</span> <span class='kw'>&lt;-</span> <span class='no'>scd</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='dplyr_single.html'>mutate</a></span>(<span class='kw'>rep1</span> <span class='kw'>=</span> <span class='fl'>2</span> * <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>),
-         <span class='kw'>rep2</span> <span class='kw'>=</span> <span class='fl'>2</span> * <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>),
-         <span class='kw'>rep3</span> <span class='kw'>=</span> <span class='fl'>2</span> * <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>),
-         <span class='kw'>rep4</span> <span class='kw'>=</span> <span class='fl'>2</span> * <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>))
+<span class='va'>scd</span> <span class='op'>&lt;-</span> <span class='va'>scd</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='group_trim.html'>mutate</a></span><span class='op'>(</span>rep1 <span class='op'>=</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
+         rep2 <span class='op'>=</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,
+         rep3 <span class='op'>=</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,
+         rep4 <span class='op'>=</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='no'>scdrep</span> <span class='kw'>&lt;-</span> <span class='no'>scd</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>as_survey_rep</span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"BRR"</span>, <span class='kw'>repweights</span> <span class='kw'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>starts_with</a></span>(<span class='st'>"rep"</span>),
-                <span class='kw'>combined_weights</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: No sampling weights provided: equal probability assumed</span></div><div class='input'>
+<span class='va'>scdrep</span> <span class='op'>&lt;-</span> <span class='va'>scd</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>as_survey_rep</span><span class='op'>(</span>type <span class='op'>=</span> <span class='st'>"BRR"</span>, repweights <span class='op'>=</span> <span class='fu'><a href='https://tidyselect.r-lib.org/reference/starts_with.html'>starts_with</a></span><span class='op'>(</span><span class='st'>"rep"</span><span class='op'>)</span>,
+                combined_weights <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: No sampling weights provided: equal probability assumed</span></div><div class='input'>
 <span class='co'># dplyr 0.7 introduced new style of NSE called quosures</span>
 <span class='co'># See `vignette("programming", package = "dplyr")` for details</span>
-<span class='no'>repwts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='rlang-tidyeval.html'>quo</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>starts_with</a></span>(<span class='st'>"rep"</span>))
-<span class='no'>scdrep</span> <span class='kw'>&lt;-</span> <span class='no'>scd</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>as_survey_rep</span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"BRR"</span>, <span class='kw'>repweights</span> <span class='kw'>=</span> !!<span class='no'>repwts</span>,
-                <span class='kw'>combined_weights</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: No sampling weights provided: equal probability assumed</span></div><div class='input'>
+<span class='va'>repwts</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rlang-tidyeval.html'>quo</a></span><span class='op'>(</span><span class='fu'><a href='https://tidyselect.r-lib.org/reference/starts_with.html'>starts_with</a></span><span class='op'>(</span><span class='st'>"rep"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>scdrep</span> <span class='op'>&lt;-</span> <span class='va'>scd</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>as_survey_rep</span><span class='op'>(</span>type <span class='op'>=</span> <span class='st'>"BRR"</span>, repweights <span class='op'>=</span> <span class='op'>!</span><span class='op'>!</span><span class='va'>repwts</span>,
+                combined_weights <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: No sampling weights provided: equal probability assumed</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -323,7 +325,7 @@ replicate weights.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

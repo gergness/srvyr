@@ -76,7 +76,7 @@ the data from a tbl_svy to a regular tibble)." />
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -84,7 +84,7 @@ the data from a tbl_svy to a regular tibble)." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home"></span>
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
@@ -148,12 +148,12 @@ functions that can be used to iterate on grouped survey objects (note that
 the data from a <code>tbl_svy</code> to a regular tibble).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>group_map_dfr</span>(<span class='no'>.data</span>, <span class='no'>.f</span>, <span class='no'>...</span>, <span class='kw'>.keep</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+    <pre class="usage"><span class='fu'>group_map_dfr</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>.f</span>, <span class='va'>...</span>, .keep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S3 method for tbl_svy</span>
-<span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_map.html'>group_map</a></span>(<span class='no'>.data</span>, <span class='no'>.f</span>, <span class='no'>...</span>, <span class='kw'>.keep</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_map.html'>group_map</a></span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>.f</span>, <span class='va'>...</span>, .keep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
-<span class='fu'>group_map_dfr</span>(<span class='no'>.data</span>, <span class='no'>.f</span>, <span class='no'>...</span>, <span class='kw'>.keep</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'>group_map_dfr</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>.f</span>, <span class='va'>...</span>, .keep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -182,24 +182,26 @@ the data from a <code>tbl_svy</code> to a regular tibble).</p>
   <code>group_walk</code> invisibly the original <code>tbl_svy</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>api</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"survey"</span>)
-<span class='no'>dstrata</span> <span class='kw'>&lt;-</span> <span class='no'>apistrat</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span>(<span class='kw'>strata</span> <span class='kw'>=</span> <span class='no'>stype</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>pw</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>api</span>, package <span class='op'>=</span> <span class='st'>"survey"</span><span class='op'>)</span>
+<span class='va'>dstrata</span> <span class='op'>&lt;-</span> <span class='va'>apistrat</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span><span class='op'>(</span>strata <span class='op'>=</span> <span class='va'>stype</span>, weights <span class='op'>=</span> <span class='va'>pw</span><span class='op'>)</span>
 
-<span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>both</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_map.html'>group_map</a></span>(~<span class='kw pkg'>survey</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/survey/man/svyglm.html'>svyglm</a></span>(<span class='no'>api00</span>~<span class='no'>api99</span> + <span class='no'>stype</span>, <span class='no'>.</span>))
+<span class='va'>results</span> <span class='op'>&lt;-</span> <span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>both</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_map.html'>group_map</a></span><span class='op'>(</span><span class='op'>~</span><span class='fu'>survey</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/survey/man/svyglm.html'>svyglm</a></span><span class='op'>(</span><span class='va'>api00</span><span class='op'>~</span><span class='va'>api99</span> <span class='op'>+</span> <span class='va'>stype</span>, <span class='va'>.</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># group_map_dfr calls `bind_rows` on the list returned and includes</span>
 <span class='co'># grouping variables. This is most useful with a package like `broom`</span>
 <span class='co'># but could also be used with survey package functions.</span>
-<span class='no'>result_coef</span> <span class='kw'>&lt;-</span> <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>both</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'>group_map_dfr</span>(
-    ~<span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
-      <span class='kw'>api99_coef</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw pkg'>survey</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/survey/man/svyglm.html'>svyglm</a></span>(<span class='no'>api00</span>~<span class='no'>api99</span> + <span class='no'>stype</span>, <span class='no'>.</span>))<span class='kw'>[[</span><span class='st'>"api99"</span>]]
-    )
-  )</div></pre>
+<span class='va'>result_coef</span> <span class='op'>&lt;-</span> <span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>both</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>group_map_dfr</span><span class='op'>(</span>
+    <span class='op'>~</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
+      api99_coef <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='fu'>survey</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/survey/man/svyglm.html'>svyglm</a></span><span class='op'>(</span><span class='va'>api00</span><span class='op'>~</span><span class='va'>api99</span> <span class='op'>+</span> <span class='va'>stype</span>, <span class='va'>.</span><span class='op'>)</span><span class='op'>)</span><span class='op'>[[</span><span class='st'>"api99"</span><span class='op'>]</span><span class='op'>]</span>
+    <span class='op'>)</span>
+  <span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -215,7 +217,7 @@ the data from a <code>tbl_svy</code> to a regular tibble).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

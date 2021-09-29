@@ -73,7 +73,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home"></span>
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
@@ -142,42 +142,42 @@
     <p>Create a survey object with a survey design.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>as_survey_design</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>as_survey_design</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>as_survey_design</span>(
-  <span class='no'>.data</span>,
-  <span class='kw'>ids</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>probs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>strata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>nest</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>check_strata</span> <span class='kw'>=</span> !<span class='no'>nest</span>,
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>pps</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>variance</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"HT"</span>, <span class='st'>"YG"</span>),
-  <span class='no'>...</span>
-)
+<span class='fu'>as_survey_design</span><span class='op'>(</span>
+  <span class='va'>.data</span>,
+  ids <span class='op'>=</span> <span class='cn'>NULL</span>,
+  probs <span class='op'>=</span> <span class='cn'>NULL</span>,
+  strata <span class='op'>=</span> <span class='cn'>NULL</span>,
+  variables <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fpc <span class='op'>=</span> <span class='cn'>NULL</span>,
+  nest <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  check_strata <span class='op'>=</span> <span class='op'>!</span><span class='va'>nest</span>,
+  weights <span class='op'>=</span> <span class='cn'>NULL</span>,
+  pps <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  variance <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"HT"</span>, <span class='st'>"YG"</span><span class='op'>)</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for survey.design2</span>
-<span class='fu'>as_survey_design</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
+<span class='fu'>as_survey_design</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for tbl_lazy</span>
-<span class='fu'>as_survey_design</span>(
-  <span class='no'>.data</span>,
-  <span class='kw'>ids</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>probs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>strata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>nest</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>check_strata</span> <span class='kw'>=</span> !<span class='no'>nest</span>,
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>pps</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>variance</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"HT"</span>, <span class='st'>"YG"</span>),
-  <span class='no'>...</span>
-)</pre>
+<span class='fu'>as_survey_design</span><span class='op'>(</span>
+  <span class='va'>.data</span>,
+  ids <span class='op'>=</span> <span class='cn'>NULL</span>,
+  probs <span class='op'>=</span> <span class='cn'>NULL</span>,
+  strata <span class='op'>=</span> <span class='cn'>NULL</span>,
+  variables <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fpc <span class='op'>=</span> <span class='cn'>NULL</span>,
+  nest <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  check_strata <span class='op'>=</span> <span class='op'>!</span><span class='va'>nest</span>,
+  weights <span class='op'>=</span> <span class='cn'>NULL</span>,
+  pps <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  variance <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"HT"</span>, <span class='st'>"YG"</span><span class='op'>)</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -252,35 +252,36 @@ it will turn it into a srvyr object, so that srvyr functions will work with it</
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Examples from ?survey::svydesign</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survey</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>api</span>)
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://r-survey.r-forge.r-project.org/survey/'>survey</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>api</span><span class='op'>)</span>
 
 <span class='co'># stratified sample</span>
-<span class='no'>dstrata</span> <span class='kw'>&lt;-</span> <span class='no'>apistrat</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>as_survey_design</span>(<span class='kw'>strata</span> <span class='kw'>=</span> <span class='no'>stype</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>pw</span>)
+<span class='va'>dstrata</span> <span class='op'>&lt;-</span> <span class='va'>apistrat</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>as_survey_design</span><span class='op'>(</span>strata <span class='op'>=</span> <span class='va'>stype</span>, weights <span class='op'>=</span> <span class='va'>pw</span><span class='op'>)</span>
 
 <span class='co'># one-stage cluster sample</span>
-<span class='no'>dclus1</span> <span class='kw'>&lt;-</span> <span class='no'>apiclus1</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>as_survey_design</span>(<span class='no'>dnum</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>pw</span>, <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='no'>fpc</span>)
+<span class='va'>dclus1</span> <span class='op'>&lt;-</span> <span class='va'>apiclus1</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>as_survey_design</span><span class='op'>(</span><span class='va'>dnum</span>, weights <span class='op'>=</span> <span class='va'>pw</span>, fpc <span class='op'>=</span> <span class='va'>fpc</span><span class='op'>)</span>
 
 <span class='co'># two-stage cluster sample: weights computed from population sizes.</span>
-<span class='no'>dclus2</span> <span class='kw'>&lt;-</span> <span class='no'>apiclus2</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>as_survey_design</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>dnum</span>, <span class='no'>snum</span>), <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>fpc1</span>, <span class='no'>fpc2</span>))
+<span class='va'>dclus2</span> <span class='op'>&lt;-</span> <span class='va'>apiclus2</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>as_survey_design</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>dnum</span>, <span class='va'>snum</span><span class='op'>)</span>, fpc <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>fpc1</span>, <span class='va'>fpc2</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'>## multistage sampling has no effect when fpc is not given, so</span>
 <span class='co'>## these are equivalent.</span>
-<span class='no'>dclus2wr</span> <span class='kw'>&lt;-</span> <span class='no'>apiclus2</span> <span class='kw'>%&gt;%</span>
-  <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span>(<span class='no'>dclus2</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'>as_survey_design</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>dnum</span>, <span class='no'>snum</span>), <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>weights</span>)
+<span class='va'>dclus2wr</span> <span class='op'>&lt;-</span> <span class='va'>apiclus2</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>weights <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span><span class='op'>(</span><span class='va'>dclus2</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>as_survey_design</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>dnum</span>, <span class='va'>snum</span><span class='op'>)</span>, weights <span class='op'>=</span> <span class='va'>weights</span><span class='op'>)</span>
 
-<span class='no'>dclus2wr2</span> <span class='kw'>&lt;-</span> <span class='no'>apiclus2</span> <span class='kw'>%&gt;%</span>
-  <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span>(<span class='no'>dclus2</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'>as_survey_design</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>dnum</span>), <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>weights</span>)
+<span class='va'>dclus2wr2</span> <span class='op'>&lt;-</span> <span class='va'>apiclus2</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>weights <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span><span class='op'>(</span><span class='va'>dclus2</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>as_survey_design</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>dnum</span><span class='op'>)</span>, weights <span class='op'>=</span> <span class='va'>weights</span><span class='op'>)</span>
 
 <span class='co'>## syntax for stratified cluster sample</span>
 <span class='co'>## (though the data weren't really sampled this way)</span>
-<span class='no'>apistrat</span> <span class='kw'>%&gt;%</span> <span class='fu'>as_survey_design</span>(<span class='no'>dnum</span>, <span class='kw'>strata</span> <span class='kw'>=</span> <span class='no'>stype</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>pw</span>,
-                           <span class='kw'>nest</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; Stratified 1 - level Cluster Sampling design (with replacement)
+<span class='va'>apistrat</span> <span class='op'>%&gt;%</span> <span class='fu'>as_survey_design</span><span class='op'>(</span><span class='va'>dnum</span>, strata <span class='op'>=</span> <span class='va'>stype</span>, weights <span class='op'>=</span> <span class='va'>pw</span>,
+                           nest <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Stratified 1 - level Cluster Sampling design (with replacement)
 #&gt; With (162) clusters.
 #&gt; Called via srvyr
 #&gt; Sampling variables:
@@ -296,16 +297,18 @@ it will turn it into a srvyr object, so that srvyr functions will work with it</
 #&gt;   (int), avg.ed (dbl), full (int), emer (int), enroll (int), api.stu (int), pw
 #&gt;   (dbl), fpc (dbl)</div><div class='input'>
 <span class='co'>## PPS sampling without replacement</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>election</span>)
-<span class='no'>dpps</span> <span class='kw'>&lt;-</span> <span class='no'>election_pps</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>as_survey_design</span>(<span class='kw'>fpc</span> <span class='kw'>=</span> <span class='no'>p</span>, <span class='kw'>pps</span> <span class='kw'>=</span> <span class='st'>"brewer"</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>election</span><span class='op'>)</span>
+<span class='va'>dpps</span> <span class='op'>&lt;-</span> <span class='va'>election_pps</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>as_survey_design</span><span class='op'>(</span>fpc <span class='op'>=</span> <span class='va'>p</span>, pps <span class='op'>=</span> <span class='st'>"brewer"</span><span class='op'>)</span>
 
 <span class='co'># dplyr 0.7 introduced new style of NSE called quosures</span>
 <span class='co'># See `vignette("programming", package = "dplyr")` for details</span>
-<span class='no'>st</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='rlang-tidyeval.html'>quo</a></span>(<span class='no'>stype</span>)
-<span class='no'>wt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='rlang-tidyeval.html'>quo</a></span>(<span class='no'>pw</span>)
-<span class='no'>dstrata</span> <span class='kw'>&lt;-</span> <span class='no'>apistrat</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>as_survey_design</span>(<span class='kw'>strata</span> <span class='kw'>=</span> !!<span class='no'>st</span>, <span class='kw'>weights</span> <span class='kw'>=</span> !!<span class='no'>wt</span>)</div></pre>
+<span class='va'>st</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rlang-tidyeval.html'>quo</a></span><span class='op'>(</span><span class='va'>stype</span><span class='op'>)</span>
+<span class='va'>wt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rlang-tidyeval.html'>quo</a></span><span class='op'>(</span><span class='va'>pw</span><span class='op'>)</span>
+<span class='va'>dstrata</span> <span class='op'>&lt;-</span> <span class='va'>apistrat</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>as_survey_design</span><span class='op'>(</span>strata <span class='op'>=</span> <span class='op'>!</span><span class='op'>!</span><span class='va'>st</span>, weights <span class='op'>=</span> <span class='op'>!</span><span class='op'>!</span><span class='va'>wt</span><span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -321,7 +324,7 @@ it will turn it into a srvyr object, so that srvyr functions will work with it</
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

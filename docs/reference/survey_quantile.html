@@ -75,7 +75,7 @@ survey_median should always be called from summarise." />
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ survey_median should always be called from summarise." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home"></span>
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
@@ -146,32 +146,30 @@ around <code><a href='https://rdrr.io/pkg/survey/man/svyquantile.html'>svyquanti
 <code>survey_median</code> should always be called from <code><a href='summarise.html'>summarise</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>survey_quantile</span>(
-  <span class='no'>x</span>,
-  <span class='no'>quantiles</span>,
-  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"se"</span>, <span class='st'>"ci"</span>, <span class='st'>"var"</span>, <span class='st'>"cv"</span>),
-  <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>,
-  <span class='kw'>q_method</span> <span class='kw'>=</span> <span class='st'>"linear"</span>,
-  <span class='kw'>f</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>interval_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Wald"</span>, <span class='st'>"score"</span>, <span class='st'>"betaWald"</span>, <span class='st'>"probability"</span>, <span class='st'>"quantile"</span>),
-  <span class='kw'>ties</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"discrete"</span>, <span class='st'>"rounded"</span>),
-  <span class='kw'>df</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)
+    <pre class="usage"><span class='fu'>survey_quantile</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>quantiles</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  vartype <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"se"</span>, <span class='st'>"ci"</span>, <span class='st'>"var"</span>, <span class='st'>"cv"</span><span class='op'>)</span>,
+  level <span class='op'>=</span> <span class='fl'>0.95</span>,
+  interval_type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"mean"</span>, <span class='st'>"beta"</span>, <span class='st'>"xlogit"</span>, <span class='st'>"asin"</span>, <span class='st'>"score"</span>, <span class='st'>"quantile"</span><span class='op'>)</span>,
+  qrule <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"math"</span>, <span class='st'>"school"</span>, <span class='st'>"shahvaish"</span>, <span class='st'>"hf1"</span>, <span class='st'>"hf2"</span>, <span class='st'>"hf3"</span>, <span class='st'>"hf4"</span>, <span class='st'>"hf5"</span>, <span class='st'>"hf6"</span>,
+    <span class='st'>"hf7"</span>, <span class='st'>"hf8"</span>, <span class='st'>"hf9"</span><span class='op'>)</span>,
+  df <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='fu'>survey_median</span>(
-  <span class='no'>x</span>,
-  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"se"</span>, <span class='st'>"ci"</span>),
-  <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>,
-  <span class='kw'>q_method</span> <span class='kw'>=</span> <span class='st'>"linear"</span>,
-  <span class='kw'>f</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>interval_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Wald"</span>, <span class='st'>"score"</span>, <span class='st'>"betaWald"</span>, <span class='st'>"probability"</span>, <span class='st'>"quantile"</span>),
-  <span class='kw'>ties</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"discrete"</span>, <span class='st'>"rounded"</span>),
-  <span class='kw'>df</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)</pre>
+<span class='fu'>survey_median</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  vartype <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"se"</span>, <span class='st'>"ci"</span>, <span class='st'>"var"</span>, <span class='st'>"cv"</span><span class='op'>)</span>,
+  level <span class='op'>=</span> <span class='fl'>0.95</span>,
+  interval_type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"mean"</span>, <span class='st'>"beta"</span>, <span class='st'>"xlogit"</span>, <span class='st'>"asin"</span>, <span class='st'>"score"</span>, <span class='st'>"quantile"</span><span class='op'>)</span>,
+  qrule <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"math"</span>, <span class='st'>"school"</span>, <span class='st'>"shahvaish"</span>, <span class='st'>"hf1"</span>, <span class='st'>"hf2"</span>, <span class='st'>"hf3"</span>, <span class='st'>"hf4"</span>, <span class='st'>"hf5"</span>, <span class='st'>"hf6"</span>,
+    <span class='st'>"hf7"</span>, <span class='st'>"hf8"</span>, <span class='st'>"hf9"</span><span class='op'>)</span>,
+  df <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -190,35 +188,26 @@ around <code><a href='https://rdrr.io/pkg/survey/man/svyquantile.html'>svyquanti
     </tr>
     <tr>
       <th>vartype</th>
-      <td><p>NULL to report no variability (default), otherwise one or more of:
-standard error ("se") confidence interval ("ci") (variance and coefficient
-of variation not available).</p></td>
+      <td><p>NULL to report no variability. Otherwise one or more of: standard error ("se", the default),
+confidence interval ("ci"), variance ("var") or coefficient of variation
+("cv").</p></td>
     </tr>
     <tr>
       <th>level</th>
-      <td><p>A single number indicating the confidence level (only one level allowed)</p></td>
-    </tr>
-    <tr>
-      <th>q_method</th>
-      <td><p>See "method" in <code><a href='https://rdrr.io/r/stats/approxfun.html'>approxfun</a></code></p></td>
-    </tr>
-    <tr>
-      <th>f</th>
-      <td><p>See <code><a href='https://rdrr.io/r/stats/approxfun.html'>approxfun</a></code></p></td>
+      <td><p>A single number indicating the confidence level (only one level allowed). Note that this may effect estimated standard errors (see <code><a href='https://rdrr.io/pkg/survey/man/svyquantile.html'>svyquantile</a></code> details on <code>alpha</code>, which equals <code>1-level</code>).</p></td>
     </tr>
     <tr>
       <th>interval_type</th>
-      <td><p>See <code><a href='https://rdrr.io/pkg/survey/man/svyquantile.html'>svyquantile</a></code></p></td>
+      <td><p>See <code><a href='https://rdrr.io/pkg/survey/man/svyquantile.html'>svyquantile</a></code>. Note that <code>interval_type = "quantile"</code> is only available for replicate designs, and <code>interval_type = "score"</code> is unavailable for replicate designs.</p></td>
     </tr>
     <tr>
-      <th>ties</th>
+      <th>qrule</th>
       <td><p>See <code><a href='https://rdrr.io/pkg/survey/man/svyquantile.html'>svyquantile</a></code></p></td>
     </tr>
     <tr>
       <th>df</th>
       <td><p>A number indicating the degrees of freedom for t-distribution. The
-default, Inf uses the normal distribution (matches the survey package).
-Also, has no effect for <code>type = "betaWald"</code>.</p></td>
+default, NULL, uses the design degrees of freedom (matches the survey package).</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -226,28 +215,39 @@ Also, has no effect for <code>type = "betaWald"</code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Note that the behavior of these functions has changed in srvyr version 1.1,
+but the old functions are still (currently) supported as
+<code><a href='survey_old_quantile.html'>survey_old_quantile</a></code> and <code>survey_old_median</code> if you need
+to replicate the old results. For more details about what has changed, see
+Thomas Lumley's blog post on the changes, available here:
+&lt;https://notstatschat.rbind.io/2021/07/20/what-s-new-in-the-survey-package/&gt;</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survey</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>api</span>)
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://r-survey.r-forge.r-project.org/survey/'>survey</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>api</span><span class='op'>)</span>
 
-<span class='no'>dstrata</span> <span class='kw'>&lt;-</span> <span class='no'>apistrat</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span>(<span class='kw'>strata</span> <span class='kw'>=</span> <span class='no'>stype</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>pw</span>)
+<span class='va'>dstrata</span> <span class='op'>&lt;-</span> <span class='va'>apistrat</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span><span class='op'>(</span>strata <span class='op'>=</span> <span class='va'>stype</span>, weights <span class='op'>=</span> <span class='va'>pw</span><span class='op'>)</span>
 
-<span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api99</span> <span class='kw'>=</span> <span class='fu'>survey_quantile</span>(<span class='no'>api99</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.25</span>, <span class='fl'>0.5</span>, <span class='fl'>0.75</span>)),
-            <span class='kw'>api00</span> <span class='kw'>=</span> <span class='fu'>survey_median</span>(<span class='no'>api00</span>, <span class='kw'>vartype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ci"</span>)))</div><div class='output co'>#&gt;   api99_q25 api99_q50 api99_q75 api99_q25_se api99_q50_se api99_q75_se    api00
-#&gt; 1    525.48       631  726.7813     12.49138     18.39529     17.89185 667.2358
-#&gt;   api00_low api00_upp
-#&gt; 1  635.8324  681.7236</div><div class='input'>
-<span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>awards</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api00</span> <span class='kw'>=</span> <span class='fu'>survey_median</span>(<span class='no'>api00</span>))</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 x 3</span><span>
+<span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='summarise.html'>summarise</a></span><span class='op'>(</span>api99 <span class='op'>=</span> <span class='fu'>survey_quantile</span><span class='op'>(</span><span class='va'>api99</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.25</span>, <span class='fl'>0.5</span>, <span class='fl'>0.75</span><span class='op'>)</span><span class='op'>)</span>,
+            api00 <span class='op'>=</span> <span class='fu'>survey_median</span><span class='op'>(</span><span class='va'>api00</span>, vartype <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ci"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 × 9</span>
+#&gt;   api99_q25 api99_q50 api99_q75 api99_q25_se api99_q50_se api99_q75_se api00
+#&gt;       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span>       526       631       728         13.7         17.5         18.3   668
+#&gt; <span style='color: #949494;'># … with 2 more variables: api00_low &lt;dbl&gt;, api00_upp &lt;dbl&gt;</span></div><div class='input'>
+<span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>awards</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='summarise.html'>summarise</a></span><span class='op'>(</span>api00 <span class='op'>=</span> <span class='fu'>survey_median</span><span class='op'>(</span><span class='va'>api00</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 × 3</span>
 #&gt;   awards api00 api00_se
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> No      641.     23.4
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> Yes     671.     18.8</div><div class='input'>
-</div></span></pre>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> No       646     21.4
+#&gt; <span style='color: #BCBCBC;'>2</span> Yes      676     17.7</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -263,7 +263,7 @@ Also, has no effect for <code>type = "betaWald"</code>.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

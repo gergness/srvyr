@@ -32,7 +32,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -40,7 +40,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa-home"></span>
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
@@ -89,13 +89,13 @@
 
       
 
-      </header><script src="extending-srvyr_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="extending-srvyr_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Extending srvyr</h1>
                         <h4 class="author">Greg Freedman Ellis</h4>
             
-            <h4 class="date">2021-01-23</h4>
+            <h4 class="date">2021-09-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/extending-srvyr.Rmd"><code>vignettes/extending-srvyr.Rmd</code></a></small>
       <div class="hidden name"><code>extending-srvyr.Rmd</code></div>
@@ -119,7 +119,7 @@
 <a href="#what-summarize-expects" class="anchor"></a>What summarize expects</h2>
 <p>srvyr’s summarize expects that the survey statistics functions will return objects that are formatted in a particular way. Below, I’ll explain some of the functions that will help create these objects for you in most cases, but the return should be:</p>
 <ul>
-<li>A <code>data.frame</code> object</li>
+<li>A <code>srvyr_result_df</code> object (which is just a wrapper around a <code>data.frame</code>)</li>
 <li>Generally there should be 1 row for ungrouped, or 1 row per group, but this is no longer required.</li>
 <li>The names are based on the argument name from the summarize call but this name can’t provided to the functions. Instead, summarize does the renaming and your function should name the variables “coef” (which is renamed to the parameter name) or with a suffix that will be appended after the parameter name.</li>
 </ul>
@@ -137,6 +137,9 @@
 <code><a href="../reference/set_survey_vars.html">set_survey_vars()</a></code> - Many survey functions have limited support for both supplying a formula indicating the variables to calculate a statistic on as well as a vector. However, oftentimes the vector version is less well supported than the formula version. Since srvyr uses dplyr semantics, it ends up returning the values as vectors. This function will add on the variable to the survey, defaulting to having the name “__SRVYR_TEMP_VAR__”.</li>
 <li>
 <code><a href="../reference/get_var_est.html">get_var_est()</a></code> - A helper function that calculates variance estimates like standard error (se), confidence interval (ci), variance (var), or coefficient of variance (cv). For functions that support it, there is a separate argument for design effects (to match survey’s conventions).</li>
+<li>
+<code><a href="../reference/as_srvyr_result_df.html">as_srvyr_result_df()</a></code> - A helper function that adds the <code>srvyr_result_df</code> class to a <code>data.frame</code>
+</li>
 </ul>
 <p>Note that these functions may not work in all cases. In srvyr, I’ve actually had to write multiple versions of <code><a href="../reference/get_var_est.html">get_var_est()</a></code> because of minor differences in the way survey objects are returned. Hopefully they will help in most situations, or at least give you a good place to start.</p>
 </div>
@@ -153,74 +156,75 @@
 <h2 class="hasAnchor">
 <a href="#example-conveysvygini---survey_gini" class="anchor"></a>Example: convey::svygini -&gt; survey_gini</h2>
 <p>That was just a lot of text, but I think it’s probably easiest just to provide an example. The convey package provides several methods for analysis of inequality using survey data. The svygini function calculates the gini coefficient. Here, we’ll write functions that make a srvyr version <code>survey_gini</code>.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># S3 generic function</span>
-<span class="no">survey_gini</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(
-  <span class="no">x</span>, <span class="no">na.rm</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="no">vartype</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span>), <span class="no">...</span>
-) {
-  <span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/missing.html">missing</a></span>(<span class="no">vartype</span>)) <span class="no">vartype</span> <span class="kw">&lt;-</span> <span class="st">"se"</span>
-  <span class="no">vartype</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(<span class="no">vartype</span>, <span class="kw">several.ok</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-  <span class="no">.svy</span> <span class="kw">&lt;-</span> <span class="kw pkg">srvyr</span><span class="kw ns">::</span><span class="fu"><a href="../reference/set_survey_vars.html">set_survey_vars</a></span>(<span class="kw pkg">srvyr</span><span class="kw ns">::</span><span class="fu"><a href="../reference/cur_svy.html">cur_svy</a></span>(), <span class="no">x</span>)
-
-  <span class="no">out</span> <span class="kw">&lt;-</span> <span class="kw pkg">convey</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span>(~<span class="no">`__SRVYR_TEMP_VAR__`</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="no">na.rm</span>, <span class="kw">design</span> <span class="kw">=</span> <span class="no">.svy</span>)
-  <span class="no">out</span> <span class="kw">&lt;-</span> <span class="kw pkg">srvyr</span><span class="kw ns">::</span><span class="fu"><a href="../reference/get_var_est.html">get_var_est</a></span>(<span class="no">out</span>, <span class="no">vartype</span>)
-  <span class="no">out</span>
-}</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># S3 generic function</span>
+<span class="va">survey_gini</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span>
+  <span class="va">x</span>, <span class="va">na.rm</span> <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">vartype</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"var"</span>, <span class="st">"cv"</span><span class="op">)</span>, <span class="va">...</span>
+<span class="op">)</span> <span class="op">{</span>
+  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/missing.html">missing</a></span><span class="op">(</span><span class="va">vartype</span><span class="op">)</span><span class="op">)</span> <span class="va">vartype</span> <span class="op">&lt;-</span> <span class="st">"se"</span>
+  <span class="va">vartype</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span><span class="op">(</span><span class="va">vartype</span>, several.ok <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+  <span class="va">.svy</span> <span class="op">&lt;-</span> <span class="fu">srvyr</span><span class="fu">::</span><span class="fu"><a href="../reference/set_survey_vars.html">set_survey_vars</a></span><span class="op">(</span><span class="fu">srvyr</span><span class="fu">::</span><span class="fu"><a href="../reference/cur_svy.html">cur_svy</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">x</span><span class="op">)</span>
+  
+  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">convey</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span><span class="op">(</span><span class="op">~</span><span class="va">`__SRVYR_TEMP_VAR__`</span>, na.rm <span class="op">=</span> <span class="va">na.rm</span>, design <span class="op">=</span> <span class="va">.svy</span><span class="op">)</span>
+  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">srvyr</span><span class="fu">::</span><span class="fu"><a href="../reference/get_var_est.html">get_var_est</a></span><span class="op">(</span><span class="va">out</span>, <span class="va">vartype</span><span class="op">)</span>
+  <span class="fu"><a href="../reference/as_srvyr_result_df.html">as_srvyr_result_df</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
 <p>And here’s what this function looks like in practice:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># Example from ?convey::svygini</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span>({
-  <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">srvyr</span>)
-  <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">survey</span>)
-  <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">convey</span>)
-  <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">laeken</span>)
-})
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="no">eusilc</span>) ; <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>( <span class="no">eusilc</span> ) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/chartr.html">tolower</a></span>( <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>( <span class="no">eusilc</span> ) )
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Example from ?convey::svygini</span>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://gdfe.co/srvyr/">srvyr</a></span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://r-survey.r-forge.r-project.org/survey/">survey</a></span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://guilhermejacob.github.io/context/">convey</a></span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">laeken</span><span class="op">)</span>
+<span class="op">}</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">eusilc</span><span class="op">)</span> ; <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span> <span class="va">eusilc</span> <span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/chartr.html">tolower</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span> <span class="va">eusilc</span> <span class="op">)</span> <span class="op">)</span>
 
 <span class="co"># Setup for survey package</span>
-<span class="no">des_eusilc</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span>(
-  <span class="kw">ids</span> <span class="kw">=</span> ~<span class="no">rb030</span>,
-  <span class="kw">strata</span> <span class="kw">=</span> ~<span class="no">db040</span>,
-  <span class="kw">weights</span> <span class="kw">=</span> ~<span class="no">rb050</span>,
-  <span class="kw">data</span> <span class="kw">=</span> <span class="no">eusilc</span>
-)
-<span class="no">des_eusilc</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/convey/man/convey_prep.html">convey_prep</a></span>(<span class="no">des_eusilc</span>)
+<span class="va">des_eusilc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span><span class="op">(</span>
+  ids <span class="op">=</span> <span class="op">~</span><span class="va">rb030</span>, 
+  strata <span class="op">=</span> <span class="op">~</span><span class="va">db040</span>,  
+  weights <span class="op">=</span> <span class="op">~</span><span class="va">rb050</span>, 
+  data <span class="op">=</span> <span class="va">eusilc</span>
+<span class="op">)</span>
+<span class="va">des_eusilc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/convey/man/convey_prep.html">convey_prep</a></span><span class="op">(</span><span class="va">des_eusilc</span><span class="op">)</span>
 
 <span class="co"># Setup for srvyr package</span>
-<span class="no">srvyr_eusilc</span> <span class="kw">&lt;-</span> <span class="no">eusilc</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/as_survey.html">as_survey</a></span>(
-    <span class="kw">ids</span> <span class="kw">=</span> <span class="no">rb030</span>,
-    <span class="kw">strata</span> <span class="kw">=</span> <span class="no">db040</span>,
-    <span class="kw">weights</span> <span class="kw">=</span> <span class="no">rb050</span>
-  ) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/convey/man/convey_prep.html">convey_prep</a></span>()
+<span class="va">srvyr_eusilc</span> <span class="op">&lt;-</span> <span class="va">eusilc</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/as_survey.html">as_survey</a></span><span class="op">(</span>
+    ids <span class="op">=</span> <span class="va">rb030</span>,
+    strata <span class="op">=</span> <span class="va">db040</span>,
+    weights <span class="op">=</span> <span class="va">rb050</span>
+  <span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/convey/man/convey_prep.html">convey_prep</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="co">## Ungrouped</span>
 <span class="co"># Calculate ungrouped for survey package</span>
-<span class="fu"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span>(~<span class="no">eqincome</span>, <span class="kw">design</span> <span class="kw">=</span> <span class="no">des_eusilc</span>)
+<span class="fu"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span><span class="op">(</span><span class="op">~</span><span class="va">eqincome</span>, design <span class="op">=</span> <span class="va">des_eusilc</span><span class="op">)</span>
 <span class="co">#&gt;             gini     SE</span>
 <span class="co">#&gt; eqincome 0.26497 0.0019</span>
-
 <span class="co"># Use new function from summarize</span>
-<span class="no">srvyr_eusilc</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">eqincome</span> <span class="kw">=</span> <span class="fu">survey_gini</span>(<span class="no">eqincome</span>))
-<span class="co">#&gt;    eqincome eqincome_se</span>
-<span class="co">#&gt; 1 0.2649652 0.001946982</span>
-
+<span class="va">srvyr_eusilc</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span><span class="op">(</span>eqincome <span class="op">=</span> <span class="fu">survey_gini</span><span class="op">(</span><span class="va">eqincome</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 1 × 2</span>
+<span class="co">#&gt;   eqincome eqincome_se</span>
+<span class="co">#&gt;      &lt;dbl&gt;       &lt;dbl&gt;</span>
+<span class="co">#&gt; 1    0.265     0.00195</span>
 <span class="co">## Groups</span>
 <span class="co"># Calculate by groups for survey</span>
-<span class="kw pkg">survey</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/survey/man/svyby.html">svyby</a></span>(~<span class="no">eqincome</span>, ~<span class="no">rb090</span>, <span class="no">des_eusilc</span>, <span class="kw pkg">convey</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span>)
+<span class="fu">survey</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survey/man/svyby.html">svyby</a></span><span class="op">(</span><span class="op">~</span><span class="va">eqincome</span>, <span class="op">~</span><span class="va">rb090</span>, <span class="va">des_eusilc</span>, <span class="fu">convey</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span><span class="op">)</span>
 <span class="co">#&gt;         rb090  eqincome          se</span>
 <span class="co">#&gt; male     male 0.2578983 0.002617279</span>
 <span class="co">#&gt; female female 0.2702080 0.002892713</span>
-
 <span class="co"># Use new function from summarize</span>
-<span class="no">srvyr_eusilc</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/group_by.html">group_by</a></span>(<span class="no">rb090</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/summarise.html">summarize</a></span>(<span class="kw">eqincome</span> <span class="kw">=</span> <span class="fu">survey_gini</span>(<span class="no">eqincome</span>))
-<span class="co">#&gt; # A tibble: 2 x 3</span>
+<span class="va">srvyr_eusilc</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">rb090</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/summarise.html">summarize</a></span><span class="op">(</span>eqincome <span class="op">=</span> <span class="fu">survey_gini</span><span class="op">(</span><span class="va">eqincome</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 2 × 3</span>
 <span class="co">#&gt;   rb090  eqincome eqincome_se</span>
 <span class="co">#&gt;   &lt;fct&gt;     &lt;dbl&gt;       &lt;dbl&gt;</span>
 <span class="co">#&gt; 1 male      0.258     0.00262</span>
-<span class="co">#&gt; 2 female    0.270     0.00289</span></pre></body></html></div>
+<span class="co">#&gt; 2 female    0.270     0.00289</span></code></pre></div>
 </div>
   </div>
 
@@ -239,7 +243,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

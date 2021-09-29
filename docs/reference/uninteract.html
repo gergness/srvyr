@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • srvyr</title>
+<title>Break interaction vectors back into component columns — uninteract • srvyr</title>
 
 
 <!-- jquery -->
@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
-<link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script>
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
@@ -33,13 +33,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script>
 
 
 
 
-<meta property="og:title" content="Authors" />
+<meta property="og:title" content="Break interaction vectors back into component columns — uninteract" />
+<meta property="og:description" content="This function will not generally be needed by users because summarise
+automatically un-interacts interaction columns for you." />
 
 
 
@@ -58,7 +60,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-authors">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -70,8 +72,8 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-<img src="tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
-        <a class="navbar-link" href="index.html">srvyr</a>
+<img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
+        <a class="navbar-link" href="../index.html">srvyr</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
@@ -79,16 +81,16 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fa fa-home"></span>
      
   </a>
 </li>
 <li>
-  <a href="articles/srvyr-vs-survey.html">Overview</a>
+  <a href="../articles/srvyr-vs-survey.html">Overview</a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -98,18 +100,18 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="articles/srvyr-vs-survey.html">srvyr Compared to the survey Package (Overview)</a>
+      <a href="../articles/srvyr-vs-survey.html">srvyr Compared to the survey Package (Overview)</a>
     </li>
     <li>
-      <a href="articles/srvyr-database.html">Databases in srvyr</a>
+      <a href="../articles/srvyr-database.html">Databases in srvyr</a>
     </li>
     <li>
-      <a href="articles/extending-srvyr.html">Extending srvyr</a>
+      <a href="../articles/extending-srvyr.html">Extending srvyr</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="news/index.html">News</a>
+  <a href="../news/index.html">News</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -130,38 +132,48 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Authors</h1>
+    <h1>Break interaction vectors back into component columns</h1>
+    <small class="dont-index">Source: <a href='https://github.com/gergness/srvyr/blob/master/R/interaction.R'><code>R/interaction.R</code></a></small>
+    <div class="hidden name"><code>uninteract.Rd</code></div>
     </div>
 
-    <ul class="list-unstyled">
-      <li>
-        <p><strong>Greg Freedman Ellis</strong>. Author, maintainer. 
-        </p>
-      </li>
-      <li>
-        <p><strong>Thomas Lumley</strong>. Contributor. 
-        </p>
-      </li>
-      <li>
-        <p><strong>Tomasz Żółtak</strong>. Contributor. 
-        </p>
-      </li>
-      <li>
-        <p><strong>Ben Schneider</strong>. Author, contributor. 
-        </p>
-      </li>
-      <li>
-        <p><strong>Pavel N. Krivitsky</strong>. Contributor. 
-        </p>
-      </li>
-    </ul>
+    <div class="ref-description">
+    <p>This function will not generally be needed by users because <code>summarise</code>
+automatically un-interacts interaction columns for you.</p>
+    </div>
+
+    <pre class="usage"><span class='fu'>uninteract</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+
+<span class='co'># S3 method for srvyr_interaction</span>
+<span class='fu'>uninteract</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+
+<span class='co'># S3 method for data.frame</span>
+<span class='fu'>uninteract</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+
+<span class='fu'>is.interaction</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>Either a <code>srvyr_interaction</code> column or a <code>data.frame</code></p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A <code>data.frame</code></p>
 
   </div>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
+  </div>
 </div>
-
 
 
       <footer>

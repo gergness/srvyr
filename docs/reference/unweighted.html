@@ -77,7 +77,7 @@ this can sometimes give bad results. See examples for more details." />
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -85,7 +85,7 @@ this can sometimes give bad results. See examples for more details." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home"></span>
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
@@ -150,18 +150,15 @@ doesn't always remove rows when filtering (instead setting the weight to 0),
 this can sometimes give bad results. See examples for more details.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>unweighted</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>unweighted</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A variable or expression</p></td>
-    </tr>
-    <tr>
       <th>...</th>
-      <td><p>Ignored</p></td>
+      <td><p>variables or expressions, calculated on the unweighted data.frame
+behind the <code>tbl_svy</code> object.</p></td>
     </tr>
     </table>
 
@@ -174,63 +171,66 @@ tidy evaluation, see the examples here, documentation in
 'programming' for more information.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survey</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>api</span>)
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://r-survey.r-forge.r-project.org/survey/'>survey</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>api</span><span class='op'>)</span>
 
-<span class='no'>dstrata</span> <span class='kw'>&lt;-</span> <span class='no'>apistrat</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span>(<span class='kw'>strata</span> <span class='kw'>=</span> <span class='no'>stype</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>pw</span>)
+<span class='va'>dstrata</span> <span class='op'>&lt;-</span> <span class='va'>apistrat</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span><span class='op'>(</span>strata <span class='op'>=</span> <span class='va'>stype</span>, weights <span class='op'>=</span> <span class='va'>pw</span><span class='op'>)</span>
 
-<span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api99_unw</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>api99</span>)),
-            <span class='kw'>n</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/context.html'>n</a></span>()))</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 2</span><span>
+<span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='summarise.html'>summarise</a></span><span class='op'>(</span>api99_unw <span class='op'>=</span> <span class='fu'>unweighted</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>api99</span><span class='op'>)</span><span class='op'>)</span>,
+            n <span class='op'>=</span> <span class='fu'>unweighted</span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/context.html'>n</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 × 2</span>
 #&gt;   api99_unw     n
-#&gt;       </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>      625.   200</div><div class='input'>
-<span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>stype</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='summarise.html'>summarise</a></span>(<span class='kw'>api_diff_unw</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>api00</span> - <span class='no'>api99</span>)))</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 3 x 2</span><span>
+#&gt;       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span>      625.   200</div><div class='input'>
+<span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>stype</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='summarise.html'>summarise</a></span><span class='op'>(</span>api_diff_unw <span class='op'>=</span> <span class='fu'>unweighted</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>api00</span> <span class='op'>-</span> <span class='va'>api99</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 3 × 2</span>
 #&gt;   stype api_diff_unw
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> E            38.6 
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> H             8.46
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span> M            26.4 </div><div class='input'>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> E            38.6 
+#&gt; <span style='color: #BCBCBC;'>2</span> H             8.46
+#&gt; <span style='color: #BCBCBC;'>3</span> M            26.4 </div><div class='input'>
 
 <span class='co'># Some survey designs, like ones with raked weights, are not removed</span>
 <span class='co'># when filtered to preserve the structure. So if you don't use `unweighted()`</span>
 <span class='co'># your results can be wrong.</span>
 <span class='co'># Declare basic clustered design ----</span>
-<span class='no'>cluster_design</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span>(
-  <span class='kw'>.data</span> <span class='kw'>=</span> <span class='no'>apiclus1</span>,
-  <span class='kw'>id</span> <span class='kw'>=</span> <span class='no'>dnum</span>,
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>pw</span>,
-  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='no'>fpc</span>
-)
+<span class='va'>cluster_design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span><span class='op'>(</span>
+  .data <span class='op'>=</span> <span class='va'>apiclus1</span>,
+  id <span class='op'>=</span> <span class='va'>dnum</span>,
+  weights <span class='op'>=</span> <span class='va'>pw</span>,
+  fpc <span class='op'>=</span> <span class='va'>fpc</span>
+<span class='op'>)</span>
 
 <span class='co'># Add raking weights for school type ----</span>
-<span class='no'>pop.types</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>stype</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"E"</span>,<span class='st'>"H"</span>,<span class='st'>"M"</span>), <span class='kw'>Freq</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4421</span>,<span class='fl'>755</span>,<span class='fl'>1018</span>))
-<span class='no'>pop.schwide</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>sch.wide</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"No"</span>,<span class='st'>"Yes"</span>), <span class='kw'>Freq</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1072</span>,<span class='fl'>5122</span>))
+<span class='va'>pop.types</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>stype<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"E"</span>,<span class='st'>"H"</span>,<span class='st'>"M"</span><span class='op'>)</span>, Freq<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4421</span>,<span class='fl'>755</span>,<span class='fl'>1018</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>pop.schwide</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>sch.wide<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"No"</span>,<span class='st'>"Yes"</span><span class='op'>)</span>, Freq<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1072</span>,<span class='fl'>5122</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='no'>raked_design</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/survey/man/rake.html'>rake</a></span>(
-  <span class='no'>cluster_design</span>,
-  <span class='kw'>sample.margins</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(~<span class='no'>stype</span>,~<span class='no'>sch.wide</span>),
-  <span class='kw'>population.margins</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>pop.types</span>, <span class='no'>pop.schwide</span>)
-)
+<span class='va'>raked_design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/survey/man/rake.html'>rake</a></span><span class='op'>(</span>
+  <span class='va'>cluster_design</span>,
+  sample.margins <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>~</span><span class='va'>stype</span>,<span class='op'>~</span><span class='va'>sch.wide</span><span class='op'>)</span>,
+  population.margins <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>pop.types</span>, <span class='va'>pop.schwide</span><span class='op'>)</span>
+<span class='op'>)</span>
 
-<span class='no'>raked_design</span> <span class='kw'>%&gt;%</span>
-<span class='fu'><a href='dplyr_single.html'>filter</a></span>(<span class='no'>cname</span> <span class='kw'>!=</span> <span class='st'>"Alameda"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>cname</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='summarise.html'>summarize</a></span>(
-    <span class='kw'>direct_unw_mean</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>api99</span>),
-    <span class='kw'>wrapped_unw_mean</span> <span class='kw'>=</span> <span class='fu'>unweighted</span>(<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>api99</span>))
-  ) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='dplyr_single.html'>filter</a></span>(<span class='no'>cname</span> <span class='kw'>==</span> <span class='st'>"Alameda"</span>)</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 1 x 3</span><span>
+<span class='va'>raked_design</span> <span class='op'>%&gt;%</span>
+<span class='fu'><a href='group_trim.html'>filter</a></span><span class='op'>(</span><span class='va'>cname</span> <span class='op'>!=</span> <span class='st'>"Alameda"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>cname</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='summarise.html'>summarize</a></span><span class='op'>(</span>
+    direct_unw_mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>api99</span><span class='op'>)</span>,
+    wrapped_unw_mean <span class='op'>=</span> <span class='fu'>unweighted</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>api99</span><span class='op'>)</span><span class='op'>)</span>
+  <span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='group_trim.html'>filter</a></span><span class='op'>(</span><span class='va'>cname</span> <span class='op'>==</span> <span class='st'>"Alameda"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 × 3</span>
 #&gt;   cname   direct_unw_mean wrapped_unw_mean
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>             </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> Alameda             609              </span><span style='color: #BB0000;'>NaN</span><span></div><div class='input'>
-# Notice how the results are different when using `unweighted()`
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> Alameda             609              <span style='color: #BB0000;'>NaN</span></div><div class='input'>
+<span class='co'># Notice how the results are different when using `unweighted()`</span>
 
-</div></span></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -246,7 +246,7 @@ tidy evaluation, see the examples here, documentation in
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

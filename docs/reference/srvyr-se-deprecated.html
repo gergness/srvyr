@@ -77,7 +77,7 @@ dplyr vignette on programming (vignette(&quot;programming&quot;, package =
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -85,7 +85,7 @@ dplyr vignette on programming (vignette(&quot;programming&quot;, package =
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home"></span>
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
@@ -146,54 +146,54 @@ dplyr vignette on programming (vignette(&quot;programming&quot;, package =
     <p>srvyr has updated it's standard evaluation semantics to match dplyr 0.7, so
 these underscore functions are no longer required (but are still supported
 for backward compatibility reasons). See <code><a href='https://dplyr.tidyverse.org/reference/se-deprecated.html'>se-deprecated</a></code> or the
-dplyr vignette on programming (<code>vignette("programming", package =
-"dplyr")</code>) for more details.</p>
+dplyr vignette on programming (<code><a href='https://dplyr.tidyverse.org/articles/programming.html'>vignette("programming", package =
+"dplyr")</a></code>) for more details.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>as_survey_</span>(<span class='no'>.data</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>as_survey_</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>as_survey_design_</span>(
-  <span class='no'>.data</span>,
-  <span class='kw'>ids</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>probs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>strata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>nest</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>check_strata</span> <span class='kw'>=</span> !<span class='no'>nest</span>,
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>pps</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>variance</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"HT"</span>, <span class='st'>"YG"</span>)
-)
+<span class='fu'>as_survey_design_</span><span class='op'>(</span>
+  <span class='va'>.data</span>,
+  ids <span class='op'>=</span> <span class='cn'>NULL</span>,
+  probs <span class='op'>=</span> <span class='cn'>NULL</span>,
+  strata <span class='op'>=</span> <span class='cn'>NULL</span>,
+  variables <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fpc <span class='op'>=</span> <span class='cn'>NULL</span>,
+  nest <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  check_strata <span class='op'>=</span> <span class='op'>!</span><span class='va'>nest</span>,
+  weights <span class='op'>=</span> <span class='cn'>NULL</span>,
+  pps <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  variance <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"HT"</span>, <span class='st'>"YG"</span><span class='op'>)</span>
+<span class='op'>)</span>
 
-<span class='fu'>as_survey_rep_</span>(
-  <span class='no'>.data</span>,
-  <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>repweights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"BRR"</span>, <span class='st'>"Fay"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"other"</span>),
-  <span class='kw'>combined_weights</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>rho</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>bootstrap_average</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>rscales</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpctype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fraction"</span>, <span class='st'>"correction"</span>),
-  <span class='kw'>mse</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"survey.replicates.mse"</span>)
-)
+<span class='fu'>as_survey_rep_</span><span class='op'>(</span>
+  <span class='va'>.data</span>,
+  variables <span class='op'>=</span> <span class='cn'>NULL</span>,
+  repweights <span class='op'>=</span> <span class='cn'>NULL</span>,
+  weights <span class='op'>=</span> <span class='cn'>NULL</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"BRR"</span>, <span class='st'>"Fay"</span>, <span class='st'>"JK1"</span>, <span class='st'>"JKn"</span>, <span class='st'>"bootstrap"</span>, <span class='st'>"other"</span><span class='op'>)</span>,
+  combined_weights <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  rho <span class='op'>=</span> <span class='cn'>NULL</span>,
+  bootstrap_average <span class='op'>=</span> <span class='cn'>NULL</span>,
+  scale <span class='op'>=</span> <span class='cn'>NULL</span>,
+  rscales <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fpc <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fpctype <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"fraction"</span>, <span class='st'>"correction"</span><span class='op'>)</span>,
+  mse <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"survey.replicates.mse"</span><span class='op'>)</span>
+<span class='op'>)</span>
 
-<span class='fu'>as_survey_twophase_</span>(
-  <span class='no'>.data</span>,
-  <span class='no'>id</span>,
-  <span class='kw'>strata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>probs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>subset</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"full"</span>, <span class='st'>"approx"</span>, <span class='st'>"simple"</span>)
-)
+<span class='fu'>as_survey_twophase_</span><span class='op'>(</span>
+  <span class='va'>.data</span>,
+  <span class='va'>id</span>,
+  strata <span class='op'>=</span> <span class='cn'>NULL</span>,
+  probs <span class='op'>=</span> <span class='cn'>NULL</span>,
+  weights <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fpc <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>subset</span>,
+  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"full"</span>, <span class='st'>"approx"</span>, <span class='st'>"simple"</span><span class='op'>)</span>
+<span class='op'>)</span>
 
-<span class='fu'>cascade_</span>(<span class='no'>.data</span>, <span class='no'>...</span>, <span class='no'>.dots</span>, <span class='kw'>.fill</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+<span class='fu'>cascade_</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>...</span>, <span class='va'>.dots</span>, .fill <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -335,7 +335,7 @@ designs with simple random sampling at phase one and stratified randoms sampling
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -73,7 +73,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home"></span>
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
@@ -152,7 +152,7 @@
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Name-value pairs of summary functions</p></td>
+      <td><p>Name-value pairs of summarizing expressions, see details</p></td>
     </tr>
     <tr>
       <th>.groups</th>
@@ -179,51 +179,88 @@ and its standard error.</p>
 <code>se</code> for standard error, <code>ci</code> for confidence interval, <code>var</code>
 for variance, and <code>cv</code> for coefficient of variation. <code>level</code>
 specifies the level for the confidence interval.</p>
-<p>The other arguments correspond to the analagous function arguments from the
+<p>The other arguments correspond to the analogous function arguments from the
 survey package.</p>
 <p>The available functions from srvyr are:</p>
-<dl'>
-<dt><code><a href='survey_mean.html'>survey_mean</a></code></dt><dd><p>Calculate the survey mean of the entire population or by <code>groups</code>.
-   Based on <code><a href='https://rdrr.io/pkg/survey/man/surveysummary.html'>svymean</a></code>.</p></dd>
+<dl>
+<dt><code><a href='survey_mean.html'>survey_mean</a></code></dt><dd><p>Calculate the mean of a numeric variable or the proportion falling into <code>groups</code>
+   for the entire population or by <code>groups</code>. Based on <code><a href='https://rdrr.io/pkg/survey/man/surveysummary.html'>svymean</a></code>
+   and <code><a href='https://rdrr.io/pkg/survey/man/svyciprop.html'>svyciprop</a></code>.</p></dd>.
 <dt><code><a href='survey_total.html'>survey_total</a></code></dt><dd><p>Calculate the survey total of the entire population or by <code>groups</code>.
    Based on <code><a href='https://rdrr.io/pkg/survey/man/surveysummary.html'>svytotal</a></code>.</p></dd>
+<dt><code><a href='survey_mean.html'>survey_prop</a></code></dt><dd><p>Calculate the proportion of the entire population or by <code>groups</code>.
+   Based on <code><a href='https://rdrr.io/pkg/survey/man/svyciprop.html'>svyciprop</a></code>.</p></dd>
  <dt><code><a href='survey_ratio.html'>survey_ratio</a></code></dt><dd><p>Calculate the ratio of 2 variables in the entire population or by <code>groups</code>.
    Based on <code><a href='https://rdrr.io/pkg/survey/man/svyratio.html'>svyratio</a></code>.</p></dd>
-<dt><code><a href='survey_quantile.html'>survey_quantile</a></code></dt><dd><p>Calculate quantiles in the entire population or by <code>groups</code>. Based on
-   <code><a href='https://rdrr.io/pkg/survey/man/svyquantile.html'>svyquantile</a></code>.</p></dd>
- <dt><code><a href='survey_quantile.html'>survey_median</a></code></dt><dd><p>Calculate the median in the entire population or by <code>groups</code>.
+<dt><code><a href='survey_quantile.html'>survey_quantile</a></code> &amp; <code><a href='survey_quantile.html'>survey_median</a></code></dt><dd><p>Calculate quantiles in the entire population or by <code>groups</code>. Based on
    <code><a href='https://rdrr.io/pkg/survey/man/svyquantile.html'>svyquantile</a></code>.</p></dd>
  <dt><code><a href='unweighted.html'>unweighted</a></code></dt><dd><p>Calculate an unweighted estimate as you would on a regular <code>tbl_df</code>.
    Based on dplyr's <code><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></code>.</p></dd>
 
 </dl>
 
+<p>You can use expressions both in the <code>...</code> of <code>summarize</code> and also
+in the arguments to the summarizing functions. Though this is valid syntactically
+it can also allow you to calculate incorrect results (for example if you multiply
+the mean by 100, the standard error is also multipled by 100, but the variance
+is not).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survey</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>api</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>api</span>, package <span class='op'>=</span> <span class='st'>"survey"</span><span class='op'>)</span>
 
-<span class='no'>dstrata</span> <span class='kw'>&lt;-</span> <span class='no'>apistrat</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span>(<span class='kw'>strata</span> <span class='kw'>=</span> <span class='no'>stype</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>pw</span>)
+<span class='va'>dstrata</span> <span class='op'>&lt;-</span> <span class='va'>apistrat</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span><span class='op'>(</span>strata <span class='op'>=</span> <span class='va'>stype</span>, weights <span class='op'>=</span> <span class='va'>pw</span><span class='op'>)</span>
 
-<span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>summarise</span>(<span class='kw'>api99_mn</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>api99</span>),
-            <span class='kw'>api00_mn</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>api00</span>),
-            <span class='kw'>api_diff</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>api00</span> - <span class='no'>api99</span>))</div><div class='output co'>#&gt;   api99_mn api99_mn_se api00_mn api00_mn_se api_diff api_diff_se
-#&gt; 1 629.3948    10.09699 662.2874    9.536132 32.89252    2.078207</div><div class='input'>
-<span class='no'>dstrata_grp</span> <span class='kw'>&lt;-</span> <span class='no'>dstrata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='group_by.html'>group_by</a></span>(<span class='no'>stype</span>)
+<span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>summarise</span><span class='op'>(</span>api99_mn <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api99</span><span class='op'>)</span>,
+            api00_mn <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api00</span><span class='op'>)</span>,
+            api_diff <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api00</span> <span class='op'>-</span> <span class='va'>api99</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 × 6</span>
+#&gt;   api99_mn api99_mn_se api00_mn api00_mn_se api_diff api_diff_se
+#&gt;      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span>     629.        10.1     662.        9.54     32.9        2.08</div><div class='input'>
+<span class='va'>dstrata_grp</span> <span class='op'>&lt;-</span> <span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>stype</span><span class='op'>)</span>
 
-<span class='no'>dstrata_grp</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>summarise</span>(<span class='kw'>api99_mn</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>api99</span>),
-            <span class='kw'>api00_mn</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>api00</span>),
-            <span class='kw'>api_diff</span> <span class='kw'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span>(<span class='no'>api00</span> - <span class='no'>api99</span>))</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 3 x 7</span><span>
+<span class='va'>dstrata_grp</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>summarise</span><span class='op'>(</span>api99_mn <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api99</span><span class='op'>)</span>,
+            api00_mn <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api00</span><span class='op'>)</span>,
+            api_diff <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api00</span> <span class='op'>-</span> <span class='va'>api99</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 3 × 7</span>
 #&gt;   stype api99_mn api99_mn_se api00_mn api00_mn_se api_diff api_diff_se
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> E         636.        13.3     674.        12.5    38.6         2.76
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> H         617.        15.8     626.        15.5     8.46        3.41
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span> M         610.        16.8     637.        16.6    26.4         3.05</div><div class='input'>
-</div></span></pre>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> E         636.        13.3     674.        12.5    38.6         2.76
+#&gt; <span style='color: #BCBCBC;'>2</span> H         617.        15.8     626.        15.5     8.46        3.41
+#&gt; <span style='color: #BCBCBC;'>3</span> M         610.        16.8     637.        16.6    26.4         3.05</div><div class='input'>
+<span class='co'># `dplyr::across` can be used to programmatically summarize multiple columns</span>
+<span class='co'># See https://dplyr.tidyverse.org/articles/colwise.html for details</span>
+<span class='co'># A basic example of working on 2 columns at once and then calculating the total</span>
+<span class='co'># the mean</span>
+<span class='va'>total_vars</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"enroll"</span>, <span class='st'>"api.stu"</span><span class='op'>)</span>
+<span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>summarize</span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/across.html'>across</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://tidyselect.r-lib.org/reference/all_of.html'>all_of</a></span><span class='op'>(</span><span class='va'>total_vars</span><span class='op'>)</span><span class='op'>)</span>, <span class='va'>survey_total</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 × 4</span>
+#&gt;     enroll enroll_se  api.stu api.stu_se
+#&gt;      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> 3<span style='text-decoration: underline;'>687</span>178.   <span style='text-decoration: underline;'>117</span>319. 3<span style='text-decoration: underline;'>086</span>009.    <span style='text-decoration: underline;'>101</span>841.</div><div class='input'>
+<span class='co'># Expressions are allowed in summarize arguments &amp; inside functions</span>
+<span class='co'># Here we can calculate binary variable on the fly and also multiply by 100 to</span>
+<span class='co'># get percentages</span>
+<span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>summarize</span><span class='op'>(</span>api99_over_700_pct <span class='op'>=</span> <span class='fl'>100</span> <span class='op'>*</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api99</span> <span class='op'>&gt;</span> <span class='fl'>700</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 × 2</span>
+#&gt;   api99_over_700_pct api99_over_700_pct_se
+#&gt;                <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>                 <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span>               30.6                  3.61</div><div class='input'>
+<span class='co'># But be careful, the variance doesn't scale the same way, so this is wrong!</span>
+<span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>summarize</span><span class='op'>(</span>api99_over_700_pct <span class='op'>=</span> <span class='fl'>100</span> <span class='op'>*</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api99</span> <span class='op'>&gt;</span> <span class='fl'>700</span>, vartype <span class='op'>=</span> <span class='st'>"var"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 × 2</span>
+#&gt;   api99_over_700_pct api99_over_700_pct_var
+#&gt;                <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>                  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span>               30.6                  0.130</div><div class='input'><span class='co'># Wrong variance!</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -239,7 +276,7 @@ survey package.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

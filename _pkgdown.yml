@@ -15,6 +15,7 @@ reference:
     contents:
       - cascade
       - group_by
+      - interact
       - summarise
       - summarise_all
       - survey_mean
@@ -24,6 +25,7 @@ reference:
       - survey_tally
       - survey_var
       - unweighted
+      - survey_old_quantile
   - title: "Other supported dplyr functions"
     desc: "Other functions from dplyr that work on srvyr's survey objects"
     contents:
@@ -31,12 +33,17 @@ reference:
       - dplyr_single
       - groups
       - tbl_vars
+      - group_map_dfr
+      - dplyr_filter_joins
+      - collect
   - title: "(Primarily for package authors) Extend srvyr"
     desc: "Functions useful for package authors to extend srvyr"
     contents:
       - current_svy
       - get_var_est
       - set_survey_vars
+      - uninteract
+      - srvyr_interaction
 
 navbar:
   type: default

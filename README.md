@@ -61,8 +61,10 @@ dstrata <- dstrata %>%
 ``` r
 dstrata %>% 
   summarise(api_diff = survey_mean(api_diff, vartype = "ci"))
+#> # A tibble: 1 × 3
 #>   api_diff api_diff_low api_diff_upp
-#> 1 32.89252     28.79413     36.99091
+#>      <dbl>        <dbl>        <dbl>
+#> 1     32.9         28.8         37.0
 ```
 
 -   `group_by()` and then `summarise()` creates summaries by groups.
@@ -111,7 +113,7 @@ Here are some free resources put together by the community about srvyr:
 -   **“How-to”s & examples of using srvyr**
     -   srvyr’s included vignette [“srvyr vs
         survey”](http://gdfe.co/srvyr/articles/srvyr-vs-survey.html) and
-        the rest of the [pkgdown website](http://gdfe.co/srvyr)
+        the rest of the [pkgdown website](http://gdfe.co/srvyr/)
     -   Stephanie Zimmer & Rebecca Powell’s [2021 AAPOR Workshop “Tidy
         Survey Analysis in R using the srvyr
         Package”](https://github.com/szimmer/tidy-survey-aapor-2021)
@@ -144,6 +146,15 @@ Here are some free resources put together by the community about srvyr:
 -   **About survey statistics**
     -   Thomas Lumley’s book [“Complex Surveys: a guide to analysis
         using R”](http://r-survey.r-forge.r-project.org/svybook/)
+    -   [Chris Skinner. Jon Wakefield. “Introduction to the Design and
+        Analysis of Complex Survey Data.” Statist. Sci. 32 (2) 165 -
+        175, May 2017.
+        10.1214/17-STS614](https://projecteuclid.org/accountAjax/Download?downloadType=journal%20article&urlId=10.1214%2F17-STS614&isResultClick=True)
+    -   Sharon Lohr’s textbook “Sampling: Design and Analysis”.
+        [Second](https://www.sharonlohr.com/sampling-design-and-analysis-2e)
+        or
+        [Third](https://www.sharonlohr.com/sampling-design-and-analysis-3e)
+        Editions
     -   “Survey weighting is a mess” is the opening to Andrew Gelman’s
         [“Struggles with Survey Weighting and Regression
         Modeling”](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf)
@@ -184,10 +195,10 @@ webiste](https://community.rstudio.com) (known for it’s friendly
 community) or [stackoverflow.com](https://stackoverflow.com) (maybe not
 known for being quite as friendly, but probably has more people). If you
 think you’ve found a bug in srvyr’s code, please file an [issue on
-GitHub](https://github.com/gergness/issue/new), but note that I’m not a
-great resource for helping specific issue, both because I have limited
-capacity but also because I do not consider myself an expert in the
-statistical methods behind survey analysis.
+GitHub](https://github.com/gergness/srvyr/issues/new), but note that I’m
+not a great resource for helping specific issue, both because I have
+limited capacity but also because I do not consider myself an expert in
+the statistical methods behind survey analysis.
 
 **Have something to add?**
 
@@ -207,7 +218,7 @@ issue](https://github.com/gergness/srvyr/issues/127)!
 
 > Spending my afternoon using `srvyr` for tidy analysis of weighted
 > survey data in \#rstats and it’s so elegant. Vignette here:
-> <https://cran.r-project.org/web/packages/srvyr/vignettes/srvyr-vs-survey.html>
+> <https://CRAN.R-project.org/package=srvyr/vignettes/srvyr-vs-survey.html>
 >
 > –<cite>Chris Skovron ([@cskovron on Nov 20,
 > 2018](https://twitter.com/cskovron/status/1065015904784842752))</cite>

@@ -1,6 +1,9 @@
-# srvyr (development version)
+# srvyr 1.1.0
 * Uses the new quantile functions provided in version 4.1 of the survey package. The old survey quantile functions can be accessed with `survey_old_quantile()` and `survey_old_median()`
+* Adds a new function `interact` that makes it easier to calculate proportions among interacted groups
 * "Filering joins"  (`anti_join` and `semi_join`) are now available for srvyr objects. You must put the `tbl_svy` object first. (#65, #120, @bschneidr)
+* Auto-unpacking of data.frames works even inside of a named data.frame column (like one created by `dplyr::across`). (#129)
+* Miscellaneous documentation improvements (#119, #126, #127)
 
 # srvyr 1.0.1
 * `survey_mean()` with no `x` no longer errors when there are no grouping variables (#117)

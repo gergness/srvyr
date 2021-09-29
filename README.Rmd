@@ -85,7 +85,7 @@ summary(my_model)
 Here are some free resources put together by the community about srvyr:
 
 - **"How-to"s & examples of using srvyr**
-  - srvyr's included vignette ["srvyr vs survey"](http://gdfe.co/srvyr/articles/srvyr-vs-survey.html) and the rest of the [pkgdown website](http://gdfe.co/srvyr)
+  - srvyr's included vignette ["srvyr vs survey"](http://gdfe.co/srvyr/articles/srvyr-vs-survey.html) and the rest of the [pkgdown website](http://gdfe.co/srvyr/)
   - Stephanie Zimmer & Rebecca Powell's [2021 AAPOR Workshop "Tidy Survey Analysis in R using the srvyr Package"](https://github.com/szimmer/tidy-survey-aapor-2021)
   - "The Epidemiologist R Handbook", by Neale Batra et al. has a [chapter on survey analysis](https://epirhandbook.com/survey-analysis.html) with srvyr and survey package examples
   - Kieran Healy's book ["Data Visualization: A Practical Introduction"](https://socviz.co/modeling.html#plots-from-complex-surveys) has a section on using srvyr to visualize the ESS.
@@ -96,7 +96,7 @@ Here are some free resources put together by the community about srvyr:
   - ["The Joy of Calculating the Direct Standard Error for PUMS Estimates"](https://ldaly.github.io/giveinandblogit/) by GitHub user @ldaly
 - **About survey statistics**
   - Thomas Lumley's book ["Complex Surveys: a guide to analysis using R"](http://r-survey.r-forge.r-project.org/svybook/)
-  - [Chris Skinner. Jon Wakefield. "Introduction to the Design and Analysis of Complex Survey Data." Statist. Sci. 32 (2) 165 - 175, May 2017. https://doi.org/10.1214/17-STS614](https://doi.org/10.1214/17-STS614)
+  - [Chris Skinner. Jon Wakefield. "Introduction to the Design and Analysis of Complex Survey Data." Statist. Sci. 32 (2) 165 - 175, May 2017. 10.1214/17-STS614](https://projecteuclid.org/accountAjax/Download?downloadType=journal%20article&urlId=10.1214%2F17-STS614&isResultClick=True)
   - Sharon Lohr's textbook "Sampling: Design and Analysis". [Second ](https://www.sharonlohr.com/sampling-design-and-analysis-2e) or [Third ](https://www.sharonlohr.com/sampling-design-and-analysis-3e) Editions
   - "Survey weighting is a mess" is the opening to Andrew Gelman's ["Struggles with Survey Weighting and Regression Modeling"](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf)
   - Anthony Damico's website ["Analyze Survey Data for Free"](http://asdfree.com) has the weight specifications for a wide variety of public use survey datasets.
@@ -112,7 +112,7 @@ Here are some free resources put together by the community about srvyr:
 
 **Still need help?**
 
-I think the best way to get help is to form a specific question and ask it in some place like [rstudio's community webiste](https://community.rstudio.com) (known for it's friendly community) or [stackoverflow.com](https://stackoverflow.com) (maybe not known for being quite as friendly, but probably has more people). If you think you've found a bug in srvyr's code, please file an [issue on GitHub](https://github.com/gergness/issue/new), but note that I'm not a great resource for helping specific issue, both because I have limited capacity but also because I do not consider myself an expert in the statistical methods behind survey analysis.
+I think the best way to get help is to form a specific question and ask it in some place like [rstudio's community webiste](https://community.rstudio.com) (known for it's friendly community) or [stackoverflow.com](https://stackoverflow.com) (maybe not known for being quite as friendly, but probably has more people). If you think you've found a bug in srvyr's code, please file an [issue on GitHub](https://github.com/gergness/srvyr/issues/new), but note that I'm not a great resource for helping specific issue, both because I have limited capacity but also because I do not consider myself an expert in the statistical methods behind survey analysis.
 
 **Have something to add?**
 
@@ -125,7 +125,7 @@ These resources were mostly found via vanity searches on twitter & github. If yo
 >
 > --<cite>Brian Guay ([\@BrianMGuay on Jun 16, 2021](https://twitter.com/brianmguay/status/1405224564196622338))</cite>
 
-> Spending my afternoon using `srvyr` for tidy analysis of weighted survey data in #rstats and it's so elegant. Vignette here: https://cran.r-project.org/web/packages/srvyr/vignettes/srvyr-vs-survey.html
+> Spending my afternoon using `srvyr` for tidy analysis of weighted survey data in #rstats and it's so elegant. Vignette here: https://CRAN.R-project.org/package=srvyr/vignettes/srvyr-vs-survey.html
 > 
 > --<cite>Chris Skovron ([\@cskovron on Nov 20, 2018](https://twitter.com/cskovron/status/1065015904784842752))</cite>
 

@@ -353,7 +353,7 @@ strat_design %>%
   summarize(prop = survey_prop())
 ```
 
-If you want to calculate the propotion for groups from multiple variables at the same
+If you want to calculate the proportion for groups from multiple variables at the same
 time that add up to 100%, the `interact` function can help. The `interact` function
 creates a variable that is automatically split apart so that more than one variable 
 can be unpeeled.

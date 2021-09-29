@@ -32,7 +32,7 @@ The argument \code{vartype} can choose one or more measures of uncertainty,
 for variance, and \code{cv} for coefficient of variation. \code{level}
 specifies the level for the confidence interval.
 
-The other arguments correspond to the analagous function arguments from the
+The other arguments correspond to the analogous function arguments from the
 survey package.
 
 The available functions from srvyr are:

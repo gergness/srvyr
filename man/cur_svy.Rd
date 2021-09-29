@@ -20,7 +20,7 @@ This is a helper to allow srvyr's syntactic style. In particular, it tells
 functions inside of a summarize call what survey to use (for the current
 group with \code{cur_svy()} or the complete survey for \code{cur_svy_full()}.
 In general, users will not have to worry about getting (or setting) the current
-conext's survey, unless they are trying to extend srvyr.
+context's survey, unless they are trying to extend srvyr.
 See \code{vignette("extending-srvyr")} for more details. \code{current_svy()}
 is deprecated, but returns the same value as \code{cur_svy()}.
 }

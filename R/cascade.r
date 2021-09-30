@@ -51,8 +51,7 @@ cascade.tbl_svy <- function(.data, ..., .fill = NA) {
 cascade.grouped_svy <- function(.data, ..., .dots, .fill = NA) {
   dots <- rlang::quos(...)
 
-  groups <- as.character(groups(.data))
-  groups <- gsub("^\`|\`$", "", groups)
+  groups <- group_vars(.data)
   group_cascade <- lapply(rev(seq_along(groups)), function(x) groups[seq_len(x)])
   group_cascade[length(group_cascade) + 1] <- ""
 

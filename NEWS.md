@@ -1,4 +1,5 @@
 # srvyr (development version)
+* Fix a bug with non-standard names of grouping variables (like `1234`) in cascade (#132, thanks @szimmer)
 
 # srvyr 1.1.0
 * Uses the new quantile functions provided in version 4.1 of the survey package. The old survey quantile functions can be accessed with `survey_old_quantile()` and `survey_old_median()`

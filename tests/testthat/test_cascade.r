@@ -50,3 +50,12 @@ test_that(".fill works & respects factors",
                          cascade(api99_mn = survey_mean(api99), .fill = "AAA") %>%
                          .$stype,
                        factor(c("E", "H", "M", "AAA"), levels = c("E", "H", "M", "AAA"))))
+
+
+test_that("cascade works with non-standard names (#132)", {
+  actual <- dstrata_srvyr %>%
+    group_by(`1234` = stype) %>%
+    cascade(x = survey_mean())
+
+  expect_equal(names(actual)[1], "1234")
+})

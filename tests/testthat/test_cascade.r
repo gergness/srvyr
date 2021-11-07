@@ -59,3 +59,67 @@ test_that("cascade works with non-standard names (#132)", {
 
   expect_equal(names(actual)[1], "1234")
 })
+
+
+test_that("cascade can form groupings from interact column", {
+  # regular 2 var
+  expect_equal(
+    dstrata_srvyr %>% group_by(stype, awards) %>% cascade_groupings(),
+    list(
+      list(rlang::sym("stype"), rlang::sym("awards")),
+      list(rlang::sym("stype")),
+      NULL
+    )
+  )
+
+
+  # 2 var interaction
+  expect_equal(
+    dstrata_srvyr %>% group_by(interact(stype, awards)) %>% cascade_groupings(),
+    list(
+      list(rlang::sym("interact(stype, awards)")),
+      list(rlang::expr(recast_interact(!!rlang::sym("interact(stype, awards)"), !!rlang::sym("stype")))),
+      list(rlang::expr(recast_interact(!!rlang::sym("interact(stype, awards)"), !!rlang::sym("awards")))),
+      NULL
+    )
+  )
+
+  # 3 var interaction
+  expect_equal(
+    dstrata_srvyr %>% group_by(interact(stype, awards, yr.rnd)) %>% cascade_groupings(),
+    list(
+      list(rlang::sym("interact(stype, awards, yr.rnd)")),
+      list(rlang::expr(recast_interact(!!rlang::sym("interact(stype, awards, yr.rnd)"), !!rlang::sym("stype"), !!rlang::sym("awards")))),
+      list(rlang::expr(recast_interact(!!rlang::sym("interact(stype, awards, yr.rnd)"), !!rlang::sym("stype"), !!rlang::sym("yr.rnd")))),
+      list(rlang::expr(recast_interact(!!rlang::sym("interact(stype, awards, yr.rnd)"), !!rlang::sym("awards"), !!rlang::sym("yr.rnd")))),
+      list(rlang::expr(recast_interact(!!rlang::sym("interact(stype, awards, yr.rnd)"), !!rlang::sym("stype")))),
+      list(rlang::expr(recast_interact(!!rlang::sym("interact(stype, awards, yr.rnd)"), !!rlang::sym("awards")))),
+      list(rlang::expr(recast_interact(!!rlang::sym("interact(stype, awards, yr.rnd)"), !!rlang::sym("yr.rnd")))),
+      NULL
+    )
+  )
+
+  # mixed interact before regular
+  expect_equal(
+    dstrata_srvyr %>% group_by(stype, interact(awards, yr.rnd)) %>% cascade_groupings(),
+    list(
+      list(rlang::sym("stype"), rlang::sym("interact(awards, yr.rnd)")),
+      list(rlang::sym("stype"), rlang::expr(recast_interact(!!rlang::sym("interact(awards, yr.rnd)"), !!rlang::sym("awards")))),
+      list(rlang::sym("stype"), rlang::expr(recast_interact(!!rlang::sym("interact(awards, yr.rnd)"), !!rlang::sym("yr.rnd")))),
+      list(rlang::sym("stype")),
+      NULL
+    )
+  )
+
+  # mixed interact after regular
+  expect_equal(
+    dstrata_srvyr %>% group_by(interact(stype, awards), yr.rnd) %>% cascade_groupings(),
+    list(
+      list(rlang::sym("interact(stype, awards)"), rlang::sym("yr.rnd")),
+      list(rlang::sym("interact(stype, awards)")),
+      list(rlang::expr(recast_interact(!!rlang::sym("interact(stype, awards)"), !!rlang::sym("stype")))),
+      list(rlang::expr(recast_interact(!!rlang::sym("interact(stype, awards)"), !!rlang::sym("awards")))),
+      NULL
+    )
+  )
+})

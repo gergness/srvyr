@@ -122,7 +122,7 @@ uninteract.data.frame <- function(x) {
 
 # Get the names of the terms used in the crosswalk
 interact_terms <- function(col) {
-  names(crosswalk(col)[-c("___srvyr_cw_id")])
+  setdiff(names(crosswalk(col)), "___srvyr_cw_id")
 }
 
 # Starting from an interaction, change it so that it has a subset of the terms

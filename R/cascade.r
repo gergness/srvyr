@@ -48,41 +48,58 @@ cascade.tbl_svy <- function(.data, ..., .fill = NA) {
 
 
 #' @export
-cascade.grouped_svy <- function(.data, ..., .dots, .fill = NA) {
+cascade.grouped_svy <- function(.data, ..., .dots, .fill = NA, .groupings = NULL) {
   dots <- rlang::quos(...)
+  .groupings <- rlang::enquo(.groupings)
 
-  groups <- group_vars(.data)
-  group_cascade <- lapply(rev(seq_along(groups)), function(x) groups[seq_len(x)])
-  group_cascade[length(group_cascade) + 1] <- ""
+  if (rlang::quo_is_null(.groupings)) .groupings <- cascade_groupings(.data)
 
-  out <- lapply(group_cascade,
-                function(ggg) {
-                  if (!identical(ggg, "")) {
-                    casc <- summarise(group_by(.data, !!!rlang::syms(ggg)), !!!dots)
-                  } else {
-                    casc <- summarise(ungroup(.data), !!!dots)
-                  }
+  out <- lapply(.groupings, function(ggg) {
+      summarise(group_by(.data, !!!ggg), !!!dots)
+  })
 
-                  missing_vars <- setdiff(groups, ggg)
-                  if (length(missing_vars) > 0) casc[missing_vars] <- .fill
-
-                  casc
-                })
-
-  # Add .fill to factor level where necessary
-  for (ggg in groups) {
-    if (class(.data$variables[[ggg]]) == "factor" & !is.na(.fill)) {
-      for (iii in seq_along(out)) {
-        out[[iii]][[ggg]] <- factor(out[[iii]][[ggg]],
-                                    levels = c(levels(.data$variables[[ggg]]), .fill))
-      }
-    }
-  }
+  # TODO: take .fill into account
 
   out <- dplyr::bind_rows(out)
-
-  out <- dplyr::arrange(out, !!!rlang::syms(groups))
+  # TODO: arrange (taking the interact cols into account?)
   out
+}
+
+
+# Figure out which groupings to use in cascade from a grouped survey's groups
+cascade_groupings <- function(tbl) {
+  group_vars <- groups(tbl)
+  group_vars_expanded <- lapply(group_vars, function(gv_sym) {
+    var <- dplyr::pull(tbl, gv_sym)
+    if (!is.interaction(var)) {
+      return(gv_sym)
+    }
+    # get all combinations of interaction terms
+    c(
+      list(gv_sym),
+      all_term_combos(gv_sym, var)
+    )
+  })
+
+  out <- lapply(seq(length(group_vars), 0), function(end) {
+    if (end == 0) return(list(NULL))
+    lapply(group_vars_expanded[[end]], function(gv) c(group_vars[seq_len(end - 1)], gv))
+  })
+  unlist(out, recursive = FALSE)
+}
+
+
+all_term_combos <- function(var_sym, var) {
+  terms <- interact_terms(var)
+
+  out <- lapply(
+    seq(length(terms) - 1, 1), # subtract 1 because don't need to recast to get
+    function(num) {
+      combn(terms, num, simplify = FALSE, function(term_syms) {
+        rlang::expr(recast_interact(!!var_sym, !!!rlang::syms(term_syms)))
+      })
+    })
+  unlist(out, recursive = FALSE)
 }
 
 

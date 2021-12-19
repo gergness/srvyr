@@ -4,22 +4,12 @@
 \alias{cascade}
 \title{Summarise multiple values into cascading groups}
 \usage{
-cascade(
-  .data,
-  ...,
-  .dots,
-  .fill = NA,
-  .fill_level_top = FALSE,
-  .groupings = NULL
-)
+cascade(.data, ..., .fill = NA, .fill_level_top = FALSE, .groupings = NULL)
 }
 \arguments{
 \item{.data, }{tbl A \code{tbl_svy} object}
 
 \item{...}{Name-value pairs of summary functions}
-
-\item{.dots}{Used to work around non-standard evaluation. See
-\code{vignette("nse", package = "dplyr")} for details.}
 
 \item{.fill}{Value to fill in for group summaries}
 
@@ -47,7 +37,7 @@ dstrata <- apistrat \%>\%
 
 # Calculates the means by stype and also for the whole
 # sample
-dstrata_grp \%>\%
+dstrata \%>\%
   group_by(stype) \%>\%
   cascade(api99_mn = survey_mean(api99),
             api00_mn = survey_mean(api00),
@@ -56,18 +46,17 @@ dstrata_grp \%>\%
 # Calculates the proportions by the interaction of stype & awards
 # as well as by each of those variable's groups alone, and finally
 # the total as well
-dstrata_grp \%>\%
+dstrata \%>\%
   group_by(interact(stype, awards)) \%>\%
   cascade(prop = survey_mean())
 
 # Can also specify the .groupings manually, though this interface
 # is a little ugly, as it requires passing a list of quosures or
 # symbols you've created, rather than the usual syntax
-dstrata_grp \%>\%
+dstrata \%>\%
   cascade(
     prop = survey_mean(),
     .groupings = list(rlang::quos(stype, awards), rlang::quos(NULL))
-   )
- )
+  )
 
 }

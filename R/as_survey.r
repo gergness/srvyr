@@ -114,6 +114,8 @@ as_survey.twophase2 <- function(.data, ...) {
 #' "dplyr")}) for more details.
 #' @name srvyr-se-deprecated
 #' @inheritParams as_survey
+#' @param .dots Used to work around non-standard evaluation. See
+#' \code{vignette("nse", package = "dplyr")} for details.
 #' @export
 as_survey_ <- function(.data, ...) {
   warn_underscored()

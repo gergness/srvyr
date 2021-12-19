@@ -4,12 +4,6 @@ cascade_.tbl_svy <- function(.data, ..., .dots, .fill = NA) {
   cascade.tbl_svy(.data, !!!dots, .fill = .fill)
 }
 
-#' @export
-cascade_.grouped_svy <- function(.data, ..., .dots, .fill = NA) {
-  dots <- compat_lazy_dots(.dots, caller_env(), ...)
-  cascade.grouped_svy(.data, !!!dots, .fill = .fill)
-}
-
 #' Summarise multiple values into cascading groups
 #'
 #' \code{cascade} is similar to \code{\link{summarise}}, but calculates
@@ -27,8 +21,6 @@ cascade_.grouped_svy <- function(.data, ..., .dots, .fill = NA) {
 #' the bottom).
 #' @param .groupings (Experimental) A list of lists of quosures to manually
 #' specify the groupings to use, rather than the default.
-#' @param .dots Used to work around non-standard evaluation. See
-#' \code{vignette("nse", package = "dplyr")} for details.
 #'
 #' @examples
 #' library(survey)
@@ -39,7 +31,7 @@ cascade_.grouped_svy <- function(.data, ..., .dots, .fill = NA) {
 #'
 #' # Calculates the means by stype and also for the whole
 #' # sample
-#' dstrata_grp %>%
+#' dstrata %>%
 #'   group_by(stype) %>%
 #'   cascade(api99_mn = survey_mean(api99),
 #'             api00_mn = survey_mean(api00),
@@ -48,30 +40,30 @@ cascade_.grouped_svy <- function(.data, ..., .dots, .fill = NA) {
 #' # Calculates the proportions by the interaction of stype & awards
 #' # as well as by each of those variable's groups alone, and finally
 #' # the total as well
-#' dstrata_grp %>%
+#' dstrata %>%
 #'   group_by(interact(stype, awards)) %>%
 #'   cascade(prop = survey_mean())
 #'
 #' # Can also specify the .groupings manually, though this interface
 #' # is a little ugly, as it requires passing a list of quosures or
 #' # symbols you've created, rather than the usual syntax
-#' dstrata_grp %>%
+#' dstrata %>%
 #'   cascade(
 #'     prop = survey_mean(),
 #'     .groupings = list(rlang::quos(stype, awards), rlang::quos(NULL))
-#'    )
-#'  )
+#'   )
 #'
 #' @export
 cascade <- function(
-  .data, ..., .dots, .fill = NA, .fill_level_top = FALSE, .groupings = NULL
+  .data, ..., .fill = NA, .fill_level_top = FALSE, .groupings = NULL
 ) {
   UseMethod("cascade")
 }
 
+
 #' @export
 cascade.tbl_svy <- function(
-  .data, ..., .dots, .fill = NA, .groupings = NULL, .fill_level_top = FALSE
+  .data, ..., .fill = NA, .groupings = NULL, .fill_level_top = FALSE
 ) {
   dots <- rlang::quos(...)
   if (is.null(.groupings)) .groupings <- determine_cascade_groupings(.data)
@@ -117,7 +109,7 @@ fill_cascade_parts <- function(data_list, .fill, .fill_level_top) {
   out <- lapply(seq_along(data_list), function(iii) {
     dplyr::mutate(
       data_list[[iii]],
-      !!!setNames(lapply(names_to_add[[iii]], fill_func), names_to_add[[iii]])
+      !!!stats::setNames(lapply(names_to_add[[iii]], fill_func), names_to_add[[iii]])
     )
   })
 
@@ -176,7 +168,7 @@ all_term_combos <- function(var_sym, var) {
   out <- lapply(
     seq(length(terms) - 1, 1), # subtract 1 because don't need to recast to get
     function(num) {
-      combn(terms, num, simplify = FALSE, function(term_syms) {
+      utils::combn(terms, num, simplify = FALSE, function(term_syms) {
         rlang::expr(recast_interact(!!var_sym, !!!rlang::syms(term_syms)))
       })
     })

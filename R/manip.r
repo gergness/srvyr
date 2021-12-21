@@ -12,6 +12,10 @@ mutate.tbl_svy <- function(
     stop("Cannot modify survey variable")
   }
 
+  # Set current_svy so available to svy stat functions
+  old <- set_current_svy(list(full = .data, split = list(.data)))
+  on.exit(set_current_svy(old), add = TRUE)
+
   .data$variables <- mutate(
     .data$variables,
     !!!dots,

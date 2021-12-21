@@ -79,6 +79,8 @@ for the survey package to this format.
   data.
 - `cur_svy_full()` - Like `cur_svy()`, but includes the full survey data intead
   of just the current group's data.
+- `cur_svy_wts()` - This helper function provides access to the full-sample
+  weights for the current group's data.
 - `set_survey_vars()` - Many survey functions have limited support for both
   supplying a formula indicating the variables to calculate a statistic on
   as well as a vector. However, oftentimes the vector version is less well

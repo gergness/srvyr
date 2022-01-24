@@ -147,14 +147,28 @@ recast_interact <- function(col, ...) {
 
 
 new_interaction <- function(x = integer(), crosswalk = NULL, ...) {
-  vctrs::new_vctr(
+  crosswalk <- dplyr::group_by(crosswalk, across(-.data$`___srvyr_cw_id`), .drop = FALSE)
+  crosswalk <- dplyr::summarize(crosswalk, `___srvyr_cw_id` = .data$`___srvyr_cw_id`, .groups = "drop")
+  missing_cw <- sum(is.na(crosswalk[["___srvyr_cw_id"]]))
+  crosswalk[is.na(crosswalk[["___srvyr_cw_id"]]), ][["___srvyr_cw_id"]] <- seq(
+    max(crosswalk[["___srvyr_cw_id"]]), max(crosswalk[["___srvyr_cw_id"]]) + missing_cw
+  )
+
+  out <- vctrs::new_vctr(
     x,
     crosswalk = crosswalk,
+    levels = as.character(crosswalk[["___srvyr_cw_id"]]),
     ...,
     class = "srvyr_interaction"
   )
+  class(out) <- c(class(out), "factor")
+  out
 }
 
+#' @export
+levels.srvyr_interaction <- function(x) {
+  attr(x, "levels")
+}
 
 #' srvyr interaction column
 #'

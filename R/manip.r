@@ -28,6 +28,34 @@ mutate.tbl_svy <- function(
 }
 
 #' @export
+mutate.grouped_svy <- function(
+  .data,
+  ...,
+  .keep = c("all", "used", "unused", "none"),
+  .before = NULL,
+  .after = NULL
+) {
+  dots <- rlang::quos(...)
+
+  if (any(names2(dots) %in% as.character(survey_vars(.data)))) {
+    stop("Cannot modify survey variable")
+  }
+
+  old <- set_current_svy(list(full = .data, split = group_split(.data)))
+  on.exit(set_current_svy(old), add = TRUE)
+
+  .data$variables <- mutate(
+    .data$variables,
+    !!!dots,
+    .keep = .keep,
+    .before = {{.before}},
+    .after = {{.after}}
+  )
+
+  .data
+}
+
+#' @export
 mutate_.tbl_svy <- function(.data, ..., .dots) {
   dots <- compat_lazy_dots(.dots, caller_env(), ...)
   mutate(.data, !!!dots)

@@ -28,6 +28,13 @@ group_split_impl <- function(data, .keep) {
   if (!isTRUE(.keep)) {
     out <- select(out, !dplyr::one_of(group_vars(data)))
   }
+
+  # twophase has bug where you can't subset by 1:nrow,
+  # and we might as well just not do the subsetting on anything
+  if (length(indices) == 1) {
+    return(list(out))
+  }
+
   lapply(indices, function(ind) out[ind, ])
 }
 

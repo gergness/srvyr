@@ -4,7 +4,7 @@ summarise.tbl_svy <- function(.data, ..., .groups = NULL, .unpack = TRUE) {
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
 
   # Set current_svy so available to svy stat functions
-  old <- set_current_svy(list(full = .data, split = list(.data)))
+  old <- set_current_svy(list(full = .data, split = split_for_context(.data)))
   on.exit(set_current_svy(old), add = TRUE)
 
   out <- dplyr::summarise(.data$variables, ..., .groups = .groups)
@@ -27,7 +27,7 @@ summarise.grouped_svy <- function(.data, ..., .groups = NULL, .unpack = TRUE) {
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
 
   # Set current_svy so available to svy stat functions
-  old <- set_current_svy(list(full = .data, split = group_split(.data)))
+  old <- set_current_svy(list(full = .data, split = split_for_context(.data)))
   on.exit(set_current_svy(old), add = TRUE)
 
   out <- dplyr::summarise(.data$variables, !!!.dots, .groups = .groups)

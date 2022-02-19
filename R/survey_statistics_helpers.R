@@ -235,3 +235,26 @@ Ops.srvyr_result_df <- function(e1, e2) {
   class(out) <- c("srvyr_result_df", class(out))
   out
 }
+
+#' Get the full-sample weights for the current context
+#'
+#' This is a helper to allow srvyr's syntactic style. This function allows quick access
+#' to the full-sample weights for the current group, using \code{cur_svy_wts()},
+#' See \code{vignette("extending-srvyr")} for more details.
+#'
+#' @return a numeric vector containing full-sample weights
+#' @examples
+#'
+#' data(api, package = 'survey')
+#'
+#' dstrata <- apistrat %>%
+#'   as_survey_design(strata = stype, weights = pw)
+#'
+#' dstrata %>%
+#'   summarize(sum_of_weights = sum(cur_svy_wts()),
+#'             kish_deff = var(cur_svy_wts())/(mean(cur_svy_wts())^2))
+#'
+#' @export
+cur_svy_wts <- function() {
+  cur_svy_env$split[[dplyr::cur_group_id()]][['pweights']] %||% (1/cur_svy_env$split[[dplyr::cur_group_id()]][['prob']])
+}

@@ -66,6 +66,16 @@ peeled_cur_group_id <- function(svy, cur_group) {
   out
 }
 
+split_context_unavailable <- function(reason) {
+  structure(list(reason), class = "svy_split_context_unavailable")
+}
+
+split_for_context <- function(svy) {
+  if (inherits(svy$variables, "tbl_lazy") && !is.null(groups(svy))) {
+    return(split_context_unavailable("lazy"))
+  }
+  group_split(svy)
+}
 
 #' Get the survey data for the current context
 #'
@@ -80,6 +90,10 @@ peeled_cur_group_id <- function(svy, cur_group) {
 #' @return a tbl_svy (or error if called with no survey context)
 #' @export
 cur_svy <- function() {
+  if (inherits(cur_svy_env$split, "svy_split_context_unavailable")) {
+    if (cur_svy_env$split[[1]] == "lazy")
+      rlang::abort("Grouped survey context unavailable for lazy tables.")
+  }
   cur_svy_env$split[[dplyr::cur_group_id()]] %||% rlang::abort("Survey context not set")
 }
 

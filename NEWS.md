@@ -1,4 +1,5 @@
 # srvyr (development version)
+* Improve behavior of `interact()` when using `cascade()`(#133, thanks @szimmer)
 * Fix a bug with non-standard names of grouping variables (like `1234`) in cascade (#132, thanks @szimmer)
 
 # srvyr 1.1.0

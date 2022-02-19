@@ -204,3 +204,23 @@ test_that("Duplicate names are okay when unpacking in summarize", {
 
   expect_equal(actual, alternate)
 })
+
+test_that("Can recast interaction terms", {
+  expect_equal(
+    interact_data %>%
+      transmute(interact(int_col, char_col) %>% recast_interact(int_col)) %>%
+      uninteract(),
+    interact_data %>%
+      transmute(interact(int_col)) %>%
+      uninteract()
+  )
+
+  expect_equal(
+    interact_data %>%
+      transmute(interact(int_col, char_col, fct_col) %>% recast_interact(int_col, fct_col)) %>%
+      uninteract(),
+    interact_data %>%
+      transmute(interact(int_col, fct_col)) %>%
+      uninteract()
+  )
+})

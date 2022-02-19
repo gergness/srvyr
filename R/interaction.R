@@ -119,6 +119,33 @@ uninteract.data.frame <- function(x) {
   out
 }
 
+
+# Get the names of the terms used in the crosswalk
+interact_terms <- function(col) {
+  setdiff(names(crosswalk(col)), "___srvyr_cw_id")
+}
+
+# Starting from an interaction, change it so that it has a subset of the terms
+# (used during cascade)
+recast_interact <- function(col, ...) {
+  .dots <- rlang::quos(...)
+  old_crosswalk <- crosswalk(col)
+
+  conversion <- dplyr::select(old_crosswalk, !!!.dots, "old_cw" = .data$`___srvyr_cw_id`)
+  conversion <- dplyr::group_by(conversion, !!!.dots)
+  conversion[["___srvyr_cw_id"]] <- group_indices(conversion)
+  conversion <- ungroup(conversion)
+
+  new_crosswalk <- dplyr::select(conversion, -dplyr::one_of("old_cw"))
+  new_crosswalk <- dplyr::distinct(new_crosswalk)
+
+  new_interaction(
+    conversion[["___srvyr_cw_id"]][match(unclass(col), conversion$old_cw)],
+    crosswalk = new_crosswalk
+  )
+}
+
+
 new_interaction <- function(x = integer(), crosswalk = NULL, ...) {
   vctrs::new_vctr(
     x,

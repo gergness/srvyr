@@ -4,21 +4,29 @@
 \alias{cascade}
 \title{Summarise multiple values into cascading groups}
 \usage{
-cascade(.data, ..., .dots, .fill = NA)
+cascade(.data, ..., .fill = NA, .fill_level_top = FALSE, .groupings = NULL)
 }
 \arguments{
 \item{.data, }{tbl A \code{tbl_svy} object}
 
 \item{...}{Name-value pairs of summary functions}
 
-\item{.dots}{Used to work around non-standard evaluation. See
-\code{vignette("nse", package = "dplyr")} for details.}
-
 \item{.fill}{Value to fill in for group summaries}
+
+\item{.fill_level_top}{When filling factor variables, whether to put the
+value `.fill` in the first position (defaults to FALSE, placing it in
+the bottom).}
+
+\item{.groupings}{(Experimental) A list of lists of quosures to manually
+specify the groupings to use, rather than the default.}
 }
 \description{
 \code{cascade} is similar to \code{\link{summarise}}, but calculates
 a summary statistics for the total of a group in addition to each group.
+The groupings are chosen by "unpeeling" from the end of the groupings,
+and also expanding out interactions to all terms (eg the interactions of
+all combinations of subsets of variables as well as each variable on
+it's own).
 }
 \examples{
 library(survey)
@@ -27,12 +35,28 @@ data(api)
 dstrata <- apistrat \%>\%
   as_survey_design(strata = stype, weights = pw)
 
-dstrata_grp <- dstrata \%>\%
-  group_by(stype)
-
-dstrata_grp \%>\%
+# Calculates the means by stype and also for the whole
+# sample
+dstrata \%>\%
+  group_by(stype) \%>\%
   cascade(api99_mn = survey_mean(api99),
             api00_mn = survey_mean(api00),
             api_diff = survey_mean(api00 - api99))
+
+# Calculates the proportions by the interaction of stype & awards
+# as well as by each of those variable's groups alone, and finally
+# the total as well
+dstrata \%>\%
+  group_by(interact(stype, awards)) \%>\%
+  cascade(prop = survey_mean())
+
+# Can also specify the .groupings manually, though this interface
+# is a little ugly, as it requires passing a list of quosures or
+# symbols you've created, rather than the usual syntax
+dstrata \%>\%
+  cascade(
+    prop = survey_mean(),
+    .groupings = list(rlang::quos(stype, awards), rlang::quos(NULL))
+  )
 
 }

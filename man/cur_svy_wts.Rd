@@ -10,7 +10,7 @@ cur_svy_wts()
 a numeric vector containing full-sample weights
 }
 \description{
-TThis is a helper to allow srvyr's syntactic style. This function allows quick access
+This is a helper to allow srvyr's syntactic style. This function allows quick access
 to the full-sample weights for the current group, using \code{cur_svy_wts()},
 See \code{vignette("extending-srvyr")} for more details.
 }

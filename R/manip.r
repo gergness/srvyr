@@ -13,35 +13,7 @@ mutate.tbl_svy <- function(
   }
 
   # Set current_svy so available to svy stat functions
-  old <- set_current_svy(list(full = .data, split = list(.data)))
-  on.exit(set_current_svy(old), add = TRUE)
-
-  .data$variables <- mutate(
-    .data$variables,
-    !!!dots,
-    .keep = .keep,
-    .before = {{.before}},
-    .after = {{.after}}
-  )
-
-  .data
-}
-
-#' @export
-mutate.grouped_svy <- function(
-  .data,
-  ...,
-  .keep = c("all", "used", "unused", "none"),
-  .before = NULL,
-  .after = NULL
-) {
-  dots <- rlang::quos(...)
-
-  if (any(names2(dots) %in% as.character(survey_vars(.data)))) {
-    stop("Cannot modify survey variable")
-  }
-
-  old <- set_current_svy(list(full = .data, split = group_split(.data)))
+  old <- set_current_svy(list(full = .data, split = split_for_context(.data)))
   on.exit(set_current_svy(old), add = TRUE)
 
   .data$variables <- mutate(
@@ -106,6 +78,11 @@ rename_.tbl_svy <- function(.data, ..., .dots) {
 #' @export
 filter.tbl_svy <- function(.data, ..., .preserve = FALSE) {
   dots <- rlang::quos(...)
+
+  # Set current_svy so available to svy stat functions
+  old <- set_current_svy(list(full = .data, split = split_for_context(.data)))
+  on.exit(set_current_svy(old), add = TRUE)
+
   if (is_lazy_svy(.data)) {
     lazy_subset_svy_vars(.data, !!!dots, .preserve = .preserve)
   } else {

@@ -89,3 +89,31 @@ rstrata <- as_survey_rep(dstrata)
     expect_equal(result_df[['result']],
                  result_df[['expected']])
   })
+
+
+# filter has access to svy context vars
+  test_that('Can use filter with svy context vars', {
+    using_context_vars <- dstrata %>%
+      filter(cur_svy_wts() >  50)
+
+    using_var <- dstrata %>%
+      filter(nr_adjusted_wt > 50)
+
+    expect_equal(using_context_vars, using_var)
+  })
+
+
+# Can access cur_svy_wts even in
+  test_that('Can nest functions that use context helpers', {
+    nested <- dstrata %>%
+      mutate(
+        cur_svy() %>%
+          filter(cur_svy_wts() > 50) %>%
+          summarize(
+            count_below_50 = sum(cur_svy_wts() <= 50),
+            count_total = length(cur_svy_wts())
+          )
+      )
+    expect_equal(nested$variables$count_below_50, rep(0, nrow(dstrata)))
+    expect_equal(nested$variables$count_total, rep(53, nrow(dstrata)))
+  })

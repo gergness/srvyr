@@ -238,7 +238,7 @@ Ops.srvyr_result_df <- function(e1, e2) {
 
 #' Get the full-sample weights for the current context
 #'
-#' TThis is a helper to allow srvyr's syntactic style. This function allows quick access
+#' This is a helper to allow srvyr's syntactic style. This function allows quick access
 #' to the full-sample weights for the current group, using \code{cur_svy_wts()},
 #' See \code{vignette("extending-srvyr")} for more details.
 #'

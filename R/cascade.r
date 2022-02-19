@@ -84,7 +84,7 @@ cascade.tbl_svy <- function(
 fill_cascade_parts <- function(data_list, .fill, .fill_level_top) {
   if (is.function(.fill)) {
     fill_func <- .fill
-  } else if (rlang::is_formulaish(.fill)) {
+  } else if (rlang::is_formula(.fill)) {
     fill_func <- rlang::as_function(.fill)
   } else {
     fill_func <- function(.x) return(.fill)

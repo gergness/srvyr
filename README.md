@@ -173,6 +173,8 @@ Here are some free resources put together by the community about srvyr:
     -   *En español:* [“Usando R para jugar con los microdatos del
         INEGI”](https://medium.com/tacosdedatos/usando-r-para-sacar-información-de-los-microdatos-del-inegi-b21b6946cf4f)
         by Claudio Daniel Pacheco Castro
+    -   *Tiếng Việt:* [“Dịch tễ học ứng dụng và y tế công cộng với
+        R”](https://epirhandbook.com/vn/survey-analysis.html)
 -   **Other cool stuff that uses srvyr**
     -   A (free) graphical interface allowing exploratory data analysis
         of survey data without writing code:

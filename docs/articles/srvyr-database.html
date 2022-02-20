@@ -32,7 +32,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
       <h1 data-toc-skip>Databases in srvyr</h1>
                         <h4 class="author">Greg Freedman Ellis</h4>
             
-            <h4 class="date">2021-09-28</h4>
+            <h4 class="date">2022-02-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/srvyr-database.Rmd"><code>vignettes/srvyr-database.Rmd</code></a></small>
       <div class="hidden name"><code>srvyr-database.Rmd</code></div>
@@ -111,7 +111,7 @@
 <div id="database-setup" class="section level2">
 <h2 class="hasAnchor">
 <a href="#database-setup" class="anchor"></a>Database Setup</h2>
-<p>In order to focus on srvyr and databases, we start with a prepared dataset. The full code is available <a href="https://github.com/gergness/srvyr/blob/master/vignettes/save_acs_data.R">on Github</a>, and the high level description of what it does is:</p>
+<p>In order to focus on srvyr and databases, we start with a prepared dataset. The full code is available <a href="https://github.com/gergness/srvyr/blob/main/vignettes/save_acs_data.R">on Github</a>, and the high level description of what it does is:</p>
 <ul>
 <li><p>Download data from acs website (currently only Alaska and Hawaii to save time, though it would be easy to adapt to download to all 50 states and Puerto Rico).</p></li>
 <li><p>Merges the household and person datasets so that we can look at the variables related to each person including those at the household level</p></li>
@@ -129,7 +129,7 @@
 
 <span class="co"># Load data (Currently only Alaska and Hawaii to keep file size small and with </span>
 <span class="co"># limited variables, butcode that downloaded the files is available here</span>
-<span class="co"># https://github.com/gergness/srvyr/blob/master/vignettes/save_acs_data.R</span>
+<span class="co"># https://github.com/gergness/srvyr/blob/main/vignettes/save_acs_data.R</span>
 <span class="co"># and could easily be adapted to download all states.)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="st">"acs_m.Rdata"</span><span class="op">)</span> <span class="co"># acs_m data</span>
 
@@ -158,7 +158,7 @@
 ## Use `mean(x, na.rm = TRUE)` to silence this warning
 ## This warning is displayed only once per session.</code></pre>
 <pre><code>## # Source:   lazy query [?? x 2]
-## # Database: sqlite 3.36.0 [:memory:]
+## # Database: sqlite 3.37.0 [:memory:]
 ##     sex hicov
 ##   &lt;int&gt; &lt;dbl&gt;
 ## 1     1  1.14
@@ -196,7 +196,7 @@
   <span class="fu"><a href="../reference/group_trim.html">mutate</a></span><span class="op">(</span>hicov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">hicov</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fl">1L</span>, <span class="fl">0L</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span><span class="op">(</span>hicov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">hicov</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## # Source:   lazy query [?? x 2]
-## # Database: sqlite 3.36.0 [:memory:]
+## # Database: sqlite 3.37.0 [:memory:]
 ##     sex hicov
 ##   &lt;int&gt; &lt;dbl&gt;
 ## 1     1 0.858
@@ -234,7 +234,7 @@
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">agecat</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span><span class="op">(</span>hicov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">hicov</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## # Source:   lazy query [?? x 2]
-## # Database: sqlite 3.36.0 [:memory:]
+## # Database: sqlite 3.37.0 [:memory:]
 ##   agecat hicov
 ##   &lt;chr&gt;  &lt;dbl&gt;
 ## 1 0-18    1.09

@@ -32,7 +32,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
       <h1 data-toc-skip>Extending srvyr</h1>
                         <h4 class="author">Greg Freedman Ellis</h4>
             
-            <h4 class="date">2021-09-28</h4>
+            <h4 class="date">2022-02-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/extending-srvyr.Rmd"><code>vignettes/extending-srvyr.Rmd</code></a></small>
       <div class="hidden name"><code>extending-srvyr.Rmd</code></div>
@@ -133,6 +133,8 @@
 <code><a href="../reference/cur_svy.html">cur_svy()</a></code> - This function, modeled after <code><a href="https://dplyr.tidyverse.org/reference/select_vars.html">dplyr::current_vars()</a></code>, is a hidden way to send the survey object to the object (by hidden, I mean that the user doesn’t have to specify the survey in the arguments of their function call). To use it, you can now directly call <code><a href="../reference/cur_svy.html">cur_svy()</a></code> from inside your function. This survey includes only the current group’s survey data.</li>
 <li>
 <code><a href="../reference/cur_svy.html">cur_svy_full()</a></code> - Like <code><a href="../reference/cur_svy.html">cur_svy()</a></code>, but includes the full survey data intead of just the current group’s data.</li>
+<li>
+<code><a href="../reference/cur_svy_wts.html">cur_svy_wts()</a></code> - This helper function provides access to the full-sample weights for the current group’s data.</li>
 <li>
 <code><a href="../reference/set_survey_vars.html">set_survey_vars()</a></code> - Many survey functions have limited support for both supplying a formula indicating the variables to calculate a statistic on as well as a vector. However, oftentimes the vector version is less well supported than the formula version. Since srvyr uses dplyr semantics, it ends up returning the values as vectors. This function will add on the variable to the survey, defaulting to having the name “__SRVYR_TEMP_VAR__”.</li>
 <li>
@@ -203,6 +205,7 @@
 <span class="fu"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span><span class="op">(</span><span class="op">~</span><span class="va">eqincome</span>, design <span class="op">=</span> <span class="va">des_eusilc</span><span class="op">)</span>
 <span class="co">#&gt;             gini     SE</span>
 <span class="co">#&gt; eqincome 0.26497 0.0019</span>
+
 <span class="co"># Use new function from summarize</span>
 <span class="va">srvyr_eusilc</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span><span class="op">(</span>eqincome <span class="op">=</span> <span class="fu">survey_gini</span><span class="op">(</span><span class="va">eqincome</span><span class="op">)</span><span class="op">)</span>
@@ -210,12 +213,14 @@
 <span class="co">#&gt;   eqincome eqincome_se</span>
 <span class="co">#&gt;      &lt;dbl&gt;       &lt;dbl&gt;</span>
 <span class="co">#&gt; 1    0.265     0.00195</span>
+
 <span class="co">## Groups</span>
 <span class="co"># Calculate by groups for survey</span>
 <span class="fu">survey</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survey/man/svyby.html">svyby</a></span><span class="op">(</span><span class="op">~</span><span class="va">eqincome</span>, <span class="op">~</span><span class="va">rb090</span>, <span class="va">des_eusilc</span>, <span class="fu">convey</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/convey/man/svygini.html">svygini</a></span><span class="op">)</span>
 <span class="co">#&gt;         rb090  eqincome          se</span>
 <span class="co">#&gt; male     male 0.2578983 0.002617279</span>
 <span class="co">#&gt; female female 0.2702080 0.002892713</span>
+
 <span class="co"># Use new function from summarize</span>
 <span class="va">srvyr_eusilc</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">rb090</span><span class="op">)</span> <span class="op">%&gt;%</span>

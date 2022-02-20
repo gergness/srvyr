@@ -32,7 +32,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
       </span>
     </div>
 
@@ -96,7 +96,7 @@
 <code>srvyr</code> compared to the <code>survey</code> package</h1>
                         <h4 class="author">Greg Freedman</h4>
             
-            <h4 class="date">2021-09-28</h4>
+            <h4 class="date">2022-02-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/srvyr-vs-survey.Rmd"><code>vignettes/srvyr-vs-survey.Rmd</code></a></small>
       <div class="hidden name"><code>srvyr-vs-survey.Rmd</code></div>
@@ -440,7 +440,7 @@
 ##    mean mean_low mean_upp
 ##   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
 ## 1  625.     606.     643.</code></pre>
-<p>Srvyr will also follow dplyr’s lead on deprecating the old methods of NSE, such as <code><a href="https://rlang.r-lib.org/reference/nse-defuse.html">rlang::quo</a></code>, and <code>!!</code>, in addition to the so-called “underscore functions” (like <code>summarize_</code>). Currently, they have been soft-deprecated, they may be removed altogether in some future version of srvyr.</p>
+<p>Srvyr will also follow dplyr’s lead on deprecating the old methods of NSE, such as <code><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">rlang::quo</a></code>, and <code>!!</code>, in addition to the so-called “underscore functions” (like <code>summarize_</code>). Currently, they have been soft-deprecated, they may be removed altogether in some future version of srvyr.</p>
 </div>
 <div id="working-column-wise" class="section level2">
 <h2 class="hasAnchor">
@@ -502,9 +502,9 @@
 <ul>
 <li>Stephanie Zimmer &amp; Rebecca Powell’s <a href="https://github.com/szimmer/tidy-survey-aapor-2021">2021 AAPOR Workshop “Tidy Survey Analysis in R using the srvyr Package”</a>
 </li>
-<li>“The Epidemiologist R Handbook”, by Neale Batra et al. has a <a href="https://epirhandbook.com/survey-analysis.html">chapter on survey analysis</a> with srvyr and survey package examples</li>
+<li>“The Epidemiologist R Handbook”, by Neale Batra et al. has a <a href="https://epirhandbook.com/en/">chapter on survey analysis</a> with srvyr and survey package examples</li>
 <li>Kieran Healy’s book <a href="https://socviz.co/modeling.html#plots-from-complex-surveys">“Data Visualization: A Practical Introduction”</a> has a section on using srvyr to visualize the ESS.</li>
-<li>The IPUMS PMA team’s blog had a series showing examples of using the <a href="https://ipums.github.io/pma-data-hub/index.html#category:COVID-19">PMA COVID survey panel with weights</a>
+<li>The IPUMS PMA team’s blog had a series showing examples of using the <a href="https://tech.popdata.org/pma-data-hub/index.html">PMA COVID survey panel with weights</a>
 </li>
 <li>
 <a href="https://www.opencasestudies.org/ocs-bp-vaping-case-study/">“Open Case Studies: Vaping Behaviors in American Youth”</a> by Carrie Wright, Michael Ontiveros, Leah Jager, Margaret Taub, and Stephanie Hicks is a detailed case study that includes using srvyr to analyze the National Youth Tobacco Survey.</li>
@@ -542,6 +542,9 @@
 <em>Em português:</em> <a href="https://djalmapessoa.github.io/adac/">“Análise de Dados Amostrais Complexos”</a> by Djalma Pessoa and Pedro Nascimento Silva</li>
 <li>
 <em>En español:</em> <a href="https://medium.com/tacosdedatos/usando-r-para-sacar-informaci%C3%B3n-de-los-microdatos-del-inegi-b21b6946cf4f">“Usando R para jugar con los microdatos del INEGI”</a> by Claudio Daniel Pacheco Castro</li>
+<li>
+<em>Tiếng Việt:</em> <a href="https://epirhandbook.com/vn/survey-analysis.html">“Dịch tễ học ứng dụng và y tế công cộng với R”</a>
+</li>
 </ul>
 </li>
 <li>

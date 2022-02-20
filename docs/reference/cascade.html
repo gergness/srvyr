@@ -41,7 +41,11 @@
 
 <meta property="og:title" content="Summarise multiple values into cascading groups — cascade" />
 <meta property="og:description" content="cascade is similar to summarise, but calculates
-a summary statistics for the total of a group in addition to each group." />
+a summary statistics for the total of a group in addition to each group.
+The groupings are chosen by &quot;unpeeling&quot; from the end of the groupings,
+and also expanding out interactions to all terms (eg the interactions of
+all combinations of subsets of variables as well as each variable on
+it's own)." />
 
 
 
@@ -74,7 +78,7 @@ a summary statistics for the total of a group in addition to each group." />
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
       </span>
     </div>
 
@@ -141,10 +145,14 @@ a summary statistics for the total of a group in addition to each group." />
 
     <div class="ref-description">
     <p><code>cascade</code> is similar to <code><a href='summarise.html'>summarise</a></code>, but calculates
-a summary statistics for the total of a group in addition to each group.</p>
+a summary statistics for the total of a group in addition to each group.
+The groupings are chosen by "unpeeling" from the end of the groupings,
+and also expanding out interactions to all terms (eg the interactions of
+all combinations of subsets of variables as well as each variable on
+it's own).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cascade</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>...</span>, <span class='va'>.dots</span>, .fill <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>cascade</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>...</span>, .fill <span class='op'>=</span> <span class='cn'>NA</span>, .fill_level_top <span class='op'>=</span> <span class='cn'>FALSE</span>, .groupings <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -158,13 +166,19 @@ a summary statistics for the total of a group in addition to each group.</p>
       <td><p>Name-value pairs of summary functions</p></td>
     </tr>
     <tr>
-      <th>.dots</th>
-      <td><p>Used to work around non-standard evaluation. See
-<code>vignette("nse", package = "dplyr")</code> for details.</p></td>
-    </tr>
-    <tr>
       <th>.fill</th>
       <td><p>Value to fill in for group summaries</p></td>
+    </tr>
+    <tr>
+      <th>.fill_level_top</th>
+      <td><p>When filling factor variables, whether to put the
+value `.fill` in the first position (defaults to FALSE, placing it in
+the bottom).</p></td>
+    </tr>
+    <tr>
+      <th>.groupings</th>
+      <td><p>(Experimental) A list of lists of quosures to manually
+specify the groupings to use, rather than the default.</p></td>
     </tr>
     </table>
 
@@ -176,10 +190,10 @@ a summary statistics for the total of a group in addition to each group.</p>
 <span class='va'>dstrata</span> <span class='op'>&lt;-</span> <span class='va'>apistrat</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='as_survey_design.html'>as_survey_design</a></span><span class='op'>(</span>strata <span class='op'>=</span> <span class='va'>stype</span>, weights <span class='op'>=</span> <span class='va'>pw</span><span class='op'>)</span>
 
-<span class='va'>dstrata_grp</span> <span class='op'>&lt;-</span> <span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>stype</span><span class='op'>)</span>
-
-<span class='va'>dstrata_grp</span> <span class='op'>%&gt;%</span>
+<span class='co'># Calculates the means by stype and also for the whole</span>
+<span class='co'># sample</span>
+<span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>stype</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>cascade</span><span class='op'>(</span>api99_mn <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api99</span><span class='op'>)</span>,
             api00_mn <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api00</span><span class='op'>)</span>,
             api_diff <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='va'>api00</span> <span class='op'>-</span> <span class='va'>api99</span><span class='op'>)</span><span class='op'>)</span>
@@ -190,6 +204,46 @@ a summary statistics for the total of a group in addition to each group.</p>
 #&gt; <span style='color: #BCBCBC;'>2</span> H         617.        15.8     626.       15.5      8.46        3.41
 #&gt; <span style='color: #BCBCBC;'>3</span> M         610.        16.8     637.       16.6     26.4         3.05
 #&gt; <span style='color: #BCBCBC;'>4</span> <span style='color: #BB0000;'>NA</span>        629.        10.1     662.        9.54    32.9         2.08</div><div class='input'>
+<span class='co'># Calculates the proportions by the interaction of stype &amp; awards</span>
+<span class='co'># as well as by each of those variable's groups alone, and finally</span>
+<span class='co'># the total as well</span>
+<span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='group_by.html'>group_by</a></span><span class='op'>(</span><span class='fu'><a href='interact.html'>interact</a></span><span class='op'>(</span><span class='va'>stype</span>, <span class='va'>awards</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>cascade</span><span class='op'>(</span>prop <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 12 × 4</span>
+#&gt;    stype awards   prop prop_se
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span> E     No     0.193  0.031<span style='text-decoration: underline;'>8</span> 
+#&gt; <span style='color: #BCBCBC;'> 2</span> E     Yes    0.521  0.031<span style='text-decoration: underline;'>8</span> 
+#&gt; <span style='color: #BCBCBC;'> 3</span> E     <span style='color: #BB0000;'>NA</span>     0.714  0      
+#&gt; <span style='color: #BCBCBC;'> 4</span> H     No     0.082<span style='text-decoration: underline;'>9</span> 0.008<span style='text-decoration: underline;'>12</span>
+#&gt; <span style='color: #BCBCBC;'> 5</span> H     Yes    0.039<span style='text-decoration: underline;'>0</span> 0.008<span style='text-decoration: underline;'>12</span>
+#&gt; <span style='color: #BCBCBC;'> 6</span> H     <span style='color: #BB0000;'>NA</span>     0.122  0      
+#&gt; <span style='color: #BCBCBC;'> 7</span> M     No     0.085<span style='text-decoration: underline;'>5</span> 0.011<span style='text-decoration: underline;'>7</span> 
+#&gt; <span style='color: #BCBCBC;'> 8</span> M     Yes    0.078<span style='text-decoration: underline;'>9</span> 0.011<span style='text-decoration: underline;'>7</span> 
+#&gt; <span style='color: #BCBCBC;'> 9</span> M     <span style='color: #BB0000;'>NA</span>     0.164  0      
+#&gt; <span style='color: #BCBCBC;'>10</span> <span style='color: #BB0000;'>NA</span>    No     0.361  0.034<span style='text-decoration: underline;'>9</span> 
+#&gt; <span style='color: #BCBCBC;'>11</span> <span style='color: #BB0000;'>NA</span>    Yes    0.639  0.034<span style='text-decoration: underline;'>9</span> 
+#&gt; <span style='color: #BCBCBC;'>12</span> <span style='color: #BB0000;'>NA</span>    <span style='color: #BB0000;'>NA</span>     1      0      </div><div class='input'>
+<span class='co'># Can also specify the .groupings manually, though this interface</span>
+<span class='co'># is a little ugly, as it requires passing a list of quosures or</span>
+<span class='co'># symbols you've created, rather than the usual syntax</span>
+<span class='va'>dstrata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>cascade</span><span class='op'>(</span>
+    prop <span class='op'>=</span> <span class='fu'><a href='survey_mean.html'>survey_mean</a></span><span class='op'>(</span><span class='op'>)</span>,
+    .groupings <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'>rlang</span><span class='fu'>::</span><span class='fu'><a href='https://rlang.r-lib.org/reference/defusing-advanced.html'>quos</a></span><span class='op'>(</span><span class='va'>stype</span>, <span class='va'>awards</span><span class='op'>)</span>, <span class='fu'>rlang</span><span class='fu'>::</span><span class='fu'><a href='https://rlang.r-lib.org/reference/defusing-advanced.html'>quos</a></span><span class='op'>(</span><span class='cn'>NULL</span><span class='op'>)</span><span class='op'>)</span>
+  <span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 7 × 4</span>
+#&gt; <span style='color: #949494;'># Groups:   stype [4]</span>
+#&gt;   stype awards  prop prop_se
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> E     No      0.27  0.044<span style='text-decoration: underline;'>6</span>
+#&gt; <span style='color: #BCBCBC;'>2</span> E     Yes     0.73  0.044<span style='text-decoration: underline;'>6</span>
+#&gt; <span style='color: #BCBCBC;'>3</span> H     No      0.68  0.066<span style='text-decoration: underline;'>6</span>
+#&gt; <span style='color: #BCBCBC;'>4</span> H     Yes     0.32  0.066<span style='text-decoration: underline;'>6</span>
+#&gt; <span style='color: #BCBCBC;'>5</span> M     No      0.52  0.071<span style='text-decoration: underline;'>4</span>
+#&gt; <span style='color: #BCBCBC;'>6</span> M     Yes     0.48  0.071<span style='text-decoration: underline;'>4</span>
+#&gt; <span style='color: #BCBCBC;'>7</span> <span style='color: #BB0000;'>NA</span>    <span style='color: #BB0000;'>NA</span>      1     0     </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

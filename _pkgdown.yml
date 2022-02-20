@@ -25,6 +25,8 @@ reference:
       - survey_tally
       - survey_var
       - unweighted
+      - svychisq
+      - cur_svy_wts
       - survey_old_quantile
   - title: "Other supported dplyr functions"
     desc: "Other functions from dplyr that work on srvyr's survey objects"

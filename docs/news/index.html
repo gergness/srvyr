@@ -72,7 +72,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
       </span>
     </div>
 
@@ -136,9 +136,20 @@
       <small>Source: <a href='https://github.com/gergness/srvyr/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="srvyr-111" class="section level1">
+<h1 class="page-header" data-toc-text="1.1.1">
+<a href="#srvyr-111" class="anchor"></a>srvyr 1.1.1<small> Unreleased </small>
+</h1>
+<ul>
+<li>Add function <code><a href="../reference/cur_svy_wts.html">cur_svy_wts()</a></code> to access the survey weights (<a href='https://github.com/gergness/srvyr/issues/136'>#136</a>, <a href='https://github.com/gergness/srvyr/issues/139'>#139</a>, thanks <a href='https://github.com/ray-p144'>@ray-p144</a> and <a href='https://github.com/bschneidr'>@bschneidr</a>)</li>
+<li>Allow access to survey context functions like <code><a href="../reference/cur_svy.html">cur_svy()</a></code> and <code><a href="../reference/cur_svy_wts.html">cur_svy_wts()</a></code> in <code>mutate</code> and <code>filter</code> (<a href='https://github.com/gergness/srvyr/issues/138'>#138</a>, <a href='https://github.com/gergness/srvyr/issues/139'>#139</a>, thanks <a href='https://github.com/ray-p144'>@ray-p144</a> and <a href='https://github.com/bschneidr'>@bschneidr</a>)</li>
+<li>Improve behavior of <code><a href="../reference/interact.html">interact()</a></code> when using <code><a href="../reference/cascade.html">cascade()</a></code>(<a href='https://github.com/gergness/srvyr/issues/133'>#133</a>, thanks <a href='https://github.com/szimmer'>@szimmer</a>)</li>
+<li>Fix a bug with non-standard names of grouping variables (like <code>1234</code>) in cascade (<a href='https://github.com/gergness/srvyr/issues/132'>#132</a>, thanks <a href='https://github.com/szimmer'>@szimmer</a>)</li>
+</ul>
+</div>
     <div id="srvyr-110" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.0">
-<a href="#srvyr-110" class="anchor"></a>srvyr 1.1.0<small> Unreleased </small>
+<a href="#srvyr-110" class="anchor"></a>srvyr 1.1.0<small> 2021-09-29 </small>
 </h1>
 <ul>
 <li>Uses the new quantile functions provided in version 4.1 of the survey package. The old survey quantile functions can be accessed with <code><a href="../reference/survey_old_quantile.html">survey_old_quantile()</a></code> and <code><a href="../reference/survey_old_quantile.html">survey_old_median()</a></code>

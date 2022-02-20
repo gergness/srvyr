@@ -8,7 +8,7 @@
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/srvyr)](https://CRAN.R-project.org/package=srvyr)
 [![R build
 status](https://github.com/gergness/srvyr/workflows/R-CMD-check/badge.svg)](https://github.com/gergness/srvyr/actions)
-[![codecov](https://codecov.io/gh/gergness/srvyr/branch/master/graph/badge.svg?token=q4DvfEj5Jj)](https://codecov.io/gh/gergness/srvyr)
+[![codecov](https://app.codecov.io/gh/gergness/srvyr/branch/master/graph/badge.svg?token=q4DvfEj5Jj)](https://app.codecov.io/gh/gergness/srvyr)
 [![Documentation via
 pkgdown](tools/pkgdownshield.svg)](http://gdfe.co/srvyr/)
 <!-- badges: end -->
@@ -119,14 +119,14 @@ Here are some free resources put together by the community about srvyr:
         Package”](https://github.com/szimmer/tidy-survey-aapor-2021)
     -   “The Epidemiologist R Handbook”, by Neale Batra et al. has a
         [chapter on survey
-        analysis](https://epirhandbook.com/survey-analysis.html) with
+        analysis](https://epirhandbook.com/en/) with
         srvyr and survey package examples
     -   Kieran Healy’s book [“Data Visualization: A Practical
         Introduction”](https://socviz.co/modeling.html#plots-from-complex-surveys)
         has a section on using srvyr to visualize the ESS.
     -   The IPUMS PMA team’s blog had a series showing examples of using
         the [PMA COVID survey panel with
-        weights](https://ipums.github.io/pma-data-hub/index.html#category:COVID-19)
+        weights](https://tech.popdata.org/pma-data-hub/index.html)
     -   [“Open Case Studies: Vaping Behaviors in American
         Youth”](https://www.opencasestudies.org/ocs-bp-vaping-case-study/)
         by Carrie Wright, Michael Ontiveros, Leah Jager, Margaret Taub,

@@ -8,7 +8,7 @@
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/srvyr)](https://CRAN.R-project.org/package=srvyr)
 [![R build
 status](https://github.com/gergness/srvyr/workflows/R-CMD-check/badge.svg)](https://github.com/gergness/srvyr/actions)
-[![codecov](https://app.codecov.io/gh/gergness/srvyr/branch/master/graph/badge.svg?token=q4DvfEj5Jj)](https://app.codecov.io/gh/gergness/srvyr)
+[![codecov](https://app.codecov.io/gh/gergness/srvyr/branch/main/graph/badge.svg?token=q4DvfEj5Jj)](https://app.codecov.io/gh/gergness/srvyr)
 [![Documentation via
 pkgdown](tools/pkgdownshield.svg)](http://gdfe.co/srvyr/)
 <!-- badges: end -->
@@ -118,8 +118,7 @@ Here are some free resources put together by the community about srvyr:
         Survey Analysis in R using the srvyr
         Package”](https://github.com/szimmer/tidy-survey-aapor-2021)
     -   “The Epidemiologist R Handbook”, by Neale Batra et al. has a
-        [chapter on survey
-        analysis](https://epirhandbook.com/en/) with
+        [chapter on survey analysis](https://epirhandbook.com/en/) with
         srvyr and survey package examples
     -   Kieran Healy’s book [“Data Visualization: A Practical
         Introduction”](https://socviz.co/modeling.html#plots-from-complex-surveys)
@@ -191,7 +190,7 @@ Here are some free resources put together by the community about srvyr:
 
 I think the best way to get help is to form a specific question and ask
 it in some place like [rstudio’s community
-webiste](https://community.rstudio.com) (known for it’s friendly
+website](https://community.rstudio.com) (known for it’s friendly
 community) or [stackoverflow.com](https://stackoverflow.com) (maybe not
 known for being quite as friendly, but probably has more people). If you
 think you’ve found a bug in srvyr’s code, please file an [issue on

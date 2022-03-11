@@ -20,7 +20,7 @@ survey_mean(
 survey_prop(
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
-  proportion = FALSE,
+  proportion = TRUE,
   prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
   deff = FALSE,
   df = NULL,

@@ -107,9 +107,15 @@ survey_mean <- function(
   }
   prop_method <- match.arg(prop_method)
   if (is.null(df)) df <- survey::degf(cur_svy_full())
-  if (missing(x)) return(survey_prop(vartype = vartype, level = level,
-                                     proportion = proportion, prop_method = prop_method,
-                                     deff = deff, df = df, .svy = cur_svy()))
+  if (missing(x)){
+    if (missing(proportion) & ("ci" %in% vartype)){
+      inform("When `proportion` is unspecified, `survey_mean()` now defaults to `proportion = TRUE` when `x` is left out. This should improve confidence interval coverage.",
+             .frequency = "once", .frequency_id="sm_pd")
+    }
+    return(survey_prop(vartype = vartype, level = level,
+                       proportion = proportion, prop_method = prop_method,
+                       deff = deff, df = df, .svy = cur_svy()))
+  }
   stop_for_factor(x)
   if (!proportion) {
     if (is.logical(x)) x <- as.integer(x)
@@ -142,6 +148,11 @@ survey_prop <- function(
 ) {
   .svy <- cur_svy()
   .full_svy <- cur_svy_full()
+
+  if (missing(proportion) & ("ci" %in% vartype)){
+    inform("When `proportion` is unspecified, `survey_prop()` now defaults to `proportion = TRUE`. This should improve confidence interval coverage.",
+           .frequency = "once", .frequency_id="spd")
+  }
 
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)

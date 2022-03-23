@@ -11,7 +11,7 @@ survey_mean(
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
   proportion = FALSE,
-  prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  prop_method = c("logit", "likelihood", "asin", "beta", "mean", "xlogit"),
   deff = FALSE,
   df = NULL,
   ...
@@ -21,7 +21,7 @@ survey_prop(
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
   proportion = TRUE,
-  prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  prop_method = c("logit", "likelihood", "asin", "beta", "mean", "xlogit"),
   deff = FALSE,
   df = NULL,
   ...

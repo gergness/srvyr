@@ -32,7 +32,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
       <h1 data-toc-skip>Databases in srvyr</h1>
                         <h4 class="author">Greg Freedman Ellis</h4>
             
-            <h4 class="date">2022-02-20</h4>
+            <h4 class="date">2022-10-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/srvyr-database.Rmd"><code>vignettes/srvyr-database.Rmd</code></a></small>
       <div class="hidden name"><code>srvyr-database.Rmd</code></div>
@@ -105,19 +105,41 @@
     
     
 <pre><code>## Loading required package: RSQLite</code></pre>
-<p>Srvyr 0.3 has a completely rewritten database backend. Using databases that are already stored dplyr’s <code>tbl_lazy</code> objects is now just as easy as working with data stored in regular R data.frames as you don’t need to have a unique identifier. Additionally, it now works more similarly to the survey package’s database code and so shouldn’t be any slower.</p>
-<p>During development, I have tested using SQLite (and the now defunct MonetDBLite) databases, but in theory other database backends should work as well.</p>
-<p>This vignette shows the basics of how to use srvyr with databases. It is based on analysis from the wonderful resource asdfree ( <a href="http://asdfree.com/">website</a> and <a href="https://github.com/ajdamico/asdfree">github</a> ). Many thanks to <a href="https://github.com/ajdamico">ajdamico</a> and collaborators. Specifically, I have adapted code from <a href="https://github.com/ajdamico/asdfree/blob/d0b965e9672161da086e30471760d08281b74343/American%20Community%20Survey/2011%20single-year%20-%20analysis%20examples.R">American Community Survey - 2011 single year analysis</a> and the associated data preparation scripts.</p>
+<p>Srvyr 0.3 has a completely rewritten database backend. Using
+databases that are already stored dplyr’s <code>tbl_lazy</code> objects
+is now just as easy as working with data stored in regular R data.frames
+as you don’t need to have a unique identifier. Additionally, it now
+works more similarly to the survey package’s database code and so
+shouldn’t be any slower.</p>
+<p>During development, I have tested using SQLite (and the now defunct
+MonetDBLite) databases, but in theory other database backends should
+work as well.</p>
+<p>This vignette shows the basics of how to use srvyr with databases. It
+is based on analysis from the wonderful resource asdfree ( <a href="http://asdfree.com/">website</a> and <a href="https://github.com/ajdamico/asdfree">github</a> ). Many thanks to
+<a href="https://github.com/ajdamico">ajdamico</a> and collaborators.
+Specifically, I have adapted code from <a href="https://github.com/ajdamico/asdfree/blob/d0b965e9672161da086e30471760d08281b74343/American%20Community%20Survey/2011%20single-year%20-%20analysis%20examples.R">American
+Community Survey - 2011 single year analysis</a> and the associated data
+preparation scripts.</p>
 <div id="database-setup" class="section level2">
 <h2 class="hasAnchor">
 <a href="#database-setup" class="anchor"></a>Database Setup</h2>
-<p>In order to focus on srvyr and databases, we start with a prepared dataset. The full code is available <a href="https://github.com/gergness/srvyr/blob/main/vignettes/save_acs_data.R">on Github</a>, and the high level description of what it does is:</p>
+<p>In order to focus on srvyr and databases, we start with a prepared
+dataset. The full code is available <a href="https://github.com/gergness/srvyr/blob/main/vignettes/save_acs_data.R">on
+Github</a>, and the high level description of what it does is:</p>
 <ul>
-<li><p>Download data from acs website (currently only Alaska and Hawaii to save time, though it would be easy to adapt to download to all 50 states and Puerto Rico).</p></li>
-<li><p>Merges the household and person datasets so that we can look at the variables related to each person including those at the household level</p></li>
-<li><p>Selects only a few variables that will be used in this analysis to save space, but again it could easily be adapted to keep all of the variables.</p></li>
+<li><p>Download data from acs website (currently only Alaska and Hawaii
+to save time, though it would be easy to adapt to download to all 50
+states and Puerto Rico).</p></li>
+<li><p>Merges the household and person datasets so that we can look at
+the variables related to each person including those at the household
+level</p></li>
+<li><p>Selects only a few variables that will be used in this analysis
+to save space, but again it could easily be adapted to keep all of the
+variables.</p></li>
 </ul>
-<p>For more information on the specifics of the American Community Survey, see the asdfree site. Now, our code loads this prepared dataset, initiates a SQLite database, and puts the data into the dataset.</p>
+<p>For more information on the specifics of the American Community
+Survey, see the asdfree site. Now, our code loads this prepared dataset,
+initiates a SQLite database, and puts the data into the dataset.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span><span class="op">(</span><span class="op">{</span>
   <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://r-survey.r-forge.r-project.org/survey/">survey</a></span><span class="op">)</span>
@@ -139,7 +161,12 @@
 
 <span class="co"># Or, if the data was already stored in the database, you could do this</span>
 <span class="co"># acs_m_data &lt;- tbl(db, sql("SELECT * FROM acs_m")) </span></code></pre></div>
-<p>Now that we have the data in the database, we can interact with the database directly using sql commands, or we can use dplyr’s functionality to treat it mostly the same as a local <code>data.frame</code>. However, the data is not stored in memory, so we could work with much larger datasets (though in this case, the data is too small for this to be a problem).</p>
+<p>Now that we have the data in the database, we can interact with the
+database directly using sql commands, or we can use dplyr’s
+functionality to treat it mostly the same as a local
+<code>data.frame</code>. However, the data is not stored in memory, so
+we could work with much larger datasets (though in this case, the data
+is too small for this to be a problem).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Same results</span>
 <span class="va">acs_m</span> <span class="op">%&gt;%</span> 
@@ -154,10 +181,10 @@
 <code class="sourceCode R"><span class="va">acs_m_db</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span><span class="op">(</span>hicov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">hicov</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## Warning: Missing values are always removed in SQL.
-## Use `mean(x, na.rm = TRUE)` to silence this warning
-## This warning is displayed only once per session.</code></pre>
-<pre><code>## # Source:   lazy query [?? x 2]
+<pre><code>## Warning: Missing values are always removed in SQL aggregation functions.
+## Use `na.rm = TRUE` to silence this warning
+## This warning is displayed once every 8 hours.</code></pre>
+<pre><code>## # Source:   SQL [2 x 2]
 ## # Database: sqlite 3.37.0 [:memory:]
 ##     sex hicov
 ##   &lt;int&gt; &lt;dbl&gt;
@@ -169,8 +196,13 @@
 <pre><code>## 7777312 bytes</code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span><span class="op">(</span><span class="va">acs_m_db</span><span class="op">)</span></code></pre></div>
-<pre><code>## 10544 bytes</code></pre>
-<p>Note that though many commands behave exactly the same whether on a local data.frame or database, sometimes more advanced / complicated syntax around variable modification allowed in dplyr does not work on a particular database and so it is better to be more explicit. For example, creating a variable inside of a summarize call does not work in some databases. .</p>
+<pre><code>## 10880 bytes</code></pre>
+<p>Note that though many commands behave exactly the same whether on a
+local data.frame or database, sometimes more advanced / complicated
+syntax around variable modification allowed in dplyr does not work on a
+particular database and so it is better to be more explicit. For
+example, creating a variable inside of a summarize call does not work in
+some databases. .</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">acs_m</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -195,14 +227,21 @@
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/group_trim.html">mutate</a></span><span class="op">(</span>hicov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">hicov</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fl">1L</span>, <span class="fl">0L</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span><span class="op">(</span>hicov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">hicov</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## # Source:   lazy query [?? x 2]
+<pre><code>## # Source:   SQL [2 x 2]
 ## # Database: sqlite 3.37.0 [:memory:]
 ##     sex hicov
 ##   &lt;int&gt; &lt;dbl&gt;
 ## 1     1 0.858
 ## 2     2 0.895</code></pre>
-<p>Further, sometimes working with variable types can get difficult if you are used to working in R. Notice how in the above, instead of <code>hicov = (hicov == 1)</code>, I wrote out the ifelse statement. If I hadn’t RSQLite would be unable to calculate the mean of the boolean variable created.</p>
-<p>Finally, a major difference when transitioning from dplyr on local data.frames is that not all R functions are translated to SQL. For example, <code><a href="https://rdrr.io/r/base/cut.html">cut()</a></code> isn’t implemented in SQL, so you can’t create a new variable in the data.frame using it.</p>
+<p>Further, sometimes working with variable types can get difficult if
+you are used to working in R. Notice how in the above, instead of
+<code>hicov = (hicov == 1)</code>, I wrote out the ifelse statement. If
+I hadn’t RSQLite would be unable to calculate the mean of the boolean
+variable created.</p>
+<p>Finally, a major difference when transitioning from dplyr on local
+data.frames is that not all R functions are translated to SQL. For
+example, <code><a href="https://rdrr.io/r/base/cut.html">cut()</a></code> isn’t implemented in SQL, so you can’t
+create a new variable in the data.frame using it.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">acs_m</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span>agecat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span><span class="va">agep</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">19</span>, <span class="fl">35</span>, <span class="fl">50</span>, <span class="fl">65</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -233,7 +272,7 @@
                                               <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">agep</span> <span class="op">&gt;=</span> <span class="fl">65</span>, <span class="st">"65+"</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">agecat</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span><span class="op">(</span>hicov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">hicov</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## # Source:   lazy query [?? x 2]
+<pre><code>## # Source:   SQL [5 x 2]
 ## # Database: sqlite 3.37.0 [:memory:]
 ##   agecat hicov
 ##   &lt;chr&gt;  &lt;dbl&gt;
@@ -242,12 +281,17 @@
 ## 3 35-49   1.17
 ## 4 50-64   1.13
 ## 5 65+     1.01</code></pre>
-<p>For more information on the specifics of databases with dplyr, see <code>vignette("database", package = "dplyr")</code>, the <code>DBI</code> package or the specific database packages, like <code>RSQLite</code>.</p>
+<p>For more information on the specifics of databases with dplyr, see
+<code>vignette("database", package = "dplyr")</code>, the
+<code>DBI</code> package or the specific database packages, like
+<code>RSQLite</code>.</p>
 </div>
 <div id="srvyr-setup" class="section level2">
 <h2 class="hasAnchor">
 <a href="#srvyr-setup" class="anchor"></a>Srvyr Setup</h2>
-<p>Srvyr commands are nearly identical to old. The only difference for setup is that you need a variable that uniquely identifies each row in the database (uid).</p>
+<p>Srvyr commands are nearly identical to old. The only difference for
+setup is that you need a variable that uniquely identifies each row in
+the database (uid).</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">acs_m_db_svy</span> <span class="op">&lt;-</span> <span class="va">acs_m_db</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/as_survey_rep.html">as_survey_rep</a></span><span class="op">(</span>
@@ -284,16 +328,24 @@
 ##   (int), pwgtp73 (int), pwgtp74 (int), pwgtp75 (int), pwgtp76 (int), pwgtp77
 ##   (int), pwgtp78 (int), pwgtp79 (int), pwgtp80 (int), agep (int), hicov (int),
 ##   sex (int), st (chr), rt (chr)</code></pre>
-<p>Because srvyr stores the survey variables locally, the srvyr object takes up much more memory than the dplyr one. However, this object would not grow in size if you added more data variables to your survey, so if your survey is very wide, it will save a lot space.</p>
+<p>Because srvyr stores the survey variables locally, the srvyr object
+takes up much more memory than the dplyr one. However, this object would
+not grow in size if you added more data variables to your survey, so if
+your survey is very wide, it will save a lot space.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span><span class="op">(</span><span class="va">acs_m_db_svy</span><span class="op">)</span></code></pre></div>
-<pre><code>## 8391576 bytes</code></pre>
+<pre><code>## 8391912 bytes</code></pre>
 </div>
 <div id="analysis" class="section level1">
 <h1 class="hasAnchor">
 <a href="#analysis" class="anchor"></a>Analysis</h1>
-<p>Analysis commands from srvyr are also similar to ones that work on local data.frames. The main differences come from the issues discussed above about explicitly creating variables difficulties in translating R commands, and variable types.</p>
-<p>The following analysis is based on the asdfree analysis and shows some basic analysis on the total population, insurance coverage, age and sex.</p>
+<p>Analysis commands from srvyr are also similar to ones that work on
+local data.frames. The main differences come from the issues discussed
+above about explicitly creating variables difficulties in translating R
+commands, and variable types.</p>
+<p>The following analysis is based on the asdfree analysis and shows
+some basic analysis on the total population, insurance coverage, age and
+sex.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># You can calculate the population of the united states #</span>
 <span class="co"># by state</span>
@@ -344,7 +396,7 @@
   <span class="fu"><a href="../reference/group_trim.html">mutate</a></span><span class="op">(</span>hicov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">hicov</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">st</span>, <span class="va">hicov</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span><span class="op">(</span>pct <span class="op">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span><span class="op">(</span>na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## Adding missing grouping variables: `st`, `hicov`</code></pre>
+<pre><code>## Adding missing grouping variables: `st` and `hicov`</code></pre>
 <pre><code>## # A tibble: 4 × 4
 ## # Groups:   st [2]
 ##   st    hicov    pct  pct_se
@@ -414,7 +466,10 @@
 <div id="running-survey-commands-with-collect" class="section level3">
 <h3 class="hasAnchor">
 <a href="#running-survey-commands-with-collect" class="anchor"></a>Running survey commands with collect</h3>
-<p>If you’d like to run a command from the survey package, you’ll need to collect the data locally first. You can select only the variables you’ll need for the analysis so that you don’t have to store the whole dataset in memory.</p>
+<p>If you’d like to run a command from the survey package, you’ll need
+to collect the data locally first. You can select only the variables
+you’ll need for the analysis so that you don’t have to store the whole
+dataset in memory.</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">acs_m_db_svy</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/group_trim.html">select</a></span><span class="op">(</span><span class="va">agep</span>, <span class="va">hicov</span>, <span class="va">sex</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -494,7 +549,11 @@
 <div id="write-access" class="section level3">
 <h3 class="hasAnchor">
 <a href="#write-access" class="anchor"></a>Write Access</h3>
-<p>Note that srvyr does not require write access to perform calculations, the database created in this vignette was set to read-only at the beginning. This can be important when you want to make sure that your original data is not altered accidentally, or if you don’t have write access to a database.</p>
+<p>Note that srvyr does not require write access to perform
+calculations, the database created in this vignette was set to read-only
+at the beginning. This can be important when you want to make sure that
+your original data is not altered accidentally, or if you don’t have
+write access to a database.</p>
 </div>
 </div>
 </div>

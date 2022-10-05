@@ -72,7 +72,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
       </span>
     </div>
 
@@ -136,15 +136,28 @@
       <small>Source: <a href='https://github.com/gergness/srvyr/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="srvyr-111" class="section level1">
-<h1 class="page-header" data-toc-text="1.1.1">
-<a href="#srvyr-111" class="anchor"></a>srvyr 1.1.1<small> Unreleased </small>
+    <div id="srvyr-112" class="section level1">
+<h1 class="page-header" data-toc-text="1.1.2">
+<a href="#srvyr-112" class="anchor"></a>srvyr 1.1.2<small> Unreleased </small>
 </h1>
 <ul>
-<li>Add function <code><a href="../reference/cur_svy_wts.html">cur_svy_wts()</a></code> to access the survey weights (<a href='https://github.com/gergness/srvyr/issues/136'>#136</a>, <a href='https://github.com/gergness/srvyr/issues/139'>#139</a>, thanks <a href='https://github.com/ray-p144'>@ray-p144</a> and <a href='https://github.com/bschneidr'>@bschneidr</a>)</li>
-<li>Allow access to survey context functions like <code><a href="../reference/cur_svy.html">cur_svy()</a></code> and <code><a href="../reference/cur_svy_wts.html">cur_svy_wts()</a></code> in <code>mutate</code> and <code>filter</code> (<a href='https://github.com/gergness/srvyr/issues/138'>#138</a>, <a href='https://github.com/gergness/srvyr/issues/139'>#139</a>, thanks <a href='https://github.com/ray-p144'>@ray-p144</a> and <a href='https://github.com/bschneidr'>@bschneidr</a>)</li>
-<li>Improve behavior of <code><a href="../reference/interact.html">interact()</a></code> when using <code><a href="../reference/cascade.html">cascade()</a></code>(<a href='https://github.com/gergness/srvyr/issues/133'>#133</a>, thanks <a href='https://github.com/szimmer'>@szimmer</a>)</li>
-<li>Fix a bug with non-standard names of grouping variables (like <code>1234</code>) in cascade (<a href='https://github.com/gergness/srvyr/issues/132'>#132</a>, thanks <a href='https://github.com/szimmer'>@szimmer</a>)</li>
+<li>Fix for upcoming version of tidyselect (<a href='https://github.com/gergness/srvyr/issues/147'>#147</a>, thanks <a href='https://github.com/hadley'>@hadley</a>)</li>
+</ul>
+</div>
+    <div id="srvyr-111" class="section level1">
+<h1 class="page-header" data-toc-text="1.1.1">
+<a href="#srvyr-111" class="anchor"></a>srvyr 1.1.1<small> 2022-02-20 </small>
+</h1>
+<ul>
+<li>Add function <code><a href="../reference/cur_svy_wts.html">cur_svy_wts()</a></code> to access the survey weights
+(<a href='https://github.com/gergness/srvyr/issues/136'>#136</a>, <a href='https://github.com/gergness/srvyr/issues/139'>#139</a>, thanks <a href='https://github.com/ray-p144'>@ray-p144</a> and <a href='https://github.com/bschneidr'>@bschneidr</a>)</li>
+<li>Allow access to survey context functions like <code><a href="../reference/cur_svy.html">cur_svy()</a></code>
+and <code><a href="../reference/cur_svy_wts.html">cur_svy_wts()</a></code> in <code>mutate</code> and
+<code>filter</code> (<a href='https://github.com/gergness/srvyr/issues/138'>#138</a>, <a href='https://github.com/gergness/srvyr/issues/139'>#139</a>, thanks <a href='https://github.com/ray-p144'>@ray-p144</a> and <a href='https://github.com/bschneidr'>@bschneidr</a>)</li>
+<li>Improve behavior of <code><a href="../reference/interact.html">interact()</a></code> when using
+<code><a href="../reference/cascade.html">cascade()</a></code>(<a href='https://github.com/gergness/srvyr/issues/133'>#133</a>, thanks <a href='https://github.com/szimmer'>@szimmer</a>)</li>
+<li>Fix a bug with non-standard names of grouping variables (like
+<code>1234</code>) in cascade (<a href='https://github.com/gergness/srvyr/issues/132'>#132</a>, thanks <a href='https://github.com/szimmer'>@szimmer</a>)</li>
 </ul>
 </div>
     <div id="srvyr-110" class="section level1">
@@ -152,11 +165,19 @@
 <a href="#srvyr-110" class="anchor"></a>srvyr 1.1.0<small> 2021-09-29 </small>
 </h1>
 <ul>
-<li>Uses the new quantile functions provided in version 4.1 of the survey package. The old survey quantile functions can be accessed with <code><a href="../reference/survey_old_quantile.html">survey_old_quantile()</a></code> and <code><a href="../reference/survey_old_quantile.html">survey_old_median()</a></code>
+<li>Uses the new quantile functions provided in version 4.1 of the
+survey package. The old survey quantile functions can be accessed with
+<code><a href="../reference/survey_old_quantile.html">survey_old_quantile()</a></code> and
+<code><a href="../reference/survey_old_quantile.html">survey_old_median()</a></code>
 </li>
-<li>Adds a new function <code>interact</code> that makes it easier to calculate proportions among interacted groups</li>
-<li>“Filering joins” (<code>anti_join</code> and <code>semi_join</code>) are now available for srvyr objects. You must put the <code>tbl_svy</code> object first. (<a href='https://github.com/gergness/srvyr/issues/65'>#65</a>, <a href='https://github.com/gergness/srvyr/issues/120'>#120</a>, <a href='https://github.com/bschneidr'>@bschneidr</a>)</li>
-<li>Auto-unpacking of data.frames works even inside of a named data.frame column (like one created by <code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across</a></code>). (<a href='https://github.com/gergness/srvyr/issues/129'>#129</a>)</li>
+<li>Adds a new function <code>interact</code> that makes it easier to
+calculate proportions among interacted groups</li>
+<li>“Filering joins” (<code>anti_join</code> and <code>semi_join</code>)
+are now available for srvyr objects. You must put the
+<code>tbl_svy</code> object first. (<a href='https://github.com/gergness/srvyr/issues/65'>#65</a>, <a href='https://github.com/gergness/srvyr/issues/120'>#120</a>, <a href='https://github.com/bschneidr'>@bschneidr</a>)</li>
+<li>Auto-unpacking of data.frames works even inside of a named
+data.frame column (like one created by <code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across</a></code>).
+(<a href='https://github.com/gergness/srvyr/issues/129'>#129</a>)</li>
 <li>Miscellaneous documentation improvements (<a href='https://github.com/gergness/srvyr/issues/119'>#119</a>, <a href='https://github.com/gergness/srvyr/issues/126'>#126</a>, <a href='https://github.com/gergness/srvyr/issues/127'>#127</a>)</li>
 </ul>
 </div>
@@ -166,7 +187,8 @@
 </h1>
 <ul>
 <li>
-<code><a href="../reference/survey_mean.html">survey_mean()</a></code> with no <code>x</code> no longer errors when there are no grouping variables (<a href='https://github.com/gergness/srvyr/issues/117'>#117</a>)</li>
+<code><a href="../reference/survey_mean.html">survey_mean()</a></code> with no <code>x</code> no longer errors
+when there are no grouping variables (<a href='https://github.com/gergness/srvyr/issues/117'>#117</a>)</li>
 </ul>
 </div>
     <div id="srvyr-100" class="section level1">
@@ -181,26 +203,43 @@
 <ul>
 <li>
 <code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across()</a></code> now works within it</li>
-<li>dplyr functions like <code><a href="https://dplyr.tidyverse.org/reference/context.html">dplyr::cur_group()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/context.html">dplyr::cur_group_id()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/context.html">dplyr::cur_data()</a></code> work in it (as well as new anlagous functions srvyr-specific <code><a href="../reference/cur_svy.html">cur_svy()</a></code> and <code><a href="../reference/cur_svy.html">cur_svy_full()</a></code>)</li>
+<li>dplyr functions like <code><a href="https://dplyr.tidyverse.org/reference/context.html">dplyr::cur_group()</a></code>,
+<code><a href="https://dplyr.tidyverse.org/reference/context.html">dplyr::cur_group_id()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/context.html">dplyr::cur_data()</a></code> work
+in it (as well as new anlagous functions srvyr-specific
+<code><a href="../reference/cur_svy.html">cur_svy()</a></code> and <code><a href="../reference/cur_svy.html">cur_svy_full()</a></code>)</li>
 </ul>
 </li>
 <li>The only known breaking change is:
 <ul>
 <li>
-<p>objects in the <code>summarize</code> will refer to the output of <code>summarize</code> before the input. Meaning code that looks like this:</p>
+<p>objects in the <code>summarize</code> will refer to the output of
+<code>summarize</code> before the input. Meaning code that looks like
+this:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">dstrata</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/summarise.html">summarize</a></span><span class="op">(</span>api99 <span class="op">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span><span class="op">(</span><span class="va">api99</span><span class="op">)</span>, api_diff <span class="op">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span><span class="op">(</span><span class="va">api00</span> <span class="op">-</span> <span class="va">api99</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
-<p>will now error because it calculates the mean of <code>api99</code> before using it inside of the calculation for <code>api_diff</code>. This behavior better matches <code>dplyr</code>’s so will likely be kept.</p>
+<p>will now error because it calculates the mean of <code>api99</code>
+before using it inside of the calculation for <code>api_diff</code>.
+This behavior better matches <code>dplyr</code>’s so will likely be
+kept.</p>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li><p>Support for <code><a href="https://dplyr.tidyverse.org/reference/group_map.html">group_map()</a></code>/<code><a href="https://dplyr.tidyverse.org/reference/group_map.html">group_walk()</a></code>/<code><a href="../reference/group_map_dfr.html">group_map_dfr()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/nest_by.html">nest_by()</a></code> were added for <code>tbl_svy</code> objects.</p></li>
+<li><p>Support for
+<code><a href="https://dplyr.tidyverse.org/reference/group_map.html">group_map()</a></code>/<code><a href="https://dplyr.tidyverse.org/reference/group_map.html">group_walk()</a></code>/<code><a href="../reference/group_map_dfr.html">group_map_dfr()</a></code>,
+<code><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest()</a></code> and
+<code><a href="https://dplyr.tidyverse.org/reference/nest_by.html">nest_by()</a></code> were added for <code>tbl_svy</code>
+objects.</p></li>
 <li><p>Support <code>drop_na</code> from tidyr (<a href='https://github.com/gergness/srvyr/issues/107'>#107</a>).</p></li>
-<li><p><code><a href="../reference/as_survey.html">as_survey()</a></code> and <code><a href="../reference/srvyr-se-deprecated.html">as_survey_()</a></code> are now idempotent: given a <code>srvyr</code> survey object (a <code>tbl_srv</code>), they return it unchanged. If extra arguments are provided, they are ignored with a warning (<a href='https://github.com/gergness/srvyr/issues/97'>#97</a>, thanks <a href='https://github.com/krivit'>@krivit</a>).</p></li>
-<li><p><code><a href="../reference/group_trim.html">rename_with()</a></code> now works with surveys (<a href='https://github.com/gergness/srvyr/issues/96'>#96</a>, thanks <a href='https://github.com/krivit'>@krivit</a>).</p></li>
+<li><p><code><a href="../reference/as_survey.html">as_survey()</a></code> and <code><a href="../reference/srvyr-se-deprecated.html">as_survey_()</a></code> are now
+idempotent: given a <code>srvyr</code> survey object (a
+<code>tbl_srv</code>), they return it unchanged. If extra arguments are
+provided, they are ignored with a warning (<a href='https://github.com/gergness/srvyr/issues/97'>#97</a>, thanks
+<a href='https://github.com/krivit'>@krivit</a>).</p></li>
+<li><p><code><a href="../reference/group_trim.html">rename_with()</a></code> now works with surveys (<a href='https://github.com/gergness/srvyr/issues/96'>#96</a>, thanks
+<a href='https://github.com/krivit'>@krivit</a>).</p></li>
 </ul>
 </div>
     <div id="srvyr-040" class="section level1">
@@ -208,9 +247,19 @@
 <a href="#srvyr-040" class="anchor"></a>srvyr 0.4.0<small> 2020-07-30 </small>
 </h1>
 <ul>
-<li><p>Fix to ensure that ordered factors can be used as grouping variables or as inputs to <code>survey_count</code> and <code>survey_tally</code> (<a href='https://github.com/gergness/srvyr/issues/92'>#92</a>, thanks for reporting <a href='https://github.com/szimmer'>@szimmer</a> &amp; <a href='https://github.com/walkerke'>@walkerke</a> &amp; for fixing <a href='https://github.com/bschneidr'>@bschneidr</a>).</p></li>
-<li><p>Fix to ensure that numeric values can be used in grouping variables (<a href='https://github.com/gergness/srvyr/issues/78'>#78</a> &amp; <a href='https://github.com/gergness/srvyr/issues/74'>#74</a>, thanks for reporting <a href='https://github.com/tzoltak'>@tzoltak</a> &amp; fix <a href='https://github.com/bschneidr'>@bschneidr</a>)</p></li>
-<li><p>Some improvements for dplyr 1.0 (<a href='https://github.com/gergness/srvyr/issues/79'>#79</a>) <code><a href="../reference/group_trim.html">transmute()</a></code> now works (thanks for reporting <a href='https://github.com/caayala'>@caayala</a>), <code><a href="../reference/summarise.html">summarise()</a></code>’s <code>.groups</code> argument is respected, and multi-row returns to <code><a href="../reference/summarise.html">summarise()</a></code> work. (Unfortunately the new <code><a href="https://dplyr.tidyverse.org/reference/across.html">across()</a></code> function isn’t quite supported in <code><a href="../reference/summarise.html">summarise()</a></code> yet, it will hopefully come soon)</p></li>
+<li><p>Fix to ensure that ordered factors can be used as grouping
+variables or as inputs to <code>survey_count</code> and
+<code>survey_tally</code> (<a href='https://github.com/gergness/srvyr/issues/92'>#92</a>, thanks for reporting <a href='https://github.com/szimmer'>@szimmer</a> &amp;
+<a href='https://github.com/walkerke'>@walkerke</a> &amp; for fixing <a href='https://github.com/bschneidr'>@bschneidr</a>).</p></li>
+<li><p>Fix to ensure that numeric values can be used in grouping
+variables (<a href='https://github.com/gergness/srvyr/issues/78'>#78</a> &amp; <a href='https://github.com/gergness/srvyr/issues/74'>#74</a>, thanks for reporting <a href='https://github.com/tzoltak'>@tzoltak</a> &amp; fix
+<a href='https://github.com/bschneidr'>@bschneidr</a>)</p></li>
+<li><p>Some improvements for dplyr 1.0 (<a href='https://github.com/gergness/srvyr/issues/79'>#79</a>) <code><a href="../reference/group_trim.html">transmute()</a></code>
+now works (thanks for reporting <a href='https://github.com/caayala'>@caayala</a>), <code><a href="../reference/summarise.html">summarise()</a></code>’s
+<code>.groups</code> argument is respected, and multi-row returns to
+<code><a href="../reference/summarise.html">summarise()</a></code> work. (Unfortunately the new
+<code><a href="https://dplyr.tidyverse.org/reference/across.html">across()</a></code> function isn’t quite supported in
+<code><a href="../reference/summarise.html">summarise()</a></code> yet, it will hopefully come soon)</p></li>
 </ul>
 </div>
     <div id="srvyr-0310" class="section level1">
@@ -235,8 +284,11 @@
 <a href="#srvyr-038" class="anchor"></a>srvyr 0.3.8<small> 2020-03-07 </small>
 </h1>
 <ul>
-<li><p><code>unweighted</code> now evaluates in the right context and so will provide correct error when an incorrectly interpolated function is used (<a href='https://github.com/gergness/srvyr/issues/70'>#70</a>, thanks for reporting <a href='https://github.com/tlmcmurry'>@tlmcmurry</a>)</p></li>
-<li><p><code>filter_at</code> works now, (<a href='https://github.com/gergness/srvyr/issues/57'>#57</a>, thanks for reporting <a href='https://github.com/dcaseykc'>@dcaseykc</a> &amp; helping <a href='https://github.com/bschneidr'>@bschneidr</a>).</p></li>
+<li><p><code>unweighted</code> now evaluates in the right context and so
+will provide correct error when an incorrectly interpolated function is
+used (<a href='https://github.com/gergness/srvyr/issues/70'>#70</a>, thanks for reporting <a href='https://github.com/tlmcmurry'>@tlmcmurry</a>)</p></li>
+<li><p><code>filter_at</code> works now, (<a href='https://github.com/gergness/srvyr/issues/57'>#57</a>, thanks for reporting
+<a href='https://github.com/dcaseykc'>@dcaseykc</a> &amp; helping <a href='https://github.com/bschneidr'>@bschneidr</a>).</p></li>
 <li><p>Fix for upcoming version of tibble (<a href='https://github.com/gergness/srvyr/issues/72'>#72</a>).</p></li>
 </ul>
 </div>
@@ -245,10 +297,13 @@
 <a href="#srvyr-037" class="anchor"></a>srvyr 0.3.7<small> 2020-01-17 </small>
 </h1>
 <ul>
-<li><p><code>filter</code>ing on grouped survey designs now works correctly (<a href='https://github.com/gergness/srvyr/issues/54'>#54</a>, thanks for reporting <a href='https://github.com/dcaseykc'>@dcaseykc</a>)</p></li>
+<li><p><code>filter</code>ing on grouped survey designs now works
+correctly (<a href='https://github.com/gergness/srvyr/issues/54'>#54</a>, thanks for reporting <a href='https://github.com/dcaseykc'>@dcaseykc</a>)</p></li>
 <li><p>Added function <code>pull</code> (<a href='https://github.com/gergness/srvyr/issues/63'>#63</a>, thanks <a href='https://github.com/dcaseykc'>@dcaseykc</a>)</p></li>
-<li><p><code>df</code> parameter now set to be degrees of freedom of survey for quantiles and variance to match other functions.</p></li>
-<li><p>Updated tests to work with upcoming version of survey (<a href='https://github.com/gergness/srvyr/issues/66'>#66</a>).</p></li>
+<li><p><code>df</code> parameter now set to be degrees of freedom of
+survey for quantiles and variance to match other functions.</p></li>
+<li><p>Updated tests to work with upcoming version of survey
+(<a href='https://github.com/gergness/srvyr/issues/66'>#66</a>).</p></li>
 </ul>
 </div>
     <div id="srvyr-036" class="section level1">
@@ -256,8 +311,11 @@
 <a href="#srvyr-036" class="anchor"></a>srvyr 0.3.6<small> 2019-10-05 </small>
 </h1>
 <ul>
-<li><p>Small update to quasiquotation syntax inside <code>unweighted</code> to improve consistency with recent rlang updates (<a href='https://github.com/gergness/srvyr/issues/54'>#54</a>).</p></li>
-<li><p>Added functions <code><a href="../reference/survey_tally.html">survey_tally()</a></code> and <code><a href="../reference/survey_tally.html">survey_count()</a></code> (<a href='https://github.com/gergness/srvyr/issues/53'>#53</a>)</p></li>
+<li><p>Small update to quasiquotation syntax inside
+<code>unweighted</code> to improve consistency with recent rlang updates
+(<a href='https://github.com/gergness/srvyr/issues/54'>#54</a>).</p></li>
+<li><p>Added functions <code><a href="../reference/survey_tally.html">survey_tally()</a></code> and
+<code><a href="../reference/survey_tally.html">survey_count()</a></code> (<a href='https://github.com/gergness/srvyr/issues/53'>#53</a>)</p></li>
 </ul>
 </div>
     <div id="srvyr-035" class="section level1">
@@ -265,11 +323,18 @@
 <a href="#srvyr-035" class="anchor"></a>srvyr 0.3.5<small> 2019-07-09 </small>
 </h1>
 <ul>
-<li><p>New functions survey_var and survey_sd to calculate population variance and standard deviaton.</p></li>
-<li><p>Computation of standard errors in all survey_ functions can be suppressed by setting vartype=NULL (<a href='https://github.com/gergness/srvyr/issues/45'>#45</a>, thanks <a href='https://github.com/tzoltak'>@tzoltak</a>).</p></li>
-<li><p>Fixed an issue where you’d get an error when summarize components returned different lengths of data - usually when factor levels were not present in the data (<a href='https://github.com/gergness/srvyr/issues/49'>#49</a>).</p></li>
-<li><p>Removed references to MonetDBLite since it has been removed from CRAN.</p></li>
-<li><p>Small updates to replace soft-deprecated dplyr functions with their tibble and tidyselect equivalents (<a href='https://github.com/gergness/srvyr/issues/52'>#52</a>, thanks <a href='https://github.com/bschneidr'>@bschneidr</a>).</p></li>
+<li><p>New functions survey_var and survey_sd to calculate population
+variance and standard deviaton.</p></li>
+<li><p>Computation of standard errors in all survey_ functions can be
+suppressed by setting vartype=NULL (<a href='https://github.com/gergness/srvyr/issues/45'>#45</a>, thanks <a href='https://github.com/tzoltak'>@tzoltak</a>).</p></li>
+<li><p>Fixed an issue where you’d get an error when summarize components
+returned different lengths of data - usually when factor levels were not
+present in the data (<a href='https://github.com/gergness/srvyr/issues/49'>#49</a>).</p></li>
+<li><p>Removed references to MonetDBLite since it has been removed from
+CRAN.</p></li>
+<li><p>Small updates to replace soft-deprecated dplyr functions with
+their tibble and tidyselect equivalents (<a href='https://github.com/gergness/srvyr/issues/52'>#52</a>, thanks
+<a href='https://github.com/bschneidr'>@bschneidr</a>).</p></li>
 </ul>
 </div>
     <div id="srvyr-034" class="section level1">
@@ -277,7 +342,8 @@
 <a href="#srvyr-034" class="anchor"></a>srvyr 0.3.4<small> 2019-01-20 </small>
 </h1>
 <ul>
-<li><p>survey_mean/survey_total allow <code>deff="replace"</code> like their survey package forbearers. (<a href='https://github.com/gergness/srvyr/issues/46'>#46</a>, thanks <a href='https://github.com/mandes95'>@mandes95</a>)</p></li>
+<li><p>survey_mean/survey_total allow <code>deff="replace"</code> like
+their survey package forbearers. (<a href='https://github.com/gergness/srvyr/issues/46'>#46</a>, thanks <a href='https://github.com/mandes95'>@mandes95</a>)</p></li>
 <li><p>Fixes for new release of dplyr</p></li>
 </ul>
 </div>
@@ -286,8 +352,11 @@
 <a href="#srvyr-033" class="anchor"></a>srvyr 0.3.3<small> 2018-05-22 </small>
 </h1>
 <ul>
-<li><p>Add warning to explain that design effects cannot be calculated on proportions. (<a href='https://github.com/gergness/srvyr/issues/39'>#39</a>, thanks <a href='https://github.com/mlaviolet'>@mlaviolet</a>)</p></li>
-<li><p>Remove dependency on stringr in tests and add DBI to suggests so that test dependencies are correctly specified (<a href='https://github.com/gergness/srvyr/issues/40'>#40</a>, thanks CRAN!)</p></li>
+<li><p>Add warning to explain that design effects cannot be calculated
+on proportions. (<a href='https://github.com/gergness/srvyr/issues/39'>#39</a>, thanks <a href='https://github.com/mlaviolet'>@mlaviolet</a>)</p></li>
+<li><p>Remove dependency on stringr in tests and add DBI to suggests so
+that test dependencies are correctly specified (<a href='https://github.com/gergness/srvyr/issues/40'>#40</a>, thanks
+CRAN!)</p></li>
 </ul>
 </div>
     <div id="srvyr-032" class="section level1">
@@ -295,7 +364,8 @@
 <a href="#srvyr-032" class="anchor"></a>srvyr 0.3.2<small> 2018-05-04 </small>
 </h1>
 <ul>
-<li>Bug fix for calculating multiple quantiles on grouped data (<a href='https://github.com/gergness/srvyr/issues/38'>#38</a>, thanks <a href='https://github.com/iantperry'>@iantperry</a>)</li>
+<li>Bug fix for calculating multiple quantiles on grouped data (<a href='https://github.com/gergness/srvyr/issues/38'>#38</a>,
+thanks <a href='https://github.com/iantperry'>@iantperry</a>)</li>
 </ul>
 </div>
     <div id="srvyr-031" class="section level1">
@@ -303,8 +373,12 @@
 <a href="#srvyr-031" class="anchor"></a>srvyr 0.3.1<small> 2018-03-10 </small>
 </h1>
 <ul>
-<li><p>When converting from a survey db-backed survey to a srvyr one srvyr now tries to capture the updates you’ve already sent. If dbplyr can convert the function, then it will bring the update. If it can’t it will warn you (<a href='https://github.com/gergness/srvyr/issues/35'>#35</a>).</p></li>
-<li><p>Small bug fixes, mostly having to do with CRAN checks, running on CI services, or for upstream rev dep checks.</p></li>
+<li><p>When converting from a survey db-backed survey to a srvyr one
+srvyr now tries to capture the updates you’ve already sent. If dbplyr
+can convert the function, then it will bring the update. If it can’t it
+will warn you (<a href='https://github.com/gergness/srvyr/issues/35'>#35</a>).</p></li>
+<li><p>Small bug fixes, mostly having to do with CRAN checks, running on
+CI services, or for upstream rev dep checks.</p></li>
 </ul>
 </div>
     <div id="srvyr-030" class="section level1">
@@ -312,8 +386,15 @@
 <a href="#srvyr-030" class="anchor"></a>srvyr 0.3.0<small> 2018-01-24 </small>
 </h1>
 <ul>
-<li><p>srvyr now uses tidy evaluation from rlang. The “underscore” functions have been soft deprecated in favor of quosure splicing. See dplyr’s vignette “programming” for more details. In almost all cases, the old syntax will still work, with one exception: the standard evaluation function <code><a href="../reference/srvyr-se-deprecated.html">as_survey_twophase_()</a></code> had to be changed slightly so that the entire list is inside quotation.</p></li>
-<li><p>Datbase support has been rewritten. It should be faster now and doesn’t require a unique identifier. You also can now convert survey db-backed surveys to srvyr with as_survey.</p></li>
+<li><p>srvyr now uses tidy evaluation from rlang. The “underscore”
+functions have been soft deprecated in favor of quosure splicing. See
+dplyr’s vignette “programming” for more details. In almost all cases,
+the old syntax will still work, with one exception: the standard
+evaluation function <code><a href="../reference/srvyr-se-deprecated.html">as_survey_twophase_()</a></code> had to be changed
+slightly so that the entire list is inside quotation.</p></li>
+<li><p>Datbase support has been rewritten. It should be faster now and
+doesn’t require a unique identifier. You also can now convert survey
+db-backed surveys to srvyr with as_survey.</p></li>
 <li><p>srvyr now has a pkgdown site, check it out at <a href="http://gdfe.co/srvyr/" class="uri">http://gdfe.co/srvyr/</a></p></li>
 </ul>
 </div>
@@ -330,8 +411,12 @@
 <a href="#srvyr-021" class="anchor"></a>srvyr 0.2.1<small> 2017-04-26 </small>
 </h1>
 <ul>
-<li><p>Added support for dplyr mutate_at/_if/_all and summarize_at/_if/_all for srvyr surveys.</p></li>
-<li><p>Fixed a few bugs introduced with dplyr 0.6. This version of srvyr will work with both old versions of dplyr and 0.6, but may be full of warnings if you update dplyr. Full support for the new dplyr is coming soon.</p></li>
+<li><p>Added support for dplyr mutate_at/_if/_all and
+summarize_at/_if/_all for srvyr surveys.</p></li>
+<li><p>Fixed a few bugs introduced with dplyr 0.6. This version of srvyr
+will work with both old versions of dplyr and 0.6, but may be full of
+warnings if you update dplyr. Full support for the new dplyr is coming
+soon.</p></li>
 </ul>
 </div>
     <div id="srvyr-020" class="section level1">
@@ -339,7 +424,9 @@
 <a href="#srvyr-020" class="anchor"></a>srvyr 0.2.0<small> 2016-09-26 </small>
 </h1>
 <ul>
-<li>Added support for database backed surveys, using dplyr’s handling of DBI. Because of problems interacting with the survey package twophase designs do not work.</li>
+<li>Added support for database backed surveys, using dplyr’s handling of
+DBI. Because of problems interacting with the survey package twophase
+designs do not work.</li>
 </ul>
 </div>
     <div id="srvyr-012" class="section level1">
@@ -347,9 +434,15 @@
 <a href="#srvyr-012" class="anchor"></a>srvyr 0.1.2<small> 2016-06-28 </small>
 </h1>
 <ul>
-<li><p>Fixed a problem with confidence levels not being passed into quantiles</p></li>
-<li><p>Added deff parameter to <code><a href="../reference/survey_mean.html">survey_mean()</a></code>, <code><a href="../reference/survey_total.html">survey_total()</a></code> and <code><a href="../reference/survey_quantile.html">survey_median()</a></code>, and a df parameter to those functions and <code><a href="../reference/survey_quantile.html">survey_quantile()</a></code> / <code><a href="../reference/survey_quantile.html">survey_median()</a></code>.</p></li>
-<li><p><code>summarize</code> and <code>mutate</code> match dplyr’s behavior when arguments aren’t named (uses <code>dplyr::auto_name()</code>)</p></li>
+<li><p>Fixed a problem with confidence levels not being passed into
+quantiles</p></li>
+<li><p>Added deff parameter to <code><a href="../reference/survey_mean.html">survey_mean()</a></code>,
+<code><a href="../reference/survey_total.html">survey_total()</a></code> and <code><a href="../reference/survey_quantile.html">survey_median()</a></code>, and a df
+parameter to those functions and <code><a href="../reference/survey_quantile.html">survey_quantile()</a></code> /
+<code><a href="../reference/survey_quantile.html">survey_median()</a></code>.</p></li>
+<li><p><code>summarize</code> and <code>mutate</code> match dplyr’s
+behavior when arguments aren’t named (uses
+<code>dplyr::auto_name()</code>)</p></li>
 </ul>
 </div>
     <div id="srvyr-011" class="section level1">
@@ -357,8 +450,10 @@
 <a href="#srvyr-011" class="anchor"></a>srvyr 0.1.1<small> 2016-04-03 </small>
 </h1>
 <ul>
-<li><p>New function <code>cascade</code> summarizes groups, and cascades to create summary statistics of groups of groups.</p></li>
-<li><p>Fixed a bug for confidence intervals for <code><a href="../reference/survey_total.html">survey_total()</a></code> on groups.</p></li>
+<li><p>New function <code>cascade</code> summarizes groups, and cascades
+to create summary statistics of groups of groups.</p></li>
+<li><p>Fixed a bug for confidence intervals for
+<code><a href="../reference/survey_total.html">survey_total()</a></code> on groups.</p></li>
 <li><p>Fixed some issues with the upcoming version of dplyr.</p></li>
 </ul>
 </div>

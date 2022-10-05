@@ -76,7 +76,7 @@ called from summarise." />
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
       </span>
     </div>
 
@@ -319,10 +319,11 @@ allows for "unpeeling" multiple variables at once.</p>
   <span class='fu'><a href='summarise.html'>summarise</a></span><span class='op'>(</span>srvyr_default <span class='op'>=</span> <span class='fu'>survey_mean</span><span class='op'>(</span><span class='va'>api99</span>, vartype <span class='op'>=</span> <span class='st'>"ci"</span><span class='op'>)</span>,
             survey_defualt <span class='op'>=</span> <span class='fu'>survey_mean</span><span class='op'>(</span><span class='va'>api99</span>, vartype <span class='op'>=</span> <span class='st'>"ci"</span>, df <span class='op'>=</span> <span class='cn'>Inf</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 × 6</span>
-#&gt;   srvyr_default srvyr_default_low srvyr_default_upp survey_defualt
-#&gt;           <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>1</span>          629.              609.              649.           629.
-#&gt; <span style='color: #949494;'># … with 2 more variables: survey_defualt_low &lt;dbl&gt;, survey_defualt_upp &lt;dbl&gt;</span></div><div class='input'>
+#&gt;   srvyr_default srvyr_default_low srvyr_default_upp survey_def…¹ surve…² surve…³
+#&gt;           <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span>          629.              609.              649.         629.    610.    649.
+#&gt; <span style='color: #949494;'># … with abbreviated variable names ¹​survey_defualt, ²​survey_defualt_low,</span>
+#&gt; <span style='color: #949494;'>#   ³​survey_defualt_upp</span></div><div class='input'>
 <span class='va'>comparison</span> <span class='op'>&lt;-</span> <span class='fu'>survey</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/survey/man/surveysummary.html'>svymean</a></span><span class='op'>(</span><span class='op'>~</span><span class='va'>api99</span>, <span class='va'>dstrata</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/stats/confint.html'>confint</a></span><span class='op'>(</span><span class='va'>comparison</span><span class='op'>)</span> <span class='co'># survey's default</span>
 </div><div class='output co'>#&gt;          2.5 %   97.5 %

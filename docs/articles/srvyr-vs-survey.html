@@ -32,7 +32,7 @@
       <span class="navbar-brand">
 <img src="../tools/logo.png" height="50" width="50" align="left" display="block" style="margin: -15px 10px 0px 0px">
         <a class="navbar-link" href="../index.html">srvyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
       </span>
     </div>
 
@@ -93,10 +93,11 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>
-<code>srvyr</code> compared to the <code>survey</code> package</h1>
+<code>srvyr</code> compared to the
+<code>survey</code> package</h1>
                         <h4 class="author">Greg Freedman</h4>
             
-            <h4 class="date">2022-02-20</h4>
+            <h4 class="date">2022-10-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gergness/srvyr/blob/master/vignettes/srvyr-vs-survey.Rmd"><code>vignettes/srvyr-vs-survey.Rmd</code></a></small>
       <div class="hidden name"><code>srvyr-vs-survey.Rmd</code></div>
@@ -105,12 +106,26 @@
 
     
     
-<p>The <code>srvyr</code> package adds <code>dplyr</code> like syntax to the <code>survey</code> package. This vignette focuses on how <code>srvyr</code> compares to the <code>survey</code> package, for more information about survey design and analysis, check out the vignettes in the <code>survey</code> package, or Thomas Lumley’s book, <a href="http://r-survey.r-forge.r-project.org/svybook/"><em>Complex Surveys: A Guide to Analysis Using R</em></a>. (Also see the bottom of this document for some more resources).</p>
-<p>Everything that <code>srvyr</code> can do, can also be done in <code>survey</code>. In fact, behind the scenes the <code>survey</code> package is doing all of the hard work for <code>srvyr</code>. <code>srvyr</code> strives to make your code simpler and more easily readable to you, especially if you are already used to the <code>dplyr</code> package.</p>
+<p>The <code>srvyr</code> package adds <code>dplyr</code> like syntax to
+the <code>survey</code> package. This vignette focuses on how
+<code>srvyr</code> compares to the <code>survey</code> package, for more
+information about survey design and analysis, check out the vignettes in
+the <code>survey</code> package, or Thomas Lumley’s book, <a href="http://r-survey.r-forge.r-project.org/svybook/"><em>Complex
+Surveys: A Guide to Analysis Using R</em></a>. (Also see the bottom of
+this document for some more resources).</p>
+<p>Everything that <code>srvyr</code> can do, can also be done in
+<code>survey</code>. In fact, behind the scenes the <code>survey</code>
+package is doing all of the hard work for <code>srvyr</code>.
+<code>srvyr</code> strives to make your code simpler and more easily
+readable to you, especially if you are already used to the
+<code>dplyr</code> package.</p>
 <div id="motivating-example" class="section level1">
 <h1 class="hasAnchor">
 <a href="#motivating-example" class="anchor"></a>Motivating example</h1>
-<p>The <code>dplyr</code> package has made it easy to write code to summarize data. For example, if we wanted to check how the year-to-year change in academic progress indicator score varied by school level and percent of parents were high school graduates, we can do this:</p>
+<p>The <code>dplyr</code> package has made it easy to write code to
+summarize data. For example, if we wanted to check how the year-to-year
+change in academic progress indicator score varied by school level and
+percent of parents were high school graduates, we can do this:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://r-survey.r-forge.r-project.org/survey/">survey</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
@@ -130,12 +145,22 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fl">0</span>, label <span class="op">=</span> <span class="va">n</span><span class="op">)</span>, position <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span>, vjust <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Ignoring unknown parameters: stat</code></pre>
 <p><img src="srvyr-vs-survey_files/figure-html/unnamed-chunk-1-1.png" width="576"></p>
-<p>However, if we wanted to add error bars to the graph to capture the uncertainty due to sampling variation, we have to completely rewrite the <code>dplyr</code> code for the <code>survey</code> package. <code>srvyr</code> allows a more direct translation.</p>
+<p>However, if we wanted to add error bars to the graph to capture the
+uncertainty due to sampling variation, we have to completely rewrite the
+<code>dplyr</code> code for the <code>survey</code> package.
+<code>srvyr</code> allows a more direct translation.</p>
 </div>
 <div id="preparing-a-survey-dataset" class="section level1">
 <h1 class="hasAnchor">
 <a href="#preparing-a-survey-dataset" class="anchor"></a>Preparing a survey dataset</h1>
-<p><code><a href="../reference/as_survey_design.html">as_survey_design()</a></code>, <code><a href="../reference/as_survey_rep.html">as_survey_rep()</a></code> and <code><a href="../reference/as_survey_twophase.html">as_survey_twophase()</a></code> are analogous to <code><a href="https://rdrr.io/pkg/survey/man/svydesign.html">survey::svydesign()</a></code>, <code><a href="https://rdrr.io/pkg/survey/man/svrepdesign.html">survey::svrepdesign()</a></code> and <code><a href="https://rdrr.io/pkg/survey/man/twophase.html">survey::twophase()</a></code> respectively. Because they are designed to match <code>dplyr</code>’s style of non-standard evaluation, they accept bare column names instead of formulas (~). They also move the data argument first, so that it is easier to use <code>magrittr</code> pipes (<code><a href="../reference/%&gt;%.html">%&gt;%</a></code>).</p>
+<p><code><a href="../reference/as_survey_design.html">as_survey_design()</a></code>, <code><a href="../reference/as_survey_rep.html">as_survey_rep()</a></code> and
+<code><a href="../reference/as_survey_twophase.html">as_survey_twophase()</a></code> are analogous to
+<code><a href="https://rdrr.io/pkg/survey/man/svydesign.html">survey::svydesign()</a></code>, <code><a href="https://rdrr.io/pkg/survey/man/svrepdesign.html">survey::svrepdesign()</a></code> and
+<code><a href="https://rdrr.io/pkg/survey/man/twophase.html">survey::twophase()</a></code> respectively. Because they are designed
+to match <code>dplyr</code>’s style of non-standard evaluation, they
+accept bare column names instead of formulas (~). They also move the
+data argument first, so that it is easier to use <code>magrittr</code>
+pipes (<code><a href="../reference/%&gt;%.html">%&gt;%</a></code>).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://gdfe.co/srvyr/">srvyr</a></span><span class="op">)</span>
 
@@ -143,7 +168,10 @@
 <span class="va">srs_design_srvyr</span> <span class="op">&lt;-</span> <span class="va">apisrs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/as_survey_design.html">as_survey_design</a></span><span class="op">(</span>ids <span class="op">=</span> <span class="fl">1</span>, fpc <span class="op">=</span> <span class="va">fpc</span><span class="op">)</span>
 
 <span class="va">srs_design_survey</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span><span class="op">(</span>ids <span class="op">=</span> <span class="op">~</span><span class="fl">1</span>, fpc <span class="op">=</span> <span class="op">~</span><span class="va">fpc</span>, data <span class="op">=</span> <span class="va">apisrs</span><span class="op">)</span></code></pre></div>
-<p>The <code>srvyr</code> functions also accept <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code>’s special selection functions (such as <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with()</a></code>, <code><a href="https://tidyselect.r-lib.org/reference/one_of.html">one_of()</a></code>, etc.), so these functions are analogous:</p>
+<p>The <code>srvyr</code> functions also accept
+<code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code>’s special selection functions (such as
+<code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with()</a></code>, <code><a href="https://tidyselect.r-lib.org/reference/one_of.html">one_of()</a></code>, etc.), so these
+functions are analogous:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># selecting variables to keep in the survey object (stratified example)</span>
 <span class="va">strat_design_srvyr</span> <span class="op">&lt;-</span> <span class="va">apistrat</span> <span class="op">%&gt;%</span>
@@ -153,7 +181,9 @@
 <span class="va">strat_design_survey</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/svydesign.html">svydesign</a></span><span class="op">(</span><span class="op">~</span><span class="fl">1</span>, strata <span class="op">=</span> <span class="op">~</span><span class="va">stype</span>, fpc <span class="op">=</span> <span class="op">~</span><span class="va">fpc</span>,
                                  variables <span class="op">=</span> <span class="op">~</span><span class="va">stype</span> <span class="op">+</span> <span class="va">api99</span> <span class="op">+</span> <span class="va">api00</span> <span class="op">+</span> <span class="va">api.stu</span>,
                                  weight <span class="op">=</span> <span class="op">~</span><span class="va">pw</span>, data <span class="op">=</span> <span class="va">apistrat</span><span class="op">)</span></code></pre></div>
-<p>The function <code><a href="../reference/as_survey.html">as_survey()</a></code> will automatically choose between the three <code>as_survey_*</code> functions based on the arguments, so you can save a few keystrokes.</p>
+<p>The function <code><a href="../reference/as_survey.html">as_survey()</a></code> will automatically choose
+between the three <code>as_survey_*</code> functions based on the
+arguments, so you can save a few keystrokes.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># simple random sample (again)</span>
 <span class="va">srs_design_srvyr2</span> <span class="op">&lt;-</span> <span class="va">apisrs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/as_survey.html">as_survey</a></span><span class="op">(</span>ids <span class="op">=</span> <span class="fl">1</span>, fpc <span class="op">=</span> <span class="va">fpc</span><span class="op">)</span></code></pre></div>
@@ -161,7 +191,9 @@
 <div id="data-manipulation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#data-manipulation" class="anchor"></a>Data manipulation</h1>
-<p>Once you’ve set up your survey data, you can use <code>dplyr</code> verbs such as <code><a href="../reference/group_trim.html">mutate()</a></code>, <code><a href="../reference/group_trim.html">select()</a></code>, <code><a href="../reference/group_trim.html">filter()</a></code> and <code><a href="../reference/group_trim.html">rename()</a></code>.</p>
+<p>Once you’ve set up your survey data, you can use <code>dplyr</code>
+verbs such as <code><a href="../reference/group_trim.html">mutate()</a></code>, <code><a href="../reference/group_trim.html">select()</a></code>,
+<code><a href="../reference/group_trim.html">filter()</a></code> and <code><a href="../reference/group_trim.html">rename()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">strat_design_srvyr</span> <span class="op">&lt;-</span> <span class="va">strat_design_srvyr</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/group_trim.html">mutate</a></span><span class="op">(</span>api_diff <span class="op">=</span> <span class="va">api00</span> <span class="op">-</span> <span class="va">api99</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -170,7 +202,14 @@
 <span class="va">strat_design_survey</span><span class="op">$</span><span class="va">variables</span><span class="op">$</span><span class="va">api_diff</span> <span class="op">&lt;-</span> <span class="va">strat_design_survey</span><span class="op">$</span><span class="va">variables</span><span class="op">$</span><span class="va">api00</span> <span class="op">-</span>
   <span class="va">strat_design_survey</span><span class="op">$</span><span class="va">variables</span><span class="op">$</span><span class="va">api99</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">strat_design_survey</span><span class="op">$</span><span class="va">variables</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">strat_design_survey</span><span class="op">$</span><span class="va">variables</span><span class="op">)</span> <span class="op">==</span> <span class="st">"api.stu"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"api_students"</span></code></pre></div>
-<p>Note that <code><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange()</a></code> is not available, because the <code>srvyr</code> object expects to stay in the same order. Nor are two-table verbs such as <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">full_join()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows()</a></code>, etc. available to <code>srvyr</code> objects either because they may have implications on the survey design. If you need to use these functions, you should use them earlier in your analysis pipeline, when the objects are still stored as <code>data.frame</code>s.</p>
+<p>Note that <code><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange()</a></code> is not available, because the
+<code>srvyr</code> object expects to stay in the same order. Nor are
+two-table verbs such as <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">full_join()</a></code>,
+<code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows()</a></code>, etc. available to <code>srvyr</code> objects
+either because they may have implications on the survey design. If you
+need to use these functions, you should use them earlier in your
+analysis pipeline, when the objects are still stored as
+<code>data.frame</code>s.</p>
 </div>
 <div id="summary-statistics" class="section level1">
 <h1 class="hasAnchor">
@@ -178,7 +217,14 @@
 <div id="of-the-entire-population" class="section level2">
 <h2 class="hasAnchor">
 <a href="#of-the-entire-population" class="anchor"></a>Of the entire population</h2>
-<p><code>srvyr</code> also provides <code><a href="../reference/summarise.html">summarize()</a></code> and several survey-specific functions that calculate summary statistics on numeric variables: <code><a href="../reference/survey_mean.html">survey_mean()</a></code>, <code><a href="../reference/survey_total.html">survey_total()</a></code>, <code><a href="../reference/survey_quantile.html">survey_quantile()</a></code> and <code><a href="../reference/survey_ratio.html">survey_ratio()</a></code>. These functions differ from their counterparts in <code>survey</code> because they always return a data.frame in a consistent format. As such, they do not return the variance-covariance matrix, and so are not as flexible.</p>
+<p><code>srvyr</code> also provides <code><a href="../reference/summarise.html">summarize()</a></code> and several
+survey-specific functions that calculate summary statistics on numeric
+variables: <code><a href="../reference/survey_mean.html">survey_mean()</a></code>, <code><a href="../reference/survey_total.html">survey_total()</a></code>,
+<code><a href="../reference/survey_quantile.html">survey_quantile()</a></code> and <code><a href="../reference/survey_ratio.html">survey_ratio()</a></code>. These
+functions differ from their counterparts in <code>survey</code> because
+they always return a data.frame in a consistent format. As such, they do
+not return the variance-covariance matrix, and so are not as
+flexible.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Using srvyr</span>
 <span class="va">out</span> <span class="op">&lt;-</span> <span class="va">strat_design_srvyr</span> <span class="op">%&gt;%</span>
@@ -204,7 +250,8 @@
 <div id="by-group" class="section level2">
 <h2 class="hasAnchor">
 <a href="#by-group" class="anchor"></a>By group</h2>
-<p><code>srvyr</code> also allows you to calculate statistics on numeric variables by group, using <code><a href="../reference/group_by.html">group_by()</a></code>.</p>
+<p><code>srvyr</code> also allows you to calculate statistics on numeric
+variables by group, using <code><a href="../reference/group_by.html">group_by()</a></code>.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Using srvyr</span>
 <span class="va">strat_design_srvyr</span> <span class="op">%&gt;%</span>
@@ -232,7 +279,9 @@
 <div id="proportions-by-group" class="section level2">
 <h2 class="hasAnchor">
 <a href="#proportions-by-group" class="anchor"></a>Proportions by group</h2>
-<p>You can also calculate the proportion or count in each group of a factor or character variable by leaving x empty in <code><a href="../reference/survey_mean.html">survey_mean()</a></code> or <code><a href="../reference/survey_total.html">survey_total()</a></code>.</p>
+<p>You can also calculate the proportion or count in each group of a
+factor or character variable by leaving x empty in
+<code><a href="../reference/survey_mean.html">survey_mean()</a></code> or <code><a href="../reference/survey_total.html">survey_total()</a></code>.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Using srvyr</span>
 <span class="va">srs_design_srvyr</span> <span class="op">%&gt;%</span>
@@ -259,7 +308,8 @@
 <div id="unweighted-calculations" class="section level2">
 <h2 class="hasAnchor">
 <a href="#unweighted-calculations" class="anchor"></a>Unweighted calculations</h2>
-<p>Finally, the <code><a href="../reference/unweighted.html">unweighted()</a></code> function can act as an escape hatch to calculate unweighted calculations on the dataset.</p>
+<p>Finally, the <code><a href="../reference/unweighted.html">unweighted()</a></code> function can act as an escape
+hatch to calculate unweighted calculations on the dataset.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Using srvyr</span>
 <span class="va">strat_design_srvyr</span> <span class="op">%&gt;%</span>
@@ -283,7 +333,11 @@
 <div id="back-to-the-example" class="section level1">
 <h1 class="hasAnchor">
 <a href="#back-to-the-example" class="anchor"></a>Back to the example</h1>
-<p>So now, we have all the tools needed to create the first graph and add error bounds. Notice that the data manipulation code is nearly identical to the <code>dplyr</code> code, with a little extra set up, and replacing <code><a href="https://rdrr.io/r/stats/weighted.mean.html">weighted.mean()</a></code> with <code>survey_mean</code>.</p>
+<p>So now, we have all the tools needed to create the first graph and
+add error bounds. Notice that the data manipulation code is nearly
+identical to the <code>dplyr</code> code, with a little extra set up,
+and replacing <code><a href="https://rdrr.io/r/stats/weighted.mean.html">weighted.mean()</a></code> with
+<code>survey_mean</code>.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">strat_design</span> <span class="op">&lt;-</span> <span class="va">apistrat</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/as_survey_design.html">as_survey_design</a></span><span class="op">(</span>strata <span class="op">=</span> <span class="va">stype</span>, fpc <span class="op">=</span> <span class="va">fpc</span>, weight  <span class="op">=</span> <span class="va">pw</span><span class="op">)</span>
@@ -306,8 +360,14 @@
 <div id="comparison-to-the-survey-package-degrees-of-freedom" class="section level1">
 <h1 class="hasAnchor">
 <a href="#comparison-to-the-survey-package-degrees-of-freedom" class="anchor"></a>Comparison to the survey package (Degrees of freedom)</h1>
-<p>For the most part, <code>srvyr</code> tries to be a drop-in replacement for the survey package, only changing the syntax that you wrote. However, the way that calculations of degrees of freedom when calculating confidence intervals is different.</p>
-<p><code>srvyr</code> assumes that you want to use the true degrees of freedom by default, but the <code>survey</code> package uses <code>Inf</code> as the default. You can use the argument <code>df</code> to get the same result as the survey package.</p>
+<p>For the most part, <code>srvyr</code> tries to be a drop-in
+replacement for the survey package, only changing the syntax that you
+wrote. However, the way that calculations of degrees of freedom when
+calculating confidence intervals is different.</p>
+<p><code>srvyr</code> assumes that you want to use the true degrees of
+freedom by default, but the <code>survey</code> package uses
+<code>Inf</code> as the default. You can use the argument
+<code>df</code> to get the same result as the survey package.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Set pillar print methods so tibble has more decimal places</span>
 <span class="va">old_sigfig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span><span class="st">"pillar.sigfig"</span><span class="op">)</span>
@@ -349,8 +409,13 @@
 <a href="#grab-bag" class="anchor"></a>Grab Bag</h1>
 <div id="using-survey-functions-on-srvyr-objects" class="section level2">
 <h2 class="hasAnchor">
-<a href="#using-survey-functions-on-srvyr-objects" class="anchor"></a>Using <code>survey</code> functions on <code>srvyr</code> objects</h2>
-<p>Because <code>srvyr</code> objects are just <code>survey</code> objects with some extra structure, all of the functions from <code>survey</code> will still work with them. If you need to calculate something beyond simple summary statistics, you can use <code>survey</code> functions.</p>
+<a href="#using-survey-functions-on-srvyr-objects" class="anchor"></a>Using <code>survey</code> functions on <code>srvyr</code>
+objects</h2>
+<p>Because <code>srvyr</code> objects are just <code>survey</code>
+objects with some extra structure, all of the functions from
+<code>survey</code> will still work with them. If you need to calculate
+something beyond simple summary statistics, you can use
+<code>survey</code> functions.</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">glm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survey/man/svyglm.html">svyglm</a></span><span class="op">(</span><span class="va">api00</span> <span class="op">~</span> <span class="va">ell</span> <span class="op">+</span> <span class="va">meals</span> <span class="op">+</span> <span class="va">mobility</span>, design <span class="op">=</span> <span class="va">strat_design</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">glm</span><span class="op">)</span></code></pre></div>
@@ -377,9 +442,12 @@
 <div id="using-expressions-to-create-variables-on-the-fly" class="section level2">
 <h2 class="hasAnchor">
 <a href="#using-expressions-to-create-variables-on-the-fly" class="anchor"></a>Using expressions to create variables on the fly</h2>
-<p>Like <code>dplyr</code>, <code>srvyr</code> allows you to use expressions in the arguments, allowing you to create variables in a single step. For example, you can use expressions:</p>
+<p>Like <code>dplyr</code>, <code>srvyr</code> allows you to use
+expressions in the arguments, allowing you to create variables in a
+single step. For example, you can use expressions:</p>
 <ol style="list-style-type: decimal">
-<li>as the arguments inside the survey statistic functions like <code>survey_mean</code>
+<li>as the arguments inside the survey statistic functions like
+<code>survey_mean</code>
 </li>
 </ol>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
@@ -403,7 +471,8 @@
 ## 1 No           36.1          3.44
 ## 2 Yes          63.9          3.44</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>and you can even create varables inside of <code>group_by</code>
+<li>and you can even create varables inside of
+<code>group_by</code>
 </li>
 </ol>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
@@ -415,7 +484,11 @@
 ##   &lt;lgl&gt;              &lt;dbl&gt;       &lt;dbl&gt;
 ## 1 FALSE               599.        7.88
 ## 2 TRUE                805.        7.15</code></pre>
-<p>Though on-the-fly expressions are syntactically valid, it is possible to make statistically invalid numbers from them. For example, though the standard error and confidence intervals can be multiplied by a scalar (like 100), the variance does not scale the same way, so the following is invalid:</p>
+<p>Though on-the-fly expressions are syntactically valid, it is possible
+to make statistically invalid numbers from them. For example, though the
+standard error and confidence intervals can be multiplied by a scalar
+(like 100), the variance does not scale the same way, so the following
+is invalid:</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># BAD DON'T DO THIS!</span>
 <span class="va">strat_design</span> <span class="op">%&gt;%</span>
@@ -426,8 +499,12 @@
 <div id="non-standard-evaluation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#non-standard-evaluation" class="anchor"></a>Non-Standard evaluation</h2>
-<p>Srvyr supports the non-standard evaluation conventions that dplyr uses. If you’d like to use a function programmatically, you can use the functions from rlang like the <code>{{</code> operator (aka “curly curly”) from <code>rlang</code>.</p>
-<p>Here’s a quick example, but please see the dplyr vignette <a href="https://dplyr.tidyverse.org/articles/programming.html"><code>vignette("programming", package = "dplyr")</code></a> for more details.</p>
+<p>Srvyr supports the non-standard evaluation conventions that dplyr
+uses. If you’d like to use a function programmatically, you can use the
+functions from rlang like the <code>{{</code> operator (aka “curly
+curly”) from <code>rlang</code>.</p>
+<p>Here’s a quick example, but please see the dplyr vignette <a href="https://dplyr.tidyverse.org/articles/programming.html"><code>vignette("programming", package = "dplyr")</code></a>
+for more details.</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mean_with_ci</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.data</span>, <span class="va">var</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="../reference/summarise.html">summarize</a></span><span class="op">(</span><span class="va">.data</span>, mean <span class="op">=</span> <span class="fu"><a href="../reference/survey_mean.html">survey_mean</a></span><span class="op">(</span><span class="op">{</span><span class="op">{</span><span class="va">var</span><span class="op">}</span><span class="op">}</span>, vartype <span class="op">=</span> <span class="st">"ci"</span><span class="op">)</span><span class="op">)</span>
@@ -440,12 +517,19 @@
 ##    mean mean_low mean_upp
 ##   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
 ## 1  625.     606.     643.</code></pre>
-<p>Srvyr will also follow dplyr’s lead on deprecating the old methods of NSE, such as <code><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">rlang::quo</a></code>, and <code>!!</code>, in addition to the so-called “underscore functions” (like <code>summarize_</code>). Currently, they have been soft-deprecated, they may be removed altogether in some future version of srvyr.</p>
+<p>Srvyr will also follow dplyr’s lead on deprecating the old methods of
+NSE, such as <code><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">rlang::quo</a></code>, and <code>!!</code>, in addition
+to the so-called “underscore functions” (like <code>summarize_</code>).
+Currently, they have been soft-deprecated, they may be removed
+altogether in some future version of srvyr.</p>
 </div>
 <div id="working-column-wise" class="section level2">
 <h2 class="hasAnchor">
 <a href="#working-column-wise" class="anchor"></a>Working column-wise</h2>
-<p>As of version 1.0 of srvyr, it supports dplyr’s across function, so when you want to calculate a statistic on more than one variable, it is easy to do so. See <a href="https://dplyr.tidyverse.org/articles/colwise.html"><code>vignette("colwise", package = "dplyr")</code></a> for more details, but here is another quick example:</p>
+<p>As of version 1.0 of srvyr, it supports dplyr’s across function, so
+when you want to calculate a statistic on more than one variable, it is
+easy to do so. See <a href="https://dplyr.tidyverse.org/articles/colwise.html"><code>vignette("colwise", package = "dplyr")</code></a>
+for more details, but here is another quick example:</p>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Calculate survey mean for all variables that have names starting with "api"</span>
 <span class="va">strat_design</span> <span class="op">%&gt;%</span>
@@ -454,12 +538,22 @@
 ##   api00 api00_se api99 api99_se api.stu api.stu_se
 ##   &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
 ## 1  662.     9.41  629.     9.96    498.       16.1</code></pre>
-<p>Srvyr also supports older methods of working column-wise, the “scoped variants”, such as <code>summarize_at</code>, <code>summarize_if</code>, <code>summarize_all</code> and <code>summarize_each</code>. Again, these are maintained for backwards compatibility, matching what the tidyverse team has done, but may be removed from a future version.</p>
+<p>Srvyr also supports older methods of working column-wise, the “scoped
+variants”, such as <code>summarize_at</code>, <code>summarize_if</code>,
+<code>summarize_all</code> and <code>summarize_each</code>. Again, these
+are maintained for backwards compatibility, matching what the tidyverse
+team has done, but may be removed from a future version.</p>
 </div>
 <div id="calculating-proportions-in-groups" class="section level2">
 <h2 class="hasAnchor">
 <a href="#calculating-proportions-in-groups" class="anchor"></a>Calculating proportions in groups</h2>
-<p>You can calculate the weighted proportion that falls into a group using the <code><a href="../reference/survey_mean.html">survey_prop()</a></code> function (or the <code><a href="../reference/survey_mean.html">survey_mean()</a></code> function with no <code>x</code> argument). The proportion is calculated by “unpeeling” the last variable used in <code><a href="../reference/group_by.html">group_by()</a></code> and then calculating the proportion within the other groups that fall into the last group (so that the proportion within each group that was unpeeled sums to 100%).</p>
+<p>You can calculate the weighted proportion that falls into a group
+using the <code><a href="../reference/survey_mean.html">survey_prop()</a></code> function (or the
+<code><a href="../reference/survey_mean.html">survey_mean()</a></code> function with no <code>x</code> argument).
+The proportion is calculated by “unpeeling” the last variable used in
+<code><a href="../reference/group_by.html">group_by()</a></code> and then calculating the proportion within the
+other groups that fall into the last group (so that the proportion
+within each group that was unpeeled sums to 100%).</p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Calculate the proportion that falls into each category of `awards` per `stype`</span>
 <span class="va">strat_design</span> <span class="op">%&gt;%</span>
@@ -475,7 +569,11 @@
 ## 4 H     Yes     0.32  0.0644
 ## 5 M     No      0.52  0.0696
 ## 6 M     Yes     0.48  0.0696</code></pre>
-<p>If you want to calculate the proportion for groups from multiple variables at the same time that add up to 100%, the <code>interact</code> function can help. The <code>interact</code> function creates a variable that is automatically split apart so that more than one variable can be unpeeled.</p>
+<p>If you want to calculate the proportion for groups from multiple
+variables at the same time that add up to 100%, the
+<code>interact</code> function can help. The <code>interact</code>
+function creates a variable that is automatically split apart so that
+more than one variable can be unpeeled.</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Calculate the proportion that falls into each category of both `awards` and `stype`</span>
 <span class="va">strat_design</span> <span class="op">%&gt;%</span>
@@ -495,43 +593,73 @@
 <div id="learning-more" class="section level1">
 <h1 class="hasAnchor">
 <a href="#learning-more" class="anchor"></a>Learning More</h1>
-<p>Here are some free resources put together by the community about srvyr:</p>
+<p>Here are some free resources put together by the community about
+srvyr:</p>
 <ul>
 <li>
 <strong>“How-to”s &amp; examples of using srvyr</strong>
 <ul>
-<li>Stephanie Zimmer &amp; Rebecca Powell’s <a href="https://github.com/szimmer/tidy-survey-aapor-2021">2021 AAPOR Workshop “Tidy Survey Analysis in R using the srvyr Package”</a>
+<li>Stephanie Zimmer &amp; Rebecca Powell’s <a href="https://github.com/szimmer/tidy-survey-aapor-2021">2021 AAPOR
+Workshop “Tidy Survey Analysis in R using the srvyr Package”</a>
 </li>
-<li>“The Epidemiologist R Handbook”, by Neale Batra et al. has a <a href="https://epirhandbook.com/en/">chapter on survey analysis</a> with srvyr and survey package examples</li>
-<li>Kieran Healy’s book <a href="https://socviz.co/modeling.html#plots-from-complex-surveys">“Data Visualization: A Practical Introduction”</a> has a section on using srvyr to visualize the ESS.</li>
-<li>The IPUMS PMA team’s blog had a series showing examples of using the <a href="https://tech.popdata.org/pma-data-hub/index.html">PMA COVID survey panel with weights</a>
+<li>“The Epidemiologist R Handbook”, by Neale Batra et al. has a <a href="https://epirhandbook.com/en/">chapter on survey analysis</a> with
+srvyr and survey package examples</li>
+<li>Kieran Healy’s book <a href="https://socviz.co/modeling.html#plots-from-complex-surveys">“Data
+Visualization: A Practical Introduction”</a> has a section on using
+srvyr to visualize the ESS.</li>
+<li>The IPUMS PMA team’s blog had a series showing examples of using the
+<a href="https://tech.popdata.org/pma-data-hub/index.html">PMA COVID
+survey panel with weights</a>
 </li>
 <li>
-<a href="https://www.opencasestudies.org/ocs-bp-vaping-case-study/">“Open Case Studies: Vaping Behaviors in American Youth”</a> by Carrie Wright, Michael Ontiveros, Leah Jager, Margaret Taub, and Stephanie Hicks is a detailed case study that includes using srvyr to analyze the National Youth Tobacco Survey.</li>
+<a href="https://www.opencasestudies.org/ocs-bp-vaping-case-study/">“Open
+Case Studies: Vaping Behaviors in American Youth”</a> by Carrie Wright,
+Michael Ontiveros, Leah Jager, Margaret Taub, and Stephanie Hicks is a
+detailed case study that includes using srvyr to analyze the National
+Youth Tobacco Survey.</li>
 <li>
-<a href="https://towardsdatascience.com/how-to-plot-likert-scales-with-a-weighted-survey-in-a-dplyr-friendly-way-68df600881a">“How to plot Likert scales with a weighted survey in a dplyr friendly way”</a> by Francisco Suárez Salas</li>
-<li>The tidycensus package vignette <a href="https://walker-data.com/tidycensus/articles/pums-data.html">“Working with Census microdata”</a> includes information about using the weights from the ACS retrieved from the census API.</li>
+<a href="https://towardsdatascience.com/how-to-plot-likert-scales-with-a-weighted-survey-in-a-dplyr-friendly-way-68df600881a">“How
+to plot Likert scales with a weighted survey in a dplyr friendly
+way”</a> by Francisco Suárez Salas</li>
+<li>The tidycensus package vignette <a href="https://walker-data.com/tidycensus/articles/pums-data.html">“Working
+with Census microdata”</a> includes information about using the weights
+from the ACS retrieved from the census API.</li>
 <li>
-<a href="https://ldaly.github.io/giveinandblogit/">“The Joy of Calculating the Direct Standard Error for PUMS Estimates”</a> by GitHub user <span class="citation">@ldaly</span>
+<a href="https://ldaly.github.io/giveinandblogit/">“The Joy of
+Calculating the Direct Standard Error for PUMS Estimates”</a> by GitHub
+user <span class="citation">@ldaly</span>
 </li>
 </ul>
 </li>
 <li>
 <strong>About survey statistics</strong>
 <ul>
-<li>Thomas Lumley’s book <a href="http://r-survey.r-forge.r-project.org/svybook/">“Complex Surveys: a guide to analysis using R”</a>
+<li>Thomas Lumley’s book <a href="http://r-survey.r-forge.r-project.org/svybook/">“Complex Surveys:
+a guide to analysis using R”</a>
 </li>
-<li><a href="https://projecteuclid.org/accountAjax/Download?downloadType=journal%20article&amp;urlId=10.1214%2F17-STS614&amp;isResultClick=True">Chris Skinner. Jon Wakefield. “Introduction to the Design and Analysis of Complex Survey Data.” Statist. Sci. 32 (2) 165 - 175, May 2017. 10.1214/17-STS614</a></li>
-<li>Sharon Lohr’s textbook “Sampling: Design and Analysis”. <a href="https://www.sharonlohr.com/sampling-design-and-analysis-2e">Second</a> or <a href="https://www.sharonlohr.com/sampling-design-and-analysis-3e">Third</a> Editions</li>
-<li>“Survey weighting is a mess” is the opening to Andrew Gelman’s <a href="http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf">“Struggles with Survey Weighting and Regression Modeling”</a>
+<li><a href="https://projecteuclid.org/accountAjax/Download?downloadType=journal%20article&amp;urlId=10.1214%2F17-STS614&amp;isResultClick=True">Chris
+Skinner. Jon Wakefield. “Introduction to the Design and Analysis of
+Complex Survey Data.” Statist. Sci. 32 (2) 165 - 175, May 2017.
+10.1214/17-STS614</a></li>
+<li>Sharon Lohr’s textbook “Sampling: Design and Analysis”. <a href="https://www.sharonlohr.com/sampling-design-and-analysis-2e">Second</a>
+or <a href="https://www.sharonlohr.com/sampling-design-and-analysis-3e">Third</a>
+Editions</li>
+<li>“Survey weighting is a mess” is the opening to Andrew Gelman’s <a href="http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf">“Struggles
+with Survey Weighting and Regression Modeling”</a>
 </li>
-<li>Anthony Damico’s website <a href="http://asdfree.com">“Analyze Survey Data for Free”</a> has the weight specifications for a wide variety of public use survey datasets.</li>
+<li>Anthony Damico’s website <a href="http://asdfree.com">“Analyze
+Survey Data for Free”</a> has the weight specifications for a wide
+variety of public use survey datasets.</li>
 </ul>
 </li>
 <li>
-<strong>Working programmatically and/or on multiple columns at once (eg <code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across</a></code> and <code>rlang</code>’s “curly curly” <code>{{}}</code>)</strong>
+<strong>Working programmatically and/or on multiple columns at once
+(eg <code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across</a></code> and <code>rlang</code>’s “curly curly”
+<code>{{}}</code>)</strong>
 <ul>
-<li>dplyr’s included package vignettes <a href="https://dplyr.tidyverse.org/articles/colwise.html">“Column-wise operations”</a> &amp; <a href="https://dplyr.tidyverse.org/articles/programming.html">“Programming with dplyr”</a>
+<li>dplyr’s included package vignettes <a href="https://dplyr.tidyverse.org/articles/colwise.html">“Column-wise
+operations”</a> &amp; <a href="https://dplyr.tidyverse.org/articles/programming.html">“Programming
+with dplyr”</a>
 </li>
 </ul>
 </li>
@@ -539,28 +667,48 @@
 <strong>Non-English resources</strong>
 <ul>
 <li>
-<em>Em português:</em> <a href="https://djalmapessoa.github.io/adac/">“Análise de Dados Amostrais Complexos”</a> by Djalma Pessoa and Pedro Nascimento Silva</li>
+<em>Em português:</em> <a href="https://djalmapessoa.github.io/adac/">“Análise de Dados Amostrais
+Complexos”</a> by Djalma Pessoa and Pedro Nascimento Silva</li>
 <li>
-<em>En español:</em> <a href="https://medium.com/tacosdedatos/usando-r-para-sacar-informaci%C3%B3n-de-los-microdatos-del-inegi-b21b6946cf4f">“Usando R para jugar con los microdatos del INEGI”</a> by Claudio Daniel Pacheco Castro</li>
+<em>En español:</em> <a href="https://medium.com/tacosdedatos/usando-r-para-sacar-informaci%C3%B3n-de-los-microdatos-del-inegi-b21b6946cf4f">“Usando
+R para jugar con los microdatos del INEGI”</a> by Claudio Daniel Pacheco
+Castro</li>
 <li>
-<em>Tiếng Việt:</em> <a href="https://epirhandbook.com/vn/survey-analysis.html">“Dịch tễ học ứng dụng và y tế công cộng với R”</a>
+<em>Tiếng Việt:</em> <a href="https://epirhandbook.com/vn/survey-analysis.html">“Dịch tễ học ứng
+dụng và y tế công cộng với R”</a>
 </li>
 </ul>
 </li>
 <li>
 <strong>Other cool stuff that uses srvyr</strong>
 <ul>
-<li>A (free) graphical interface allowing exploratory data analysis of survey data without writing code: <a href="https://inzight.nz/">iNZight</a> (and <a href="https://inzight.nz/docs/survey-specification.html">survey data instructions</a>)</li>
+<li>A (free) graphical interface allowing exploratory data analysis of
+survey data without writing code: <a href="https://inzight.nz/">iNZight</a> (and <a href="https://inzight.nz/docs/survey-specification.html">survey data
+instructions</a>)</li>
 <li>
-<a href="https://avallecam.github.io/serosurvey/">“serosurvey: Serological Survey Analysis For Prevalence Estimation Under Misclassification”</a> by Andree Valle Campos</li>
-<li>Several packages on CRAN depend on srvyr, you can see them by looking at the <a href="https://cran.r-project.org/package=srvyr">reverse Imports/Suggestions on CRAN</a>.</li>
+<a href="https://avallecam.github.io/serosurvey/">“serosurvey:
+Serological Survey Analysis For Prevalence Estimation Under
+Misclassification”</a> by Andree Valle Campos</li>
+<li>Several packages on CRAN depend on srvyr, you can see them by
+looking at the <a href="https://cran.r-project.org/package=srvyr">reverse
+Imports/Suggestions on CRAN</a>.</li>
 </ul>
 </li>
 </ul>
 <p><strong>Still need help?</strong></p>
-<p>I think the best way to get help is to form a specific question and ask it in some place like <a href="https://community.rstudio.com">rstudio’s community webiste</a> (known for it’s friendly community) or <a href="https://stackoverflow.com">stackoverflow.com</a> (maybe not known for being quite as friendly, but probably has more people). If you think you’ve found a bug in srvyr’s code, please file an <a href="https://github.com/gergness/srvyr/issues/new">issue on GitHub</a>, but note that I’m not a great resource for helping specific issue, both because I have limited capacity but also because I do not consider myself an expert in the statistical methods behind survey analysis.</p>
+<p>I think the best way to get help is to form a specific question and
+ask it in some place like <a href="https://community.rstudio.com">rstudio’s community webiste</a>
+(known for it’s friendly community) or <a href="https://stackoverflow.com">stackoverflow.com</a> (maybe not known
+for being quite as friendly, but probably has more people). If you think
+you’ve found a bug in srvyr’s code, please file an <a href="https://github.com/gergness/srvyr/issues/new">issue on GitHub</a>,
+but note that I’m not a great resource for helping specific issue, both
+because I have limited capacity but also because I do not consider
+myself an expert in the statistical methods behind survey analysis.</p>
 <p><strong>Have something to add?</strong></p>
-<p>These resources were mostly found via vanity searches on twitter &amp; github. If you know of anything I missed, or have written something yourself, <a href="https://github.com/gergness/srvyr/issues/127">please let me know in this GitHub issue</a>!</p>
+<p>These resources were mostly found via vanity searches on twitter
+&amp; github. If you know of anything I missed, or have written
+something yourself, <a href="https://github.com/gergness/srvyr/issues/127">please let me know
+in this GitHub issue</a>!</p>
 </div>
   </div>
 

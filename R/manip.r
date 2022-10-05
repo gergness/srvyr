@@ -65,7 +65,7 @@ rename.tbl_svy <- function(.data, ...) {
 #' @export
 rename_with.tbl_svy <- function(.data, .fn, .cols = everything(), ...) {
   dots <- rlang::quos(...)
-  .data$variables <- rename_with(.data$variables, .fn = .fn, .cols = .cols, !!!dots)
+  .data$variables <- rename_with(.data$variables, .fn = .fn, .cols = {{.cols}}, !!!dots)
 
   .data
 }

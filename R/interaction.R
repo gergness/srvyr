@@ -73,6 +73,7 @@ uninteract.srvyr_interaction <- function(x) {
 
 #' @export
 #' @rdname uninteract
+#' @importFrom tidyselect all_of
 uninteract.data.frame <- function(x) {
   # Helper to expand out varnames in correct order
   interaction_varname_expander <- function(vnames, x) {

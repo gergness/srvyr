@@ -132,7 +132,7 @@ recast_interact <- function(col, ...) {
   .dots <- rlang::quos(...)
   old_crosswalk <- crosswalk(col)
 
-  conversion <- dplyr::select(old_crosswalk, !!!.dots, "old_cw" = .data$`___srvyr_cw_id`)
+  conversion <- dplyr::select(old_crosswalk, !!!.dots, "old_cw" = dplyr::one_of("___srvyr_cw_id"))
   conversion <- dplyr::group_by(conversion, !!!.dots)
   conversion[["___srvyr_cw_id"]] <- group_indices(conversion)
   conversion <- ungroup(conversion)

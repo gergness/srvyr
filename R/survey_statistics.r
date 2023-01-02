@@ -827,10 +827,10 @@ survey_corr <- function(
 
   # Turn matrix of point estimates into a vector
   # (and deduplicate)
-  point_estimates <- as.vector(coef(var_est)[c(1,2,4)])
+  point_estimates <- as.vector(stats::coef(var_est)[c(1,2,4)])
   names(point_estimates) <- c('var_x', 'cov_xy', 'var_y')
   # Obtain sampling variance-covariance matrix of the point estimates
-  vcov_mat <- vcov(var_est)[c(1,2,4), c(1,2,4)]
+  vcov_mat <- stats::vcov(var_est)[c(1,2,4), c(1,2,4)]
   rownames(vcov_mat) <- names(point_estimates)
   colnames(vcov_mat) <- names(point_estimates)
   class(point_estimates) <- "svystat"

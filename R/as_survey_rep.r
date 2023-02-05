@@ -67,6 +67,7 @@ as_survey_rep <- function(.data, ...) {
 as_survey_rep.data.frame <-
   function(.data, variables = NULL, repweights = NULL, weights = NULL,
            type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
+                    "successive-difference", "ACS",
                     "other"), combined_weights = TRUE,
            rho = NULL, bootstrap_average = NULL, scale = NULL,
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
@@ -103,7 +104,7 @@ as_survey_rep.data.frame <-
 #' @rdname as_survey_rep
 as_survey_rep.tbl_lazy <-
   function(.data, variables = NULL, repweights = NULL, weights = NULL,
-           type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
+           type = c("BRR", "Fay", "JK1", "JKn", "bootstrap", "successive-difference", "ACS",
                     "other"), combined_weights = TRUE,
            rho = NULL, bootstrap_average = NULL, scale = NULL,
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
@@ -195,6 +196,7 @@ as_survey_rep.tbl_svy <-
 as_survey_rep_ <-
   function(.data, variables = NULL, repweights = NULL, weights = NULL,
            type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
+                    "successive-difference", "ACS",
                     "other"), combined_weights = TRUE,
            rho = NULL, bootstrap_average = NULL, scale = NULL,
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),

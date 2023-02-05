@@ -1,3 +1,7 @@
+# srvyr (development)
+* The function `as_survey_rep()` now accepts `type="ACS"` and `type="successive-difference"`
+for user-supplied replicate weights.
+
 # srvyr 1.1.2
 * Fix for upcoming version of tidyselect (#147, thanks @hadley)
 

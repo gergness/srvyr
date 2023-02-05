@@ -43,7 +43,8 @@ as_survey_rep_(
   variables = NULL,
   repweights = NULL,
   weights = NULL,
-  type = c("BRR", "Fay", "JK1", "JKn", "bootstrap", "other"),
+  type = c("BRR", "Fay", "JK1", "JKn", "bootstrap", "successive-difference", "ACS",
+    "other"),
   combined_weights = TRUE,
   rho = NULL,
   bootstrap_average = NULL,
@@ -110,13 +111,8 @@ include the sampling weights. This is usually the case.}
 \item{bootstrap_average}{For \code{type = "bootstrap"}, if the bootstrap
 weights have been averaged, gives the number of iterations averaged over.}
 
-\item{scale}{Scaling constant for variance, see
+\item{scale, rscales}{Scaling constant for variance, see
 \code{\link[survey]{svrepdesign}} for more information.}
-
-\item{rscales}{Scaling constant for variance, see
-\code{\link[survey]{svrepdesign}} for more information.}
-
-\item{fpctype}{Finite population correction information}
 
 \item{mse}{if \code{TRUE}, compute variances based on sum of squares
 around the point estimate, rather than the mean of the replicates}

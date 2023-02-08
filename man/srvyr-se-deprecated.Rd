@@ -114,6 +114,8 @@ weights have been averaged, gives the number of iterations averaged over.}
 \item{scale, rscales}{Scaling constant for variance, see
 \code{\link[survey]{svrepdesign}} for more information.}
 
+\item{fpctype}{Finite population correction information}
+
 \item{mse}{if \code{TRUE}, compute variances based on sum of squares
 around the point estimate, rather than the mean of the replicates}
 

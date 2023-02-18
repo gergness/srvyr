@@ -78,13 +78,14 @@ as_survey_rep.data.frame <-
     repweights <- srvyr_select_vars(rlang::enquo(repweights), .data)
     weights <- srvyr_select_vars(rlang::enquo(weights), .data)
     fpc <- srvyr_select_vars(rlang::enquo(fpc), .data)
+    type <- if (missing(type)) type[1] else type
 
     out <- survey::svrepdesign(
       variables = variables,
       repweights = repweights,
       weights = weights,
       data = .data,
-      type = match.arg(type),
+      type = type,
       combined.weights = combined_weights,
       rho = rho,
       bootstrap.average = bootstrap_average,
@@ -126,13 +127,14 @@ as_survey_rep.tbl_lazy <-
     repweights <- srvyr_select_vars(repweights, .data)
     weights <- srvyr_select_vars(weights, .data)
     fpc <- srvyr_select_vars(fpc, .data)
+    type <- if (missing(type)) type[1] else type
 
     out <- survey::svrepdesign(
       variables = variables,
       repweights = repweights,
       weights = weights,
       data = survey_vars_local,
-      type = match.arg(type),
+      type = type,
       combined.weights = combined_weights,
       rho = rho,
       bootstrap.average = bootstrap_average,
@@ -206,6 +208,7 @@ as_survey_rep_ <-
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
            mse = getOption("survey.replicates.mse")) {
 
+    type <- if (missing(type)) type[1] else type
     as_survey_rep(
       .data,
       variables = !!n_compat_lazy(variables),

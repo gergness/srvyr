@@ -12,3 +12,4 @@
 ^CODE_OF_CONDUCT\.md$
 ^revdep$
 ^\.github$
+^codecov\.yml$

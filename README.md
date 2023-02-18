@@ -8,7 +8,8 @@
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/srvyr)](https://CRAN.R-project.org/package=srvyr)
 [![R build
 status](https://github.com/gergness/srvyr/workflows/R-CMD-check/badge.svg)](https://github.com/gergness/srvyr/actions)
-[![codecov](https://app.codecov.io/gh/gergness/srvyr/branch/main/graph/badge.svg?token=q4DvfEj5Jj)](https://app.codecov.io/gh/gergness/srvyr)
+[![Codecov test
+coverage](https://codecov.io/gh/gergness/srvyr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/gergness/srvyr?branch=main)
 [![Documentation via
 pkgdown](tools/pkgdownshield.svg)](http://gdfe.co/srvyr/)
 <!-- badges: end -->

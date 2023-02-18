@@ -38,7 +38,8 @@ Suggests:
     pander,
     RSQLite,
     survival,
-    testthat
+    testthat,
+    covr
 Encoding: UTF-8
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3

@@ -69,6 +69,7 @@ as_survey_rep <- function(.data, ...) {
 as_survey_rep.data.frame <-
   function(.data, variables = NULL, repweights = NULL, weights = NULL,
            type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
+                    "successive-difference", "ACS",
                     "other"), combined_weights = TRUE,
            rho = NULL, bootstrap_average = NULL, scale = NULL,
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
@@ -106,6 +107,7 @@ as_survey_rep.data.frame <-
 as_survey_rep.tbl_lazy <-
   function(.data, variables = NULL, repweights = NULL, weights = NULL,
            type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
+                    "successive-difference", "ACS",
                     "other"), combined_weights = TRUE,
            rho = NULL, bootstrap_average = NULL, scale = NULL,
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
@@ -194,9 +196,11 @@ as_survey_rep.tbl_svy <-
 #' @export
 #' @rdname srvyr-se-deprecated
 #' @inheritParams as_survey_rep
+#' @param fpctype Finite population correction information
 as_survey_rep_ <-
   function(.data, variables = NULL, repweights = NULL, weights = NULL,
            type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
+                    "successive-difference", "ACS",
                     "other"), combined_weights = TRUE,
            rho = NULL, bootstrap_average = NULL, scale = NULL,
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),

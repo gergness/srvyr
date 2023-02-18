@@ -176,3 +176,55 @@ test_that("works with formula", {
                      mse = scd2brr$mse, weights = ~weights)
   )
 })
+
+# ------------------------------------------------------------------
+# Test "successive-difference"/"ACS" method with user-supplied weights
+# ------------------------------------------------------------------
+sdr_sample <- data.frame(
+  cds = c("54722726094569", "34674476034656", "15637506113484",
+          "49709956110324"),
+  api00 = c(529L, 639L, 733L, 854L),
+  weights = c(1548.5, 1548.5, 1548.5, 1548.5)
+)
+sdr_factors <- matrix(c(
+  0.292893218813452, 1.70710678118655, 1, 0.292893218813452,
+  1, 1.70710678118655, 1.70710678118655, 1,
+  1, 1, 1, 1,
+  1.70710678118655, 1, 1.70710678118655, 1.70710678118655
+), ncol = 4, nrow = 4, byrow = FALSE)
+
+colnames(sdr_factors) <- paste0("REP_", 1:4)
+
+sdr_design <- svrepdesign(
+  data = sdr_sample,
+  type = "successive-difference",
+  weights = ~ weights,
+  repweights = sdr_factors,
+  combined = FALSE,
+  compress = FALSE
+)
+
+sdr_srvyr <- cbind(sdr_sample, as.data.frame(sdr_factors)) %>%
+  as_survey_rep(repweights = starts_with("REP_"),
+                weights = "weights",
+                type = "successive-difference",
+                combined = FALSE)
+acs_srvyr <- cbind(sdr_sample, as.data.frame(sdr_factors)) %>%
+  as_survey_rep(repweights = starts_with("REP_"),
+                weights = "weights",
+                type = "ACS",
+                combined = FALSE)
+
+out_survey <- svymean(~api00, sdr_design)
+out_srvyr_sdr <- sdr_srvyr %>%
+  summarize(alive = survey_mean(api00))
+out_srvyr_acs <- acs_srvyr %>%
+  summarize(alive = survey_mean(api00))
+
+
+test_that("as_survey_rep works when using SDR/ACS method of replicate weights", {
+  expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
+               c(out_srvyr_sdr[[1]][[1]], out_srvyr_sdr[[2]][[1]]))
+  expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
+               c(out_srvyr_acs[[1]][[1]], out_srvyr_acs[[2]][[1]]))
+})

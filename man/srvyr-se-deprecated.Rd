@@ -110,10 +110,7 @@ include the sampling weights. This is usually the case.}
 \item{bootstrap_average}{For \code{type = "bootstrap"}, if the bootstrap
 weights have been averaged, gives the number of iterations averaged over.}
 
-\item{scale}{Scaling constant for variance, see
-\code{\link[survey]{svrepdesign}} for more information.}
-
-\item{rscales}{Scaling constant for variance, see
+\item{scale, rscales}{Scaling constant for variance, see
 \code{\link[survey]{svrepdesign}} for more information.}
 
 \item{fpctype}{Finite population correction information}

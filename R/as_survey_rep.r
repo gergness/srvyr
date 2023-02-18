@@ -27,7 +27,9 @@
 #' weights have been averaged, gives the number of iterations averaged over.
 #' @param scale,rscales Scaling constant for variance, see
 #' \code{\link[survey]{svrepdesign}} for more information.
-#' @param fpc,fpctype Finite population correction information
+#' @param fpc 	Variables specifying a finite population correction, see
+#' \code{\link[survey]{svrepdesign}} for more details.
+#' @param fpctype Finite population correction information
 #' @param mse if \code{TRUE}, compute variances based on sum of squares
 #' around the point estimate, rather than the mean of the replicates
 #' @param ... ignored

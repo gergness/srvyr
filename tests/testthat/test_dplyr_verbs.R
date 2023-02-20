@@ -102,7 +102,22 @@ test_that("summarize `.groups` argument matches dplyr behavior (3 groups case)",
   })
 })
 
+test_that("ungrouped reframe works", {
+  direct <- dstrata %>%
+    reframe(
+      x = unweighted(quantile(api99, c(0.05, 0.5, 0.95))),
+    )
+
+  manual <- lapply(c(0.05, 0.5, 0.95), function(lvl) {
+    dstrata %>%
+      summarize(x = unweighted(quantile(api99, lvl)))
+  }) %>% bind_rows()
+
+  expect_equal(direct, manual)
+})
+
 test_that("ungrouped summarize accepts mix of 1 row & multi row results", {
+  skip("Needs to change to reframe")
   direct <- dstrata %>%
     summarize(
       w = survey_mean(api99),
@@ -142,6 +157,8 @@ test_that("ungrouped summarize accepts mix of 1 row & multi row results", {
 })
 
 test_that("grouped summarize accepts mix of 1 row & multi row results", {
+  skip("Needs to change to reframe")
+
   direct <- dstrata %>%
     group_by(both) %>%
     summarize(

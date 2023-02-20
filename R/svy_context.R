@@ -46,11 +46,19 @@ peeled_cur_group_id <- function(svy, cur_group) {
   }
   cur_group <- cur_group()
 
-  cur_peel_group <- dplyr::inner_join(
-    peel_groups,
-    cur_group[, -ncol(cur_group)],
-    by = names(cur_group[, -ncol(cur_group)])
-  )
+  join_by_vars <- names(cur_group[, -ncol(cur_group)])
+  if (length(join_by_vars) > 0) {
+    cur_peel_group <- dplyr::inner_join(
+      peel_groups,
+      cur_group[, -ncol(cur_group)],
+      by = join_by_vars
+    )
+  } else {
+    cur_peel_group <- dplyr::cross_join(
+      peel_groups,
+      cur_group[, -ncol(cur_group)]
+    )
+  }
   cur_peel_all <- cur_peel_group$grp_rows[[1]]
   # x == y doesn't work for NAs, so use this awkward vapply
   cur_group_pos <- equal_or_both_na(

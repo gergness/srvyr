@@ -11,7 +11,7 @@ survey_mean(
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
   proportion = FALSE,
-  prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  prop_method = c("logit", "likelihood", "asin", "beta", "mean", "xlogit"),
   deff = FALSE,
   df = NULL,
   ...
@@ -20,8 +20,8 @@ survey_mean(
 survey_prop(
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
-  proportion = FALSE,
-  prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  proportion = TRUE,
+  prop_method = c("logit", "likelihood", "asin", "beta", "mean", "xlogit"),
   deff = FALSE,
   df = NULL,
   ...
@@ -56,14 +56,16 @@ but Inf is the usual survey package's default (except in
 \item{...}{Ignored}
 }
 \description{
-Calculate means and proportions from complex survey data. A wrapper
-around \code{\link[survey]{svymean}}, or if \code{proportion = TRUE},
-\code{\link[survey]{svyciprop}}. \code{survey_mean} should always be
-called from \code{\link{summarise}}.
+Calculate means and proportions from complex survey data.
+\code{survey_mean} with \code{proportion = FALSE} (the default) or \code{survey_prop} with \code{proportion = FALSE}
+is a wrapper around \code{\link[survey]{svymean}}.
+\code{survey_prop} with \code{proportion = TRUE} (the default) or \code{survey_mean} with \code{proportion = TRUE}
+is a wrapper around \code{\link[survey]{svyciprop}}.
+\code{survey_mean} and \code{survey_prop} should always be called from \code{\link{summarise}}.
 }
 \details{
 Using \code{survey_prop} is equivalent to leaving out the \code{x} argument in
-\code{survey_mean} and this calculates the proportion represented within the
+\code{survey_mean} and setting \code{proportion = TRUE} and this calculates the proportion represented within the
 data, with the last grouping variable "unpeeled". \code{\link{interact}}
 allows for "unpeeling" multiple variables at once.
 }

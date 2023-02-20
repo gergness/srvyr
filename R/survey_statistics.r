@@ -1,12 +1,14 @@
 #' Calculate mean/proportion and its variation using survey methods
 #'
-#' Calculate means and proportions from complex survey data. A wrapper
-#' around \code{\link[survey]{svymean}}, or if \code{proportion = TRUE},
-#' \code{\link[survey]{svyciprop}}. \code{survey_mean} should always be
-#' called from \code{\link{summarise}}.
+#' Calculate means and proportions from complex survey data.
+#' \code{survey_mean} with \code{proportion = FALSE} (the default) or \code{survey_prop} with \code{proportion = FALSE}
+#' is a wrapper around \code{\link[survey]{svymean}}.
+#' \code{survey_prop} with \code{proportion = TRUE} (the default) or \code{survey_mean} with \code{proportion = TRUE}
+#' is a wrapper around \code{\link[survey]{svyciprop}}.
+#' \code{survey_mean} and \code{survey_prop} should always be called from \code{\link{summarise}}.
 #'
 #' Using \code{survey_prop} is equivalent to leaving out the \code{x} argument in
-#' \code{survey_mean} and this calculates the proportion represented within the
+#' \code{survey_mean} and setting \code{proportion = TRUE} and this calculates the proportion represented within the
 #' data, with the last grouping variable "unpeeled". \code{\link{interact}}
 #' allows for "unpeeling" multiple variables at once.
 #'
@@ -93,7 +95,7 @@ survey_mean <- function(
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
   proportion = FALSE,
-  prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  prop_method = c("logit", "likelihood", "asin", "beta", "mean", "xlogit"),
   deff = FALSE,
   df = NULL,
   ...
@@ -105,9 +107,15 @@ survey_mean <- function(
   }
   prop_method <- match.arg(prop_method)
   if (is.null(df)) df <- survey::degf(cur_svy_full())
-  if (missing(x)) return(survey_prop(vartype = vartype, level = level,
-                                     proportion = proportion, prop_method = prop_method,
-                                     deff = deff, df = df, .svy = cur_svy()))
+  if (missing(x)){
+    if (missing(proportion) & ("ci" %in% vartype)){
+      inform("When `proportion` is unspecified, `survey_mean()` now defaults to `proportion = TRUE` when `x` is left out. This should improve confidence interval coverage.",
+             .frequency = "once", .frequency_id="sm_pd")
+    }
+    return(survey_prop(vartype = vartype, level = level,
+                       proportion = proportion, prop_method = prop_method,
+                       deff = deff, df = df, .svy = cur_svy()))
+  }
   stop_for_factor(x)
   if (!proportion) {
     if (is.logical(x)) x <- as.integer(x)
@@ -132,14 +140,19 @@ survey_mean <- function(
 survey_prop <- function(
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
-  proportion = FALSE,
-  prop_method = c("logit", "likelihood", "asin", "beta", "mean"),
+  proportion = TRUE,
+  prop_method = c("logit", "likelihood", "asin", "beta", "mean", "xlogit"),
   deff = FALSE,
   df = NULL,
   ...
 ) {
   .svy <- cur_svy()
   .full_svy <- cur_svy_full()
+
+  if (missing(proportion) & ("ci" %in% vartype)){
+    inform("When `proportion` is unspecified, `survey_prop()` now defaults to `proportion = TRUE`. This should improve confidence interval coverage.",
+           .frequency = "once", .frequency_id="spd")
+  }
 
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)

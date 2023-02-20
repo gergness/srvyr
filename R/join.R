@@ -23,7 +23,7 @@ semi_join.tbl_svy <- function(
 
   x <- filter(x, .data[["___row_number"]] %in% filtered_vars[['___row_number']])
   if ("___row_number" %in% tbl_vars(x)) {
-    x <- select(x, -.data[["___row_number"]])
+    x <- select(x, -all_of("___row_number"))
   }
 
   x
@@ -55,7 +55,7 @@ anti_join.tbl_svy <- function(
 
   x <- filter(x, .data[["___row_number"]] %in% filtered_vars[["___row_number"]])
   if ("___row_number" %in% tbl_vars(x)) {
-    x <- select(x, -.data[["___row_number"]])
+    x <- select(x, -all_of("___row_number"))
   }
 
   x

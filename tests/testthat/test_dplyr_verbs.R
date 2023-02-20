@@ -224,7 +224,7 @@ test_that("summarize unpacks after on-the-fly expression", {
     summarize(x = 100 * survey_mean(api99 > 700))
   expected <- dstrata %>%
     summarize(x = survey_mean(api99 > 700)) %>%
-    mutate(across(.fns = ~. * 100))
+    mutate(across(everything(), .fns = ~. * 100))
 
   expect_equal(actual, expected)
 })

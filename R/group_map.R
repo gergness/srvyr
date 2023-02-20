@@ -77,7 +77,7 @@ group_map.tbl_svy <- function(.data, .f, ..., .keep = FALSE) {
 group_map_dfr <- function(.data, .f, ..., .keep = FALSE) {
   out <- group_keys(.data)
   out[["__srvyr__data__"]] <- group_map(.data, .f, ..., .keep = .keep)
-  tidyr::unnest(out, .data[["__srvyr__data__"]])
+  tidyr::unnest(out, all_of("__srvyr__data__"))
 }
 
 #' @export

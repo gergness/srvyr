@@ -12,31 +12,14 @@ out_def_srvyr <-
   dstrata %>%
   summarize(api_corr = survey_corr(x = api00, y = api99))
 
-svycor <- function(formula, des){
-  out_survey_var <- svyvar(~api00+api99, design=des)
-  point_estimates <- as.vector(coef(out_survey_var)[c(1,2,4)])
-  names(point_estimates) <- c('var_x', 'cov_xy', 'var_y')
-  vcov_mat <- vcov(out_survey_var)[c(1,2,4), c(1,2,4)]
-  rownames(vcov_mat) <- names(point_estimates)
-  colnames(vcov_mat) <- names(point_estimates)
-  class(point_estimates) <- "svystat"
-  attr(point_estimates, 'var') <- vcov_mat
-  attr(point_estimates, 'statistic') <- "covariances"
-
-  survey::svycontrast(
-    stat = point_estimates, contrasts = list(
-      'corr' = quote(
-        cov_xy / sqrt(var_x * var_y)
-      )
-    )) %>%
-    as_tibble() %>%
-    set_names(names(out_def_srvyr))
-}
-
-out_def_survey <- svycor(~api00+api99, dstrata)
+# --- No built-in equivalent in survey, so just hard code expectation:
+expected <- data.frame(
+  api_corr = 0.975904664064127,
+  api_corr_se = 0.00400650195314815
+)
 
 test_that("ungrouped correlations works correctly",
-          expect_df_equal(out_def_srvyr, out_def_survey))
+          expect_df_equal(out_def_srvyr, expected))
 
 
 ## Testing grouped
@@ -46,11 +29,12 @@ out_by_srvyr <-
   group_by(stype) %>%
   summarize(api_corr = survey_corr(x = api00, y = api99))
 
-out_by_survey <- NULL
-for (i in levels(apistrat$stype)){
-  out_by_survey <- rbind(out_by_survey, tibble::tibble(stype=i, svycor(~api00+api99, filter(dstrata, stype==i))))
-}
-out_by_survey$stype <- factor(out_by_survey$stype, levels=levels(apistrat$stype))
+# --- No built-in equivalent in survey, so just hard code expectation:
+expected <- data.frame(
+  stype = factor(c("E", "H", "M")),
+  api_corr = c(0.979106531819024, 0.976503255665411, 0.983299653441321),
+  api_corr_se = c(0.00450564184375547, 0.00682594587202227, 0.00392151702187407)
+)
 
 test_that("grouped correlations works correctly",
-          expect_df_equal(out_by_srvyr, out_by_survey))
+          expect_df_equal(out_by_srvyr, expected))

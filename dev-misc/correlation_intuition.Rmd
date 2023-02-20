@@ -1,0 +1,189 @@
+---
+title: "Correlation Intuition"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+library(MASS)
+library(dplyr)
+library(ggplot2)
+library(srvyr)
+library(purrr)
+
+set.seed(2023-2-18)
+```
+
+
+Goal is to simulate a survey design of a population with a known
+correlation structure.
+
+Was able to come up with weighting that adds bias to the estimate of
+correlation and clustering that throws off our estiamtes of uncertainty.
+Strategy for weighting is to create a positive correlation between x & y 
+for the full population, then up-weight the top left and bottom right
+quadrants. Then sample 1/5 the number of points we want, and grab 4 of
+the closest 20 points to first round of selection to create our clusters.
+Originally wanted to have strata too, but having trouble getting strata
+to be intuitive in this simple example.
+
+```{r params}
+pop_o_mag <- 5
+sim_cov <- matrix(c(1, 0.5, 0.5, 1), ncol = 2)
+weighting_func <- function(x, y) {
+    case_when(
+        (x >= 0.5 & y <= -0.5) | (x <= -0.5 & y >= 0.5) ~ 40,
+        TRUE ~ 200
+    )
+}
+cluster_size <- 5
+cluster_out_of <- 20
+```
+
+```{r full_pop}
+samp_size <- 10 ^ pop_o_mag
+num_fmt <- paste0("%0", pop_o_mag, "d")
+
+full_pop <- mvrnorm(samp_size, c(0, 0), sim_cov)
+colnames(full_pop) <- c("x", "y")
+
+
+full_pop <- full_pop |>
+    as_tibble() |> 
+    mutate(
+        id = sprintf(num_fmt, row_number()),
+        wt = weighting_func(x, y),
+        # --- Never came up with an intuitive example of strata but
+        # --- include it here in case it's useful
+        strata = "a"
+    )
+```
+
+```{r helpers}
+# --- Helpers
+make_sample_data <- function(full_pop) {
+    first_round_cov_biased_sample <- full_pop |>
+        group_by(wt) |>
+        group_map(function(x, grp) slice_sample(x, prop = 1 / (grp$wt * cluster_size)) |> mutate(wt = grp$wt)) |>
+        bind_rows() %>%
+        mutate(cluster_id = sprintf(num_fmt, row_number()))
+    
+    used_ids_env <- rlang::env(used_ids = first_round_cov_biased_sample$id)
+    
+    cov_biased_sample <- first_round_cov_biased_sample |>
+        group_by(strata) |>
+        reframe(nearest_unused_neighbors(cur_group()$strata, pick(everything()), ui_env = used_ids_env))
+}
+
+nearest_unused_neighbors <- function(strata, selected_data, ui_env) {
+    unused_full_pop <- full_pop |> 
+        filter(strata == !!strata & !(id %in% ui_env$used_ids))
+    
+    quick_join <- right_join(
+        unused_full_pop,
+        selected_data |> mutate(x_high = x + 0.05, x_low = x - 0.05, y_high = y + 0.05, y_low = y - 0.05),
+        by = join_by(between(x, x_low, x_high), between(y, y_low, y_high)),
+        suffix = c("", "_orig")
+    ) |>
+        group_by(cluster_id) |>
+        reframe(inner_nearest_unused_neigbors(cur_group()$cluster_id, pick(everything()), ui_env))
+    
+    quick_failure_ids <- quick_join |>
+        filter(is.na(id)) |>
+        pull(cluster_id)
+    
+    if (length(quick_failure_ids) == 0) {
+        out <- bind_rows(
+            selected_data |> mutate(strata = strata),
+            quick_join
+        ) |> arrange(cluster_id)
+        return(out)
+    }
+    
+    unused_full_pop <- unused_full_pop |> filter(!id %in% ui_env$used_ids)
+    quick_failures <- selected_data |>
+        filter(cluster_id %in% quick_failure_ids) |>
+        cross_join(unused_full_pop, suffix = c("_orig", "")) |>
+        group_by(cluster_id) |>
+        reframe(inner_nearest_unused_neigbors(cur_group()$cluster_id, pick(everything()), ui_env))
+        
+    
+    bind_rows(
+        selected_data |> mutate(strata = strata),
+        quick_join |> filter(!is.na(id)),
+        quick_failures
+    )
+}
+
+inner_nearest_unused_neigbors <- function(cluster_id, potential_cluster_data, ui_env) {
+    out <- potential_cluster_data |>
+        filter(!id %in% ui_env$used_ids) 
+    
+    if (nrow(out) < (cluster_size - 1)) {
+        return(tibble(id = NA_character_))
+    }
+    out <- out |>
+        mutate(dist = sqrt((x - x_orig)^2 + (y - y_orig)^2)) %>%
+        filter(row_number(dist) <= cluster_out_of) |>
+        slice_sample(n = cluster_size - 1)
+    
+    ui_env$used_ids <- c(ui_env$used_ids, out$id)
+    out |>
+        select(id, x, y, strata, wt)
+}
+
+```
+
+``` {r actual_work}
+samples <- map(1:100, ~make_sample_data(full_pop), .progress = TRUE)
+
+
+
+
+# --- Summarize results
+list(full = full_pop, sample = samples[[1]]) |>
+    bind_rows(.id = "type") |> 
+    ggplot(aes(x = x, y = y, color = strata)) +
+    geom_point(alpha = 0.1, shape = 1) +
+    facet_wrap(~type) +
+    guides(color = guide_legend(override.aes = list(alpha = 0.8)))
+
+
+# --- Simulation covariance:
+sim_cov
+
+# --- Calculated corr?
+sim_cov[1, 2] / (sqrt(sim_cov[1, 1]) * sqrt(sim_cov[2, 2]))
+
+# --- Full simulated pop correlation:
+cor(full_pop |> select(x, y))[1, 2]
+
+
+# --- unweighted covariace:
+cor(samples[[1]] |> select(x, y))[1, 2]
+
+
+# --- Weighted correlation without strat or cluster
+without_cluster <- map_dfr(samples, ~.|>
+            as_survey(weight = wt) |>
+            summarize(x = survey_corr(x, y, vartype = "ci"))
+) |> mutate(actual = cor(full_pop |> select(x, y))[1, 2]) |>
+    mutate(in_interval = actual >= x_low & actual <= x_upp) 
+
+head(without_cluster)
+without_cluster |>
+    summarize(in_interval = mean(in_interval))
+
+
+
+# --- Weighted correlation with cluster
+with_cluster <- map_dfr(samples, ~.|>
+            as_survey(cluster_id, weight = wt) |>
+            summarize(x = survey_corr(x, y, vartype = "ci"))
+) |> mutate(actual = cor(full_pop |> select(x, y))[1, 2]) |>
+    mutate(in_interval = actual >= x_low & actual <= x_upp) 
+
+head(with_cluster)
+
+with_cluster |>
+    summarize(in_interval = mean(in_interval))
+```

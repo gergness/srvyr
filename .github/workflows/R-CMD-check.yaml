@@ -43,6 +43,8 @@ jobs:
         with:
           dependencies: ${{ matrix.config.deps }}
           extra-packages: any::rcmdcheck
-          needs: check
+          needs: |
+            check
+            knitr
 
       - uses: r-lib/actions/check-r-package@v2

@@ -18,11 +18,11 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
+          - {os: macOS-latest,    r: 'release',  deps: '"all"'}
+          - {os: windows-latest,  r: 'release',  deps: '"all"'}
+          - {os: ubuntu-latest,   r: 'devel',    deps: '"all"', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release',  deps: '"all"'}
+          - {os: ubuntu-latest,   r: 'oldrel-1', deps: '"hard"'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -41,6 +41,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
+          dependencies: ${{ matrix.config.deps }}
           extra-packages: any::rcmdcheck
           needs: check
 

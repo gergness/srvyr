@@ -108,8 +108,16 @@ NULL
 #' @rdname collect
 NULL
 
+
+# --- Adapted from dbplyr:::unique_table_name
+unique_table_name <- function() {
+  i <- getOption("srvyr_table_name", 0) + 1
+  options(srvyr_table_name = i)
+  sprintf("srvyr_%03i", i)
+}
+
 #' @export
-compute.tbl_lazy_svy <- function(x, name = dplyr::random_table_name(), ...) {
+compute.tbl_lazy_svy <- function(x, name = unique_table_name(), ...) {
   x$variables <- compute(x$variables, name = name, ...)
   x
 }

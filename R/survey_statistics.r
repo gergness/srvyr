@@ -756,11 +756,12 @@ unweighted <- function(...) {
 
   dots <- rlang::enquos(...)
 
+  # --- Use reframe because it works when caller is summarise & reframe
   if (is.calibrated(.svy) | is.pps(.svy)) {
     excluded_rows <- is.infinite(.svy[['prob']])
-    out <- summarize(.svy[["variables"]][!excluded_rows,], !!!dots)
+    out <- reframe(.svy[["variables"]][!excluded_rows,], !!!dots)
   } else {
-    out <- summarize(.svy[["variables"]], !!!dots)
+    out <- reframe(.svy[["variables"]], !!!dots)
   }
 
   # don't use default dplyr names for dots (but if explicitly named then do)

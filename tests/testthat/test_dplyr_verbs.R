@@ -102,9 +102,9 @@ test_that("summarize `.groups` argument matches dplyr behavior (3 groups case)",
   })
 })
 
-test_that("ungrouped summarize accepts mix of 1 row & multi row results", {
+test_that("ungrouped reframe accepts mix of 1 row & multi row results", {
   direct <- dstrata %>%
-    summarize(
+    reframe(
       w = survey_mean(api99),
       x = unweighted(quantile(api99, c(0.05, 0.5, 0.95))),
       y = survey_mean(api00),
@@ -141,10 +141,10 @@ test_that("ungrouped summarize accepts mix of 1 row & multi row results", {
   expect_equal(direct, round_about)
 })
 
-test_that("grouped summarize accepts mix of 1 row & multi row results", {
+test_that("grouped reframe accepts mix of 1 row & multi row results", {
   direct <- dstrata %>%
     group_by(both) %>%
-    summarize(
+    reframe(
       w = survey_mean(api99),
       x = unweighted(quantile(api99, c(0.05, 0.5, 0.95))),
       y = survey_mean(api00),
@@ -183,8 +183,7 @@ test_that("grouped summarize accepts mix of 1 row & multi row results", {
       wide %>% ungroup() %>% select(z = z2) %>% slice(2),
       wide %>% ungroup() %>% select(z = z3) %>% slice(2)
     )
-  ) %>%
-    group_by(both)
+  )
 
   expect_equal(direct, round_about)
 })

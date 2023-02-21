@@ -134,7 +134,7 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #' You can use expressions both in the \code{...} of \code{summarize} and also
 #' in the arguments to the summarizing functions. Though this is valid syntactically
 #' it can also allow you to calculate incorrect results (for example if you multiply
-#' the mean by 100, the standard error is also multipled by 100, but the variance
+#' the mean by 100, the standard error is also multiplied by 100, but the variance
 #' is not).
 #'
 #' @examples

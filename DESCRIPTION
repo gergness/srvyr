@@ -27,6 +27,7 @@ Imports:
     vctrs (>= 0.3.0)
 License: GPL-2 | GPL-3
 Suggests:
+    spelling,
     convey,
     DBI,
     dbplyr,
@@ -43,3 +44,4 @@ Suggests:
 Encoding: UTF-8
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3
+Language: en-US

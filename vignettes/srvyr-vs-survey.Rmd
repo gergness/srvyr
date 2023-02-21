@@ -278,7 +278,7 @@ strat_design %>%
   summarize(percentage = 100 * survey_mean())
 ```
 
-3) and you can even create varables inside of `group_by`
+3) and you can even create variables inside of `group_by`
 ```{r, message = FALSE}
 strat_design %>%
   group_by(api99_above_700 = api99 > 700) %>%
@@ -396,7 +396,7 @@ Here are some free resources put together by the community about srvyr:
 
 **Still need help?**
 
-I think the best way to get help is to form a specific question and ask it in some place like [rstudio's community webiste](https://community.rstudio.com) (known for it's friendly community) or [stackoverflow.com](https://stackoverflow.com) (maybe not known for being quite as friendly, but probably has more people). If you think you've found a bug in srvyr's code, please file an [issue on GitHub](https://github.com/gergness/srvyr/issues/new), but note that I'm not a great resource for helping specific issue, both because I have limited capacity but also because I do not consider myself an expert in the statistical methods behind survey analysis.
+I think the best way to get help is to form a specific question and ask it in some place like [rstudio's community website](https://community.rstudio.com) (known for it's friendly community) or [stackoverflow.com](https://stackoverflow.com) (maybe not known for being quite as friendly, but probably has more people). If you think you've found a bug in srvyr's code, please file an [issue on GitHub](https://github.com/gergness/srvyr/issues/new), but note that I'm not a great resource for helping specific issue, both because I have limited capacity but also because I do not consider myself an expert in the statistical methods behind survey analysis.
 
 **Have something to add?**
 

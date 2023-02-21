@@ -30,7 +30,7 @@ for user-supplied replicate weights. (#153, thanks @bschneidr)
   * main user facing improvements are:
     * `dplyr::across()` now works within it
     * dplyr functions like `dplyr::cur_group()`, `dplyr::cur_group_id()`, `dplyr::cur_data()`
-    work in it (as well as new anlagous functions srvyr-specific `cur_svy()` and 
+    work in it (as well as new analogous functions srvyr-specific `cur_svy()` and 
     `cur_svy_full()`)
   * The only known breaking change is:
     * objects in the `summarize` will refer to the output of `summarize` before the input.

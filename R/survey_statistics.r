@@ -13,7 +13,8 @@
 #' allows for "unpeeling" multiple variables at once.
 #'
 #' @param x A variable or expression, or empty
-#' @param na.rm A logical value to indicate whether missing values should be dropped
+#' @param na.rm A logical value to indicate whether missing values should be dropped.
+#' See the section "Missing Values" later in this help page.
 #' @param vartype Report variability as one or more of: standard error ("se", default),
 #'                confidence interval ("ci"), variance ("var") or coefficient of variation
 #'                ("cv").
@@ -30,6 +31,16 @@
 #'           but Inf is the usual survey package's default (except in
 #'           \code{\link[survey]{svyciprop}}.
 #' @param ... Ignored
+#' @section Missing Values:
+#' When calculating proportions for a grouping variable \code{x}, \code{NA} values
+#' will affect the estimated proportions unless they are first removed by calling
+#' \code{filter(!is.na(x))}.
+#'
+#' When calculating means for a numeric variable, equivalent results are obtained
+#' by calling \code{filter(!is.na(x))} or using \code{survey_mean(x, na.rm = TRUE)}.
+#' However, it is better to use \code{survey_mean(x, na.rm = TRUE)} if
+#' you are simultaneously producing summaries for other variables
+#' that might not have missing values for the same rows as \code{x}.
 #' @examples
 #' data(api, package = "survey")
 #'

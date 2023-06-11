@@ -729,6 +729,8 @@ test_that("unweighted allows named arguments",  {
 
 test_that(
   "unweighted works with filtered data in calibrated or PPS designs", {
+
+    # First check for calibrated designs
     data(api, package = "survey")
     dclus1 <- as_survey_design(apiclus1, id = dnum, weights = pw, fpc = fpc)
 
@@ -739,6 +741,7 @@ test_that(
                          sample.margins = list(~stype,~sch.wide),
                          population.margins = list(pop.types, pop.schwide))
 
+    # Check when filtering returns at least one row
     out_calib <- raked_design %>%
       filter(sch.wide == "Yes") %>%
       group_by(stype) %>%
@@ -752,11 +755,28 @@ test_that(
     expect_equal(out_calib[['sample_size']],
                  out_noncalib[['sample_size']])
 
+    # Check when filtering returns zero rows
+
+    out_calib <- raked_design %>%
+      filter(sch.wide == "Fake Category") %>%
+      summarize(sample_size = unweighted(n()))
+
+    out_noncalib <- dclus1 %>%
+      filter(sch.wide == "Fake Category") %>%
+      summarize(sample_size = unweighted(n()))
+
+    expect_equal(out_calib[['sample_size']],
+                 expected = 0)
+    expect_equal(out_noncalib[['sample_size']],
+                 expected = 0)
+
+    # Next check for PPS design
     data(election, package = "survey")
 
     non_pps_design <- as_survey_design(election_pps, id = 1)
     pps_design <- as_survey_design(election_pps, id = 1, fpc = p, pps = "brewer")
 
+    # Check correct results when filtering returns at least one row
     out_nonpps <- non_pps_design %>%
       filter(County == "Los Angeles") %>%
       summarize(n_rows = unweighted(n()))
@@ -767,6 +787,20 @@ test_that(
 
     expect_equal(out_pps[['n_rows']],
                  out_nonpps[['n_rows']])
+
+    # Check correct results when filtering returns zero rows
+    out_nonpps <- non_pps_design %>%
+      filter(County == "Fake Category") %>%
+      summarize(n_rows = unweighted(n()))
+
+    out_pps <- pps_design %>%
+      filter(County == "Fake Category") %>%
+      summarize(n_rows = unweighted(n()))
+
+    expect_equal(out_pps[['n_rows']],
+                 expected = 0)
+    expect_equal(out_nonpps[['n_rows']],
+                 expected = 0)
   }
 )
 

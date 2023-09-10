@@ -31,14 +31,17 @@ print.survey_vars <- function(x, all = FALSE, ...) {
   cat("Sampling variables:\n")
   lapply(seq_along(x), function(y) {
     if (!is.null(x[[y]])) {
-      if (length(x[[y]]) > 7 & !all) {
-        num_vars <- length(x[[y]])
-        print_vars <- x[[y]][1:5]
-        cat(paste0(" - ", names(x[y]), ": ", paste(print_vars, collapse = ", "),
-                   ", ... (", num_vars - 5, " more)\n"))
-      } else {
-        cat(paste0(" - ", names(x[y]), ": ", paste(x[[y]], collapse = ", "),
-                   "\n"))
+      if (!is.null(x[[y]])) {
+        fixcarriage <- function(x){
+          # remove carriage return in repweights and extra space
+          out <- gsub("\\n    ", "", x)
+          if (is.symbol(x)){
+            as.symbol(out)
+          } else{
+            out
+          }
+        }
+        cat(wrap(paste0(" - ", names(x[y]), ": ", paste(lapply(x[[y]], fixcarriage), collapse=", ")), indent=2), "\n")
       }
     }
   })

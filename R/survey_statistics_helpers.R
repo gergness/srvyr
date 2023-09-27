@@ -122,7 +122,7 @@ get_var_est <- function(
     }
   })
 
-  coef <- as.data.frame(coef(stat))
+  coef <- as.data.frame(unclass(coef(stat)))
   names(coef) <- "coef"
   out <- c(list(coef), out)
 

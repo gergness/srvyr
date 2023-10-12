@@ -43,7 +43,7 @@ set_survey_vars <- function(
     out$phase1$sample$variables[[name]] <- x
   } else {
     if (!add) {
-      out$variables <- out$variables[group_vars(out)]
+      out$variables <- out$variables[, group_vars(out), drop = FALSE]
     }
     out$variables[[name]] <- x
   }

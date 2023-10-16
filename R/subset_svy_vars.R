@@ -12,7 +12,11 @@ subset_svy_vars.survey.design2 <- function(x, ..., .preserve = FALSE) {
   if (is.calibrated(x) || is.pps(x)){
     ## Set weights to zero: no memory saving possible
     ## Will always be numeric because srvyr's construction
-    x$prob[-row_numbers] <- Inf
+    if (length(row_numbers) == 0) {
+      x$prob <- rep(Inf, length(x$prob))
+    } else {
+      x$prob[-row_numbers] <- Inf
+    }
 
     index <- is.finite(x$prob)
     psu <- !duplicated(x$cluster[index, 1])
@@ -68,9 +72,18 @@ subset_svy_vars.twophase2 <- function(x, ..., .preserve = FALSE) {
 
   ## Set weights to zero:  don't try to save memory
   ## Will always have numeric because of srvyr's structure
-  x$prob[-row_numbers] <- Inf
-  x$phase2$prob[-row_numbers] <- Inf
-  x$dcheck <- lapply(x$dcheck, function(m) {m[-row_numbers, -row_numbers] <- 0; m})
+  if (length(row_numbers) == 0) {
+    x$prob <- rep(Inf, length(x$prob))
+    x$phase2$prob <- rep(Inf, length(x$phase2$prob))
+    x$dcheck <- lapply(x$dcheck, function(m) {
+      m[seq_len(nrow(m)), seq_len(ncol(m))] <- 0
+      m
+    })
+  } else {
+    x$prob[-row_numbers] <- Inf
+    x$phase2$prob[-row_numbers] <- Inf
+    x$dcheck <- lapply(x$dcheck, function(m) {m[-row_numbers, -row_numbers] <- 0; m})
+  }
 
   index <- is.finite(x$prob)
   psu <- !duplicated(x$phase2$cluster[index, 1])

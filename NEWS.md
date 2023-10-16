@@ -1,3 +1,5 @@
+# srvyr (development version)
+
 # srvyr 1.2.0
 * `survey_prop()` now uses proportions as the default, which should confidence interval improve coverage, but does mean results may slightly change (#141, #142, thanks @szimmer)
 * New function `survey_corr()` calculates the correlation between 2 variables, (#150, #151, thanks @szimmer & @bschneidr)

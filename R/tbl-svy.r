@@ -48,8 +48,8 @@ print.tbl_svy <- function (x, varnames = TRUE, all_survey_vars = FALSE, ...) {
     print(survey_vars(x), all_survey_vars)
   }
   if(length(groups(x)) != 0) {
-    cat("Grouping variables: ")
-    cat(paste0(deparse_all(groups(x)), collapse = ", "))
+    cat("Grouping variables: \n")
+    cat(wrap(paste0("- ", deparse_all(groups(x)), collapse = ", "), indent=2))
     cat("\n")
   }
 
@@ -63,7 +63,8 @@ print.tbl_svy <- function (x, varnames = TRUE, all_survey_vars = FALSE, ...) {
     }
 
     var_types <- paste0(vars, " (", types, ")", collapse = ", ")
-    cat(wrap("Data variables: ", var_types), "\n", sep = "")
+    cat("Data variables: \n")
+    cat(wrap(" - ", var_types, indent = 2), "\n", sep = "")
     invisible(x)
   }
 }

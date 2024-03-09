@@ -187,6 +187,8 @@ it will save a lot space.
 object.size(acs_m_db_svy)
 ```
 
+For very large survey data sets with replicate weights, it is strongly recommended to specify a value in the `degf` parameter of `as_survey_rep()`: otherwise, the survey package will attempt to automatically determine the design degrees of freedom using a process that can be very slow for large data sets. The value to use for `degf` will often be specified in survey data documentation, but a common rule of thumb is the number of columns of replicate weights.
+
 # Analysis # 
 
 Analysis commands from srvyr are also similar to ones that work on local data.frames. 

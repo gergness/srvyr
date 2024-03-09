@@ -228,3 +228,18 @@ test_that("as_survey_rep works when using SDR/ACS method of replicate weights", 
   expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
                c(out_srvyr_acs[[1]][[1]], out_srvyr_acs[[2]][[1]]))
 })
+
+# ------------------------------------------------------------------
+# Test user-specified degrees of freedom
+# ------------------------------------------------------------------
+
+sdr_srvyr <- cbind(sdr_sample, as.data.frame(sdr_factors)) %>%
+  as_survey_rep(repweights = starts_with("REP_"),
+                weights = "weights",
+                type = "successive-difference",
+                combined = FALSE,
+                degf = 4)
+
+test_that("as_survey_rep accepts user-specified degf", {
+  expect_equal(degf(sdr_srvyr), 4)
+})

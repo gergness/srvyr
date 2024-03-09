@@ -32,6 +32,10 @@
 #' @param fpctype Finite population correction information
 #' @param mse if \code{TRUE}, compute variances based on sum of squares
 #' around the point estimate, rather than the mean of the replicates
+#' @param degf Design degrees of freedom: a single number, or \code{NULL},
+#' in which case a value will be computed automatically, which can be slow
+#' for very large data sets. See \code{\link[survey]{svrepdesign}}
+#' for more details.
 #' @param ... ignored
 #' @param compress if \code{TRUE}, store replicate weights in compressed form
 #' (if converting from design)
@@ -73,7 +77,7 @@ as_survey_rep.data.frame <-
                     "other"), combined_weights = TRUE,
            rho = NULL, bootstrap_average = NULL, scale = NULL,
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
-           mse = getOption("survey.replicates.mse"), ...) {
+           mse = getOption("survey.replicates.mse"), degf = NULL, ...) {
     variables <- srvyr_select_vars(rlang::enquo(variables), .data)
     repweights <- srvyr_select_vars(rlang::enquo(repweights), .data)
     weights <- srvyr_select_vars(rlang::enquo(weights), .data)
@@ -85,6 +89,7 @@ as_survey_rep.data.frame <-
       repweights = repweights,
       weights = weights,
       data = .data,
+      degf = degf,
       type = type,
       combined.weights = combined_weights,
       rho = rho,
@@ -112,7 +117,7 @@ as_survey_rep.tbl_lazy <-
                     "other"), combined_weights = TRUE,
            rho = NULL, bootstrap_average = NULL, scale = NULL,
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
-           mse = getOption("survey.replicates.mse"), ...) {
+           mse = getOption("survey.replicates.mse"), degf = NULL, ...) {
 
     variables <- rlang::enquo(variables)
     repweights <- rlang::enquo(repweights)
@@ -134,6 +139,7 @@ as_survey_rep.tbl_lazy <-
       repweights = repweights,
       weights = weights,
       data = survey_vars_local,
+      degf = degf,
       type = type,
       combined.weights = combined_weights,
       rho = rho,

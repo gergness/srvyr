@@ -26,6 +26,7 @@ as_survey_rep(.data, ...)
   fpc = NULL,
   fpctype = c("fraction", "correction"),
   mse = getOption("survey.replicates.mse"),
+  degf = NULL,
   ...
 )
 
@@ -44,6 +45,7 @@ as_survey_rep(.data, ...)
   fpc = NULL,
   fpctype = c("fraction", "correction"),
   mse = getOption("survey.replicates.mse"),
+  degf = NULL,
   ...
 )
 
@@ -104,6 +106,11 @@ weights have been averaged, gives the number of iterations averaged over.}
 
 \item{mse}{if \code{TRUE}, compute variances based on sum of squares
 around the point estimate, rather than the mean of the replicates}
+
+\item{degf}{Design degrees of freedom: a single number, or \code{NULL},
+in which case a value will be computed automatically, which can be slow
+for very large data sets. See \code{\link[survey]{svrepdesign}}
+for more details.}
 
 \item{compress}{if \code{TRUE}, store replicate weights in compressed form
 (if converting from design)}

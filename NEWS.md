@@ -1,5 +1,8 @@
 # srvyr (development version)
-* `as_survey_rep()` now has an argument `degf`, corresponding to the same argument in the survey function `svrepdesign()`. This argument can be useful for large data sets, since specifying a value for `degf` avoids a calculation which can be slow for very large data sets.
+* `as_survey_rep()` now has an argument `degf`, corresponding to the same argument in the survey function `svrepdesign()`. This argument can be useful for large data sets, since specifying a value for `degf` avoids a calculation which can be slow for very large data sets, (#171, @bschneidr).
+* Speed improvmeents for summarize when there are many groups (#168, thanks @etiennebacher)
+* Improvements to printing (#166, thanks @szimmer)
+* Fix for situations where filtering a calibrated/PPS survey design when filtering 0 rows (#159, @bschneidr)
 
 # srvyr 1.2.0
 * `survey_prop()` now uses proportions as the default, which should confidence interval improve coverage, but does mean results may slightly change (#141, #142, thanks @szimmer)

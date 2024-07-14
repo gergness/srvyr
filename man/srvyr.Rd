@@ -3,6 +3,7 @@
 \docType{package}
 \name{srvyr}
 \alias{srvyr}
+\alias{srvyr-package}
 \title{srvyr: A package for 'dplyr'-Like Syntax for Summary Statistics of Survey Data.}
 \description{
 The srvyr package provides a new way of calculating summary statistics
@@ -57,3 +58,28 @@ Within summarise, you can also use \code{\link{unweighted}}, which calculates
 a function without taking into consideration the survey weighting.
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://gdfe.co/srvyr/}
+  \item \url{https://github.com/gergness/srvyr/}
+  \item Report bugs at \url{https://github.com/gergness/srvyr/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Greg Freedman Ellis \email{greg.freedman@gmail.com}
+
+Authors:
+\itemize{
+  \item Ben Schneider [contributor]
+}
+
+Other contributors:
+\itemize{
+  \item Thomas Lumley [contributor]
+  \item Tomasz Żółtak [contributor]
+  \item Pavel N. Krivitsky \email{pavel@statnet.org} [contributor]
+}
+
+}

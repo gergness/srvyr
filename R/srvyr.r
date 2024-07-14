@@ -46,6 +46,5 @@
 #' Within summarise, you can also use \code{\link{unweighted}}, which calculates
 #' a function without taking into consideration the survey weighting.
 #'
-#' @docType package
 #' @name srvyr
-NULL
+"_PACKAGE"

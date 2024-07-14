@@ -34,19 +34,24 @@ test_that('rename works', {
 })
 
 test_that('rename_with works without the .cols= argument', {
-  new_names <- dstrata %>% `[[`("variables") %>% names
-  new_names <- paste0(new_names, ".x")
+  new_names <- dstrata %>% tbl_vars() %>% paste0(".x")
   expect_equal(
-    dstrata %>% rename_with(~paste0(., ".x")) %>% `[[`("variables") %>% names,
+    dstrata %>% rename_with(~paste0(., ".x")) %>% tbl_vars() %>% as.character(),
+    new_names
+  )
+
+  expect_equal(
+    dstrata %>% rename_with(\(x) paste0(x, ".x")) %>% tbl_vars() %>% as.character(),
     new_names
   )
 })
 
 test_that('rename_with works with the .cols= argument', {
-  new_names <- dstrata %>% `[[`("variables") %>% names
-  new_names <- ifelse(endsWith(new_names, "m"), paste0(new_names, ".x"), new_names)
+  new_names <- dstrata %>%
+    tbl_vars %>%
+    {ifelse(endsWith(., "m"), paste0(., ".x"), .) }
   expect_equal(
-    dstrata %>% rename_with(~paste0(., ".x"), ends_with("m")) %>% `[[`("variables") %>% names,
+    dstrata %>% rename_with(~paste0(., ".x"), ends_with("m")) %>% tbl_vars() %>% as.character(),
     new_names
   )
 })

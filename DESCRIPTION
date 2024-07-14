@@ -13,8 +13,6 @@ Authors@R: c(person("Greg", "Freedman Ellis", email = "greg.freedman@gmail.com",
   person("Pavel N.", "Krivitsky", email = "pavel@statnet.org", role = c("ctb")))
 URL: http://gdfe.co/srvyr/, https://github.com/gergness/srvyr/
 BugReports: https://github.com/gergness/srvyr/issues
-Depends:
-    R (>= 3.1.2)
 Imports:
     dplyr (>= 1.1.0),
     magrittr,
@@ -43,5 +41,5 @@ Suggests:
     covr
 Encoding: UTF-8
 VignetteBuilder: knitr
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Language: en-US

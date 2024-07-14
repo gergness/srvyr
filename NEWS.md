@@ -1,4 +1,5 @@
 # srvyr (development version)
+* `as_survey_rep()` now has an argument `degf`, corresponding to the same argument in the survey function `svrepdesign()`. This argument can be useful for large data sets, since specifying a value for `degf` avoids a calculation which can be slow for very large data sets.
 
 # srvyr 1.2.0
 * `survey_prop()` now uses proportions as the default, which should confidence interval improve coverage, but does mean results may slightly change (#141, #142, thanks @szimmer)

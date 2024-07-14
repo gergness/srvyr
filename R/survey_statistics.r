@@ -867,7 +867,7 @@ survey_corr <- function(
   if (inherits(.svy, 'svyrep.design')) {
     svstat <- list(
       'covariances' = point_estimates,
-      'replicates' = (var_est$replicates[,c(1,2,4)]) |>
+      'replicates' = (var_est$replicates[,c(1,2,4)]) %>%
         `colnames<-`(value = names(point_estimates))
     )
     attr(svstat$replicates, 'scale') <- attr(var_est$replicates, 'scale')

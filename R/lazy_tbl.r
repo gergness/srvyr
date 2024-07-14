@@ -61,8 +61,9 @@ localize_lazy_svy <- function(svy, dots = NULL) {
     dplyr::select(svy$variables, !!!rlang::syms(vars_to_collect))
   )
 
+  class(svy) <- setdiff(class(svy), "tbl_lazy_svy")
   if (needs_subset) {
-    svy <- subset_svy_vars(svy, as.logical(svy$variables$`__SRVYR_SUBSET_VAR__`))
+    svy <- srvyr::filter(svy, as.logical(`__SRVYR_SUBSET_VAR__`))
   }
   svy
 }

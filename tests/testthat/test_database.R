@@ -13,6 +13,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
   # replace its successor
   #  has_monetdb <- suppressWarnings(suppressPackageStartupMessages(require(MonetDBLite)))
   data(api)
+  data(scd, package = "survey")
 
   # dbs_to_run <- c("RSQLite", "MonetDBLite")
   dbs_to_run <- "RSQLite"
@@ -25,15 +26,7 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
       db_avail <- TRUE
     } else if (db == "RSQLite" && !has_rsqlite){
       db_avail <- FALSE
-    } #else if (db == "MonetDBLite" && has_monetdb) {
-    #   con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), path = ":memory:")
-    #   cleaned <- dplyr::select(apistrat, -full)
-    #   names(cleaned) <- gsub("\\.", "", names(cleaned))
-    #   apistrat_db <- copy_to(con, cleaned)
-    #   db_avail <- TRUE
-    # } else if (db == "MonetDBLite" && !has_monetdb) {
-    #   db_avail <- FALSE
-    # }
+    }
 
     test_that(paste0("DB backed survey tests - ", db), {
       skip_if_not(db_avail)
@@ -84,6 +77,19 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
         local_dstrata %>%
           filter(stype == "E") %>%
           summarize(api99 = survey_mean(api99))
+      )
+
+      # Can filter then group_by and summarize
+      expect_df_equal(
+        suppressWarnings(dstrata %>%
+                           filter(stype == "E") %>%
+                           group_by(both) %>%
+                           summarize(api99 = survey_mean(api99))),
+        local_dstrata %>%
+          filter(stype == "E") %>%
+          group_by(both) %>%
+          summarize(api99 = survey_mean(api99)) %>%
+          mutate(both = as.character(both))
       )
 
       # Can mutate and summarize

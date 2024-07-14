@@ -4,6 +4,7 @@
 * Improvements to printing (#166, thanks @szimmer)
 * Fix for situations where filtering a calibrated/PPS survey design when filtering 0 rows (#159, @bschneidr)
 * Fix for anonymous functions in `rename_with()` (#172, thanks @josiahg2)
+* Fix for chaining filter & group_by in database backed surveys (#173, thanks @jamgreen)
 
 # srvyr 1.2.0
 * `survey_prop()` now uses proportions as the default, which should confidence interval improve coverage, but does mean results may slightly change (#141, #142, thanks @szimmer)

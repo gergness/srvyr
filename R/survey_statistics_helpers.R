@@ -43,7 +43,7 @@ set_survey_vars <- function(
     out$phase1$sample$variables[[name]] <- x
   } else {
     if (!add) {
-      out$variables <- select(out$variables, dplyr::one_of(group_vars(out)))
+      out$variables <- out$variables[, group_vars(out), drop = FALSE]
     }
     out$variables[[name]] <- x
   }
@@ -83,7 +83,7 @@ get_var_est <- function(
       se <- survey::SE(stat)
       # Needed for grouped quantile
       if (!inherits(se, "data.frame")) {
-        se <- data.frame(matrix(se, ncol = out_width))
+        se <- as.data.frame(se)
       }
       names(se) <- "_se"
       se
@@ -122,7 +122,7 @@ get_var_est <- function(
     }
   })
 
-  coef <- data.frame(matrix(coef(stat), ncol = out_width))
+  coef <- as.data.frame(unclass(coef(stat)))
   names(coef) <- "coef"
   out <- c(list(coef), out)
 
@@ -136,7 +136,7 @@ get_var_est <- function(
     out <- c(out, list(deff))
   }
 
-  as_srvyr_result_df(dplyr::bind_cols(out))
+  as_srvyr_result_df(do.call(cbind, out))
 }
 
 # Largely the same as get_var_est(), but need to handle the fact that there can be

@@ -5,7 +5,7 @@
 
 <!-- badges: start -->
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/srvyr)](https://CRAN.R-project.org/package=srvyr)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/srvyr)](https://CRAN.R-project.org/package=srvyr)
 [![R build
 status](https://github.com/gergness/srvyr/workflows/R-CMD-check/badge.svg)](https://github.com/gergness/srvyr/actions)
 [![Codecov test
@@ -49,15 +49,15 @@ dstrata <- apistrat %>%
 
 Now many of the dplyr verbs are available.
 
--   `mutate()` adds or modifies a variable.
+- `mutate()` adds or modifies a variable.
 
 ``` r
 dstrata <- dstrata %>%
   mutate(api_diff = api00 - api99)
 ```
 
--   `summarise()` calculates summary statistics such as mean, total,
-    quantile or ratio.
+- `summarise()` calculates summary statistics such as mean, total,
+  quantile or ratio.
 
 ``` r
 dstrata %>% 
@@ -68,7 +68,7 @@ dstrata %>%
 #> 1     32.9         28.8         37.0
 ```
 
--   `group_by()` and then `summarise()` creates summaries by groups.
+- `group_by()` and then `summarise()` creates summaries by groups.
 
 ``` r
 dstrata %>% 
@@ -82,7 +82,7 @@ dstrata %>%
 #> 3 M        26.4         20.4          32.4
 ```
 
--   Functions from the survey package are still available:
+- Functions from the survey package are still available:
 
 ``` r
 my_model <- survey::svyglm(api99 ~ stype, dstrata)
@@ -111,92 +111,91 @@ summary(my_model)
 
 Here are some free resources put together by the community about srvyr:
 
--   **“How-to”s & examples of using srvyr**
-    -   srvyr’s included vignette [“srvyr vs
-        survey”](http://gdfe.co/srvyr/articles/srvyr-vs-survey.html) and
-        the rest of the [pkgdown website](http://gdfe.co/srvyr/)
-    -   Stephanie Zimmer & Rebecca Powell’s [2021 AAPOR Workshop “Tidy
-        Survey Analysis in R using the srvyr
-        Package”](https://github.com/szimmer/tidy-survey-aapor-2021)
-    -   “The Epidemiologist R Handbook”, by Neale Batra et al. has a
-        [chapter on survey analysis](https://epirhandbook.com/en/) with
-        srvyr and survey package examples
-    -   Kieran Healy’s book [“Data Visualization: A Practical
-        Introduction”](https://socviz.co/modeling.html#plots-from-complex-surveys)
-        has a section on using srvyr to visualize the ESS.
-    -   The IPUMS PMA team’s blog had a series showing examples of using
-        the [PMA COVID survey panel with
-        weights](https://tech.popdata.org/pma-data-hub/index.html)
-    -   [“Open Case Studies: Vaping Behaviors in American
-        Youth”](https://www.opencasestudies.org/ocs-bp-vaping-case-study/)
-        by Carrie Wright, Michael Ontiveros, Leah Jager, Margaret Taub,
-        and Stephanie Hicks is a detailed case study that includes using
-        srvyr to analyze the National Youth Tobacco Survey.
-    -   [“How to plot Likert scales with a weighted survey in a dplyr
-        friendly
-        way”](https://towardsdatascience.com/how-to-plot-likert-scales-with-a-weighted-survey-in-a-dplyr-friendly-way-68df600881a)
-        by Francisco Suárez Salas
-    -   The tidycensus package vignette [“Working with Census
-        microdata”](https://walker-data.com/tidycensus/articles/pums-data.html)
-        includes information about using the weights from the ACS
-        retrieved from the census API.
-    -   [“The Joy of Calculating the Direct Standard Error for PUMS
-        Estimates”](https://ldaly.github.io/giveinandblogit/) by GitHub
-        user @ldaly
--   **About survey statistics**
-    -   Thomas Lumley’s book [“Complex Surveys: a guide to analysis
-        using R”](http://r-survey.r-forge.r-project.org/svybook/)
-    -   [Chris Skinner. Jon Wakefield. “Introduction to the Design and
-        Analysis of Complex Survey Data.” Statist. Sci. 32 (2) 165 -
-        175, May 2017.
-        10.1214/17-STS614](https://projecteuclid.org/accountAjax/Download?downloadType=journal%20article&urlId=10.1214%2F17-STS614&isResultClick=True)
-    -   Sharon Lohr’s textbook “Sampling: Design and Analysis”.
-        [Second](https://www.sharonlohr.com/sampling-design-and-analysis-2e)
-        or
-        [Third](https://www.sharonlohr.com/sampling-design-and-analysis-3e)
-        Editions
-    -   “Survey weighting is a mess” is the opening to Andrew Gelman’s
-        [“Struggles with Survey Weighting and Regression
-        Modeling”](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf)
-    -   Anthony Damico’s website [“Analyze Survey Data for
-        Free”](http://asdfree.com) has the weight specifications for a
-        wide variety of public use survey datasets.
--   **Working programmatically and/or on multiple columns at once (eg
-    `dplyr::across` and `rlang`’s “curly curly” `{{}}`)**
-    -   dplyr’s included package vignettes [“Column-wise
-        operations”](https://dplyr.tidyverse.org/articles/colwise.html)
-        & [“Programming with
-        dplyr”](https://dplyr.tidyverse.org/articles/programming.html)
--   **Non-English resources**
-    -   *Em português:* [“Análise de Dados Amostrais
-        Complexos”](https://djalmapessoa.github.io/adac/) by Djalma
-        Pessoa and Pedro Nascimento Silva
-    -   *En español:* [“Usando R para jugar con los microdatos del
-        INEGI”](https://medium.com/tacosdedatos/usando-r-para-sacar-información-de-los-microdatos-del-inegi-b21b6946cf4f)
-        by Claudio Daniel Pacheco Castro
-    -   *Tiếng Việt:* [“Dịch tễ học ứng dụng và y tế công cộng với
-        R”](https://epirhandbook.com/vn/survey-analysis.html)
--   **Other cool stuff that uses srvyr**
-    -   A (free) graphical interface allowing exploratory data analysis
-        of survey data without writing code:
-        [iNZight](https://inzight.nz/) (and [survey data
-        instructions](https://inzight.nz/docs/survey-specification.html))
-    -   [“serosurvey: Serological Survey Analysis For Prevalence
-        Estimation Under
-        Misclassification”](https://avallecam.github.io/serosurvey/) by
-        Andree Valle Campos
-    -   Several packages on CRAN depend on srvyr, you can see them by
-        looking at the [reverse Imports/Suggestions on
-        CRAN](https://cran.r-project.org/package=srvyr).
+- **“How-to”s & examples of using srvyr**
+  - srvyr’s included vignette [“srvyr vs
+    survey”](http://gdfe.co/srvyr/articles/srvyr-vs-survey.html) and the
+    rest of the [pkgdown website](http://gdfe.co/srvyr/)
+  - Stephanie Zimmer & Rebecca Powell’s [2021 AAPOR Workshop “Tidy
+    Survey Analysis in R using the srvyr
+    Package”](https://github.com/szimmer/tidy-survey-aapor-2021)
+  - “The Epidemiologist R Handbook”, by Neale Batra et al. has a
+    [chapter on survey analysis](https://epirhandbook.com/en/) with
+    srvyr and survey package examples
+  - Kieran Healy’s book [“Data Visualization: A Practical
+    Introduction”](https://socviz.co/modeling.html#plots-from-complex-surveys)
+    has a section on using srvyr to visualize the ESS.
+  - The IPUMS PMA team’s blog had a series showing examples of using the
+    [PMA COVID survey panel with
+    weights](https://tech.popdata.org/pma-data-hub/index.html)
+  - [“Open Case Studies: Vaping Behaviors in American
+    Youth”](https://www.opencasestudies.org/ocs-bp-vaping-case-study/)
+    by Carrie Wright, Michael Ontiveros, Leah Jager, Margaret Taub, and
+    Stephanie Hicks is a detailed case study that includes using srvyr
+    to analyze the National Youth Tobacco Survey.
+  - [“How to plot Likert scales with a weighted survey in a dplyr
+    friendly
+    way”](https://towardsdatascience.com/how-to-plot-likert-scales-with-a-weighted-survey-in-a-dplyr-friendly-way-68df600881a)
+    by Francisco Suárez Salas
+  - The tidycensus package vignette [“Working with Census
+    microdata”](https://walker-data.com/tidycensus/articles/pums-data.html)
+    includes information about using the weights from the ACS retrieved
+    from the census API.
+  - [“The Joy of Calculating the Direct Standard Error for PUMS
+    Estimates”](https://ldaly.github.io/giveinandblogit/) by GitHub user
+    @ldaly
+- **About survey statistics**
+  - Thomas Lumley’s book [“Complex Surveys: a guide to analysis using
+    R”](http://r-survey.r-forge.r-project.org/svybook/)
+  - [Chris Skinner. Jon Wakefield. “Introduction to the Design and
+    Analysis of Complex Survey Data.” Statist. Sci. 32 (2) 165 - 175,
+    May 2017.
+    10.1214/17-STS614](https://projecteuclid.org/accountAjax/Download?downloadType=journal%20article&urlId=10.1214%2F17-STS614&isResultClick=True)
+  - Sharon Lohr’s textbook “Sampling: Design and Analysis”.
+    [Second](https://www.sharonlohr.com/sampling-design-and-analysis-2e)
+    or
+    [Third](https://www.sharonlohr.com/sampling-design-and-analysis-3e)
+    Editions
+  - “Survey weighting is a mess” is the opening to Andrew Gelman’s
+    [“Struggles with Survey Weighting and Regression
+    Modeling”](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf)
+  - Anthony Damico’s website [“Analyze Survey Data for
+    Free”](https://asdfree.com) has the weight specifications for a wide
+    variety of public use survey datasets.
+- **Working programmatically and/or on multiple columns at once (eg
+  `dplyr::across` and `rlang`’s “curly curly” `{{}}`)**
+  - dplyr’s included package vignettes [“Column-wise
+    operations”](https://dplyr.tidyverse.org/articles/colwise.html) &
+    [“Programming with
+    dplyr”](https://dplyr.tidyverse.org/articles/programming.html)
+- **Non-English resources**
+  - *Em português:* [“Análise de Dados Amostrais
+    Complexos”](https://djalmapessoa.github.io/adac/) by Djalma Pessoa
+    and Pedro Nascimento Silva
+  - *En español:* [“Usando R para jugar con los microdatos del
+    INEGI”](https://medium.com/tacosdedatos/usando-r-para-sacar-información-de-los-microdatos-del-inegi-b21b6946cf4f)
+    by Claudio Daniel Pacheco Castro
+  - *Tiếng Việt:* [“Dịch tễ học ứng dụng và y tế công cộng với
+    R”](https://epirhandbook.com/vn/survey-analysis.html)
+- **Other cool stuff that uses srvyr**
+  - A (free) graphical interface allowing exploratory data analysis of
+    survey data without writing code: [iNZight](https://inzight.nz/)
+    (and [survey data
+    instructions](https://inzight.nz/docs/survey-specification.html))
+  - [“serosurvey: Serological Survey Analysis For Prevalence Estimation
+    Under Misclassification”](https://avallecam.github.io/serosurvey/)
+    by Andree Valle Campos
+  - Several packages on CRAN depend on srvyr, you can see them by
+    looking at the [reverse Imports/Suggestions on
+    CRAN](https://cran.r-project.org/package=srvyr).
 
 **Still need help?**
 
 I think the best way to get help is to form a specific question and ask
-it in some place like [rstudio’s community
-website](https://community.rstudio.com) (known for it’s friendly
-community) or [stackoverflow.com](https://stackoverflow.com) (maybe not
-known for being quite as friendly, but probably has more people). If you
-think you’ve found a bug in srvyr’s code, please file an [issue on
+it in some place like [posit’s community
+website](https://forum.posit.co/) (known for it’s friendly community) or
+[stackoverflow.com](https://stackoverflow.com) (maybe not known for
+being quite as friendly, but probably has more people). If you think
+you’ve found a bug in srvyr’s code, please file an [issue on
 GitHub](https://github.com/gergness/srvyr/issues/new), but note that I’m
 not a great resource for helping specific issue, both because I have
 limited capacity but also because I do not consider myself an expert in

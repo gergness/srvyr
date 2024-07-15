@@ -63,7 +63,7 @@ localize_lazy_svy <- function(svy, dots = NULL) {
 
   class(svy) <- setdiff(class(svy), "tbl_lazy_svy")
   if (needs_subset) {
-    svy <- srvyr::filter(svy, as.logical(`__SRVYR_SUBSET_VAR__`))
+    svy <- srvyr::filter(svy, as.logical(.data[["__SRVYR_SUBSET_VAR__"]]))
   }
   svy
 }
@@ -79,10 +79,10 @@ find_vars_to_collect_in_dots <- function(data, dots) {
   # All dots must be a function for srvyr summarize, so we can
   # go down to each dot's expression arguments
   all_args <- lapply(dots, function(x) rlang::call_args(x))
-  all_args <- rlang::squash(unname(all_args))
+  all_args <- unlist(unname(all_args))
 
   used_vars <- lapply(all_args, find_vars_to_collect, var_names = dplyr::tbl_vars(data))
-  used_vars <- rlang::flatten_chr(used_vars)
+  used_vars <- unlist(used_vars)
   unique(used_vars)
 }
 

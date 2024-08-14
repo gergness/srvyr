@@ -92,6 +92,16 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
           mutate(both = as.character(both))
       )
 
+      # Can have comma separated filters
+      expect_df_equal(
+        suppressWarnings(dstrata %>%
+                           filter(stype == "E", both == "No") %>%
+                           summarize(api99 = survey_mean(api99))),
+        suppressWarnings(dstrata %>%
+                           filter(stype == "E" & both == "No") %>%
+                           summarize(api99 = survey_mean(api99)))
+      )
+
       # Can mutate and summarize
       expect_df_equal(
         suppressWarnings(dstrata %>%

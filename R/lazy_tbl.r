@@ -32,10 +32,15 @@ lazy_subset_svy_vars <- function(svy, ..., .preserve = FALSE) {
     svy$variables <- dplyr::mutate(svy$variables, `__SRVYR_SUBSET_VAR__` = TRUE)
   }
 
-  svy$variables <- dplyr::mutate(
-    svy$variables,
-    `__SRVYR_SUBSET_VAR__` = !!!dots & !!rlang::sym("__SRVYR_SUBSET_VAR__")
-  )
+
+  # Maybe there's a way to combine quosures, but struggling with it
+  # So just do multiple passes
+  svy$variables <- Reduce(x = dots, init = svy$variables, function(vars, dot) {
+    dplyr::mutate(
+      vars,
+      `__SRVYR_SUBSET_VAR__` = !!dot & !!rlang::sym("__SRVYR_SUBSET_VAR__")
+    )
+  })
 
   svy
 }

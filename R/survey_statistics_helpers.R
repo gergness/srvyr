@@ -64,8 +64,6 @@ set_survey_vars <- function(
 #' @param vartype A vector indicating which variance estimates to calculate (options are
 #'   se for standard error, ci for confidence interval, var for variance or cv for
 #'   coefficient of variation). Multiples are allowed.
-#' @param grps A vector indicating the names of the grouping variables for grouped
-#'   surveys ("" indicates no groups).
 #' @param level One or more levels to calculate a confidence interval.
 #' @param df Degrees of freedom, many survey functions default to Inf, but srvyr functions
 #'   generally default to the result of calling degf on the survey object.
@@ -75,7 +73,7 @@ set_survey_vars <- function(
 #' @return a tbl_svy with the variables modified
 #' @export
 get_var_est <- function(
-  stat, vartype, grps = "", level = 0.95, df = Inf, pre_calc_ci = FALSE, deff = FALSE
+  stat, vartype, level = 0.95, df = Inf, pre_calc_ci = FALSE, deff = FALSE
 ) {
   out_width <- 1
   out <- lapply(vartype, function(vvv) {
@@ -126,10 +124,6 @@ get_var_est <- function(
   names(coef) <- "coef"
   out <- c(list(coef), out)
 
-  if (!identical(grps, "")) {
-    out <- c(list(as.data.frame(stat[grps], stringsAsFactors = FALSE)), out)
-  }
-
   if (!isFALSE(deff)) {
     deff <- data.frame(matrix(survey::deff(stat), ncol = out_width))
     names(deff) <- "_deff"
@@ -141,7 +135,7 @@ get_var_est <- function(
 
 # Largely the same as get_var_est(), but need to handle the fact that there can be
 # multiple quantiles and that CI's are stored slightly differently.
-get_var_est_quantile <- function(stat, vartype, q, grps = "", level = 0.95, df = Inf) {
+get_var_est_quantile <- function(stat, vartype, q, level = 0.95, df = Inf) {
   qnames <- paste0("_q", gsub("\\.", "", formatC(q * 100, width = 2, flag = "0")))
   out_width <- length(qnames)
   out <- lapply(vartype, function(vvv) {
@@ -179,10 +173,6 @@ get_var_est_quantile <- function(stat, vartype, q, grps = "", level = 0.95, df =
   names(coef) <- qnames
   out <- lapply(out, as.data.frame)
   out <- c(list(coef), out)
-
-  if (!identical(grps, "")) {
-    out <- c(list(as.data.frame(stat[grps])), out)
-  }
 
   as_srvyr_result_df(dplyr::bind_cols(out))
 }

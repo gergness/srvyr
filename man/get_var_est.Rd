@@ -7,7 +7,6 @@
 get_var_est(
   stat,
   vartype,
-  grps = "",
   level = 0.95,
   df = Inf,
   pre_calc_ci = FALSE,
@@ -21,9 +20,6 @@ package or svyby.}
 \item{vartype}{A vector indicating which variance estimates to calculate (options are
 se for standard error, ci for confidence interval, var for variance or cv for
 coefficient of variation). Multiples are allowed.}
-
-\item{grps}{A vector indicating the names of the grouping variables for grouped
-surveys ("" indicates no groups).}
 
 \item{level}{One or more levels to calculate a confidence interval.}
 

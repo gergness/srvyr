@@ -288,3 +288,16 @@ test_that("survey_mean returns 1 if no groups", {
 
   expect_equal(results$pct, 1)
 })
+
+test_that("survey_mean warns if na.rm=TRUE and no x", {
+  dstrata <- apistrat %>%
+    as_survey_design(strata = stype, weights = pw)
+
+  expect_warning(
+    dstrata %>%
+      group_by(stype) %>%
+      summarize(pct = survey_mean(na.rm = TRUE)),
+    "na\\.rm argument has no effect"
+  )
+
+})

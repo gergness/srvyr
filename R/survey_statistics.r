@@ -119,6 +119,16 @@ survey_mean <- function(
   prop_method <- match.arg(prop_method)
   if (is.null(df)) df <- survey::degf(cur_svy_full())
   if (missing(x)){
+    if (na.rm) {
+      rlang::warn(
+        "na.rm argument has no effect on survey_mean when calculating grouped proportions. ",
+        i = paste0(
+          "In order to calculate proportions ignoring the missing group, filter the ",
+          "dataset before calling group_by()."
+        ),
+        .frequency = "once", .frequency_id = "srvyr_prop_narm"
+      )
+    }
     return(survey_prop(vartype = vartype, level = level,
                        proportion = proportion, prop_method = prop_method,
                        deff = deff, df = df, .svy = cur_svy()))

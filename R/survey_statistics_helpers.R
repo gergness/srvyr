@@ -186,7 +186,7 @@ get_empty_var_est <- function(vartype, level = 0.95, deff = FALSE) {
         ci <- data.frame("_low" = NA, "_upp" = NA, check.names = FALSE)
       } else {
         nms <- paste0(c("_low", "_upp"), rep(level, each = 2) * 100)
-        ci <- setNames(as.data.frame(lapply(nms, NA)), nms)
+        ci <- stats::setNames(as.data.frame(lapply(nms, NA)), nms)
       }
       ci
     } else if (vvv == "var") {

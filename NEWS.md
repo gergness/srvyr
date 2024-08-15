@@ -7,6 +7,7 @@
 * Fix for chaining filter & group_by in database backed surveys (#173, thanks @jamgreen)
 * Fix for comma separated filters in database backed surveys (#173, thanks @jamgreen)
 * Fix for survey_prop when 0 observations are found in a group (#156, thanks @yannsay-impact)
+* groups are now preserved when `as_survey` and related functions are called on a grouped_df (#178, thanks @rossellhayes).
 
 # srvyr 1.2.0
 * `survey_prop()` now uses proportions as the default, which should confidence interval improve coverage, but does mean results may slightly change (#141, #142, thanks @szimmer)

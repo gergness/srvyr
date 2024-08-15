@@ -98,10 +98,12 @@ as_survey_design.data.frame <-
     ids, probs, strata, variables, fpc, .data, nest, check_strata, weights, pps
   )
 
-  as_tbl_svy(
+  out <- as_tbl_svy(
     out,
     list(ids = ids, probs = probs, strata = strata, fpc = fpc, weights = weights)
   )
+
+  preserve_groups(out, .data)
 }
 
 #' @export

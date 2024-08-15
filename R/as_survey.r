@@ -105,6 +105,19 @@ as_survey.twophase2 <- function(.data, ...) {
   as_tbl_svy(.data)
 }
 
+preserve_groups <- function(svy, data) {
+  incoming_group_vars <- group_vars(data)
+  if (length(incoming_group_vars) > 0) {
+    if (all(incoming_group_vars %in% tbl_vars(svy))) {
+      svy <- group_by(svy, across(all_of(incoming_group_vars)))
+    } else {
+      warning("Not all grouping variables exist in survey so groups were dropped")
+    }
+  }
+  svy
+
+}
+
 #' Deprecated SE versions of main srvyr verbs
 #'
 #' srvyr has updated it's standard evaluation semantics to match dplyr 0.7, so

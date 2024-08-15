@@ -101,10 +101,11 @@ as_survey_rep.data.frame <-
       mse = mse
     )
 
-    as_tbl_svy(
+    out <- as_tbl_svy(
       out,
       list(repweights = repweights,  weights = weights, fpc = fpc)
     )
+    preserve_groups(out, .data)
   }
 
 

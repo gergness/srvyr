@@ -1,4 +1,4 @@
-# srvyr (development version)
+# srvyr 1.3.0
 * `as_survey_rep()` now has an argument `degf`, corresponding to the same argument in the survey function `svrepdesign()`. This argument can be useful for large data sets, since specifying a value for `degf` avoids a calculation which can be slow for very large data sets, (#171, @bschneidr).
 * Speed improvements for summarize when there are many groups (#168, thanks @etiennebacher)
 * Improvements to printing (#166, thanks @szimmer)

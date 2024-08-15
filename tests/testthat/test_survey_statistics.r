@@ -718,12 +718,12 @@ test_that("unweighted allows named arguments",  {
 
   expect_equal(
     dclus1 %>% summarize(n = unweighted(a = n())),
-    tibble(na = 183)
+    tibble::tibble(na = 183)
   )
 
   expect_equal(
     dclus1 %>% summarize(unweighted(a = n())),
-    tibble(a = 183)
+    tibble::tibble(a = 183)
   )
 })
 
@@ -827,6 +827,39 @@ test_that(
     expect_equal(t2, t3)
   }
 )
+
+test_that("survey_ci_prop handles no row case (#156)", {
+  issue156_data <- data.frame(
+    groups = rep(c("a", "b"), 50),
+    value = rep(NA_character_, 100)
+  )
+
+  issue156_survey <- srvyr::as_survey(issue156_data, strata = groups)
+
+  results <- issue156_survey %>%
+    dplyr::group_by(dplyr::across(dplyr::any_of("groups"))) %>%
+    dplyr::filter(!is.na(value), .preserve = T) %>%
+    srvyr::summarise(x = srvyr::survey_prop(proportion = T))
+
+  expect_equal(names(results), c("groups", "x", "x_se"))
+  expect_equal(results$groups, c("a", "b"))
+  expect_true(all(is.na(results$x)))
+  expect_true(all(is.na(results$x_se)))
+
+
+  results <- issue156_survey %>%
+    dplyr::group_by(dplyr::across(dplyr::any_of("groups"))) %>%
+    dplyr::filter(!is.na(value), .preserve = T) %>%
+    srvyr::summarise(x = srvyr::survey_prop(vartype = c("ci", "se"), proportion = T))
+
+  expect_equal(names(results), c("groups", "x", "x_low", "x_upp", "x_se"))
+  expect_equal(results$groups, c("a", "b"))
+  expect_true(all(is.na(results$x)))
+  expect_true(all(is.na(results$x_low)))
+  expect_true(all(is.na(results$x_upp)))
+  expect_true(all(is.na(results$x_se)))
+})
+
 
 ################################################################################
 # survey_old_quantile

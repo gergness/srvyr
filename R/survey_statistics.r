@@ -195,6 +195,8 @@ survey_prop <- function(
     # (Not possible to use svyby here, so I think this is as fast as it can be)
     x <- peeled_cur_group_id(.full_svy, cur_group())
     .full_svy <- set_survey_vars(.full_svy, x)
+    # survey package errors when no rows, so return missing results
+    if (nrow(.full_svy$variables) == 0) return(get_empty_var_est(vartype, level = level))
 
     stat <- survey::svyciprop(
       ~`__SRVYR_TEMP_VAR__`, .full_svy, na.rm = TRUE, level = level, method = prop_method

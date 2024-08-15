@@ -177,6 +177,34 @@ get_var_est_quantile <- function(stat, vartype, q, level = 0.95, df = Inf) {
   as_srvyr_result_df(dplyr::bind_cols(out))
 }
 
+get_empty_var_est <- function(vartype, level = 0.95, deff = FALSE) {
+  out <- lapply(vartype, function(vvv) {
+    if (vvv == "se") {
+      data.frame("_se" = NA, check.names = FALSE)
+    } else if (vvv == "ci") {
+      if (length(level) == 1) {
+        ci <- data.frame("_low" = NA, "_upp" = NA, check.names = FALSE)
+      } else {
+        nms <- paste0(c("_low", "_upp"), rep(level, each = 2) * 100)
+        ci <- setNames(as.data.frame(lapply(nms, NA)), nms)
+      }
+      ci
+    } else if (vvv == "var") {
+      data.frame("_var" = NA, check.names = FALSE)
+    } else if (vvv == "cv") {
+      data.frame("_cv" = NA, check.names = FALSE)
+    } else {
+      stop(paste0("Unexpected vartype ", vvv))
+    }
+  })
+  out <- list(data.frame(coef = NA), out)
+  if (!isFALSE(deff)) {
+    out[["_deff"]] <- NA
+  }
+  as_srvyr_result_df(do.call(cbind, out))
+}
+
+
 stop_for_factor <- function(x) {
   if (is.factor(x)) {
     stop(paste0(

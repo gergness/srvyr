@@ -33,7 +33,7 @@ mutate.tbl_svy <- function(
     .after = {{.after}}
   )
 
-  if (.unpack) .data$variables <- unpack_cols(.data$variables)
+  if (.unpack && !is_lazy_svy(.data)) .data$variables <- unpack_cols(.data$variables)
   .data
 }
 

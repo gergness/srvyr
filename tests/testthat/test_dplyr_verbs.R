@@ -17,6 +17,32 @@ test_that('srvyr::pull works like dplyr::pull',{
 
 })
 
+test_that("mutate can handle survey summaries", {
+  summarize_version <- dstrata %>%
+    group_by(awards) %>%
+    summarise(x = survey_mean(api99))
+
+  mutate_version <- dstrata %>%
+    group_by(awards) %>%
+    mutate(x = survey_mean(api99)) %>%
+    as_tibble() %>%
+    select(awards, x, x_se) %>%
+    distinct()
+
+  expect_equal(mutate_version, summarize_version)
+})
+
+test_that("mutate can handle .by", {
+  explicit_group_by <- dstrata %>%
+    group_by(awards) %>%
+    mutate(x = survey_mean(api99))
+
+  .by_arg <- dstrata %>%
+    mutate(x = survey_mean(api99), .by = awards)
+
+  expect_equal(explicit_group_by, .by_arg)
+})
+
 test_that('transmute works',{
   expect_equal(
     dstrata %>% transmute(test = 1),

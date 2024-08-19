@@ -2,14 +2,23 @@
 mutate.tbl_svy <- function(
   .data,
   ...,
+  .by = NULL,
   .keep = c("all", "used", "unused", "none"),
   .before = NULL,
-  .after = NULL
+  .after = NULL,
+  .unpack = TRUE
 ) {
   dots <- rlang::quos(...)
 
   if (any(names2(dots) %in% as.character(survey_vars(.data)))) {
     stop("Cannot modify survey variable")
+  }
+
+  .by <- rlang::enquo(.by)
+  # Can't just pass `.by` to dplyr because we need to calculate survey statistics per group
+  if (!rlang::quo_is_null(.by)) {
+    .data <- group_by(.data, !!.by)
+    return(mutate(.data, !!!dots, .keep = .keep, .before = {{.before}}, .after = {{.after}}, .unpack = .unpack))
   }
 
   # Set current_svy so available to svy stat functions
@@ -24,6 +33,7 @@ mutate.tbl_svy <- function(
     .after = {{.after}}
   )
 
+  if (.unpack) .data$variables <- unpack_cols(.data$variables)
   .data
 }
 

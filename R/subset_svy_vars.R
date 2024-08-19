@@ -3,6 +3,7 @@ subset_svy_vars <- function(x, ..., .preserve = FALSE) {
 }
 
 # Adapted from survey:::"[.survey.design2"
+#' @export
 subset_svy_vars.survey.design2 <- function(x, ..., .preserve = FALSE) {
   dots <- rlang::quos(...)
   filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve)
@@ -40,6 +41,7 @@ subset_svy_vars.survey.design2 <- function(x, ..., .preserve = FALSE) {
 }
 
 # Adapted from survey:::"[.svyrep.design"
+#' @export
 subset_svy_vars.svyrep.design <- function(x, ..., .preserve = FALSE){
   dots <- rlang::quos(...)
   filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve)
@@ -64,6 +66,7 @@ subset_svy_vars.svyrep.design <- function(x, ..., .preserve = FALSE){
 }
 
 # Adapted from survey:::"[.twophase2"
+#' @export
 subset_svy_vars.twophase2 <- function(x, ..., .preserve = FALSE) {
   dots <- rlang::quos(...)
   filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve)

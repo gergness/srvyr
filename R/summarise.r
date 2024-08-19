@@ -1,6 +1,14 @@
 #' @export
-summarise.tbl_svy <- function(.data, ..., .groups = NULL, .unpack = TRUE) {
+summarise.tbl_svy <- function(.data, ..., .by = NULL, .groups = NULL, .unpack = TRUE) {
   .dots <- rlang::quos(...)
+  .by <- rlang::enquo(.by)
+
+  # Can't just pass `.by` to dplyr because we need to calculate survey statistics per group
+  if (!rlang::quo_is_null(.by)) {
+    .data <- group_by(.data, !!.by)
+    return(summarise(.data, !!!.dots, .groups = .groups, .unpack = .unpack))
+  }
+
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
 
   # Set current_svy so available to svy stat functions

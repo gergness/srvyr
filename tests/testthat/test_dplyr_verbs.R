@@ -107,6 +107,16 @@ test_that("summarize `.groups` argument matches dplyr behavior (3 groups case)",
   })
 })
 
+test_that("summarize can handle .by argument", {
+  expect_equal(
+      dstrata %>%
+        group_by(awards) %>%
+        summarise(api99 = survey_mean(api99)),
+      dstrata %>%
+        summarise(api99 = survey_mean(api99), .by = awards),
+  )
+})
+
 test_that("ungrouped reframe accepts mix of 1 row & multi row results", {
   direct <- dstrata %>%
     reframe(

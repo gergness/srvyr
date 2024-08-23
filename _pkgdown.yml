@@ -24,6 +24,7 @@ reference:
       - survey_ratio
       - survey_tally
       - survey_var
+      - survey_corr
       - unweighted
       - svychisq
       - cur_svy_wts
@@ -46,7 +47,12 @@ reference:
       - set_survey_vars
       - uninteract
       - srvyr_interaction
-
+  - title: Other
+    desc: "Other things that don't fit well in existing categories"
+    contents:
+      - srvyr-se-deprecated
+      - srvyr
+      - tbl_svy
 navbar:
   type: default
   left:

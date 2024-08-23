@@ -115,8 +115,11 @@ Here are some free resources put together by the community about srvyr:
   - srvyr’s included vignette [“srvyr vs
     survey”](http://gdfe.co/srvyr/articles/srvyr-vs-survey.html) and the
     rest of the [pkgdown website](http://gdfe.co/srvyr/)
-  - Stephanie Zimmer & Rebecca Powell’s [2021 AAPOR Workshop “Tidy
-    Survey Analysis in R using the srvyr
+  - Stephanie Zimmer, Rebecca Powell and Isabella Velásquez’s book
+    [Exploring Complex Survey Data Analysis Using
+    R](https://www.routledge.com/Exploring-Complex-Survey-Data-Analysis-Using-R-A-Tidy-Introduction-with-srvyr-and-survey/Zimmer-Powell-Velasquez/p/book/9781032302867?srsltid=AfmBOordog836itDOABXbcZM2BAE1WdJ6muu8sjgAIpO7WFu-x00D6HQ)
+    (releasing in November 2024). See also their [2021 AAPOR Workshop
+    “Tidy Survey Analysis in R using the srvyr
     Package”](https://github.com/szimmer/tidy-survey-aapor-2021)
   - “The Epidemiologist R Handbook”, by Neale Batra et al. has a
     [chapter on survey analysis](https://epirhandbook.com/en/) with
@@ -176,6 +179,9 @@ Here are some free resources put together by the community about srvyr:
     by Claudio Daniel Pacheco Castro
   - *Tiếng Việt:* [“Dịch tễ học ứng dụng và y tế công cộng với
     R”](https://epirhandbook.com/vn/survey-analysis.html)
+  - *På norsk:* [Data med vekter i
+    R](https://oyvindsolheim.com/code/vekter%20i%20r/) by Øyvind Bugge
+    Solheim
 - **Other cool stuff that uses srvyr**
   - A (free) graphical interface allowing exploratory data analysis of
     survey data without writing code: [iNZight](https://inzight.nz/)

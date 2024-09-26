@@ -98,6 +98,35 @@ subset_svy_vars.twophase2 <- function(x, ..., .preserve = FALSE) {
   x
 }
 
+# Adapted from survey:::"[.twophase"
+#' @export
+subset_svy_vars.twophase <- function(x, ..., .preserve = FALSE) {
+  dots <- rlang::quos(...)
+  filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve)
+  filtered_vars <- filtered[["filtered_vars"]]
+  row_numbers <- filtered[["row_numbers"]]
+
+  ## Set weights to zero:  don't try to save memory
+  ## Will always have numeric because of srvyr's structure
+  if (length(row_numbers) == 0) {
+    x$prob <- rep(Inf, length(x$prob))
+    x$phase2$prob <- rep(Inf, length(x$phase2$prob))
+
+  } else {
+    x$prob[-row_numbers] <- Inf
+    x$phase2$prob[-row_numbers] <- Inf
+  }
+
+  index <- is.finite(x$prob)
+  psu <- !duplicated(x$phase2$cluster[index, 1])
+  tt <- table(x$phase2$strata[index, 1][psu])
+  if(any(tt == 1)){
+    warning(sum(tt == 1), " strata have only one PSU in this subset.")
+  }
+
+  x
+}
+
 
 filtered_row_numbers <- function(.svy, ..., .preserve = FALSE) {
   dots <- rlang::quos(...)

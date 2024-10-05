@@ -97,7 +97,7 @@ as_tbl_svy <- function(x, var_names = list()) {
     class(x) <- dplyr::setdiff(x_classes, db_svy_classes)
   }
 
-  if (inherits(x, "twophase2")) {
+  if (inherits(x, c("twophase2", "twophase"))) {
     # Convert to tbls if not already (expect them to be one of data.frame or tbl_df)
     # data.frames will be converted, others should inherit "tbl".
     if (!inherits(x$phase1$full$variables, "tbl")) {

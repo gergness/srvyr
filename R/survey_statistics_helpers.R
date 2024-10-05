@@ -36,7 +36,7 @@ set_survey_vars <- function(
     }
   }
 
-  if (inherits(.svy, "twophase2")) {
+  if (inherits(.svy, c("twophase2", "twophase"))) {
     if (!add) {
       out$phase1$sample$variables <- select(out$phase1$sample$variables, dplyr::one_of(group_vars(out)))
     }

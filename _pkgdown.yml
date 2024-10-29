@@ -1,6 +1,8 @@
 template:
-  params:
-    bootswatch: flatly
+  bootstrap: 5
+  bootswatch: flatly
+
+url: http://gdfe.co/srvyr/
 
 reference:
   - title: "Set up survey data"

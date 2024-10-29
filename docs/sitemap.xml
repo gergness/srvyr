@@ -1,153 +1,52 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>/articles/extending-srvyr.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/srvyr-database.html</loc>
-  </url>
-  <url>
-    <loc>/articles/srvyr-vs-survey.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/as_srvyr_result_df.html</loc>
-  </url>
-  <url>
-    <loc>/reference/as_survey.html</loc>
-  </url>
-  <url>
-    <loc>/reference/as_survey_design.html</loc>
-  </url>
-  <url>
-    <loc>/reference/as_survey_rep.html</loc>
-  </url>
-  <url>
-    <loc>/reference/as_survey_twophase.html</loc>
-  </url>
-  <url>
-    <loc>/reference/as_tibble.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cascade.html</loc>
-  </url>
-  <url>
-    <loc>/reference/collect.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cur_svy.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cur_svy_wts.html</loc>
-  </url>
-  <url>
-    <loc>/reference/current_svy.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dplyr_filter_joins.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dplyr_single.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_var_est.html</loc>
-  </url>
-  <url>
-    <loc>/reference/group_by.html</loc>
-  </url>
-  <url>
-    <loc>/reference/group_map_dfr.html</loc>
-  </url>
-  <url>
-    <loc>/reference/groups.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/interact.html</loc>
-  </url>
-  <url>
-    <loc>/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>/reference/reexports.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rlang-tidyeval.html</loc>
-  </url>
-  <url>
-    <loc>/reference/set_survey_vars.html</loc>
-  </url>
-  <url>
-    <loc>/reference/srvyr-se-deprecated.html</loc>
-  </url>
-  <url>
-    <loc>/reference/srvyr.html</loc>
-  </url>
-  <url>
-    <loc>/reference/srvyr_interaction.html</loc>
-  </url>
-  <url>
-    <loc>/reference/summarise.html</loc>
-  </url>
-  <url>
-    <loc>/reference/summarise_all.html</loc>
-  </url>
-  <url>
-    <loc>/reference/survey_corr.html</loc>
-  </url>
-  <url>
-    <loc>/reference/survey_mean.html</loc>
-  </url>
-  <url>
-    <loc>/reference/survey_old_quantile.html</loc>
-  </url>
-  <url>
-    <loc>/reference/survey_quantile.html</loc>
-  </url>
-  <url>
-    <loc>/reference/survey_ratio.html</loc>
-  </url>
-  <url>
-    <loc>/reference/survey_tally.html</loc>
-  </url>
-  <url>
-    <loc>/reference/survey_total.html</loc>
-  </url>
-  <url>
-    <loc>/reference/survey_var.html</loc>
-  </url>
-  <url>
-    <loc>/reference/svychisq.html</loc>
-  </url>
-  <url>
-    <loc>/reference/tbl_svy.html</loc>
-  </url>
-  <url>
-    <loc>/reference/tbl_vars.html</loc>
-  </url>
-  <url>
-    <loc>/reference/uninteract.html</loc>
-  </url>
-  <url>
-    <loc>/reference/unweighted.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>http://gdfe.co/srvyr/404.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/articles/extending-srvyr.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/articles/index.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/articles/srvyr-database.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/articles/srvyr-vs-survey.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/authors.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/index.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/news/index.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/as_srvyr_result_df.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/as_survey.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/as_survey_design.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/as_survey_rep.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/as_survey_twophase.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/as_tibble.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/cascade.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/collect.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/cur_svy.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/cur_svy_wts.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/dplyr_filter_joins.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/dplyr_single.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/get_var_est.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/groups.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/group_by.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/group_map_dfr.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/index.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/interact.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/pipe.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/reexports.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/rlang-tidyeval.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/set_survey_vars.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/srvyr-se-deprecated.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/srvyr.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/srvyr_interaction.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/summarise.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/summarise_all.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/survey_corr.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/survey_mean.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/survey_old_quantile.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/survey_quantile.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/survey_ratio.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/survey_tally.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/survey_total.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/survey_var.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/svychisq.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/tbl_svy.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/tbl_vars.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/uninteract.html</loc></url>
+<url><loc>http://gdfe.co/srvyr/reference/unweighted.html</loc></url>
 </urlset>
+

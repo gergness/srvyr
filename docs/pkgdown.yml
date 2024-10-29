@@ -1,9 +1,11 @@
-pandoc: 3.1.1
-pkgdown: 2.0.7
+pandoc: '3.2'
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   extending-srvyr: extending-srvyr.html
   srvyr-database: srvyr-database.html
   srvyr-vs-survey: srvyr-vs-survey.html
-last_built: 2024-08-23T21:46Z
-
+last_built: 2024-10-29T20:37Z
+urls:
+  reference: http://gdfe.co/srvyr/reference
+  article: http://gdfe.co/srvyr/articles

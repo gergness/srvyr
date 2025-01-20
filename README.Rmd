@@ -13,12 +13,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-# srvyr <img src="tools/logo.png" align="right" height="149" width="149"/>
+# srvyr <img src="man/figures/logo.png" align="right" height="149" width="149"/>
 <!-- badges: start -->
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/srvyr)](https://CRAN.R-project.org/package=srvyr)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/srvyr)](https://CRAN.R-project.org/package=srvyr)
 [![R build status](https://github.com/gergness/srvyr/workflows/R-CMD-check/badge.svg)](https://github.com/gergness/srvyr/actions)
 [![Codecov test coverage](https://codecov.io/gh/gergness/srvyr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/gergness/srvyr?branch=main)
-[![Documentation via pkgdown](tools/pkgdownshield.svg)](http://gdfe.co/srvyr/)
 <!-- badges: end -->
 
 srvyr brings parts of [dplyr's](https://github.com/tidyverse/dplyr/) syntax to survey

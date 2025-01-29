@@ -80,6 +80,10 @@ my_model <- survey::svyglm(api99 ~ stype, dstrata)
 summary(my_model)
 ```
 
+## Cheat Sheet
+
+<a href="https://github.com/gergness/srvyr/blob/main/cheatsheet/srvyr.pdf"><img src="man/figures/srvyr-cheatsheet-preview.png" width="630" height="252"/></a><br>
+
 ## Learning more
 Here are some free resources put together by the community about srvyr:
 

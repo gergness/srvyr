@@ -105,6 +105,10 @@ summary(my_model)
 #> Number of Fisher Scoring iterations: 2
 ```
 
+## Cheat Sheet
+
+<a href="https://github.com/gergness/srvyr/blob/main/cheatsheet/srvyr.pdf"><img src="man/figures/srvyr-cheatsheet-preview.png" width="630" height="252"/></a><br>
+
 ## Learning more
 
 Here are some free resources put together by the community about srvyr:

@@ -32,7 +32,8 @@
 #'   summarize(prop = survey_mean())
 interact <- function(...) {
   # Capture dots
-  cols <- rlang::enquos(..., .named = TRUE)
+  .data <- dplyr::pick(dplyr::everything())
+  cols <- dplyr::transmute(.data,...)
 
   # TODO: Should duplicated groups be silently dropped?
   # (this is what srvyr::group_by says it does)

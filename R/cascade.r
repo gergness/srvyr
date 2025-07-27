@@ -75,7 +75,7 @@ cascade.tbl_svy <- function(
   out <- fill_cascade_parts(out, .fill, .fill_level_top)
   out <- dplyr::bind_rows(out)
   # arrange columns in the order they appear in final dataset
-  out <- dplyr::arrange(out, dplyr::across(names(out)))
+  out <- dplyr::arrange(out, dplyr::across(names(out), cascade_sorting_order(!!.fill)))
   out
 }
 
@@ -173,6 +173,13 @@ all_term_combos <- function(var_sym, var) {
       })
     })
   unlist(out, recursive = FALSE)
+}
+
+cascade_sorting_order <- function(.fill) {
+  function(var) {
+    if (!is.character(var)) return(var)
+    factor(var, levels = c(setdiff(unique(var), .fill), .fill))
+  }
 }
 
 

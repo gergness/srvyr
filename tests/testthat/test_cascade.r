@@ -226,3 +226,24 @@ test_that("cascade can fill parts - integer with fill", {
   )
 })
 
+test_that("cascade puts text fill group last (#189)", {
+  actual <- dstrata_srvyr %>%
+    mutate(stypec=as.character(stype)) %>%
+    group_by(stypec) %>%
+    cascade(api99_mn = survey_mean(api99), .fill="Global")
+
+  expect_equal(
+    actual$stypec,
+    c("E", "H", "M", "Global")
+  )
+
+  actual <- dstrata_srvyr %>%
+    mutate(stypec=as.character(stype)) %>%
+    group_by(stypec) %>%
+    cascade(api99_mn = survey_mean(api99))
+
+  expect_equal(
+    actual$stypec,
+    c("E", "H", "M", NA)
+  )
+})

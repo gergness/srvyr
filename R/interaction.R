@@ -33,7 +33,7 @@
 interact <- function(...) {
   # Capture dots
   .data <- dplyr::pick(dplyr::everything())
-  cols <- dplyr::transmute(.data,...)
+  cols <- dplyr::transmute(.data, ...)
 
   # TODO: Should duplicated groups be silently dropped?
   # (this is what srvyr::group_by says it does)

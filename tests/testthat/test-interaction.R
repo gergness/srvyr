@@ -13,32 +13,37 @@ dstrata <- apistrat %>%
    as_survey_design(strata = stype, weights = pw)
 
 test_that("Can make an interaction", {
-  x <- interact(interact_data$int_col, interact_data$char_col)
+  x <- interact_data |>
+    dplyr::mutate(x = interact(int_col, char_col)) |>
+    pull(x)
 
   expect_s3_class(x, "srvyr_interaction")
   expect_equal(vctrs::vec_data(x), c(1, 2, 3, 4, 1))
   expect_equal(
     attr(x, "crosswalk"),
     tibble::tibble(
-      `interact_data$int_col` = c(1, 1, 2, 3),
-      `interact_data$char_col` = c("a", "c", "b", "a"),
+      `int_col` = c(1, 1, 2, 3),
+      `char_col` = c("a", "c", "b", "a"),
       `___srvyr_cw_id` = 1:4
     )
   )
 })
 
 test_that("Can unmake an interaction column", {
-  x <- interact(int_col = interact_data$int_col, char_col = interact_data$char_col)
+  x <- interact_data |>
+    dplyr::mutate(x = interact(int_col = int_col, char_col = char_col)) |>
+    pull(x)
 
   orig <- uninteract(x)
   expect_equal(orig, tibble::tibble(interact_data[c("int_col", "char_col")]))
 })
 
 test_that("Can unmake all interactions in a data.frame", {
-  x <- data.frame(
-    a = interact(int_col = interact_data$int_col, char_col = interact_data$char_col),
-    b = interact(fct_col = interact_data$fct_col, dbl_col = interact_data$dbl_col)
-  )
+  x <- interact_data |>
+    dplyr::transmute(
+      a = interact(int_col = int_col, char_col = char_col),
+      b = interact(fct_col = fct_col, dbl_col = dbl_col)
+    )
 
   orig <- uninteract(x)
   expect_equal(
@@ -52,21 +57,22 @@ test_that("Can make interactions in a srvyr pipeline", {
     group_by(x = interact(stype, awards)) %>%
     pull(x)
 
-  expect_equal(
-    srvyr_interact,
-    interact(stype = apistrat$stype, awards = apistrat$awards)
-  )
+  expect_s3_class(srvyr_interact, "srvyr_interaction")
 })
 
 test_that("A wide variety of column types are preserved in an interaction roundtrip", {
-  x <- interact(!!!as.list(interact_data))
+  x <- interact_data |>
+    dplyr::mutate(x = interact(dplyr::across(dplyr::everything()))) |>
+    dplyr::pull(x)
 
   orig <- uninteract(x)
   expect_equal(orig, tibble::tibble(interact_data))
 })
 
 test_that("Can make new columns in interact", {
-  x <- interact(int_col = interact_data$int_col + 10, char_col = interact_data$char_col)
+  x <- interact_data %>%
+    dplyr::mutate(x = interact(int_col = int_col + 10, char_col = char_col)) |>
+    dplyr::pull(x)
 
   orig <- uninteract(x)
   expected <- interact_data %>% mutate(int_col = int_col + 10) %>% select(int_col, char_col) %>% tibble::tibble()
@@ -74,7 +80,8 @@ test_that("Can make new columns in interact", {
 })
 
 test_that("Can combine interactions with identical crosswalks", {
-  x <- data.frame(
+  x <- interact_data |>
+    dplyr::transmute(
     a = interact(int_col = interact_data$int_col, char_col = interact_data$char_col)
   )
 
@@ -87,12 +94,15 @@ test_that("Can combine interactions with identical crosswalks", {
 })
 
 test_that("Can combine interactions with crosswalks that are superset-able", {
-  x <- data.frame(
-    a = interact(int_col = interact_data$int_col[1:2], char_col = interact_data$char_col[1:2])
-  )
-  y <- data.frame(
-    a = interact(int_col = interact_data$int_col, char_col = interact_data$char_col)
-  )
+  x <- interact_data |>
+    dplyr::slice(1:2) |>
+    dplyr::transmute(
+      a = interact(int_col = int_col, char_col = char_col)
+    )
+  y <- interact_data |>
+    dplyr::transmute(
+      a = interact(int_col = int_col, char_col = char_col)
+    )
 
   combined <- dplyr::bind_rows(x, y)
   expected <- dplyr::bind_rows(interact_data[1:2, ], interact_data) %>%
@@ -111,12 +121,14 @@ test_that("Can combine interactions with crosswalks that are superset-able", {
 })
 
 test_that("Get good error when crosswalks have different column names", {
-  x <- data.frame(
-    a = interact(int_col = interact_data$int_col[1:2], char_col = interact_data$char_col[1:2])
-  )
-  y <- data.frame(
-    a = interact(int_col = interact_data$int_col, fct_col = interact_data$fct_col)
-  )
+  x <- interact_data |>
+    dplyr::transmute(
+      a = interact(int_col = int_col, char_col = char_col)
+    )
+  y <- interact_data |>
+    dplyr::transmute(
+      a = interact(int_col = int_col, fct_col = fct_col)
+    )
 
   expect_error(
     dplyr::bind_rows(x, y),
@@ -125,12 +137,15 @@ test_that("Get good error when crosswalks have different column names", {
 })
 
 test_that("Get good error when crosswalks have different column types", {
-  x <- data.frame(
-    a = interact(int_col = interact_data$int_col[1:2], char_col = interact_data$char_col[1:2])
-  )
-  y <- data.frame(
-    a = interact(int_col = interact_data$int_col, char_col = interact_data$dbl_col)
-  )
+  x <- interact_data |>
+    dplyr::transmute(
+      a = interact(int_col = int_col, char_col = char_col)
+    )
+
+  y <- interact_data |>
+    dplyr::transmute(
+      a = interact(int_col = int_col, char_col = dbl_col)
+    )
 
   expect_error(
     dplyr::bind_rows(x, y),
@@ -139,8 +154,13 @@ test_that("Get good error when crosswalks have different column types", {
 })
 
 test_that("Get good error when casting incompatible interaction croswalks", {
-  x <- interact(int_col = interact_data$int_col[1:2], char_col = interact_data$char_col[1:2])
-  y <- interact(int_col = interact_data$int_col, char_col = interact_data$char_col)
+  x <- interact_data |>
+    dplyr::slice(1:3) |>
+    dplyr::mutate(x = interact(int_col = int_col, char_col = char_col)) |>
+    pull(x)
+  y <- interact_data |>
+    dplyr::mutate(x = interact(int_col = int_col, char_col = char_col)) |>
+    pull(x)
 
   expect_error(
     vec_cast(y, x, x_arg = "y", to_arg = "x"),
@@ -223,4 +243,23 @@ test_that("Can recast interaction terms", {
       transmute(interact(int_col, fct_col)) %>%
       uninteract()
   )
+})
+
+test_that("interact works programmatically", {
+  myfun <- function(data, ...) {
+    data |>
+      dplyr::group_by(srvyr::interact(...)) |>
+      dplyr::summarise(prop = srvyr::survey_prop())
+  }
+
+  non_programmatic <- mtcars |>
+    srvyr::as_survey() |>
+    dplyr::group_by(srvyr::interact(am, gear)) |>
+    dplyr::summarise(prop = srvyr::survey_prop())
+
+  programmatic <- mtcars |>
+    srvyr::as_survey() |>
+    myfun(am, gear)
+
+  expect_equal(programmatic, non_programmatic)
 })

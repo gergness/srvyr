@@ -162,7 +162,7 @@ Here are some free resources put together by the community about srvyr:
     Editions
   - “Survey weighting is a mess” is the opening to Andrew Gelman’s
     [“Struggles with Survey Weighting and Regression
-    Modeling”](http://www.stat.columbia.edu/~gelman/research/published/STS226.pdf)
+    Modeling”](https://sites.stat.columbia.edu/gelman/research/published/STS226.pdf)
   - Anthony Damico’s website [“Analyze Survey Data for
     Free”](https://asdfree.com) has the weight specifications for a wide
     variety of public use survey datasets.
@@ -180,7 +180,7 @@ Here are some free resources put together by the community about srvyr:
     INEGI”](https://medium.com/tacosdedatos/usando-r-para-sacar-información-de-los-microdatos-del-inegi-b21b6946cf4f)
     by Claudio Daniel Pacheco Castro
   - *Tiếng Việt:* [“Dịch tễ học ứng dụng và y tế công cộng với
-    R”](https://epirhandbook.com/vn/survey-analysis.html)
+    R”](https://epirhandbook.com/vn/new_pages/survey-analysis.html)
   - *På norsk:* [Data med vekter i
     R](https://oyvindsolheim.com/code/vekter%20i%20r/) by Øyvind Bugge
     Solheim
@@ -235,7 +235,7 @@ issue](https://github.com/gergness/srvyr/issues/127)!
 > 1.  Yay!
 >
 > –<cite>Thomas Lumley, [in the Biased and Inefficient
-> blog](http://notstatschat.tumblr.com/post/161225885311/pipeable-survey-analysis-in-r)</cite>
+> blog](https://notstatschat.tumblr.com/post/161225885311/pipeable-survey-analysis-in-r)</cite>
 
 ## Contributing
 

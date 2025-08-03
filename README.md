@@ -137,10 +137,6 @@ Here are some free resources put together by the community about srvyr:
     by Carrie Wright, Michael Ontiveros, Leah Jager, Margaret Taub, and
     Stephanie Hicks is a detailed case study that includes using srvyr
     to analyze the National Youth Tobacco Survey.
-  - [“How to plot Likert scales with a weighted survey in a dplyr
-    friendly
-    way”](https://towardsdatascience.com/how-to-plot-likert-scales-with-a-weighted-survey-in-a-dplyr-friendly-way-68df600881a)
-    by Francisco Suárez Salas
   - The tidycensus package vignette [“Working with Census
     microdata”](https://walker-data.com/tidycensus/articles/pums-data.html)
     includes information about using the weights from the ACS retrieved

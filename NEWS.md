@@ -1,4 +1,4 @@
-# srvyr (development version)
+# srvyr 1.3.1
 * `interact()` now can be used programmatically (#187, thanks @larmarange).
 * `cascade()` now puts the filled value last for character values (#189, thanks @szimmer).
 

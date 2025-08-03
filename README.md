@@ -175,8 +175,21 @@ Here are some free resources put together by the community about srvyr:
   - *En español:* [“Usando R para jugar con los microdatos del
     INEGI”](https://medium.com/tacosdedatos/usando-r-para-sacar-información-de-los-microdatos-del-inegi-b21b6946cf4f)
     by Claudio Daniel Pacheco Castro
-  - *Tiếng Việt:* [“Dịch tễ học ứng dụng và y tế công cộng với
-    R”](https://epirhandbook.com/vn/new_pages/survey-analysis.html)
+  - Chapter 26 of the The Epidemiologist R Handbook, translated:
+    - *En français:* [Analyse
+      d’enquête](https://epirhandbook.com/fr/new_pages/survey_analysis.fr.html)
+    - *Tiếng Việt:* [Phân tích khảo
+      sát](https://epirhandbook.com/vn/new_pages/survey_analysis.vn.html)
+    - *En español:* [Análisis de
+      encuestas](https://epirhandbook.com/es/new_pages/survey_analysis.es.html)
+    - *日本語で:*
+      [標本調査データ分析](https://epirhandbook.com/jp/new_pages/survey_analysis.jp.html)
+    - *Em português:* [Analises de pesquisa de questionários
+      (survey)](https://epirhandbook.com/pt/new_pages/survey_analysis.pt.html)
+    - *Türkçe:* [Anket
+      analizi](https://epirhandbook.com/tr/new_pages/survey_analysis.tr.html)
+    - *На русском языке:* [Анализ
+      опросов](https://epirhandbook.com/ru/new_pages/survey_analysis.ru.html)
   - *På norsk:* [Data med vekter i
     R](https://oyvindsolheim.com/code/vekter%20i%20r/) by Øyvind Bugge
     Solheim

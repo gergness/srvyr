@@ -43,6 +43,17 @@ test_that("mutate can handle .by", {
   expect_equal(explicit_group_by, .by_arg)
 })
 
+test_that("mutate can handle multiple .by", {
+  explicit_group_by <- dstrata %>%
+    group_by(name, awards) %>%
+    mutate(x = survey_mean(api99))
+
+  .by_arg <- dstrata %>%
+    mutate(x = survey_mean(api99), .by = c(name, awards))
+
+  expect_equal(explicit_group_by, .by_arg)
+})
+
 test_that('transmute works',{
   expect_equal(
     dstrata %>% transmute(test = 1),

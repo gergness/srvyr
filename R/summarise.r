@@ -4,7 +4,7 @@ summarise.tbl_svy <- function(.data, ..., .by = NULL, .groups = NULL, .unpack = 
   .by <- rlang::enquos(.by)
 
   # Can't just pass `.by` to dplyr because we need to calculate survey statistics per group
-  if (!is.null(.by)) {
+  if (!all(sapply(.by, rlang::quo_is_null))) {
     .data <- group_by(.data, across(!!!.by))
     return(summarise(.data, !!!.dots, .groups = .groups, .unpack = .unpack))
   }

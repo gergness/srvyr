@@ -14,10 +14,10 @@ mutate.tbl_svy <- function(
     stop("Cannot modify survey variable")
   }
 
-  .by <- rlang::enquo(.by)
+  .by <- rlang::enquos(.by)
   # Can't just pass `.by` to dplyr because we need to calculate survey statistics per group
-  if (!rlang::quo_is_null(.by)) {
-    .data <- group_by(.data, !!.by)
+  if (!all(sapply(.by, rlang::quo_is_null))) {
+    .data <- group_by(.data, across(!!!.by))
     return(mutate(.data, !!!dots, .keep = .keep, .before = {{.before}}, .after = {{.after}}, .unpack = .unpack))
   }
 

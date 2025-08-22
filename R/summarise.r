@@ -1,11 +1,11 @@
 #' @export
 summarise.tbl_svy <- function(.data, ..., .by = NULL, .groups = NULL, .unpack = TRUE) {
   .dots <- rlang::quos(...)
-  .by <- rlang::enquo(.by)
+  .by <- rlang::enquos(.by)
 
   # Can't just pass `.by` to dplyr because we need to calculate survey statistics per group
-  if (!rlang::quo_is_null(.by)) {
-    .data <- group_by(.data, !!.by)
+  if (!all(sapply(.by, rlang::quo_is_null))) {
+    .data <- group_by(.data, across(!!!.by))
     return(summarise(.data, !!!.dots, .groups = .groups, .unpack = .unpack))
   }
 

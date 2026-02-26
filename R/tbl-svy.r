@@ -153,6 +153,11 @@ print.quoteless_text <- function(x, ...) {
 strip_varlist_formula <- function(vars) {
   lapply(vars, function(x) {
     if (length(x) == 0) return(x)
-    as.character(x)[-1] # First pos is either ~ or +
+    if ((length(x) == 1) && is.character(x)) {
+      return(x)
+    }
+    if (inherits(x, "formula")) {
+      as.character(x)[-1] # First pos is either ~ or +
+    }
   })
 }

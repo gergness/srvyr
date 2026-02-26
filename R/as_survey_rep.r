@@ -85,6 +85,15 @@ as_survey_rep.data.frame <-
     fpc <- srvyr_select_vars(rlang::enquo(fpc), .data)
     type <- if (missing(type)) type[1] else type
 
+    if (type=="ACS"){
+      if (missing(mse) && !mse){
+        mse <- TRUE
+        message("mse=TRUE assumed for type=\"ACS\"")
+      } else if (!mse){
+        warning("The ACS uses MSE standard errors but you have specified mse=FALSE")
+      }
+    }
+
     out <- survey::svrepdesign(
       variables = variables,
       repweights = repweights,

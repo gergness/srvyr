@@ -197,7 +197,8 @@ colnames(sdr_factors) <- paste0("REP_", 1:4)
 
 sdr_design <- svrepdesign(
   data = sdr_sample,
-  type = "successive-difference",
+  type = "successive-difference", 
+  mse = TRUE,
   weights = ~ weights,
   repweights = sdr_factors,
   combined = FALSE,
@@ -208,11 +209,13 @@ sdr_srvyr <- cbind(sdr_sample, as.data.frame(sdr_factors)) %>%
   as_survey_rep(repweights = starts_with("REP_"),
                 weights = "weights",
                 type = "successive-difference",
+                mse = TRUE,
                 combined = FALSE)
 acs_srvyr <- cbind(sdr_sample, as.data.frame(sdr_factors)) %>%
   as_survey_rep(repweights = starts_with("REP_"),
                 weights = "weights",
-                type = "ACS",
+                type = "ACS", 
+                mse = TRUE,
                 combined = FALSE)
 
 out_survey <- svymean(~api00, sdr_design)
@@ -227,6 +230,24 @@ test_that("as_survey_rep works when using SDR/ACS method of replicate weights", 
                c(out_srvyr_sdr[[1]][[1]], out_srvyr_sdr[[2]][[1]]))
   expect_equal(c(out_survey[[1]], sqrt(attr(out_survey, "var"))),
                c(out_srvyr_acs[[1]][[1]], out_srvyr_acs[[2]][[1]]))
+})
+test_that("as_survey_rep handles `mse` with `type='ACS'`, similar to 'survey'", {
+  expect_message(
+    object = cbind(sdr_sample, as.data.frame(sdr_factors)) %>%
+      as_survey_rep(repweights = starts_with("REP_"),
+                    weights = "weights",
+                    type = "ACS", 
+                    combined = FALSE),
+    expected = "mse=TRUE assumed"
+  )
+  expect_warning(
+    object = cbind(sdr_sample, as.data.frame(sdr_factors)) %>%
+      as_survey_rep(repweights = starts_with("REP_"),
+                    weights = "weights",
+                    type = "ACS", mse = FALSE,
+                    combined = FALSE),
+    expected = "The ACS uses MSE standard errors"
+  )
 })
 
 # ------------------------------------------------------------------

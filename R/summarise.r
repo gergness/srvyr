@@ -6,7 +6,7 @@ summarise.tbl_svy <- function(.data, ..., .by = NULL, .groups = NULL, .unpack = 
   # Can't just pass `.by` to dplyr because we need to calculate survey statistics per group
   if (!all(sapply(.by, rlang::quo_is_null))) {
     .data <- group_by(.data, across(!!!.by))
-    return(summarise(.data, !!!.dots, .groups = .groups, .unpack = .unpack))
+    return(ungroup(summarise(.data, !!!.dots, .groups = .groups, .unpack = .unpack)))
   }
 
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)

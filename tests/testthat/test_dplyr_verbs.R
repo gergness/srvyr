@@ -35,7 +35,8 @@ test_that("mutate can handle survey summaries", {
 test_that("mutate can handle .by", {
   explicit_group_by <- dstrata %>%
     group_by(awards) %>%
-    mutate(x = survey_mean(api99))
+    mutate(x = survey_mean(api99)) %>%
+    ungroup()
 
   .by_arg <- dstrata %>%
     mutate(x = survey_mean(api99), .by = awards)
@@ -46,7 +47,8 @@ test_that("mutate can handle .by", {
 test_that("mutate can handle multiple .by", {
   explicit_group_by <- dstrata %>%
     group_by(name, awards) %>%
-    mutate(x = survey_mean(api99))
+    mutate(x = survey_mean(api99)) %>%
+    ungroup()
 
   .by_arg <- dstrata %>%
     mutate(x = survey_mean(api99), .by = c(name, awards))

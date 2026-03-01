@@ -18,7 +18,7 @@ mutate.tbl_svy <- function(
   # Can't just pass `.by` to dplyr because we need to calculate survey statistics per group
   if (!all(sapply(.by, rlang::quo_is_null))) {
     .data <- group_by(.data, across(!!!.by))
-    return(mutate(.data, !!!dots, .keep = .keep, .before = {{.before}}, .after = {{.after}}, .unpack = .unpack))
+    return(ungroup(mutate(.data, !!!dots, .keep = .keep, .before = {{.before}}, .after = {{.after}}, .unpack = .unpack)))
   }
 
   # Set current_svy so available to svy stat functions

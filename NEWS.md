@@ -1,4 +1,6 @@
 # srvyr (development version)
+* Using `.by` in `summarize()` and `mutate()` now ungroups the result, matching dplyr behavior (#200, thanks 
+  @stephenashton-dhsc)
 
 # srvyr 1.3.1
 * `interact()` now can be used programmatically (#187, thanks @larmarange).

@@ -124,6 +124,57 @@ if (suppressPackageStartupMessages(require(dbplyr))) {
       )
     })
 
+    test_that(paste0("Can filter, then select, then collect (#205) - ", db), {
+      dstrata <- apistrat_db %>%
+        as_survey_design(strata = stype, weights = pw)
+
+      local_dstrata <- cleaned %>%
+        as_survey_design(strata = stype, weights = pw)
+
+      expect_equal(
+        dstrata %>%
+          filter(stype == "E") %>%
+          select(api99, stype) %>%
+          collect() |>
+          nrow(),
+        local_dstrata %>%
+          filter(stype == "E") %>%
+          select(api99, stype) %>%
+          nrow()
+      )
+    })
+
+    test_that(paste0("Can filter, then transmute, then collect (#205) - ", db), {
+      dstrata <- apistrat_db %>%
+        as_survey_design(strata = stype, weights = pw)
+
+      local_dstrata <- cleaned %>%
+        as_survey_design(strata = stype, weights = pw)
+
+      expect_equal(
+        dstrata %>%
+          filter(stype == "E") %>%
+          transmute(api_diff = api00 - api99) %>%
+          collect() |>
+          nrow(),
+        local_dstrata %>%
+          filter(stype == "E") %>%
+          transmute(api_diff = api00 - api99) %>%
+          nrow()
+      )
+
+      # Also make sure transmute works without __SRVYR_SUBSET_VAR__
+      expect_equal(
+        dstrata %>%
+          transmute(api_diff = api00 - api99) %>%
+          collect() |>
+          nrow(),
+        local_dstrata %>%
+          transmute(api_diff = api00 - api99) %>%
+          nrow()
+      )
+    })
+
     test_that(paste0("Can get replicate weight surveys - ", db), {
       skip_if_not(db_avail)
       scd <- scd %>%

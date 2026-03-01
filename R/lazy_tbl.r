@@ -133,6 +133,30 @@ collect.tbl_lazy_svy <- function(x, ...) {
   localize_lazy_svy(x)
 }
 
+#' @export
+select.tbl_lazy_svy <- function(.data, ...) {
+  dots <- rlang::quos(...)
+  .data$variables <- select(
+    .data$variables,
+    !!!dots,
+    # Don't lose the secret subset variable if its been created
+    dplyr::any_of("__SRVYR_SUBSET_VAR__")
+  )
+
+  .data
+}
+
+#' @export
+mutate.tbl_lazy_svy <- function(.data, ...) {
+  mutate.tbl_svy(
+    .data,
+    ...,
+    # Don't lose the secret subset variable if its been created even if user specifies .keep
+    dplyr::across(dplyr::any_of("__SRVYR_SUBSET_VAR__"), ~.)
+  )
+}
+
+
 capture_survey_db_updates <- function(svy) {
   for (uuu in svy$updates) {
     for (iii in seq_along(uuu)) {

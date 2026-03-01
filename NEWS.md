@@ -1,6 +1,7 @@
 # srvyr (development version)
 * Using `.by` in `summarize()` and `mutate()` now ungroups the result, matching dplyr behavior (#200, thanks 
   @stephenashton-dhsc)
+* Fixed a bug when collecting after subsetting a database backed survey (#205, thanks @szimmer)
 
 # srvyr 1.3.1
 * `interact()` now can be used programmatically (#187, thanks @larmarange).

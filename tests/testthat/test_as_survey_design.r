@@ -8,19 +8,6 @@ test_that("as_survey_design works with both tbl_dfs and data.frames",
                          tibble::as_tibble() %>%
                          as_survey_design(ids = id, strata = strata)))
 
-
-test_that("as_survey_design_ works with character",
-          expect_equal(df %>%
-                         as_survey_design_(ids = "id", strata = "strata"),
-                       df %>%
-                         as_survey_design(ids = id, strata = strata)))
-
-test_that("as_survey_design_ works with formulas",
-          expect_equal(df %>%
-                         as_survey_design_(ids = ~id, strata = ~strata),
-                       df %>%
-                         as_survey_design(ids = id, strata = strata)))
-
 test_that("as_survey_design preserves groups", {
   data(api, package = "survey")
 

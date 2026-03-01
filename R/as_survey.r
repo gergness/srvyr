@@ -117,37 +117,3 @@ preserve_groups <- function(svy, data) {
   svy
 
 }
-
-#' Deprecated SE versions of main srvyr verbs
-#'
-#' srvyr has updated it's standard evaluation semantics to match dplyr 0.7, so
-#' these underscore functions are no longer required (but are still supported
-#' for backward compatibility reasons). As the \code{dplyr} package has removed
-#' support for underscore functions, srvyr will soon.
-#' @name srvyr-se-deprecated
-#' @inheritParams as_survey
-#' @param .dots Used to work around non-standard evaluation. See
-#' \code{vignette("nse", package = "dplyr")} for details.
-#' @export
-as_survey_ <- function(.data, ...) {
-  warn_underscored()
-  dots <- rlang::quos(...)
-  if (inherits(.data, "tbl_svy")) {
-    if(dots_n(...) > 0) warn("Object is already a survey design and will be returned unchanged. The extra design arguments will be ignored. To reinitialise the design, convert to a tibble first.")
-    .data
-  } else if ("repweights" %in% names(dots)) {
-    as_survey_rep_(.data, ...)
-  } else if ("id" %in% names(dots) | "ids" %in% names(dots)) {
-    # twophase has a list of 2 groups for id, while regular id is
-    # just a set of variables
-    id_expr <- rlang::f_rhs(dots$id)
-    if(is.character(id_expr)) id_expr <- rlang::parse_expr(id_expr)
-    if (length(id_expr) == 3 && id_expr[[1]] == "list") {
-      as_survey_twophase_(.data, ...)
-    } else {
-      as_survey_design_(.data, ...)
-    }
-  } else {
-    as_survey_design_(.data, ...)
-  }
-}

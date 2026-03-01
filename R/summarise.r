@@ -24,12 +24,6 @@ summarise.tbl_svy <- function(.data, ..., .by = NULL, .groups = NULL, .unpack = 
 }
 
 #' @export
-summarise_.tbl_svy <- function(.data, ..., .dots) {
-  dots <- compat_lazy_dots(.dots, caller_env(), ...)
-  summarise(.data, !!!dots)
-}
-
-#' @export
 summarise.grouped_svy <- function(.data, ..., .groups = NULL, .unpack = TRUE) {
   .dots <- rlang::quos(...)
   if (is_lazy_svy(.data)) .data <- localize_lazy_svy(.data, .dots)
@@ -78,12 +72,6 @@ unpack_cols <- function(results) {
   }
 
   out
-}
-
-#' @export
-summarise_.grouped_svy <- function(.data, ..., .dots) {
-  dots <- compat_lazy_dots(.dots, caller_env(), ...)
-  summarise(.data, !!!dots)
 }
 
 #' Summarise multiple values to a single value.
@@ -188,23 +176,9 @@ summarise_.grouped_svy <- function(.data, ..., .dots) {
 #' @importFrom dplyr summarise
 NULL
 
-#' @name summarise_
-#' @export
-#' @importFrom dplyr summarise_
-#' @rdname srvyr-se-deprecated
-#' @inheritParams summarise
-NULL
-
 #' @name summarize
 #' @export
 #' @importFrom dplyr summarize
 #' @rdname summarise
-NULL
-
-#' @name summarize_
-#' @export
-#' @importFrom dplyr summarize_
-#' @rdname srvyr-se-deprecated
-#' @inheritParams summarize
 NULL
 

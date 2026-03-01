@@ -102,25 +102,3 @@ as_survey_twophase.data.frame <-
 as_survey_twophase.twophase2 <- function(.data, ...) {
   as_tbl_svy(.data)
 }
-
-
-#' @export
-#' @rdname srvyr-se-deprecated
-#' @inheritParams as_survey_twophase
-as_survey_twophase_ <- function(.data, id, strata = NULL, probs = NULL,
-                             weights = NULL, fpc = NULL, subset,
-                             method = c("full", "approx", "simple")) {
-  as_survey_twophase(
-    .data,
-    id = !!n_compat_lazy(id),
-    strata = !!n_compat_lazy(strata),
-    probs = !!n_compat_lazy(probs),
-    weights = !!n_compat_lazy(weights),
-    fpc = !!n_compat_lazy(fpc),
-    subset = !!n_compat_lazy(subset),
-    method = method
-  )
-
-}
-
-

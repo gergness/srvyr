@@ -6,12 +6,6 @@ group_by.tbl_svy <- function(.data, ..., .add = FALSE, .drop = dplyr::group_by_d
 }
 
 #' @export
-group_by_.tbl_svy <- function(.data, ..., .dots, add = FALSE, .drop = dplyr::group_by_drop_default(.data)) {
-  dots <- compat_lazy_dots(.dots, caller_env(), ...)
-  group_by(.data, !!!dots, add = add, .drop = .drop)
-}
-
-#' @export
 ungroup.tbl_svy <- function(x, ...) {
   x
 }

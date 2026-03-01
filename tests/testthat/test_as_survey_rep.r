@@ -145,37 +145,6 @@ scd2brr_base <- scd2brr$repweights %>%
   dplyr::bind_cols(as.data.frame(scd)) %>%
   mutate(weights = 1)
 
-test_that("works with character", {
-  expect_equal(
-    scd2brr_base %>%
-      as_survey_rep(repweights = starts_with("rep"),
-                    type = "BRR",
-                    rscales = scd2brr$rscales,
-                    mse = scd2brr$mse, weights = weights),
-
-    scd2brr_base %>%
-      as_survey_rep_(repweights = 'starts_with("rep")',
-                     type = "BRR",
-                     rscales = scd2brr$rscales,
-                     mse = scd2brr$mse, weights = "weights")
-  )
-})
-
-test_that("works with formula", {
-  expect_equal(
-    scd2brr_base %>%
-      as_survey_rep(repweights = starts_with("rep"),
-                    type = "BRR",
-                    rscales = scd2brr$rscales,
-                    mse = scd2brr$mse, weights = weights),
-
-    scd2brr_base %>%
-      as_survey_rep_(repweights = ~starts_with("rep"),
-                     type = "BRR",
-                     rscales = scd2brr$rscales,
-                     mse = scd2brr$mse, weights = ~weights)
-  )
-})
 
 # ------------------------------------------------------------------
 # Test "successive-difference"/"ACS" method with user-supplied weights

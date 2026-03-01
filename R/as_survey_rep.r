@@ -200,35 +200,3 @@ as_survey_rep.tbl_svy <-
       NextMethod()
     }
   }
-
-
-#' @export
-#' @rdname srvyr-se-deprecated
-#' @inheritParams as_survey_rep
-#' @param fpctype Finite population correction information
-as_survey_rep_ <-
-  function(.data, variables = NULL, repweights = NULL, weights = NULL,
-           type = c("BRR", "Fay", "JK1", "JKn", "bootstrap",
-                    "successive-difference", "ACS",
-                    "other"), combined_weights = TRUE,
-           rho = NULL, bootstrap_average = NULL, scale = NULL,
-           rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
-           mse = getOption("survey.replicates.mse")) {
-
-    type <- if (missing(type)) type[1] else type
-    as_survey_rep(
-      .data,
-      variables = !!n_compat_lazy(variables),
-      repweights = !!n_compat_lazy(repweights),
-      weights = !!n_compat_lazy(weights),
-      type = type,
-      combined_weights = combined_weights,
-      rho = rho,
-      bootstrap_average = bootstrap_average,
-      scale = scale,
-      rscales = rscales,
-      fpc = !!n_compat_lazy(fpc),
-      fpctype = fpctype,
-      mse = mse
-    )
-  }

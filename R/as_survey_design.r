@@ -149,25 +149,3 @@ as_survey_design.tbl_lazy <-
       list(ids = ids, probs = probs, strata = strata, fpc = fpc, weights = weights)
     )
   }
-
-#' @export
-#' @rdname srvyr-se-deprecated
-#' @inheritParams as_survey_design
-as_survey_design_ <- function(.data, ids = NULL, probs = NULL, strata = NULL,
-                              variables = NULL, fpc = NULL, nest = FALSE,
-                              check_strata = !nest, weights = NULL, pps = FALSE,
-                              variance = c("HT", "YG")) {
-  as_survey_design(
-    .data,
-    ids = !!n_compat_lazy(ids),
-    probs = !!n_compat_lazy(probs),
-    strata = !!n_compat_lazy(strata),
-    variables = !!n_compat_lazy(variables),
-    fpc = !!n_compat_lazy(fpc),
-    nest = nest,
-    check_strata = check_strata,
-    weights = !!n_compat_lazy(weights),
-    pps = pps,
-    variance = variance
-  )
-}

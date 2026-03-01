@@ -10,26 +10,16 @@ test_that("as_survey correctly uses survey design's arguments",
                                      strata = repwt1, variables = x, pps = pps))
           )
 
-test_that("as_survey_ correctly uses survey design's arguments",
-          expect_equal(
-            as_survey_(data, ids = c("id1", "id2"), weight = "wt",
-                       strata = "repwt1", variables = "x", pps = pps),
-            as_survey_design_(data, ids = c("id1", "id2"), weight = "wt",
-                              strata = "repwt1", variables = "x", pps = pps)))
 
 
 # Idempotency
-test_that("as_survey and as_survey_ are idempotent and warn on extraneous arguments",
+test_that("as_survey are idempotent and warn on extraneous arguments",
           {
             s <- as_survey(data, ids = c(id1, id2), weights = wt,
                            strata = repwt1, variables = x, pps = pps)
 
             expect_equal(as_survey(s), s)
             expect_warning(s2 <- as_survey(s, ids = c(id1, id2)))
-            expect_equal(s2, s)
-
-            expect_equal(as_survey_(s), s)
-            expect_warning(s2 <- as_survey_(s, ids = c("id1", "id2")))
             expect_equal(s2, s)
           })
 
@@ -40,13 +30,6 @@ test_that("as_survey correctly uses replicate's arguments",
                       variables = x),
             as_survey_rep(data, repweights = repwt1:repwt2, weight = wt,
                           variables = x)))
-
-test_that("as_survey_ correctly uses replicate's arguments",
-          expect_equal(
-            as_survey_(data, repweights = c("repwt1", "repwt2"), weight = "wt",
-                       variables = "x"),
-            as_survey_rep_(data, repweights = c("repwt1", "repwt2"),
-                           weight = "wt", variables = "x")))
 
 
 # Twophase (hard to set up fake example - use from examples)
@@ -65,12 +48,3 @@ test_that("as_survey correctly uses twophase's arguments",
               as_survey_twophase(id = list(id1, id), strata = list(NULL, id1),
                                  fpc = list(n1, NULL), subset = sub)))
 
-test_that("as_survey correctly uses twophase's arguments",
-          expect_equal(
-            mu284_1 %>%
-              as_survey_(id = "list(id1, id)", strata = "list(NULL, id1)",
-                         fpc = "list(n1, NULL)", subset = "sub"),
-            mu284_1 %>%
-              as_survey_twophase_(id = "list(id1, id)",
-                                  strata = "list(NULL, id1)",
-                                  fpc = "list(n1, NULL)", subset = "sub")))

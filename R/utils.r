@@ -76,10 +76,6 @@ nullable <- function(f, x, ...) {
   else f(x, ...)
 }
 
-n_compat_lazy <- function(x) {
-  nullable(compat_lazy, x, env = caller_env(2))
-}
-
 # From dplyr (utils.r)
 "%||%" <- function(x, y) if(is.null(x)) y else x
 

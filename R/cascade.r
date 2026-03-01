@@ -1,9 +1,3 @@
-#' @export
-cascade_.tbl_svy <- function(.data, ..., .dots, .fill = NA) {
-  dots <- compat_lazy_dots(.dots, caller_env(), ...)
-  cascade.tbl_svy(.data, !!!dots, .fill = .fill)
-}
-
 #' Summarise multiple values into cascading groups
 #'
 #' \code{cascade} is similar to \code{\link{summarise}}, but calculates
@@ -180,12 +174,4 @@ cascade_sorting_order <- function(.fill) {
     if (!is.character(var)) return(var)
     factor(var, levels = c(setdiff(unique(var), .fill), .fill))
   }
-}
-
-
-#' @export
-#' @rdname srvyr-se-deprecated
-#' @inheritParams cascade
-cascade_ <- function(.data, ..., .dots, .fill = NA) {
-  UseMethod("cascade_")
 }

@@ -38,12 +38,6 @@ mutate.tbl_svy <- function(
 }
 
 #' @export
-mutate_.tbl_svy <- function(.data, ..., .dots) {
-  dots <- compat_lazy_dots(.dots, caller_env(), ...)
-  mutate(.data, !!!dots)
-}
-
-#' @export
 transmute.tbl_svy <- function(.data, ...) {
   mutate(.data, ..., .keep = "none")
 }
@@ -54,12 +48,6 @@ select.tbl_svy <- function(.data, ...) {
   .data$variables <- select(.data$variables, !!!dots)
 
   .data
-}
-
-#' @export
-select_.tbl_svy <- function(.data, ..., .dots) {
-  dots <- compat_lazy_dots(.dots, caller_env(), ...)
-  select(.data, !!!dots)
 }
 
 #' @export
@@ -80,11 +68,6 @@ rename_with.tbl_svy <- function(.data, .fn, .cols = everything(), ...) {
 }
 
 #' @export
-rename_.tbl_svy <- function(.data, ..., .dots) {
-  dots <- compat_lazy_dots(.dots, caller_env(), ...)
-  rename(.data, !!!dots)}
-
-#' @export
 filter.tbl_svy <- function(.data, ..., .preserve = FALSE) {
   dots <- rlang::quos(...)
 
@@ -96,16 +79,6 @@ filter.tbl_svy <- function(.data, ..., .preserve = FALSE) {
     lazy_subset_svy_vars(.data, !!!dots, .preserve = .preserve)
   } else {
     subset_svy_vars(.data, !!!dots, .preserve = .preserve)
-  }
-}
-
-#' @export
-filter_.tbl_svy <- function(.data, ..., .dots) {
-  dots <- compat_lazy_dots(.dots, rlang::caller_env(), ...)
-  if (is_lazy_svy(.data)) {
-    lazy_subset_svy_vars(.data, !!!dots)
-  } else {
-    subset_svy_vars(.data, !!!dots)
   }
 }
 
@@ -177,22 +150,10 @@ NULL
 #' @importFrom dplyr mutate
 NULL
 
-#' @name mutate_
-#' @export
-#' @importFrom dplyr mutate_
-#' @rdname srvyr-se-deprecated
-NULL
-
 #' @name transmute
 #' @rdname dplyr_single
 #' @export
 #' @importFrom dplyr transmute
-NULL
-
-#' @name transmute_
-#' @export
-#' @importFrom dplyr transmute_
-#' @rdname srvyr-se-deprecated
 NULL
 
 #' @name select
@@ -208,22 +169,10 @@ NULL
 NULL
 
 
-#' @name select_
-#' @export
-#' @importFrom dplyr select_
-#' @rdname srvyr-se-deprecated
-NULL
-
 #' @name rename
 #' @rdname dplyr_single
 #' @export
 #' @importFrom dplyr rename
-NULL
-
-#' @name rename_
-#' @export
-#' @importFrom dplyr rename_
-#' @rdname srvyr-se-deprecated
 NULL
 
 #' @name rename_with
@@ -236,12 +185,6 @@ NULL
 #' @export
 #' @importFrom dplyr filter
 #' @rdname dplyr_single
-NULL
-
-#' @name filter_
-#' @export
-#' @importFrom dplyr filter_
-#' @rdname srvyr-se-deprecated
 NULL
 
 #' @name drop_na
@@ -386,22 +329,10 @@ NULL
 #' @rdname summarise_all
 NULL
 
-#' @name mutate_each_
-#' @export
-#' @importFrom dplyr mutate_each_
-#' @rdname srvyr-se-deprecated
-NULL
-
 #' @name summarise_each
 #' @export
 #' @importFrom dplyr summarise_each
 #' @rdname summarise_all
-NULL
-
-#' @name summarise_each_
-#' @export
-#' @importFrom dplyr summarise_each_
-#' @rdname srvyr-se-deprecated
 NULL
 
 #' @name summarize_each
@@ -410,23 +341,10 @@ NULL
 #' @rdname summarise_all
 NULL
 
-#' @name summarize_each_
-#' @export
-#' @importFrom dplyr summarize_each_
-#' @rdname srvyr-se-deprecated
-NULL
-
 #' @name funs
 #' @export
 #' @importFrom dplyr funs
 #' @rdname summarise_all
-NULL
-
-
-#' @name funs_
-#' @export
-#' @importFrom dplyr funs_
-#' @rdname srvyr-se-deprecated
 NULL
 
 #' @name vars

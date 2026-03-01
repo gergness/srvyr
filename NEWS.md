@@ -2,6 +2,7 @@
 * Using `.by` in `summarize()` and `mutate()` now ungroups the result, matching dplyr behavior (#200, thanks 
   @stephenashton-dhsc)
 * Fixed a bug when collecting after subsetting a database backed survey (#205, thanks @szimmer)
+* `filter_out()` now implemented for `tbl_svy` objects
 * Underscore functions like `as_survey_design_() and `mutate_()` have been completely removed, following dplyr's lead 
   in 1.2.0
 

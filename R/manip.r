@@ -83,6 +83,21 @@ filter.tbl_svy <- function(.data, ..., .preserve = FALSE) {
 }
 
 #' @export
+filter_out.tbl_svy <- function(.data, ..., .preserve = FALSE) {
+  dots <- rlang::quos(...)
+
+  # Set current_svy so available to svy stat functions
+  old <- set_current_svy(list(full = .data, split = split_for_context(.data)))
+  on.exit(set_current_svy(old), add = TRUE)
+
+  if (is_lazy_svy(.data)) {
+    lazy_subset_svy_vars(.data, !!!dots, .preserve = .preserve, .filter_out = TRUE)
+  } else {
+    subset_svy_vars(.data, !!!dots, .preserve = .preserve, .filter_out = TRUE)
+  }
+}
+
+#' @export
 drop_na.tbl_svy <- function(data, ...) {
   vars <- tidyselect::eval_select(expr(c(...)), data$variables)
   if (is_empty(vars)) {
@@ -184,6 +199,12 @@ NULL
 #' @name filter
 #' @export
 #' @importFrom dplyr filter
+#' @rdname dplyr_single
+NULL
+
+#' @name filter_out
+#' @export
+#' @importFrom dplyr filter_out
 #' @rdname dplyr_single
 NULL
 

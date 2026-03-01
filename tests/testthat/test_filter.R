@@ -529,3 +529,18 @@ source("utilities.R")
             )[['ratio']][1]
           )
         })
+
+
+      # filter_out  ----
+
+      test_that(
+        "filter_out works", {
+          expect_equal(
+            object = stratified_design %>%
+              filter_out(stype == "H") %>%
+              nrow(),
+            expected = stratified_design %>%
+              filter(stype != "H") %>%
+              nrow()
+          )
+        })

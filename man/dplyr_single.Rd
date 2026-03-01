@@ -10,6 +10,7 @@
 \alias{rename}
 \alias{rename_with}
 \alias{filter}
+\alias{filter_out}
 \alias{drop_na}
 \title{Single table verbs from dplyr and tidyr}
 \description{

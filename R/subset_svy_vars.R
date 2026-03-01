@@ -1,12 +1,12 @@
-subset_svy_vars <- function(x, ..., .preserve = FALSE) {
+subset_svy_vars <- function(x, ..., .preserve = FALSE, .filter_out = FALSE) {
   UseMethod("subset_svy_vars")
 }
 
 # Adapted from survey:::"[.survey.design2"
 #' @export
-subset_svy_vars.survey.design2 <- function(x, ..., .preserve = FALSE) {
+subset_svy_vars.survey.design2 <- function(x, ..., .preserve = FALSE, .filter_out = FALSE) {
   dots <- rlang::quos(...)
-  filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve)
+  filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve, .filter_out = .filter_out)
   filtered_vars <- filtered[["filtered_vars"]]
   row_numbers <- filtered[["row_numbers"]]
 
@@ -42,9 +42,9 @@ subset_svy_vars.survey.design2 <- function(x, ..., .preserve = FALSE) {
 
 # Adapted from survey:::"[.svyrep.design"
 #' @export
-subset_svy_vars.svyrep.design <- function(x, ..., .preserve = FALSE){
+subset_svy_vars.svyrep.design <- function(x, ..., .preserve = FALSE, .filter_out = FALSE){
   dots <- rlang::quos(...)
-  filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve)
+  filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve, .filter_out = .filter_out)
   filtered_vars <- filtered[["filtered_vars"]]
   row_numbers <- filtered[["row_numbers"]]
 
@@ -67,9 +67,9 @@ subset_svy_vars.svyrep.design <- function(x, ..., .preserve = FALSE){
 
 # Adapted from survey:::"[.twophase2"
 #' @export
-subset_svy_vars.twophase2 <- function(x, ..., .preserve = FALSE) {
+subset_svy_vars.twophase2 <- function(x, ..., .preserve = FALSE, .filter_out = FALSE) {
   dots <- rlang::quos(...)
-  filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve)
+  filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve, .filter_out = .filter_out)
   filtered_vars <- filtered[["filtered_vars"]]
   row_numbers <- filtered[["row_numbers"]]
 
@@ -100,9 +100,9 @@ subset_svy_vars.twophase2 <- function(x, ..., .preserve = FALSE) {
 
 # Adapted from survey:::"[.twophase"
 #' @export
-subset_svy_vars.twophase <- function(x, ..., .preserve = FALSE) {
+subset_svy_vars.twophase <- function(x, ..., .preserve = FALSE, .filter_out = FALSE) {
   dots <- rlang::quos(...)
-  filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve)
+  filtered <- filtered_row_numbers(x, !!!dots, .preserve = .preserve, .filter_out = .filter_out)
   filtered_vars <- filtered[["filtered_vars"]]
   row_numbers <- filtered[["row_numbers"]]
 
@@ -128,12 +128,15 @@ subset_svy_vars.twophase <- function(x, ..., .preserve = FALSE) {
 }
 
 
-filtered_row_numbers <- function(.svy, ..., .preserve = FALSE) {
+filtered_row_numbers <- function(.svy, ..., .preserve = FALSE, .filter_out = FALSE) {
   dots <- rlang::quos(...)
   filtered_vars <- .svy$variables
 
+  filter_function <- if (.filter_out) dplyr::filter_out else dplyr::filter
+
+
   filtered_vars[["___row_number"]] <- seq_len(nrow(filtered_vars))
-  filtered_vars <- dplyr::filter(filtered_vars, !!!dots, .preserve = .preserve)
+  filtered_vars <- filter_function(filtered_vars, !!!dots, .preserve = .preserve)
   row_numbers <- dplyr::pull(filtered_vars, name = "___row_number")
   filtered_vars <- dplyr::select(filtered_vars, -dplyr::one_of("___row_number"))
 

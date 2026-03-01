@@ -79,10 +79,20 @@ as_survey_rep.data.frame <-
            rscales = NULL, fpc = NULL, fpctype = c("fraction", "correction"),
            mse = getOption("survey.replicates.mse"), degf = NULL, ...) {
     variables <- srvyr_select_vars(rlang::enquo(variables), .data)
+    repweights_label <- rlang::as_label(rlang::enquo(repweights))
     repweights <- srvyr_select_vars(rlang::enquo(repweights), .data)
     weights <- srvyr_select_vars(rlang::enquo(weights), .data)
     fpc <- srvyr_select_vars(rlang::enquo(fpc), .data)
     type <- if (missing(type)) type[1] else type
+
+    if (type=="ACS"){
+      if (missing(mse) && !mse){
+        mse <- TRUE
+        message("mse=TRUE assumed for type=\"ACS\"")
+      } else if (!mse){
+        warning("The ACS uses MSE standard errors but you have specified mse=FALSE")
+      }
+    }
 
     out <- survey::svrepdesign(
       variables = variables,
@@ -103,7 +113,7 @@ as_survey_rep.data.frame <-
 
     out <- as_tbl_svy(
       out,
-      list(repweights = repweights,  weights = weights, fpc = fpc)
+      list(repweights = repweights_label, weights = weights, fpc = fpc)
     )
     preserve_groups(out, .data)
   }

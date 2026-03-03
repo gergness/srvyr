@@ -106,7 +106,7 @@ survey_mean <- function(
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
   proportion = FALSE,
-  prop_method = c("logit", "likelihood", "asin", "beta", "mean", "xlogit"),
+  prop_method = c("logit", "likelihood", "asin", "beta", "mean", "xlogit", "wilson"),
   deff = FALSE,
   df = NULL,
   ...
@@ -116,7 +116,8 @@ survey_mean <- function(
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
-  prop_method <- match.arg(prop_method)
+  allowed_ci_methods <- formals(survey::svyciprop)$method
+  prop_method <- rlang::arg_match(prop_method, values = eval(allowed_ci_methods))
   if (is.null(df)) df <- survey::degf(cur_svy_full())
   if (missing(x)){
     if (na.rm) {
@@ -158,7 +159,7 @@ survey_prop <- function(
   vartype = c("se", "ci", "var", "cv"),
   level = 0.95,
   proportion = TRUE,
-  prop_method = c("logit", "likelihood", "asin", "beta", "mean", "xlogit"),
+  prop_method = c("logit", "likelihood", "asin", "beta", "mean", "xlogit", "wilson"),
   deff = FALSE,
   df = NULL,
   ...
@@ -179,7 +180,8 @@ survey_prop <- function(
   if (!is.null(vartype)) {
     vartype <- if (missing(vartype)) "se" else match.arg(vartype, several.ok = TRUE)
   }
-  prop_method <- match.arg(prop_method)
+  allowed_ci_methods <- formals(survey::svyciprop)$method
+  prop_method <- rlang::arg_match(prop_method, values = eval(allowed_ci_methods))
   if (is.null(df)) df <- survey::degf(.full_svy)
 
   if (!proportion) {

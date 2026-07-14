@@ -72,6 +72,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Greg Freedman Ellis \email{greg.freedman@gmail.com}
   \item Ben Schneider [contributor]
 }
 

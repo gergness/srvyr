@@ -28,6 +28,7 @@
 #' approximation. An object of class ppsmat to use the Horvitz-Thompson estimator.
 #' @param variance For pps without replacement, use variance="YG" for the Yates-Grundy estimator
 #' instead of the Horvitz-Thompson estimator
+#' @param na_weights How to handle missing values in weights. "fail" will throw an error, "warn" will throw a warning, and "allow" will allow them. See \code{\link[survey]{svydesign}} for more details.
 #' @param ... ignored
 #' @return An object of class \code{tbl_svy}
 #' @examples
@@ -84,7 +85,7 @@ as_survey_design.data.frame <-
   function(.data, ids = NULL, probs = NULL, strata = NULL,
            variables = NULL, fpc = NULL, nest = FALSE,
            check_strata = !nest, weights = NULL, pps = FALSE,
-           variance = c("HT", "YG"), ...) {
+           variance = c("HT", "YG"), na_weights = c("fail", "warn", "allow"), ...) {
 
   ids <- srvyr_select_vars(rlang::enquo(ids), .data, check_ids = TRUE)
   probs <- srvyr_select_vars(rlang::enquo(probs), .data)
@@ -95,7 +96,7 @@ as_survey_design.data.frame <-
 
   if (is.null(ids)) ids <- ~1
   out <- survey::svydesign(
-    ids, probs, strata, variables, fpc, .data, nest, check_strata, weights, pps
+    ids, probs, strata, variables, fpc, .data, nest, check_strata, weights, pps, na_weights = na_weights
   )
 
   out <- as_tbl_svy(
@@ -104,7 +105,7 @@ as_survey_design.data.frame <-
   )
 
   preserve_groups(out, .data)
-}
+  }
 
 #' @export
 #' @rdname as_survey_design
@@ -118,7 +119,7 @@ as_survey_design.tbl_lazy <-
   function(.data, ids = NULL, probs = NULL, strata = NULL,
            variables = NULL, fpc = NULL, nest = FALSE,
            check_strata = !nest, weights = NULL, pps = FALSE,
-           variance = c("HT", "YG"), ...) {
+           variance = c("HT", "YG"), na_weights = "fail", ...) {
 
     ids <- rlang::enquo(ids)
     probs <- rlang::enquo(probs)
@@ -140,7 +141,7 @@ as_survey_design.tbl_lazy <-
 
     if (is.null(ids)) ids <- ~1
     out <- survey::svydesign(
-      ids, probs, strata, variables, fpc, survey_vars_local, nest, check_strata, weights, pps
+      ids, probs, strata, variables, fpc, survey_vars_local, nest, check_strata, weights, pps, na_weights = na_weights
     )
     out$variables <- .data
 

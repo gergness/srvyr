@@ -21,6 +21,7 @@ as_survey_design(.data, ...)
   weights = NULL,
   pps = FALSE,
   variance = c("HT", "YG"),
+  na_weights = c("fail", "warn", "allow"),
   ...
 )
 
@@ -38,6 +39,7 @@ as_survey_design(.data, ...)
   weights = NULL,
   pps = FALSE,
   variance = c("HT", "YG"),
+  na_weights = "fail",
   ...
 )
 }
@@ -71,6 +73,8 @@ approximation. An object of class ppsmat to use the Horvitz-Thompson estimator.}
 
 \item{variance}{For pps without replacement, use variance="YG" for the Yates-Grundy estimator
 instead of the Horvitz-Thompson estimator}
+
+\item{na_weights}{How to handle missing values in weights. "fail" will throw an error, "warn" will throw a warning, and "allow" will allow them. See \code{\link[survey]{svydesign}} for more details.}
 }
 \value{
 An object of class \code{tbl_svy}

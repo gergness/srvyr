@@ -25,6 +25,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{dplyr}{\code{\link[dplyr]{across}}, \code{\link[dplyr]{c_across}}, \code{\link[dplyr:context]{cur_column}}, \code{\link[dplyr:deprec-context]{cur_data}}, \code{\link[dplyr:context]{cur_group}}, \code{\link[dplyr:context]{cur_group_id}}, \code{\link[dplyr]{group_map}}, \code{\link[dplyr:group_map]{group_modify}}, \code{\link[dplyr]{group_nest}}, \code{\link[dplyr]{group_split}}, \code{\link[dplyr:group_map]{group_walk}}, \code{\link[dplyr:context]{n}}, \code{\link[dplyr]{nest_by}}, \code{\link[dplyr]{reframe}}}
+  \item{dplyr}{\code{\link[dplyr:across]{across()}}, \code{\link[dplyr:c_across]{c_across()}}, \code{\link[dplyr:cur_column]{cur_column()}}, \code{\link[dplyr:cur_data]{cur_data()}}, \code{\link[dplyr:cur_group]{cur_group()}}, \code{\link[dplyr:cur_group_id]{cur_group_id()}}, \code{\link[dplyr:group_map]{group_map()}}, \code{\link[dplyr:group_modify]{group_modify()}}, \code{\link[dplyr:group_nest]{group_nest()}}, \code{\link[dplyr:group_split]{group_split()}}, \code{\link[dplyr:group_walk]{group_walk()}}, \code{\link[dplyr:n]{n()}}, \code{\link[dplyr:nest_by]{nest_by()}}, \code{\link[dplyr:reframe]{reframe()}}}
 }}
 

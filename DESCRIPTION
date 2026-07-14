@@ -18,7 +18,7 @@ Imports:
     magrittr,
     methods,
     rlang,
-    survey (>= 4.1),
+    survey (>= 4.5),
     tibble,
     tidyr,
     tidyselect,
@@ -41,5 +41,5 @@ Suggests:
     covr
 Encoding: UTF-8
 VignetteBuilder: knitr
-RoxygenNote: 7.3.3
 Language: en-US
+Config/roxygen2/version: 8.0.0

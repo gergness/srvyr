@@ -25,3 +25,28 @@ test_that("as_survey_design preserves groups", {
     "Not all grouping variables exist in survey"
   )
 })
+
+test_that("as_survey_design can handle NA weights", {
+  data(api, package = "survey")
+
+  apistrat_na <- apistrat
+  apistrat_na$pw[1:5] <- NA
+
+  expect_warning(
+    apistrat_na |>
+      as_survey_design(strata = stype, weights = pw, na_weights = "warn"),
+    "missing values in weights; records will be dropped"
+  )
+
+  expect_error(
+    apistrat_na |>
+      as_survey_design(strata = stype, weights = pw),
+    "missing values in weights and na_weights='fail'"
+  )
+
+  expect_error(
+    apistrat_na |>
+      as_survey_design(strata = stype, weights = pw, na_weights = "fail"),
+    "missing values in weights and na_weights='fail'"
+  )
+})

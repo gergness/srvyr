@@ -145,7 +145,7 @@ survey_mean <- function(
 
     .svy <- set_survey_vars(.svy, x)
     stat <- survey::svyciprop(
-      ~`__SRVYR_TEMP_VAR__`, .svy, na.rm = na.rm, level = level, method = prop_method
+      ~`__SRVYR_TEMP_VAR__`, .svy, na.rm = na.rm, level = level, method = prop_method, df = df
     )
     out <- get_var_est(stat, vartype, pre_calc_ci = TRUE, df = df)
     out
@@ -199,7 +199,7 @@ survey_prop <- function(
     if (nrow(.full_svy$variables) == 0) return(get_empty_var_est(vartype, level = level))
 
     stat <- survey::svyciprop(
-      ~`__SRVYR_TEMP_VAR__`, .full_svy, na.rm = TRUE, level = level, method = prop_method
+      ~`__SRVYR_TEMP_VAR__`, .full_svy, na.rm = TRUE, level = level, method = prop_method, df = df
     )
     out <- get_var_est(stat, vartype, pre_calc_ci = TRUE, df = df)
     out

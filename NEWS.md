@@ -4,6 +4,10 @@
 * Fixed a bug when collecting after subsetting a database backed survey (#205, thanks @szimmer)
 * Underscore functions like `as_survey_design_() and `mutate_()` have been completely removed, following dplyr's lead 
   in 1.2.0
+* The `df` argument is now passed through to `svyciprop()` when calculating proportions, so it is no longer ignored by 
+  `survey_mean(proportion = TRUE)` and `survey_prop()`. Note that this means grouped proportion confidence intervals now 
+  use the degrees of freedom of the full design (srvyr's default) rather than those of each group's subset, so results 
+  may slightly change (#212, thanks @szimmer)
 
 # srvyr 1.3.1
 * `interact()` now can be used programmatically (#187, thanks @larmarange).
